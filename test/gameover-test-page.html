@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Over Screen Test - Story 4.3</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+    }
+    h1 {
+      color: #4ec9b0;
+      margin-bottom: 20px;
+    }
+    .test-info {
+      background: #2d2d2d;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Game Over Screen Test - Story 4.3</h1>
+
+  <div class="test-info">
+    <p>This page tests the game over screen enhancements.</p>
+    <p>Check the console for test results.</p>
+  </div>
+
+  <!-- Include game over elements for testing -->
+  <div id="game-container">
+    <div id="gameover-screen" class="hidden">
+      <h2>GAME OVER!</h2>
+      <p class="final-score">Your score: <span id="score-value">0</span></p>
+      <p id="new-high-score-indicator" class="new-high-score hidden">🎉 New High Score! 🎉</p>
+      <button id="play-again-btn" class="selected">Play Again</button>
+      <button id="menu-btn">Menu</button>
+    </div>
+  </div>
+
+  <script type="module" src="./gameover.test.js"></script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CrazySnakeLite - Chaotic Snake Game</title>
+  <meta name="description" content="Classic Nokia Snake with chaotic twists - 6 food types, phone interruptions, pure chaos!">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="game-container">
+    <canvas id="game-canvas"></canvas>
+
+    <!-- Score Display - Story 4.1 -->
+    <div id="score-display" class="hidden">Score: 0</div>
+
+    <!-- Main Menu Screen - Story 4.2 -->
+    <div id="menu-screen">
+      <h1 class="game-title">CrazySnakeLite</h1>
+      <button id="new-game-btn" class="menu-button">New Game</button>
+      <div id="high-score-display">
+        <p>Top Score: <span id="high-score-value">0</span></p>
+      </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="gameover-screen" class="hidden">
+      <h2>GAME OVER!</h2>
+      <p class="final-score">Your score: <span id="score-value">0</span></p>
+      <p id="new-high-score-indicator" class="new-high-score hidden">*** NEW HIGH SCORE! ***</p>
+      <button id="play-again-btn" class="selected">Play Again</button>
+      <button id="menu-btn">Menu</button>
+    </div>
+
+    <!-- Phone Call Overlay - Story 3.1 -->
+    <div id="phone-overlay" class="hidden">
+      <div class="phone-screen">
+        <p class="call-status">Incoming call...</p>
+        <p class="caller-name">Mom</p>
+        <button class="end-button">End</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

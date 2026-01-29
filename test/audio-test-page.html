@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio System Test - Story 4.5</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      padding: 40px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+    }
+    h1 {
+      color: #4ec9b0;
+      margin-bottom: 20px;
+    }
+    .test-info {
+      background: #2d2d2d;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 5px;
+    }
+    .sound-list {
+      background: #3d3d3d;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 5px;
+      border-left: 4px solid #4ec9b0;
+    }
+    .sound-list h3 {
+      margin-top: 0;
+      color: #4ec9b0;
+    }
+    .sound-list ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sound-list li {
+      padding: 5px 0;
+      color: #9cdcfe;
+    }
+    .note {
+      background: #3d3d00;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 5px;
+      border-left: 4px solid #FFD700;
+      color: #FFD700;
+    }
+  </style>
+</head>
+<body>
+  <h1>Audio System Test - Story 4.5 (Web Audio API)</h1>
+
+  <div class="test-info">
+    <p><strong>This page tests the alternating sound system using Web Audio API.</strong></p>
+    <p>Check the console (F12) for automated test results.</p>
+  </div>
+
+  <div class="sound-list">
+    <h3>🎵 14 Sound Files (7 States × 2 Alternating)</h3>
+    <ul>
+      <li>✅ move-default-1.mp3 & move-default-2.mp3</li>
+      <li>✅ move-growing-1.mp3 & move-growing-2.mp3</li>
+      <li>✅ move-invicibility-1.mp3 & move-invicibility-2.mp3</li>
+      <li>✅ move-wallphase-1.mp3 & move-wallphase-2.mp3</li>
+      <li>✅ move-speedboost-1.mp3 & move-speedboost-2.mp3</li>
+      <li>✅ move-speeddecrease-1.mp3 & move-speeddecrease-2.mp3</li>
+      <li>✅ move-reverse-1.mp3 & move-reverse-2.mp3</li>
+    </ul>
+  </div>
+
+  <div class="note">
+    <strong>💡 Note:</strong> Uses Web Audio API (AudioContext + AudioBufferSourceNode).
+    <br>AudioContext may be suspended in this test page due to browser autoplay policy.
+    <br>To hear the sounds, play the actual game at http://localhost:8000/
+    <br>The tests verify that the code executes correctly, not actual audio output.
+  </div>
+
+  <div class="test-info">
+    <h3>How It Works:</h3>
+    <p><strong>Alternation:</strong> Sound 1 → Sound 2 → Sound 1 → Sound 2...</p>
+    <p><strong>Reset:</strong> When state changes (e.g., eat special food), alternation resets to Sound 1</p>
+    <p><strong>Example:</strong></p>
+    <pre>
+Move 1 (default): move-default-1.mp3
+Move 2 (default): move-default-2.mp3
+Move 3 (default): move-default-1.mp3
+Eat invincibility food
+Move 4 (invincibility): move-invicibility-1.mp3  ← Reset!
+Move 5 (invincibility): move-invicibility-2.mp3
+Move 6 (invincibility): move-invicibility-1.mp3
+    </pre>
+  </div>
+
+  <script type="module" src="./audio.test.js"></script>
+</body>
+</html>

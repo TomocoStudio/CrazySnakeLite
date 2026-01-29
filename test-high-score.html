@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>High Score Debug Tool</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      padding: 40px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+    }
+    button {
+      font-family: 'Courier New', monospace;
+      padding: 10px 20px;
+      margin: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .info {
+      background: #2d2d2d;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 5px;
+    }
+    .high-score {
+      color: #FFD700;
+      font-size: 24px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>High Score Debug Tool</h1>
+
+  <div class="info">
+    <p>Current High Score: <span id="current-score" class="high-score">Loading...</span></p>
+  </div>
+
+  <button onclick="checkHighScore()">Check High Score</button>
+  <button onclick="clearHighScore()">Clear High Score (Reset to 0)</button>
+  <button onclick="setTestScore()">Set Test Score to 5</button>
+
+  <div id="output" class="info" style="margin-top: 30px;"></div>
+
+  <script type="module">
+    import { loadHighScore, saveHighScore } from './js/storage.js';
+
+    window.checkHighScore = function() {
+      const score = loadHighScore();
+      document.getElementById('current-score').textContent = score;
+      document.getElementById('output').innerHTML = `
+        <p><strong>High Score:</strong> ${score}</p>
+        <p><strong>localStorage key:</strong> crazysnakeLite_highScore</p>
+        <p><strong>Raw value:</strong> ${localStorage.getItem('crazysnakeLite_highScore') || 'null'}</p>
+      `;
+    };
+
+    window.clearHighScore = function() {
+      localStorage.removeItem('crazysnakeLite_highScore');
+      document.getElementById('current-score').textContent = '0';
+      document.getElementById('output').innerHTML = `
+        <p style="color: #00FF00;"><strong>✅ High score cleared!</strong></p>
+        <p>Now play the game and beat score 0 to see the "New High Score!" indicator.</p>
+      `;
+      console.log('[Debug] High score cleared');
+    };
+
+    window.setTestScore = function() {
+      saveHighScore(5);
+      document.getElementById('current-score').textContent = '5';
+      document.getElementById('output').innerHTML = `
+        <p style="color: #00FF00;"><strong>✅ High score set to 5</strong></p>
+        <p>Now play the game and get score 6 or higher to see the indicator.</p>
+      `;
+      console.log('[Debug] High score set to 5');
+    };
+
+    // Auto-check on load
+    window.checkHighScore();
+  </script>
+</body>
+</html>

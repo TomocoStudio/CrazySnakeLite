@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CrazySnakeLite - Test Runner</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+    }
+    h1 {
+      color: #4ec9b0;
+    }
+    .test-results {
+      margin-top: 20px;
+    }
+    .pass {
+      color: #4ec9b0;
+    }
+    .fail {
+      color: #f48771;
+    }
+  </style>
+</head>
+<body>
+  <h1>CrazySnakeLite Test Runner</h1>
+  <div id="test-results" class="test-results">
+    <p>Running tests... Check console for details.</p>
+  </div>
+
+  <script type="module">
+    // Simple test framework
+    window.testResults = {
+      passed: 0,
+      failed: 0,
+      tests: []
+    };
+
+    window.assert = {
+      equal: (actual, expected, message) => {
+        if (actual === expected) {
+          console.log(`✓ PASS: ${message}`);
+          window.testResults.passed++;
+          window.testResults.tests.push({ status: 'pass', message });
+        } else {
+          console.error(`✗ FAIL: ${message}`);
+          console.error(`  Expected: ${expected}`);
+          console.error(`  Actual: ${actual}`);
+          window.testResults.failed++;
+          window.testResults.tests.push({ status: 'fail', message });
+        }
+      },
+      notEqual: (actual, expected, message) => {
+        if (actual !== expected) {
+          console.log(`✓ PASS: ${message}`);
+          window.testResults.passed++;
+          window.testResults.tests.push({ status: 'pass', message });
+        } else {
+          console.error(`✗ FAIL: ${message}`);
+          console.error(`  Should not equal: ${expected}`);
+          window.testResults.failed++;
+          window.testResults.tests.push({ status: 'fail', message });
+        }
+      },
+      deepEqual: (actual, expected, message) => {
+        const actualStr = JSON.stringify(actual);
+        const expectedStr = JSON.stringify(expected);
+        if (actualStr === expectedStr) {
+          console.log(`✓ PASS: ${message}`);
+          window.testResults.passed++;
+          window.testResults.tests.push({ status: 'pass', message });
+        } else {
+          console.error(`✗ FAIL: ${message}`);
+          console.error(`  Expected: ${expectedStr}`);
+          console.error(`  Actual: ${actualStr}`);
+          window.testResults.failed++;
+          window.testResults.tests.push({ status: 'fail', message });
+        }
+      },
+      isTrue: (value, message) => {
+        if (value === true) {
+          console.log(`✓ PASS: ${message}`);
+          window.testResults.passed++;
+          window.testResults.tests.push({ status: 'pass', message });
+        } else {
+          console.error(`✗ FAIL: ${message}`);
+          console.error(`  Expected: true`);
+          console.error(`  Actual: ${value}`);
+          window.testResults.failed++;
+          window.testResults.tests.push({ status: 'fail', message });
+        }
+      },
+      isFalse: (value, message) => {
+        if (value === false) {
+          console.log(`✓ PASS: ${message}`);
+          window.testResults.passed++;
+          window.testResults.tests.push({ status: 'pass', message });
+        } else {
+          console.error(`✗ FAIL: ${message}`);
+          console.error(`  Expected: false`);
+          console.error(`  Actual: ${value}`);
+          window.testResults.failed++;
+          window.testResults.tests.push({ status: 'fail', message });
+        }
+      },
+      isNull: (value, message) => {
+        if (value === null) {
+          console.log(`✓ PASS: ${message}`);
+          window.testResults.passed++;
+          window.testResults.tests.push({ status: 'pass', message });
+        } else {
+          console.error(`✗ FAIL: ${message}`);
+          console.error(`  Expected: null`);
+          console.error(`  Actual: ${value}`);
+          window.testResults.failed++;
+          window.testResults.tests.push({ status: 'fail', message });
+        }
+      }
+    };
+
+    window.displayResults = () => {
+      const resultsDiv = document.getElementById('test-results');
+      const total = window.testResults.passed + window.testResults.failed;
+
+      let html = `<h2>Test Results</h2>`;
+      html += `<p>Total: ${total} | <span class="pass">Passed: ${window.testResults.passed}</span> | <span class="fail">Failed: ${window.testResults.failed}</span></p>`;
+      html += `<hr>`;
+
+      window.testResults.tests.forEach(test => {
+        const className = test.status === 'pass' ? 'pass' : 'fail';
+        const symbol = test.status === 'pass' ? '✓' : '✗';
+        html += `<p class="${className}">${symbol} ${test.message}</p>`;
+      });
+
+      resultsDiv.innerHTML = html;
+    };
+
+    // Import and run all test files
+    Promise.all([
+      import('./effects.test.js'),
+      import('./integration.test.js'),
+      import('./invincibility.test.js'),
+      import('./wallphase.test.js'),
+      import('./phone.test.js'),
+      import('./phone-timing.test.js'),
+      import('./phone-dismissal.test.js')
+    ]).then(() => {
+      window.displayResults();
+    }).catch(err => {
+      console.error('Test import failed:', err);
+      document.getElementById('test-results').innerHTML =
+        `<p class="fail">Test import failed: ${err.message}</p>`;
+    });
+  </script>
+</body>
+</html>

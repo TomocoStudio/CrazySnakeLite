@@ -1,0 +1,351 @@
+/* CrazySnakeLite - Retro Snake Game Styles */
+
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background-color: #1a1a2e;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Courier New', monospace;
+}
+
+/* Game container - centers the canvas */
+#game-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Canvas styling with retro neon aesthetic */
+#game-canvas {
+  display: block;
+  background-color: #E8E8E8;
+  border: 6px solid #9D4EDD;
+}
+
+/* Score Display - Story 4.1 */
+#score-display {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Courier New', monospace;
+  font-size: 20px;
+  font-weight: bold;
+  color: #000000;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 8px 16px;
+  border: 2px solid #000000;
+  border-radius: 4px;
+  z-index: 100;
+  pointer-events: none;  /* Don't block clicks */
+}
+
+#score-display.hidden {
+  display: none;
+}
+
+/* Main Menu Screen - Story 4.2 */
+#menu-screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px;
+  border: 4px solid #9D4EDD;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(157, 78, 221, 0.5);
+  z-index: 200;
+  min-width: 300px;
+}
+
+#menu-screen.hidden {
+  display: none;
+}
+
+.game-title {
+  font-family: 'Courier New', monospace;
+  font-size: 36px;
+  font-weight: bold;
+  color: #9D4EDD;
+  text-shadow: 2px 2px 0px #000000;
+  margin: 0 0 30px 0;
+  letter-spacing: 2px;
+}
+
+.menu-button {
+  font-family: 'Courier New', monospace;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 15px 40px;
+  margin: 10px;
+  cursor: pointer;
+  border: 3px solid #000000;
+  background: #00FF00;
+  color: #000000;
+  transition: all 0.2s;
+  min-width: 200px;
+}
+
+.menu-button:hover {
+  background: #00CC00;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.menu-button:active {
+  background: #00AA00;
+  transform: scale(0.98);
+}
+
+#high-score-display {
+  font-family: 'Courier New', monospace;
+  font-size: 18px;
+  color: #000000;
+  margin-top: 30px;
+  padding: 15px;
+  background: rgba(157, 78, 221, 0.1);
+  border: 2px solid #9D4EDD;
+  border-radius: 4px;
+}
+
+#high-score-display p {
+  margin: 0;
+  font-weight: bold;
+}
+
+#high-score-value {
+  color: #9D4EDD;
+  font-size: 24px;
+}
+
+/* Game Over Screen */
+#gameover-screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.9);
+  border: 3px solid #9D4EDD;
+  box-shadow: 0 0 10px #9D4EDD, 0 0 20px #9D4EDD;
+  padding: 30px;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  color: #E8E8E8;
+  z-index: 150;  /* Between score (100) and menu (200) */
+}
+
+#gameover-screen.hidden {
+  display: none;
+}
+
+#gameover-screen h2 {
+  font-size: 32px;
+  margin: 0 0 20px 0;
+  color: #9D4EDD;
+  text-shadow: 0 0 5px #9D4EDD;
+  letter-spacing: 2px;
+}
+
+#gameover-screen .final-score {
+  font-size: 18px;
+  margin: 0 0 15px 0;
+  color: #E8E8E8;
+}
+
+#gameover-screen .new-high-score {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0 0 20px 0;
+  color: #FFD700;
+  text-shadow: 0 0 10px #FFD700;
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+#gameover-screen .new-high-score.hidden {
+  display: none;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+#gameover-screen button {
+  display: block;
+  width: 200px;
+  margin: 10px auto;
+  padding: 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #1a1a1a;
+  color: #E8E8E8;
+  border: 2px solid #9D4EDD;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#gameover-screen button:hover {
+  background-color: #9D4EDD;
+  color: #000000;
+}
+
+#gameover-screen button.selected {
+  background-color: #9D4EDD;
+  color: #000000;
+  box-shadow: 0 0 10px #9D4EDD;
+}
+
+/* Phone Call Overlay - Story 3.1 */
+#phone-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+#phone-overlay.hidden {
+  display: none;
+}
+
+.phone-screen {
+  background: #C0C0C0;  /* Grey Nokia background */
+  border: 4px solid #000000;  /* Black border */
+  border-radius: 8px;
+  padding: 40px 30px;
+  text-align: center;
+  min-width: 280px;
+  max-width: 90vw;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+}
+
+.call-status {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: #333333;
+  margin: 0 0 10px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.caller-name {
+  font-family: 'Courier New', monospace;  /* Pixelated monospace font */
+  font-size: 24px;
+  color: #000000;  /* Black text */
+  margin: 0 0 30px 0;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* Subtle pulse animation for incoming call indicator */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.end-button {
+  font-family: 'Courier New', monospace;
+  font-size: 18px;
+  color: #000000;
+  background: #A0A0A0;  /* Slightly darker grey */
+  border: 3px solid #000000;
+  border-radius: 4px;
+  padding: 12px 40px;
+  cursor: pointer;
+  min-width: 44px;  /* Minimum touch target */
+  min-height: 44px;  /* Minimum touch target */
+  transition: background 0.2s;
+}
+
+.end-button:hover {
+  background: #808080;  /* Darker on hover */
+}
+
+.end-button:active {
+  background: #606060;  /* Even darker on click */
+}
+
+/* Blur effect for game canvas */
+#game-canvas.blurred {
+  filter: blur(4px);
+  transition: filter 0.2s;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  #score-display {
+    font-size: 16px;
+    padding: 6px 12px;
+  }
+
+  #menu-screen {
+    padding: 30px 20px;
+    min-width: 260px;
+  }
+
+  .game-title {
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
+  .menu-button {
+    font-size: 18px;
+    padding: 12px 30px;
+    min-width: 180px;
+  }
+
+  #high-score-display {
+    font-size: 16px;
+    padding: 12px;
+    margin-top: 20px;
+  }
+
+  #high-score-value {
+    font-size: 20px;
+  }
+
+  .phone-screen {
+    min-width: 240px;
+    padding: 30px 20px;
+  }
+
+  .caller-name {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .end-button {
+    font-size: 16px;
+    padding: 14px 30px;  /* Larger touch target on mobile */
+  }
+}

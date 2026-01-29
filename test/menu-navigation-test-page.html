@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu Navigation Test - Story 4.4</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+    }
+    h1 {
+      color: #4ec9b0;
+      margin-bottom: 20px;
+    }
+    .test-info {
+      background: #2d2d2d;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+    .keyboard-hint {
+      background: #3d3d3d;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 5px;
+      border-left: 4px solid #4ec9b0;
+    }
+    .key {
+      display: inline-block;
+      background: #1e1e1e;
+      border: 2px solid #4ec9b0;
+      padding: 5px 10px;
+      margin: 0 5px;
+      border-radius: 3px;
+      font-weight: bold;
+      color: #4ec9b0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Menu Navigation and Pause Test - Story 4.4</h1>
+
+  <div class="test-info">
+    <p>This page tests keyboard navigation and pause functionality.</p>
+    <p>Check the console for automated test results.</p>
+  </div>
+
+  <div class="keyboard-hint">
+    <h3>Keyboard Controls to Test:</h3>
+    <p><span class="key">Enter</span> - Activate selected menu option</p>
+    <p><span class="key">Esc</span> - Pause game (during play) or return to menu (from game over)</p>
+    <p><span class="key">↑</span> <span class="key">↓</span> - Navigate menu options (future feature)</p>
+  </div>
+
+  <!-- Include menu elements for testing -->
+  <div id="game-container">
+    <div id="menu-screen">
+      <h1 class="game-title">CrazySnakeLite</h1>
+      <button id="new-game-btn" class="menu-button">New Game</button>
+      <div id="high-score-display">
+        <p>Top Score: <span id="high-score-value">0</span></p>
+      </div>
+    </div>
+
+    <div id="gameover-screen" class="hidden">
+      <h2>GAME OVER!</h2>
+      <p class="final-score">Your score: <span id="score-value">0</span></p>
+      <button id="play-again-btn" class="selected">Play Again</button>
+      <button id="menu-btn">Menu</button>
+    </div>
+  </div>
+
+  <script type="module" src="./menu-navigation.test.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+# Workflow Status Template
+
+# This tracks progress through BMM methodology Analysis, Planning, and Solutioning phases.
+# Implementation phase is tracked separately in sprint-status.yaml
+
+# STATUS DEFINITIONS:
+# ==================
+# Initial Status (before completion):
+#   - required: Must be completed to progress
+#   - optional: Can be completed but not required
+#   - recommended: Strongly suggested but not required
+#   - conditional: Required only if certain conditions met (e.g., if_has_ui)
+#
+# Completion Status:
+#   - {file-path}: File created/found (e.g., "docs/product-brief.md")
+#   - skipped: Optional/conditional workflow that was skipped
+
+generated: "2026-01-13"
+project: "CrazySnakeLite"
+project_type: "software"
+selected_track: "method"
+field_type: "greenfield"
+brainstorm_requested: false
+research_requested: false
+product_brief_requested: true
+workflow_path: "_bmad/bmm/workflows/workflow-status/paths/method-greenfield.yaml"
+workflow_status:
+  # Phase 1: Analysis (Optional)
+  - phase: 1
+    name: "Analysis (Optional)"
+    workflows:
+      - id: "brainstorm-project"
+        name: "Brainstorm"
+        agent: "analyst"
+        command: "/bmad:bmm:workflows:brainstorming"
+        status: "skipped"
+
+      - id: "research"
+        name: "Research"
+        agent: "analyst"
+        command: "/bmad:bmm:workflows:research"
+        status: "skipped"
+
+      - id: "product-brief"
+        name: "Product Brief"
+        agent: "analyst"
+        command: "/bmad:bmm:workflows:create-product-brief"
+        status: "_bmad-output/planning-artifacts/product-brief-CrazySnakeLite-2026-01-13.md"
+        completed: "2026-01-13"
+        note: "Recommended for greenfield Method projects"
+
+  # Phase 2: Planning
+  - phase: 2
+    name: "Planning"
+    workflows:
+      - id: "prd"
+        name: "Product Requirements Document"
+        agent: "pm"
+        command: "/bmad:bmm:workflows:prd"
+        status: "_bmad-output/planning-artifacts/prd.md"
+        completed: "2026-01-13"
+        output: "Product Requirements Document with FRs and NFRs"
+
+      - id: "create-ux-design"
+        name: "UX Design"
+        agent: "ux-designer"
+        command: "/bmad:bmm:workflows:create-ux-design"
+        status: "_bmad-output/planning-artifacts/prd.md"
+        completed: "2026-01-23"
+        note: "UX specifications integrated into PRD and Product Brief (visual design, screens, controls, sounds, game config)"
+
+  # Phase 3: Solutioning
+  - phase: 3
+    name: "Solutioning"
+    workflows:
+      - id: "create-architecture"
+        name: "Architecture"
+        agent: "architect"
+        command: "/bmad:bmm:workflows:create-architecture"
+        status: "_bmad-output/planning-artifacts/architecture.md"
+        completed: "2026-01-25"
+        output: "System architecture document"
+        note: "Complete system design for greenfield projects"
+
+      - id: "create-epics-and-stories"
+        name: "Epics & Stories"
+        agent: "pm"
+        command: "/bmad:bmm:workflows:create-epics-and-stories"
+        status: "_bmad-output/planning-artifacts/epics.md"
+        completed: "2026-01-25"
+        note: "Break down PRD into implementable epics and stories with full context"
+
+      - id: "test-design"
+        name: "Test Design"
+        agent: "tea"
+        command: "/bmad:bmm:workflows:testarch-test-design"
+        status: "optional"
+        output: "System-level testability review"
+        note: "Testability assessment before gate check"
+
+      - id: "implementation-readiness"
+        name: "Implementation Readiness Check"
+        agent: "architect"
+        command: "/bmad:bmm:workflows:check-implementation-readiness"
+        status: "required"
+        note: "Validates PRD + Architecture + Epics + UX (optional)"
+
+  # Phase 4: Implementation
+  - phase: 4
+    name: "Implementation"
+    workflows:
+      - id: "sprint-planning"
+        name: "Sprint Planning"
+        agent: "sm"
+        command: "/bmad:bmm:workflows:sprint-planning"
+        status: "required"
+        note: "Creates sprint plan - subsequent work tracked there"

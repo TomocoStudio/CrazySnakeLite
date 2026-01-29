@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu System Test - Story 4.2</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+    }
+    h1 {
+      color: #4ec9b0;
+      margin-bottom: 20px;
+    }
+    .test-info {
+      background: #2d2d2d;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Menu System Test - Story 4.2</h1>
+
+  <div class="test-info">
+    <p>This page tests the menu system and localStorage implementation.</p>
+    <p>Check the console for test results.</p>
+  </div>
+
+  <!-- Include menu elements for testing -->
+  <div id="game-container">
+    <div id="menu-screen" class="hidden">
+      <h1 class="game-title">CrazySnakeLite</h1>
+      <button id="new-game-btn" class="menu-button">New Game</button>
+      <div id="high-score-display">
+        <p>Top Score: <span id="high-score-value">0</span></p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./menu.test.js"></script>
+</body>
+</html>
