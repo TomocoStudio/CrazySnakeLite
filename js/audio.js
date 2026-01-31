@@ -9,6 +9,7 @@ const audioBuffers = {};
 let audioInitialized = false;
 let loadedSoundCount = 0;  // Track successful loads
 let failedSounds = [];  // Track failed sound loads
+let deathSoundLoaded = false;  // Track death sound separately
 
 // Track alternation state
 let currentAlternator = 0;  // 0 or 1 (plays sound 1 or 2)
@@ -65,6 +66,19 @@ export async function initAudio() {
     });
 
     await Promise.all(loadPromises);
+
+    // Load death sound
+    try {
+      const deathUrl = `${CONFIG.SOUNDS_PATH}snake-die.mp3`;
+      const response = await fetch(deathUrl);
+      const arrayBuffer = await response.arrayBuffer();
+      const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+      audioBuffers['death'] = audioBuffer;
+      deathSoundLoaded = true;
+      console.log('[Audio] Death sound loaded');
+    } catch (err) {
+      console.warn('[Audio] Failed to load death sound:', err.message);
+    }
 
     audioInitialized = true;
 
@@ -242,5 +256,30 @@ export function setMasterVolume(volume) {
   if (masterGainNode) {
     masterGainNode.gain.value = Math.max(0, Math.min(1, volume));
     console.log(`[Audio] Master volume set to ${masterGainNode.gain.value}`);
+  }
+}
+
+/**
+ * Play death sound when snake dies
+ * Bug fix: Missing acoustic feedback on death
+ */
+export function playDeathSound() {
+  if (!audioInitialized || !audioContext || audioContext.state === 'suspended') return;
+  if (!deathSoundLoaded) {
+    console.warn('[Audio] Death sound not loaded');
+    return;
+  }
+
+  try {
+    const buffer = audioBuffers['death'];
+    if (buffer) {
+      const source = audioContext.createBufferSource();
+      source.buffer = buffer;
+      source.connect(masterGainNode);
+      source.start(0);
+      console.log('[Audio] Death sound played');
+    }
+  } catch (error) {
+    console.warn('[Audio] Death sound playback error:', error.message);
   }
 }

@@ -6,7 +6,7 @@ import { checkFoodCollision, checkWallCollision, checkSelfCollision } from './co
 import { spawnFood } from './food.js';
 import { applyEffect, clearEffect } from './effects.js';
 import { checkPhoneCallTiming, dismissPhoneCall } from './phone.js';
-import { playMoveSound } from './audio.js';
+import { playMoveSound, playDeathSound } from './audio.js';
 
 const TICK_RATE = CONFIG.TICK_RATE;
 
@@ -97,6 +97,8 @@ function update(gameState) {
     if (gameState.phoneCall.active) {
       dismissPhoneCall(gameState);
     }
+    // Play death sound (Bug fix)
+    playDeathSound();
     gameState.phase = 'gameover';
   }
 }

@@ -2,9 +2,9 @@
 // All tunable game parameters in one place
 
 export const CONFIG = {
-  // Grid dimensions
-  GRID_WIDTH: 25,
-  GRID_HEIGHT: 20,
+  // Grid dimensions (swapped for mobile portrait)
+  GRID_WIDTH: 20,
+  GRID_HEIGHT: 25,
   UNIT_SIZE: 20,  // pixels per grid unit
 
   // Snake starting state
@@ -38,7 +38,7 @@ export const CONFIG = {
   COLORS: {
     background: '#E8E8E8',
     gridLine: '#A0A0A0',
-    border: '#9D4EDD',
+    border: '#800080',  // Story 5-8: Match wall phase food color for UX association
     snakeDefault: '#000000',
     snakeGrowing: '#00FF00',
     snakeInvincibility: '#FFFF00',
@@ -57,13 +57,13 @@ export const CONFIG = {
   // Visual settings
   GRID_LINE_WIDTH: 0.5,
   GRID_LINE_OPACITY: 0.9,
-  FOOD_SIZE: 10,  // pixels (food rendered as 10x10 pixel shapes)
+  FOOD_SIZE: 11,  // pixels (food rendered as 11x11 pixel shapes) - Story 5-3 testing
 
   // Strobe effect (Story 2.2)
   STROBE_INTERVAL: 100,  // milliseconds (10 Hz = 10 flashes per second)
 
   // Snake head styling
-  HEAD_BORDER_COLOR: '#FFFFFF',
+  HEAD_BORDER_COLOR: '#E8E8E8',  // Story 5-4: Match grid background for subtle effect
   HEAD_BORDER_WIDTH: 2,
 
   // Touch input

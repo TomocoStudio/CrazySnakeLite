@@ -30,18 +30,25 @@ const menuBtn = document.getElementById('menu-btn');
 
 /**
  * Update score display DOM element
- * Story 4.1
+ * Story 5-2: Dual score display (current + top score)
  * @param {number} score - Current score
+ * @param {number} topScore - Top/high score
  */
-function updateScoreDisplay(score) {
-  if (!scoreDisplay) {
-    console.error('[UI] Score display element not found in DOM');
+function updateScoreDisplay(score, topScore) {
+  const currentScoreElement = document.getElementById('current-score');
+  const topScoreElement = document.getElementById('top-score');
+
+  if (!currentScoreElement || !topScoreElement) {
+    console.error('[UI] Score display elements not found in DOM');
     return;
   }
 
-  // Validate score is a valid number
+  // Validate scores are valid numbers
   const validScore = Math.max(0, Math.floor(score || 0));
-  scoreDisplay.textContent = `Score: ${validScore}`;
+  const validTopScore = Math.max(0, Math.floor(topScore || 0));
+
+  currentScoreElement.textContent = `Score: ${validScore}`;
+  topScoreElement.textContent = `Top Score: ${validTopScore}`;
 }
 
 /**
@@ -66,7 +73,7 @@ function startNewGame() {
   gameState.isPaused = false;  // Clear pause flag when starting new game
 
   // Initialize score display and ensure it's visible
-  updateScoreDisplay(gameState.score);
+  updateScoreDisplay(gameState.score, gameState.highScore);
   scoreDisplay.classList.remove('hidden');
   previousScore = gameState.score;  // Track initial score
 
@@ -173,7 +180,7 @@ function handleUIUpdate(state) {
     }
     // Fix: Only update score when it changes (not every frame)
     if (scoreChanged) {
-      updateScoreDisplay(state.score);
+      updateScoreDisplay(state.score, state.highScore);
       previousScore = state.score;
     }
   } else if (state.phase === 'gameover') {

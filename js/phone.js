@@ -12,20 +12,31 @@ import { CONFIG } from './config.js';
 const DEBUG = false;
 
 /**
- * Curated funny caller names organized by category
- * Categories: Family, Work, Spam, Absurd, Meta
+ * Tech Pun Caller Names - Story 5-7
+ * Hilarious tech-themed puns that sound like real names
  */
 const CALLERS = [
-  // Family
-  'Mom', 'Dad', 'Grandma', 'Your Ex', 'Aunt Karen',
-  // Work
-  'Boss', 'HR Department', 'Annoying Coworker', 'That Guy From The Meeting',
-  // Spam
-  'Spam Likely', 'Extended Warranty', 'Nigerian Prince', 'IRS (Definitely Real)', 'Google Support Scam',
-  // Absurd
-  'Your Conscience', 'The Void', 'Anxiety', 'Existential Dread', 'Your Future Self',
-  // Meta
-  'Snake HQ', 'Game Over (calling early)', 'The Developer', 'Your High Score'
+  'Al Gorithm',
+  'Meg A. Byte',
+  'Ali Sing',
+  'Anna Log',
+  'Ray Tracing',
+  'Pat Ch-Notes',
+  'Mac Address',
+  'Artie Ficial',
+  'Floppy Phil',
+  'Dot Matrix',
+  'Gia Hertz',
+  'Terry Byte',
+  'Perry Pheral',
+  'Cade Ridger',
+  'Mona Tor',
+  'Syd Ram',
+  'Bessie IOS',
+  'Dee Frag',
+  'Buffy Ring',
+  'DJ Snake',
+  'GAME OVER'
 ];
 
 /**

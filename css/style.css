@@ -1,5 +1,13 @@
 /* CrazySnakeLite - Retro Snake Game Styles */
 
+/* Jersey_20 Font - Story 5-1 */
+@font-face {
+  font-family: 'Jersey20';
+  src: url('../assets/Jersey_20/Jersey20-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /* Reset and base styles */
 * {
   margin: 0;
@@ -15,7 +23,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'Courier New', monospace;
+  font-family: 'Jersey20', 'Courier New', monospace;
 }
 
 /* Game container - centers the canvas */
@@ -30,43 +38,57 @@ body {
 #game-canvas {
   display: block;
   background-color: #E8E8E8;
-  border: 6px solid #9D4EDD;
+  border: 8px solid #800080;  /* Story 5-8: Matches wall phase food for UX association */
+  box-shadow: 0 0 0 4px #9D4EDD;  /* 4px light purple outer border */
 }
 
-/* Score Display - Story 4.1 */
+/* Score Display - Story 5-2: Dual Score Layout */
 #score-display {
   position: absolute;
-  top: 10px;
+  top: -55px;
   left: 50%;
   transform: translateX(-50%);
-  font-family: 'Courier New', monospace;
+  font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 20px;
   font-weight: bold;
-  color: #000000;
   background: rgba(255, 255, 255, 0.9);
   padding: 8px 16px;
-  border: 2px solid #000000;
-  border-radius: 4px;
+  border: 4px solid #9D4EDD;
+  border-radius: 0;
   z-index: 100;
-  pointer-events: none;  /* Don't block clicks */
+  pointer-events: none;
+  display: flex;
+  gap: 40px;
+  min-width: 400px;
+  justify-content: space-between;
+}
+
+#current-score {
+  color: #000000;
+  text-align: left;
+}
+
+#top-score {
+  color: #9D4EDD;
+  text-align: right;
 }
 
 #score-display.hidden {
   display: none;
 }
 
-/* Main Menu Screen - Story 4.2 */
+/* Main Menu Screen - Matches Game Over styling */
 #menu-screen {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  background: rgba(255, 255, 255, 0.95);
+  background-color: rgba(0, 0, 0, 0.9);
   padding: 40px;
-  border: 4px solid #9D4EDD;
-  border-radius: 8px;
-  box-shadow: 0 0 20px rgba(157, 78, 221, 0.5);
+  border: 3px solid #9D4EDD;
+  border-radius: 0;
+  box-shadow: none;
   z-index: 200;
   min-width: 300px;
 }
@@ -76,33 +98,35 @@ body {
 }
 
 .game-title {
-  font-family: 'Courier New', monospace;
+  font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 36px;
   font-weight: bold;
   color: #9D4EDD;
-  text-shadow: 2px 2px 0px #000000;
+  text-shadow: none;
   margin: 0 0 30px 0;
   letter-spacing: 2px;
 }
 
 .menu-button {
-  font-family: 'Courier New', monospace;
+  font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 20px;
   font-weight: bold;
   padding: 15px 40px;
   margin: 10px;
   cursor: pointer;
-  border: 3px solid #000000;
-  background: #00FF00;
-  color: #000000;
+  border: 2px solid #9D4EDD;
+  border-radius: 0;
+  background-color: #1a1a1a;
+  color: #E8E8E8;
   transition: all 0.2s;
   min-width: 200px;
 }
 
 .menu-button:hover {
-  background: #00CC00;
+  background-color: #9D4EDD;
+  color: #000000;
   transform: scale(1.05);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: none;
 }
 
 .menu-button:active {
@@ -111,14 +135,14 @@ body {
 }
 
 #high-score-display {
-  font-family: 'Courier New', monospace;
+  font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 18px;
-  color: #000000;
+  color: #E8E8E8;
   margin-top: 30px;
   padding: 15px;
-  background: rgba(157, 78, 221, 0.1);
-  border: 2px solid #9D4EDD;
-  border-radius: 4px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
 }
 
 #high-score-display p {
@@ -129,6 +153,7 @@ body {
 #high-score-value {
   color: #9D4EDD;
   font-size: 24px;
+  font-weight: bold;
 }
 
 /* Game Over Screen */
@@ -139,10 +164,11 @@ body {
   transform: translate(-50%, -50%);
   background-color: rgba(0, 0, 0, 0.9);
   border: 3px solid #9D4EDD;
-  box-shadow: 0 0 10px #9D4EDD, 0 0 20px #9D4EDD;
+  border-radius: 0;
+  box-shadow: none;
   padding: 30px;
   text-align: center;
-  font-family: 'Courier New', monospace;
+  font-family: 'Jersey20', 'Courier New', monospace;
   color: #E8E8E8;
   z-index: 150;  /* Between score (100) and menu (200) */
 }
@@ -155,7 +181,7 @@ body {
   font-size: 32px;
   margin: 0 0 20px 0;
   color: #9D4EDD;
-  text-shadow: 0 0 5px #9D4EDD;
+  text-shadow: none;
   letter-spacing: 2px;
 }
 
@@ -170,36 +196,27 @@ body {
   font-weight: bold;
   margin: 0 0 20px 0;
   color: #FFD700;
-  text-shadow: 0 0 10px #FFD700;
-  animation: pulse-glow 1.5s ease-in-out infinite;
+  text-shadow: none;
+  animation: none;
 }
 
 #gameover-screen .new-high-score.hidden {
   display: none;
 }
 
-@keyframes pulse-glow {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.7;
-    transform: scale(1.05);
-  }
-}
 
 #gameover-screen button {
   display: block;
   width: 200px;
   margin: 10px auto;
   padding: 12px;
-  font-family: 'Courier New', monospace;
+  font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 16px;
   font-weight: bold;
   background-color: #1a1a1a;
   color: #E8E8E8;
   border: 2px solid #9D4EDD;
+  border-radius: 0;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -212,7 +229,7 @@ body {
 #gameover-screen button.selected {
   background-color: #9D4EDD;
   color: #000000;
-  box-shadow: 0 0 10px #9D4EDD;
+  box-shadow: none;
 }
 
 /* Phone Call Overlay - Story 3.1 */
@@ -236,50 +253,49 @@ body {
 .phone-screen {
   background: #C0C0C0;  /* Grey Nokia background */
   border: 4px solid #000000;  /* Black border */
-  border-radius: 8px;
+  border-radius: 0;
   padding: 40px 30px;
   text-align: center;
   min-width: 280px;
   max-width: 90vw;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+  box-shadow: none;
 }
 
 .call-status {
-  font-family: 'Courier New', monospace;
+  font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 14px;
   color: #333333;
   margin: 0 0 10px 0;
   text-transform: uppercase;
   letter-spacing: 1px;
-  animation: pulse 1.5s ease-in-out infinite;
+  animation: none;
 }
 
 .caller-name {
-  font-family: 'Courier New', monospace;  /* Pixelated monospace font */
+  font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 24px;
   color: #000000;  /* Black text */
-  margin: 0 0 30px 0;
+  margin: 0 0 15px 0;
   font-weight: bold;
   text-transform: uppercase;
 }
 
-/* Subtle pulse animation for incoming call indicator */
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
+.call-instructions {
+  font-family: 'Jersey20', 'Courier New', monospace;
+  font-size: 12px;
+  color: #333333;
+  margin: 0 0 20px 0;
+  text-align: center;
 }
 
+
 .end-button {
-  font-family: 'Courier New', monospace;
+  font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 18px;
   color: #000000;
   background: #A0A0A0;  /* Slightly darker grey */
   border: 3px solid #000000;
-  border-radius: 4px;
+  border-radius: 0;
   padding: 12px 40px;
   cursor: pointer;
   min-width: 44px;  /* Minimum touch target */
@@ -306,6 +322,8 @@ body {
   #score-display {
     font-size: 16px;
     padding: 6px 12px;
+    gap: 20px;
+    min-width: 320px;
   }
 
   #menu-screen {

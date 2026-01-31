@@ -48,7 +48,7 @@ export function createInitialState() {
 
     activeEffect: null,
 
-    score: CONFIG.STARTING_LENGTH,
+    score: 0,
     highScore: loadHighScore(),  // Story 4.2: Load from localStorage
 
     phoneCall: {

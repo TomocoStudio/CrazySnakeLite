@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CrazySnakeLite - Chaotic Snake Game</title>
+  <title>Crazy Snake - Chaotic Snake Game</title>
   <meta name="description" content="Classic Nokia Snake with chaotic twists - 6 food types, phone interruptions, pure chaos!">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -11,12 +11,15 @@
   <div id="game-container">
     <canvas id="game-canvas"></canvas>
 
-    <!-- Score Display - Story 4.1 -->
-    <div id="score-display" class="hidden">Score: 0</div>
+    <!-- Score Display - Story 5-2: Dual Score Layout -->
+    <div id="score-display" class="hidden">
+      <span id="current-score">Score: 0</span>
+      <span id="top-score">Top Score: 0</span>
+    </div>
 
     <!-- Main Menu Screen - Story 4.2 -->
     <div id="menu-screen">
-      <h1 class="game-title">CrazySnakeLite</h1>
+      <h1 class="game-title">Crazy Snake</h1>
       <button id="new-game-btn" class="menu-button">New Game</button>
       <div id="high-score-display">
         <p>Top Score: <span id="high-score-value">0</span></p>
@@ -37,6 +40,7 @@
       <div class="phone-screen">
         <p class="call-status">Incoming call...</p>
         <p class="caller-name">Mom</p>
+        <p class="call-instructions">Press space bar or click on End</p>
         <button class="end-button">End</button>
       </div>
     </div>

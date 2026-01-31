@@ -53,6 +53,7 @@ function renderGrid(ctx) {
 /**
  * Renders the snake with head/body distinction
  * UPDATED in Story 2.2: Add invincibility strobe (yellow ↔ black)
+ * UPDATED in Story 5-4: Add white eyes to head, subtle border color, directional eyes
  */
 function renderSnake(ctx, gameState) {
   const snake = gameState.snake;
@@ -70,27 +71,96 @@ function renderSnake(ctx, gameState) {
     }
   }
 
-  ctx.fillStyle = snakeColor;
-
   snake.segments.forEach((segment, index) => {
     const x = segment.x * CONFIG.UNIT_SIZE;
     const y = segment.y * CONFIG.UNIT_SIZE;
 
-    // Draw segment
+    // Draw segment with snake color
+    ctx.fillStyle = snakeColor;
     ctx.fillRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
 
-    // Head distinction: white border on first segment (head at index 0)
+    // Head distinction: border + eyes on first segment (head at index 0)
     if (index === 0) {
+      // Subtle border (matches grid background)
       ctx.strokeStyle = CONFIG.HEAD_BORDER_COLOR;
       ctx.lineWidth = CONFIG.HEAD_BORDER_WIDTH;
       ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
+
+      // White eyes that rotate with direction (Story 5-4)
+      renderSnakeEyes(ctx, x, y, snake.direction);
     }
   });
 }
 
 /**
- * Render food with shape based on type
- * UPDATED in Story 2.2: Add star shape for invincibility
+ * Render white eyes on snake head that rotate with direction
+ * Story 5-4: Improve head visibility and add personality
+ * Eyes face the direction of movement (right/left/up/down)
+ */
+function renderSnakeEyes(ctx, headX, headY, direction) {
+  const eyeRadius = 2.5;  // 2.5px radius
+  const eyeSpacing = 8;   // 8px apart (center to center)
+
+  const centerX = headX + CONFIG.UNIT_SIZE / 2;
+  const centerY = headY + CONFIG.UNIT_SIZE / 2;
+
+  let eye1X, eye1Y, eye2X, eye2Y;
+
+  // Position eyes based on direction
+  switch (direction) {
+    case 'right':
+      // Eyes horizontal, looking right (upper third of head)
+      eye1X = centerX - eyeSpacing / 2;
+      eye2X = centerX + eyeSpacing / 2;
+      eye1Y = eye2Y = headY + CONFIG.UNIT_SIZE / 3;
+      break;
+
+    case 'left':
+      // Eyes horizontal, looking left (upper third of head)
+      eye1X = centerX - eyeSpacing / 2;
+      eye2X = centerX + eyeSpacing / 2;
+      eye1Y = eye2Y = headY + CONFIG.UNIT_SIZE / 3;
+      break;
+
+    case 'up':
+      // Eyes vertical, looking up (left third of head)
+      eye1Y = centerY - eyeSpacing / 2;
+      eye2Y = centerY + eyeSpacing / 2;
+      eye1X = eye2X = headX + CONFIG.UNIT_SIZE / 3;
+      break;
+
+    case 'down':
+      // Eyes vertical, looking down (left third of head)
+      eye1Y = centerY - eyeSpacing / 2;
+      eye2Y = centerY + eyeSpacing / 2;
+      eye1X = eye2X = headX + CONFIG.UNIT_SIZE / 3;
+      break;
+
+    default:
+      // Default to right
+      eye1X = centerX - eyeSpacing / 2;
+      eye2X = centerX + eyeSpacing / 2;
+      eye1Y = eye2Y = headY + CONFIG.UNIT_SIZE / 3;
+  }
+
+  // Draw white eyes
+  ctx.fillStyle = '#FFFFFF';
+
+  // Eye 1
+  ctx.beginPath();
+  ctx.arc(eye1X, eye1Y, eyeRadius, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Eye 2
+  ctx.beginPath();
+  ctx.arc(eye2X, eye2Y, eyeRadius, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+/**
+ * Render food with uniform square shape
+ * Story 5-3: All food types render as squares for better visibility
+ * Color-coding preserved for effect identification
  */
 function renderFood(ctx, food) {
   if (!food.position) {
@@ -100,10 +170,6 @@ function renderFood(ctx, food) {
   const x = food.position.x * CONFIG.UNIT_SIZE;
   const y = food.position.y * CONFIG.UNIT_SIZE;
   const foodSize = CONFIG.FOOD_SIZE;
-
-  // Center point for shapes
-  const centerX = x + CONFIG.UNIT_SIZE / 2;
-  const centerY = y + CONFIG.UNIT_SIZE / 2;
 
   // Get food color from CONFIG
   const colorMap = {
@@ -117,146 +183,9 @@ function renderFood(ctx, food) {
 
   ctx.fillStyle = colorMap[food.type] || CONFIG.COLORS.foodGrowing;
 
-  // Render shape based on food type
-  switch (food.type) {
-    case 'growing':
-      // Filled square
-      const offset = (CONFIG.UNIT_SIZE - foodSize) / 2;
-      ctx.fillRect(x + offset, y + offset, foodSize, foodSize);
-      break;
-
-    case 'invincibility':
-      // 4-point star (Story 2.2)
-      renderStar(ctx, centerX, centerY, foodSize);
-      break;
-
-    case 'wallPhase':
-      // Ring/donut (Story 2.3)
-      renderRing(ctx, centerX, centerY, foodSize);
-      break;
-
-    case 'speedBoost':
-      // Red cross/plus (NEW in Story 2.4)
-      renderCross(ctx, centerX, centerY, foodSize);
-      break;
-
-    case 'speedDecrease':
-      // Cyan hollow square (Story 2.4)
-      renderHollowSquare(ctx, centerX, centerY, foodSize);
-      break;
-
-    case 'reverseControls':
-      // Orange X (NEW in Story 2.5)
-      renderX(ctx, centerX, centerY, foodSize);
-      break;
-
-    // Other shapes in later stories
-    default:
-      const defaultOffset = (CONFIG.UNIT_SIZE - foodSize) / 2;
-      ctx.fillRect(x + defaultOffset, y + defaultOffset, foodSize, foodSize);
-  }
+  // All food types render as filled squares (Story 5-3)
+  const offset = (CONFIG.UNIT_SIZE - foodSize) / 2;
+  ctx.fillRect(x + offset, y + offset, foodSize, foodSize);
 }
 
-/**
- * Render 4-point star shape
- * NEW in Story 2.2
- */
-function renderStar(ctx, centerX, centerY, size) {
-  const outerRadius = size / 2;           // 5px
-  const innerRadius = outerRadius * 0.4;  // 2px
-  const points = 4;                       // 4-point star
-
-  ctx.beginPath();
-
-  for (let i = 0; i < points * 2; i++) {
-    // Rotate -90° so first point is at top
-    const angle = (Math.PI / points) * i - Math.PI / 2;
-    const radius = i % 2 === 0 ? outerRadius : innerRadius;
-    const px = centerX + Math.cos(angle) * radius;
-    const py = centerY + Math.sin(angle) * radius;
-
-    if (i === 0) {
-      ctx.moveTo(px, py);
-    } else {
-      ctx.lineTo(px, py);
-    }
-  }
-
-  ctx.closePath();
-  ctx.fill();
-}
-
-/**
- * Render ring/donut shape (hollow circle)
- * NEW in Story 2.3
- */
-function renderRing(ctx, centerX, centerY, size) {
-  const radius = size / 2 - 0.5;  // 4.5px radius (fits in 10x10 with margin)
-
-  ctx.beginPath();
-  ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-  ctx.lineWidth = 2;  // 2px stroke width
-  ctx.stroke();
-}
-
-/**
- * Render cross/plus shape (+)
- * NEW in Story 2.4
- */
-function renderCross(ctx, centerX, centerY, size) {
-  const barWidth = 2;  // 2px wide bars
-  const barLength = size;  // Full size
-
-  // Horizontal bar
-  ctx.fillRect(
-    centerX - barLength / 2,
-    centerY - barWidth / 2,
-    barLength,
-    barWidth
-  );
-
-  // Vertical bar
-  ctx.fillRect(
-    centerX - barWidth / 2,
-    centerY - barLength / 2,
-    barWidth,
-    barLength
-  );
-}
-
-/**
- * Render hollow square (outline only)
- * NEW in Story 2.4
- */
-function renderHollowSquare(ctx, centerX, centerY, size) {
-  const squareSize = size - 1;  // Slightly smaller for margin
-
-  ctx.lineWidth = 2;  // 2px stroke width - must be set BEFORE strokeRect
-  ctx.strokeRect(
-    centerX - squareSize / 2,
-    centerY - squareSize / 2,
-    squareSize,
-    squareSize
-  );
-}
-
-/**
- * Render X shape (diagonal cross)
- * NEW in Story 2.5
- */
-function renderX(ctx, centerX, centerY, size) {
-  const halfSize = size / 2;
-
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-
-  // Diagonal line from top-left to bottom-right
-  ctx.moveTo(centerX - halfSize, centerY - halfSize);
-  ctx.lineTo(centerX + halfSize, centerY + halfSize);
-
-  // Diagonal line from top-right to bottom-left
-  ctx.moveTo(centerX + halfSize, centerY - halfSize);
-  ctx.lineTo(centerX - halfSize, centerY + halfSize);
-
-  ctx.stroke();
-}
+// Story 5-3: Custom shape functions removed - all food now renders as squares for improved visibility
