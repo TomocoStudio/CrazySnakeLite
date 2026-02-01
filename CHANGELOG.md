@@ -8,6 +8,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Bug Fixes - 2026-02-01
+
+#### Fixed
+
+**Score Calculation (Commit c595673):**
+- Score now correctly counts foods eaten instead of total snake length
+- **Issue:** Score was displaying snake segment count (starting at 5, jumping to 6 after first food)
+- **Fix:** Changed calculation to `segments.length - STARTING_LENGTH`
+- **Result:** Score starts at 0 and increments by 1 for each food eaten
+- **File:** `js/game.js:78`
+- **Impact:** Aligns score behavior with expected game mechanics
+
 ### Visual Polish Updates - 2026-02-01
 
 #### Changed

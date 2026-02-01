@@ -341,3 +341,13 @@ Files created:
   - **HTML:** Changed initial score display to hidden with generic placeholder
   - **CSS:** Added .hidden class for score-display element
 
+- 2026-02-01: Post-release bug fix (Requirements change - Commit c595673)
+  - **BREAKING CHANGE:** Score calculation changed from snake length to foods eaten
+  - **Issue:** Original AC specified score = snake length, but this caused confusion (starting at 5, incrementing to 6)
+  - **Fix:** Score now counts foods eaten: `score = segments.length - STARTING_LENGTH`
+  - **Result:** Score starts at 0 and increments by 1 for each food consumed
+  - **File:** `js/game.js:78`
+  - **AC Deviation:** This change deviates from original acceptance criteria but improves game clarity
+  - **Impact:** More intuitive scoring system aligned with classic Snake game mechanics
+  - **Note:** Original AC and tests assumed score = snake length; new behavior is score = foods eaten
+

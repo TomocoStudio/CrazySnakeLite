@@ -10,13 +10,13 @@ export function runScoreTests() {
   let passed = 0;
   let failed = 0;
 
-  // Test 1: Initial score equals starting snake length
+  // Test 1: Initial score starts at 0 (foods eaten = 0)
   try {
     const gameState = createInitialState();
-    const expectedScore = CONFIG.STARTING_LENGTH;
+    const expectedScore = 0;
 
     if (gameState.score === expectedScore) {
-      console.log('✅ Test 1 PASSED: Initial score equals starting snake length (5)');
+      console.log('✅ Test 1 PASSED: Initial score starts at 0 (no foods eaten yet)');
       passed++;
     } else {
       console.error(`❌ Test 1 FAILED: Expected score ${expectedScore}, got ${gameState.score}`);
@@ -27,18 +27,18 @@ export function runScoreTests() {
     failed++;
   }
 
-  // Test 2: Score equals snake length after growth
+  // Test 2: Score equals 1 after eating first food
   try {
     const gameState = createInitialState();
 
-    // Grow snake once
+    // Grow snake once (simulate eating one food)
     growSnake(gameState);
-    gameState.score = gameState.snake.segments.length;
+    gameState.score = gameState.snake.segments.length - CONFIG.STARTING_LENGTH;
 
-    const expectedScore = CONFIG.STARTING_LENGTH + 1;
+    const expectedScore = 1;
 
-    if (gameState.score === expectedScore && gameState.score === gameState.snake.segments.length) {
-      console.log('✅ Test 2 PASSED: Score equals snake length after 1 growth (6)');
+    if (gameState.score === expectedScore) {
+      console.log('✅ Test 2 PASSED: Score equals 1 after eating first food');
       passed++;
     } else {
       console.error(`❌ Test 2 FAILED: Expected score ${expectedScore}, got ${gameState.score}`);
@@ -56,13 +56,13 @@ export function runScoreTests() {
     // Simulate eating 3 foods
     for (let i = 0; i < 3; i++) {
       growSnake(gameState);
-      gameState.score = gameState.snake.segments.length;
+      gameState.score = gameState.snake.segments.length - CONFIG.STARTING_LENGTH;
     }
 
-    const expectedScore = CONFIG.STARTING_LENGTH + 3;
+    const expectedScore = 3;
 
-    if (gameState.score === expectedScore && gameState.score === gameState.snake.segments.length) {
-      console.log('✅ Test 3 PASSED: Score increments correctly after eating 3 foods (8)');
+    if (gameState.score === expectedScore) {
+      console.log('✅ Test 3 PASSED: Score increments correctly after eating 3 foods (score = 3)');
       passed++;
     } else {
       console.error(`❌ Test 3 FAILED: Expected score ${expectedScore}, got ${gameState.score}`);
@@ -73,7 +73,7 @@ export function runScoreTests() {
     failed++;
   }
 
-  // Test 4: Score always equals snake length (invariant check)
+  // Test 4: Score always equals foods eaten (invariant check)
   try {
     const gameState = createInitialState();
     let invariantHeld = true;
@@ -81,19 +81,20 @@ export function runScoreTests() {
     // Test invariant through 10 growth cycles
     for (let i = 0; i < 10; i++) {
       growSnake(gameState);
-      gameState.score = gameState.snake.segments.length;
+      gameState.score = gameState.snake.segments.length - CONFIG.STARTING_LENGTH;
 
-      if (gameState.score !== gameState.snake.segments.length) {
+      const expectedFoodsEaten = i + 1;
+      if (gameState.score !== expectedFoodsEaten) {
         invariantHeld = false;
         break;
       }
     }
 
-    if (invariantHeld && gameState.score === 15) {
-      console.log('✅ Test 4 PASSED: Score invariant holds (score = snake length) through 10 growths');
+    if (invariantHeld && gameState.score === 10) {
+      console.log('✅ Test 4 PASSED: Score invariant holds (score = foods eaten) through 10 growths');
       passed++;
     } else {
-      console.error(`❌ Test 4 FAILED: Score invariant violated. Final score: ${gameState.score}, snake length: ${gameState.snake.segments.length}`);
+      console.error(`❌ Test 4 FAILED: Score invariant violated. Final score: ${gameState.score}, expected: 10`);
       failed++;
     }
   } catch (error) {
@@ -121,11 +122,11 @@ export function runScoreTests() {
   try {
     const scoreDisplay = document.getElementById('score-display');
 
-    if (scoreDisplay && scoreDisplay.textContent === 'Score: 5') {
-      console.log('✅ Test 6 PASSED: Score display shows correct initial value "Score: 5"');
+    if (scoreDisplay && scoreDisplay.textContent === 'Score: 0') {
+      console.log('✅ Test 6 PASSED: Score display shows correct initial value "Score: 0"');
       passed++;
     } else {
-      console.error(`❌ Test 6 FAILED: Expected "Score: 5", got "${scoreDisplay ? scoreDisplay.textContent : 'element not found'}"`);
+      console.error(`❌ Test 6 FAILED: Expected "Score: 0", got "${scoreDisplay ? scoreDisplay.textContent : 'element not found'}"`);
       failed++;
     }
   } catch (error) {

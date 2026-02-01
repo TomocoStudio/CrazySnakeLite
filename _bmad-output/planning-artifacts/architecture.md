@@ -26,7 +26,7 @@ _This document builds collaboratively through step-by-step discovery. Sections a
 - Food System (FR10-FR24): 6 food types, probability spawning, effect duration rules
 - Phone Call Mechanic (FR25-FR34): Overlay UI, game continues underneath, dismissal controls
 - Session Flow (FR35-FR40): Start, death, restart cycle
-- Scoring System (FR41-FR45): Score = snake length, visual counter
+- Scoring System (FR41-FR45): Score = foods eaten (changed from snake length post-release), visual counter
 - User Interface (FR46-FR72): Retro aesthetic, snake-as-status-display, menu screens
 - Input Controls (FR73-FR80): Multi-keyboard layout support + mobile touch
 - Sound Design (FR81-FR89): State-based movement sounds, game over melody
