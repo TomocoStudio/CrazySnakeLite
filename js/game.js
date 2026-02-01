@@ -74,8 +74,8 @@ function update(gameState) {
 
     // Always grow snake
     growSnake(gameState);
-    // Update score with validation (ensure it's a valid positive integer)
-    gameState.score = Math.max(0, gameState.snake.segments.length || 0);
+    // Update score: number of foods eaten (segments - starting length)
+    gameState.score = Math.max(0, (gameState.snake.segments.length - CONFIG.STARTING_LENGTH) || 0);
 
     // Handle effects based on food type
     if (foodType === 'growing') {
