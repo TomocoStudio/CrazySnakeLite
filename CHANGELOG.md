@@ -8,6 +8,65 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Audio Enhancement Release - 2026-02-01
+
+#### Added - Menu Background Music (Commit affcce3)
+
+**Feature: Looping Menu Music**
+- Menu screen now plays `StartSequence-V3.mp3` in continuous loop mode
+- Music automatically starts on first user interaction (browser autoplay requirement)
+- Seamless playback control tied to game phase transitions
+
+**Implementation Details:**
+- **New Functions:**
+  - `playMenuMusic()` - Initiates looping background music using Web Audio API
+  - `stopMenuMusic()` - Stops music when leaving menu screen
+  - `isAudioReady()` - Helper to check audio initialization state
+- **Audio Loading:** Menu music loads in parallel with other sounds during initialization
+- **State Management:** Music starts/stops automatically based on game phase
+  - **Starts:** Menu phase entered (initial load, pause, game over return)
+  - **Stops:** Playing phase or Game Over phase entered
+- **Browser Compatibility:** Requires user interaction (click/keypress) due to autoplay policies
+- **Files Modified:** `js/audio.js` (144 lines), `js/main.js` (22 lines)
+
+**User Experience:**
+- Creates immersive menu atmosphere
+- Reinforces retro 8-bit aesthetic
+- Smooth transitions between menu and gameplay
+
+#### Changed - Sound Files Upgraded to V3 (Commit ec9b924)
+
+**Feature: All Game Sounds Upgraded to V3 Versions**
+- All 14 movement sounds upgraded from base versions to V3 variants
+- Death sound upgraded: `snake-die.mp3` → `SnakeDie01-V3.mp3`
+- Menu music added: `StartSequence-V3.mp3`
+
+**V3 Sound Files (16 total):**
+
+Movement Sounds (14 files):
+- `move-default-1-V3.mp3`, `move-default-2-V3.mp3`
+- `move-growing-1-V3.mp3`, `move-growing-2-V3.mp3`
+- `move-invincibility-1-V3.mp3`, `move-invincibility-2-V3.mp3`
+- `move-wallphase-1-V3.mp3`, `move-wallphase-2-V3.mp3`
+- `move-speedboost-1-V3.mp3`, `move-speedboost-2-V3.mp3`
+- `move-speeddecrease-1-V3.mp3`, `move-speeddecrease-2-V3.mp3`
+- `move-reverse-1-V3.mp3`, `move-reverse-2-V3.mp3`
+
+Additional Sounds (2 files):
+- `SnakeDie01-V3.mp3` (death sound)
+- `StartSequence-V3.mp3` (menu music)
+
+**Implementation Changes:**
+- Audio loading updated to use `-V3` suffix in filenames
+- All sounds now load in parallel for optimal performance
+- Improved audio quality across all game states
+- **Files Modified:** `js/audio.js` (7 lines)
+
+**Technical Notes:**
+- V3 sounds maintain consistent bitrate and quality
+- All sounds remain compatible with Web Audio API
+- No changes to playback logic - only file references updated
+
 ### Bug Fixes - 2026-02-01
 
 #### Fixed

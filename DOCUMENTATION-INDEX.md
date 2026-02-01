@@ -1,6 +1,6 @@
 # Documentation Index
 
-Quick reference to all project documentation, updated 2026-01-29 after Epic 4 code review.
+Quick reference to all project documentation, updated 2026-02-01 with V3 audio upgrade and menu music.
 
 ---
 
@@ -8,12 +8,13 @@ Quick reference to all project documentation, updated 2026-01-29 after Epic 4 co
 
 ### README.md
 **Purpose:** Project overview, getting started guide, features
-**Updated:** ✅ 2026-01-29
+**Updated:** ✅ 2026-02-01
 **Highlights:**
 - Epic 4 features added (score, menu, sounds, pause)
 - Complete controls reference (gameplay + menu navigation)
-- Audio system details
+- Audio system details (V3 upgrade, menu music loop)
 - Food types with sound descriptions
+- 16 total sound files (all V3 quality)
 
 [→ Read README.md](./README.md)
 
@@ -21,13 +22,19 @@ Quick reference to all project documentation, updated 2026-01-29 after Epic 4 co
 
 ### CHANGELOG.md
 **Purpose:** Version history, all changes documented
-**Created:** ✅ 2026-01-29
+**Updated:** ✅ 2026-02-01
 **Coverage:**
+- **Latest:** V3 sound upgrade + menu background music (2026-02-01)
 - Epic 4 code review fixes (stories 4-1 through 4-5)
 - Story-by-story breakdown
 - Configuration changes
 - Test coverage growth
 - Known issues and manual actions
+
+**Recent Additions:**
+- 16 V3 sound files (all movement, death, menu music)
+- Looping menu background music system
+- Browser autoplay compliance
 
 [→ Read CHANGELOG.md](./CHANGELOG.md)
 
@@ -206,7 +213,10 @@ CrazySnakeLite/
 │   ├── snake.js, food.js, collision.js
 │   ├── effects.js, phone.js, input.js
 │   ├── render.js, audio.js, storage.js
-├── assets/sounds/ (14 MP3 files)
+├── assets/sounds/ (16 V3 MP3 files)
+│   ├── 14 movement sounds (7 states × 2 alternating)
+│   ├── 1 death sound
+│   └── 1 menu music loop
 ├── test/ (5 test suites)
 ├── _bmad-output/ (planning artifacts, stories)
 └── Documentation (this index)
@@ -251,5 +261,5 @@ CrazySnakeLite/
 
 ---
 
-**Documentation Last Updated:** 2026-01-29
-**Project Status:** Epic 4 MVP Complete, Production Ready 🚀
+**Documentation Last Updated:** 2026-02-01
+**Project Status:** Epic 4 MVP Complete + V3 Audio Enhanced, Production Ready 🚀

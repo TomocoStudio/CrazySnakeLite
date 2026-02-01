@@ -9,7 +9,9 @@ A chaotic twist on the classic Nokia Snake game. Features 6 food types with spec
 - **Phone Call Interruptions** that blur the game and test your focus
 - **Score System** with persistent high score tracking
 - **Main Menu & Game Over Screens** with keyboard and mouse navigation
+- **Looping Menu Music** - Immersive 8-bit background soundtrack
 - **State-Based Movement Sounds** - 14 alternating 8-bit sounds (2 per state)
+- **V3 Audio Quality** - All sounds upgraded to improved quality versions
 - **Full Keyboard Support** - Enter, Esc, Arrow keys for complete navigation
 - **Pause & Resume** - Press Esc during gameplay to pause
 - **Retro 8-bit Pixel Art Aesthetic** throughout
@@ -92,10 +94,15 @@ Each food type has unique visual effects, snake colors, and alternating movement
 ## Audio System
 
 - **Web Audio API** for zero-latency, synchronized sound playback
-- **14 Movement Sounds** - 7 states × 2 alternating sounds each
-- **Alternation Pattern** - Sounds alternate (1→2→1→2) for dynamic variation
+- **Menu Background Music** - Looping 8-bit soundtrack on menu screen (V3)
+- **16 Total Sound Files** - All upgraded to V3 versions for improved quality
+  - 14 Movement Sounds (7 states × 2 alternating sounds)
+  - 1 Death Sound
+  - 1 Menu Music Loop
+- **Alternation Pattern** - Movement sounds alternate (1→2→1→2) for dynamic variation
 - **State Change Reset** - New state always starts with Sound 1
 - **60 FPS Performance** - Decoupled audio playback maintains smooth gameplay
+- **Browser Autoplay Compliance** - Audio initializes on first user interaction (click/keypress)
 
 ## License
 
