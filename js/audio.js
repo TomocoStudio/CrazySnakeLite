@@ -18,8 +18,8 @@ let lastPlayTime = 0;  // For rate limiting
 
 /**
  * Initialize audio system using Web Audio API
- * Fetches and pre-decodes all 14 MP3 files into AudioBuffers
- * Story 4.5 + Code Review Fixes
+ * Fetches and pre-decodes all 14 MP3 files (V3 versions) into AudioBuffers
+ * Story 4.5 + Code Review Fixes + V3 Sound Upgrade
  */
 export async function initAudio() {
   if (audioInitialized) return;
@@ -46,8 +46,8 @@ export async function initAudio() {
     states.forEach(state => {
       for (const num of [1, 2]) {
         const key = `${state}-${num}`;
-        // Fix #2: Use CONFIG.SOUNDS_PATH
-        const url = `${CONFIG.SOUNDS_PATH}move-${state}-${num}.mp3`;
+        // All sounds now use V3 versions
+        const url = `${CONFIG.SOUNDS_PATH}move-${state}-${num}-V3.mp3`;
 
         const promise = fetch(url)
           .then(response => response.arrayBuffer())
@@ -67,15 +67,15 @@ export async function initAudio() {
 
     await Promise.all(loadPromises);
 
-    // Load death sound
+    // Load death sound (V3)
     try {
-      const deathUrl = `${CONFIG.SOUNDS_PATH}snake-die.mp3`;
+      const deathUrl = `${CONFIG.SOUNDS_PATH}SnakeDie01-V3.mp3`;
       const response = await fetch(deathUrl);
       const arrayBuffer = await response.arrayBuffer();
       const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
       audioBuffers['death'] = audioBuffer;
       deathSoundLoaded = true;
-      console.log('[Audio] Death sound loaded');
+      console.log('[Audio] Death sound V3 loaded');
     } catch (err) {
       console.warn('[Audio] Failed to load death sound:', err.message);
     }
