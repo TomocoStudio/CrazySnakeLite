@@ -7,7 +7,7 @@ import { spawnFood } from './food.js';
 import { applyEffect, clearEffect, EFFECT_TYPES } from './effects.js';
 import { scheduleNextCall, initPhoneSystem } from './phone.js';
 import { saveHighScore } from './storage.js';
-import { initAudio, resumeAudio, closeAudio } from './audio.js';
+import { initAudio, resumeAudio, closeAudio, playMenuMusic, stopMenuMusic, isAudioReady } from './audio.js';
 
 // Initialize canvas and context
 const canvas = document.getElementById('game-canvas');
@@ -97,14 +97,32 @@ initPhoneSystem(gameState, () => performance.now());
 
 // Initialize audio on first user interaction (Story 4.5)
 // Web Audio API: AudioContext created in user gesture context avoids autoplay block
-document.addEventListener('click', () => {
-  initAudio();
-  resumeAudio();
+document.addEventListener('click', async () => {
+  console.log('[Main] Click detected - initializing audio');
+  await initAudio();
+  await resumeAudio();
+  console.log('[Main] Audio initialized, phase:', gameState.phase);
+  // Start menu music if on menu screen
+  if (gameState.phase === 'menu') {
+    console.log('[Main] Starting menu music');
+    playMenuMusic();
+  } else {
+    console.log('[Main] Not on menu, skipping menu music');
+  }
 }, { once: true });
 
-document.addEventListener('keydown', () => {
-  initAudio();
-  resumeAudio();
+document.addEventListener('keydown', async () => {
+  console.log('[Main] Keydown detected - initializing audio');
+  await initAudio();
+  await resumeAudio();
+  console.log('[Main] Audio initialized, phase:', gameState.phase);
+  // Start menu music if on menu screen
+  if (gameState.phase === 'menu') {
+    console.log('[Main] Starting menu music');
+    playMenuMusic();
+  } else {
+    console.log('[Main] Not on menu, skipping menu music');
+  }
 }, { once: true });
 
 // Cleanup audio resources on page unload (Story 4.5 review fix)
@@ -171,12 +189,17 @@ function handleUIUpdate(state) {
       gameoverScreen.classList.add('hidden');
       scoreDisplay.classList.add('hidden');  // Fix: Hide score on menu
       updateHighScoreDisplay(state.highScore);
+      // Only play menu music if audio is initialized (after user interaction)
+      if (isAudioReady()) {
+        playMenuMusic();  // Start menu music loop
+      }
     }
   } else if (state.phase === 'playing') {
     if (phaseChanged) {
       menuScreen.classList.add('hidden');
       gameoverScreen.classList.add('hidden');
       scoreDisplay.classList.remove('hidden');  // Fix: Show score during gameplay
+      stopMenuMusic();  // Stop menu music when game starts
     }
     // Fix: Only update score when it changes (not every frame)
     if (scoreChanged) {
@@ -189,6 +212,7 @@ function handleUIUpdate(state) {
       menuScreen.classList.add('hidden');
       gameoverScreen.classList.remove('hidden');
       scoreDisplay.classList.add('hidden');  // Fix: Hide score on game over
+      stopMenuMusic();  // Stop menu music on game over
       // Story 4.2/4.3: Save high score if new record and show indicator
       console.log('[Game] Game Over - Score:', state.score, 'High Score:', state.highScore);
       // Validate scores are valid numbers before comparison
@@ -314,7 +338,19 @@ window.testReverseControls = () => {
   console.log('Eat it to invert your controls!');
 };
 
+// Debug helper for menu music
+window.testMenuMusic = async () => {
+  console.log('[Debug] Testing menu music...');
+  console.log('[Debug] Current phase:', gameState.phase);
+  await initAudio();
+  await resumeAudio();
+  playMenuMusic();
+};
+
 console.log('🎮 === CrazySnakeLite - Epic 3 Complete! ===');
+console.log('');
+console.log('Audio helpers:');
+console.log('  window.testMenuMusic() - Test menu music playback');
 console.log('');
 console.log('Test helpers available:');
 console.log('  window.testInvincibility() - Yellow star ⭐');

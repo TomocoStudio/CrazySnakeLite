@@ -10,6 +10,8 @@ let audioInitialized = false;
 let loadedSoundCount = 0;  // Track successful loads
 let failedSounds = [];  // Track failed sound loads
 let deathSoundLoaded = false;  // Track death sound separately
+let menuMusicLoaded = false;  // Track menu music load
+let menuMusicSource = null;  // Track current menu music source for stopping
 
 // Track alternation state
 let currentAlternator = 0;  // 0 or 1 (plays sound 1 or 2)
@@ -65,20 +67,35 @@ export async function initAudio() {
       }
     });
 
-    await Promise.all(loadPromises);
-
     // Load death sound (V3)
-    try {
-      const deathUrl = `${CONFIG.SOUNDS_PATH}SnakeDie01-V3.mp3`;
-      const response = await fetch(deathUrl);
-      const arrayBuffer = await response.arrayBuffer();
-      const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-      audioBuffers['death'] = audioBuffer;
-      deathSoundLoaded = true;
-      console.log('[Audio] Death sound V3 loaded');
-    } catch (err) {
-      console.warn('[Audio] Failed to load death sound:', err.message);
-    }
+    const deathPromise = fetch(`${CONFIG.SOUNDS_PATH}SnakeDie01-V3.mp3`)
+      .then(response => response.arrayBuffer())
+      .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+      .then(audioBuffer => {
+        audioBuffers['death'] = audioBuffer;
+        deathSoundLoaded = true;
+        console.log('[Audio] Death sound V3 loaded');
+      })
+      .catch(err => {
+        console.warn('[Audio] Failed to load death sound:', err.message);
+      });
+
+    // Load menu music (V3)
+    const menuMusicPromise = fetch(`${CONFIG.SOUNDS_PATH}StartSequence-V3.mp3`)
+      .then(response => response.arrayBuffer())
+      .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+      .then(audioBuffer => {
+        audioBuffers['menuMusic'] = audioBuffer;
+        menuMusicLoaded = true;
+        console.log('[Audio] Menu music V3 loaded');
+      })
+      .catch(err => {
+        console.warn('[Audio] Failed to load menu music:', err.message);
+      });
+
+    // Wait for all sounds including death and menu music
+    loadPromises.push(deathPromise, menuMusicPromise);
+    await Promise.all(loadPromises);
 
     audioInitialized = true;
 
@@ -98,9 +115,10 @@ export async function initAudio() {
  * Resume AudioContext if suspended (browser autoplay policy)
  * Should be called on user interaction
  */
-export function resumeAudio() {
+export async function resumeAudio() {
   if (audioContext && audioContext.state === 'suspended') {
-    audioContext.resume();
+    await audioContext.resume();
+    console.log('[Audio] AudioContext resumed');
   }
 }
 
@@ -223,6 +241,7 @@ export function resetAudio() {
  * Fix #4: Prevents memory leaks on page unload
  */
 export function closeAudio() {
+  stopMenuMusic();  // Stop menu music if playing
   if (audioContext && audioContext.state !== 'closed') {
     audioContext.close();
     console.log('[Audio] AudioContext closed');
@@ -245,6 +264,14 @@ export function getAudioStatus() {
     failedSounds: [...failedSounds],
     contextState: audioContext ? audioContext.state : 'not created'
   };
+}
+
+/**
+ * Check if audio is ready to play
+ * @returns {boolean}
+ */
+export function isAudioReady() {
+  return audioInitialized && audioContext && audioContext.state !== 'suspended';
 }
 
 /**
@@ -281,5 +308,64 @@ export function playDeathSound() {
     }
   } catch (error) {
     console.warn('[Audio] Death sound playback error:', error.message);
+  }
+}
+
+/**
+ * Play menu music in loop mode
+ * Plays when menu screen is displayed
+ */
+export function playMenuMusic() {
+  console.log('[Audio] playMenuMusic called');
+  console.log('[Audio] audioInitialized:', audioInitialized);
+  console.log('[Audio] audioContext:', audioContext);
+  console.log('[Audio] audioContext.state:', audioContext?.state);
+  console.log('[Audio] menuMusicLoaded:', menuMusicLoaded);
+
+  if (!audioInitialized || !audioContext || audioContext.state === 'suspended') {
+    console.warn('[Audio] Cannot play menu music - audio not ready');
+    return;
+  }
+  if (!menuMusicLoaded) {
+    console.warn('[Audio] Menu music not loaded');
+    return;
+  }
+
+  // Stop existing music if already playing
+  stopMenuMusic();
+
+  try {
+    const buffer = audioBuffers['menuMusic'];
+    console.log('[Audio] Menu music buffer:', buffer);
+    if (buffer) {
+      menuMusicSource = audioContext.createBufferSource();
+      menuMusicSource.buffer = buffer;
+      menuMusicSource.loop = true;  // Enable looping
+      menuMusicSource.connect(masterGainNode);
+      menuMusicSource.start(0);
+      console.log('[Audio] Menu music started (looping)');
+    } else {
+      console.warn('[Audio] Menu music buffer is null');
+    }
+  } catch (error) {
+    console.error('[Audio] Menu music playback error:', error);
+  }
+}
+
+/**
+ * Stop menu music
+ * Called when leaving menu screen
+ */
+export function stopMenuMusic() {
+  if (menuMusicSource) {
+    try {
+      menuMusicSource.stop();
+      menuMusicSource.disconnect();
+      menuMusicSource = null;
+      console.log('[Audio] Menu music stopped');
+    } catch (error) {
+      // Ignore errors if already stopped
+      menuMusicSource = null;
+    }
   }
 }
