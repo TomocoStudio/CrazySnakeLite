@@ -6,6 +6,38 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [Unreleased]
+
+### Visual Polish Updates - 2026-02-01
+
+#### Changed
+
+**Background:**
+- Body background replaced with tilable texture pattern
+- Asset: `Background08_256x256.png` (seamless repeat)
+- Removed: solid color `#1a1a2e`
+- CSS: `background-image: url('../assets/Background08_256x256.png')` with `background-repeat: repeat`
+
+**Game Canvas Border:**
+- Box-shadow color: `#9D4EDD` (purple) → `#1A1A2E` (dark blue)
+- Box-shadow width: `4px` → `8px`
+- Main border unchanged: `8px solid #800080`
+- File: `css/style.css:42`
+
+**Score Display:**
+- Border styling now matches game canvas for visual consistency
+- Border: `4px solid #9D4EDD` → `8px solid #800080`
+- Added box-shadow: `0 0 0 8px #1A1A2E` (matching canvas)
+- Position: `top: -55px` → `top: -61px` (moved up 6px for better alignment)
+- File: `css/style.css:46-57`
+
+**Rationale:**
+- Tilable background adds visual texture while maintaining readability
+- Dark blue outer border creates stronger contrast against textured background
+- Unified border styling between canvas and score display improves visual cohesion
+
+---
+
 ## [1.0.0] - 2026-01-29
 
 ### Epic 4: Audio & Complete Experience - Code Review Fixes
