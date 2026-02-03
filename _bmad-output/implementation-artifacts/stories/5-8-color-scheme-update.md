@@ -124,6 +124,6 @@ Update color scheme across game elements with new vibrant palette from user feed
 
 ## Related Documents
 
-- **Epic:** `_bmad-output/implementation-artifacts/epics/epic-visual-audio-polish-v2.md`
+- **Epic:** `_bmad-output/implementation-artifacts/epics/5-visual-audio-polish.md`
 - **Previous Story:** `story-7-tech-pun-caller-names.md`
 - **User Feedback:** `/UserFeedback.md` (marked as TBD)

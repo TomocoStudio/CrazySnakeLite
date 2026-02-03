@@ -87,6 +87,6 @@ Unify all food shapes to simple squares while preserving color-coding for differ
 
 ## Related Documents
 
-- **Epic:** `_bmad-output/implementation-artifacts/epics/epic-visual-audio-polish-v2.md`
+- **Epic:** `_bmad-output/implementation-artifacts/epics/5-visual-audio-polish.md`
 - **Previous Story:** `story-2-score-display-redesign.md`
 - **Next Story:** `story-4-snake-head-enhancement.md`

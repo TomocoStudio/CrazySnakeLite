@@ -127,6 +127,6 @@ This establishes the foundational visual language for the entire game.
 
 ## Related Documents
 
-- **Epic:** `_bmad-output/implementation-artifacts/epics/epic-visual-audio-polish-v2.md`
+- **Epic:** `_bmad-output/implementation-artifacts/epics/5-visual-audio-polish.md`
 - **User Feedback:** `/UserFeedback.md`
 - **Next Story:** `story-2-score-display-redesign.md`

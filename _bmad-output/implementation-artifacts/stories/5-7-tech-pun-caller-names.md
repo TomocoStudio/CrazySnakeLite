@@ -98,6 +98,6 @@ Replace current phone caller names with 21 tech pun names from user feedback.
 
 ## Related Documents
 
-- **Epic:** `_bmad-output/implementation-artifacts/epics/epic-visual-audio-polish-v2.md`
+- **Epic:** `_bmad-output/implementation-artifacts/epics/5-visual-audio-polish.md`
 - **Previous Story:** `story-6-branding-update.md`
 - **Next Story:** `story-8-color-scheme-update.md`

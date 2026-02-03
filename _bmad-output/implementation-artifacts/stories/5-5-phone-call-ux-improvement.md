@@ -76,6 +76,6 @@ Add instruction text to phone call overlay: "Press space bar or click on End"
 
 ## Related Documents
 
-- **Epic:** `_bmad-output/implementation-artifacts/epics/epic-visual-audio-polish-v2.md`
+- **Epic:** `_bmad-output/implementation-artifacts/epics/5-visual-audio-polish.md`
 - **Previous Story:** `story-4-snake-head-enhancement.md`
 - **Next Story:** `story-6-branding-update.md`

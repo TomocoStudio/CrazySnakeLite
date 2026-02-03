@@ -83,6 +83,6 @@ Enhance snake head visibility by:
 
 ## Related Documents
 
-- **Epic:** `_bmad-output/implementation-artifacts/epics/epic-visual-audio-polish-v2.md`
+- **Epic:** `_bmad-output/implementation-artifacts/epics/5-visual-audio-polish.md`
 - **Previous Story:** `story-3-food-shape-unification.md`
 - **Next Story:** `story-5-phone-call-ux-improvement.md`
