@@ -53,7 +53,7 @@ body {
   font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 20px;
   font-weight: bold;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(0, 0, 0, 0.8);
   padding: 8px 16px;
   border: 8px solid rgb(157, 178, 221);  /* Match menu frame color */
   box-shadow: 0 0 0 8px #1A1A2E;
@@ -68,7 +68,7 @@ body {
 }
 
 #current-score {
-  color: #000000;
+  color: #FFFFFF;
   text-align: left;
 }
 
@@ -275,6 +275,23 @@ body {
   box-shadow: 0 0 0 8px #1A1A2E;  /* Double-border pattern */
 }
 
+.phone-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 0 20px 0;
+  animation: phone-ring 0.8s ease-in-out infinite;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+@keyframes phone-ring {
+  0%, 100% { transform: rotate(0deg); }
+  10%, 30% { transform: rotate(-15deg); }
+  20%, 40% { transform: rotate(15deg); }
+  50% { transform: rotate(0deg); }
+}
+
 .call-status {
   font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 14px;
@@ -373,6 +390,12 @@ body {
   .phone-screen {
     min-width: 240px;
     padding: 30px 20px;
+  }
+
+  .phone-icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 15px;
   }
 
   .caller-name {
