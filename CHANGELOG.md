@@ -8,6 +8,53 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Visual Polish Updates - 2026-02-03
+
+#### Added - Phone Call Visual Enhancement (Commit 01456ad)
+
+**Feature: Custom Animated Phone Icon**
+- Phone call overlay now displays custom pixelated phone icon with ringing animation
+- Icon positioned prominently above "Incoming call..." text
+- Animated shake/wobble effect (±15° rotation) draws immediate attention
+- Maintains retro aesthetic with `image-rendering: pixelated`
+
+**Implementation Details:**
+- **New Asset:** `assets/PhoneIcone01_256px.png` - Custom phone icon with transparency
+- **Animation:** `@keyframes phone-ring` - 0.8s looping ringing effect
+- **Responsive:** 80px (desktop) / 64px (mobile)
+- **Files Modified:** `index.html`, `css/style.css`
+
+**User Experience:**
+- Significantly improved visual emphasis for phone call interruptions
+- Icon creates instant recognition and urgency
+- Complements existing instruction text for clear UX
+
+#### Changed - Score Display Background (Commit 01456ad)
+
+**Feature: Black Semi-Transparent Score Box**
+- Score display background changed from white to black
+- Transparency level: 0.8 opacity for optimal visibility
+- Current score text updated to white (#FFFFFF) for readability
+- Top score remains light purple-blue for visual hierarchy
+
+**Rationale:**
+- Better contrast against gameplay
+- Maintains retro aesthetic
+- Ensures score visibility without obscuring game
+
+**Files Modified:** `css/style.css`
+
+#### Changed - Menu High Score Text Sizing (Commit faf53cc)
+
+**Feature: Unified Text Sizing**
+- High score label and value now both 24px (previously 18px/24px)
+- Improved visual balance and consistency
+- Better readability on menu screen
+
+**Files Modified:** `css/style.css`
+
+---
+
 ### Audio Enhancement Release - 2026-02-01
 
 #### Added - Menu Background Music (Commit affcce3)

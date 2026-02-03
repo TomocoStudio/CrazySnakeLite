@@ -77,6 +77,18 @@ development_status:
   4-6-game-over-melody: backlog  # Post-MVP enhancement (not required for MVP launch)
   epic-4-retrospective: done
 
+  # Epic 5: Visual & Audio Polish v2.0
+  epic-5: done  # Post-launch polish based on user feedback
+  5-1-visual-identity-overhaul: done
+  5-2-score-display-redesign: done  # Enhanced 2026-02-03 with background styling
+  5-3-food-shape-unification: done
+  5-4-snake-head-enhancement: done
+  5-5-phone-call-ux-improvement: done  # Enhanced with custom animated icon
+  5-6-branding-update: done
+  5-7-tech-pun-caller-names: done
+  5-8-color-scheme-update: done
+  epic-5-retrospective: optional
+
   # Epic 6: User Feedback Collection System
   epic-6: in-progress
   6-1-feedback-modal-ui-component: review

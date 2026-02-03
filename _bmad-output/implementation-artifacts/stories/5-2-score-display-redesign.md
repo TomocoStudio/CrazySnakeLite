@@ -1,10 +1,11 @@
 # Story 2: Score Display Redesign
 
 **Epic:** Visual & Audio Polish v2.0
-**Status:** Pending
+**Status:** ✅ COMPLETE (with additional enhancements)
 **Priority:** High
 **Complexity:** Low
 **Created:** 2026-01-31
+**Completed:** 2026-01-31 (Initial) / 2026-02-03 (Enhancements)
 
 ---
 
@@ -80,6 +81,35 @@ Redesign score display to show dual scores:
 - [ ] Tested across devices
 - [ ] User validates the design
 - [ ] Ready to ship
+
+---
+
+## Additional Enhancements (2026-02-03)
+
+### Background Styling Update
+**User Request:** "Change the background color for the score box to black with transparency"
+
+**Implemented:**
+- Changed score display background from white `rgba(255, 255, 255, 0.9)` to black `rgba(0, 0, 0, 0.8)`
+- Adjusted transparency level to 0.8 for optimal visibility
+- Updated current score text color from black to white (#FFFFFF) for readability
+- Kept top score color as light purple-blue rgb(157, 178, 221) for visual hierarchy
+
+**Rationale:** Black semi-transparent background provides better contrast against gameplay while maintaining retro aesthetic and ensuring score visibility.
+
+**Files Modified:** `css/style.css`
+**Commit:** 01456ad
+
+### Menu High Score Text Sizing
+**User Request:** "Control the text size for the top score in the menu screen"
+
+**Implemented:**
+- Unified high score display text sizing to 24px (was 18px for label, 24px for value)
+- Both "Top Score:" label and score number now consistent at 24px
+- Improves visual balance and readability
+
+**Files Modified:** `css/style.css`
+**Commit:** faf53cc
 
 ---
 
