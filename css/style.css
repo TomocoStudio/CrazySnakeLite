@@ -41,12 +41,13 @@ body {
   background-color: #E8E8E8;
   border: 8px solid #800080;  /* Story 5-8: Matches wall phase food for UX association */
   box-shadow: 0 0 0 8px #1A1A2E;  /* 4px light purple outer border */
+  border-radius: 10px;  /* Subtle rounded corners */
 }
 
 /* Score Display - Story 5-2: Dual Score Layout */
 #score-display {
   position: absolute;
-  top: -61px;
+  top: -62px;
   left: 50%;
   transform: translateX(-50%);
   font-family: 'Jersey20', 'Courier New', monospace;
@@ -61,7 +62,8 @@ body {
   pointer-events: none;
   display: flex;
   gap: 40px;
-  min-width: 400px;
+  width: 416px;  /* Match canvas total width (400px + 16px borders) */
+  box-sizing: border-box;
   justify-content: space-between;
 }
 
