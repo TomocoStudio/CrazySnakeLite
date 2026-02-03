@@ -8,6 +8,40 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Bug Fixes - 2026-02-03
+
+#### Fixed - Audio System Not Resuming After Feedback Submission (Commit 20aec1a)
+
+**Issue:** Audio stopped working after submitting feedback from any screen
+- mailto: link triggered beforeunload event which closed AudioContext
+- Closed AudioContext prevented all sounds (menu music, move sounds, death sound)
+- Affected both menu screen and game over screen feedback submissions
+
+**Root Cause:**
+- Feedback submission opens mailto: link via `window.location.href`
+- Browser treats this as navigation and fires beforeunload event
+- Existing beforeunload handler called `closeAudio()` which closed AudioContext
+- Once closed, AudioContext cannot resume without full reinitialization
+
+**Solution Implemented:**
+- Audio system now reinitializes after thank you screen closes (all phases)
+- Improved AudioContext state detection in `initAudio()` to handle closed contexts
+- Added audio resume on "Back to Game" button click for browser autoplay compliance
+- Menu music only restarts when returning to menu phase specifically
+
+**Implementation Details:**
+- **js/audio.js:** Enhanced `initAudio()` to detect closed contexts and reinitialize
+- **js/feedback.js:** Added audio reinitialization logic in `closeThankYouScreen()`
+- **js/main.js:** Resume audio on button click to satisfy browser autoplay policies
+- **Files Modified:** 3 files, 42 insertions, 3 deletions
+
+**User Experience:**
+- Feedback can now be submitted from any screen without losing audio
+- All sounds (menu music, movement, death) work correctly after feedback
+- Seamless audio experience maintained throughout user journey
+
+---
+
 ### Visual Polish Updates - 2026-02-03
 
 #### Added - Phone Call Visual Enhancement (Commit 01456ad)
