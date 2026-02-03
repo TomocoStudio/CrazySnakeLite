@@ -3,6 +3,7 @@
 
 import { CONFIG } from './config.js';
 import { loadFeedbackEmail, saveFeedbackEmail } from './storage.js';
+import { isAudioReady, playMenuMusic, resumeAudio, stopMenuMusic, initAudio } from './audio.js';
 
 let previousPhase = null;  // Track game phase before opening feedback
 
@@ -442,8 +443,9 @@ export function showThankYouScreen(gameState) {
 /**
  * Close thank you screen and return to game (Story 6.4)
  * @param {Object} gameState - Current game state
+ * @param {boolean} fromUserInteraction - True if triggered by button click
  */
-export function closeThankYouScreen(gameState) {
+export function closeThankYouScreen(gameState, fromUserInteraction = false) {
   // Clear auto-close timeout if user closed manually
   if (thankYouTimeout) {
     clearTimeout(thankYouTimeout);
@@ -461,6 +463,29 @@ export function closeThankYouScreen(gameState) {
   // Restore previous game phase
   if (previousPhase) {
     gameState.phase = previousPhase;
+
+    // BUG FIX: Reinitialize audio system after thank you screen
+    // mailto: link triggers beforeunload which closes AudioContext
+    // Must reinit regardless of phase (menu, gameover, playing) to restore all sounds
+    console.log('[Feedback] Reinitializing audio after thank you screen...');
+
+    // Reinitialize audio (handles closed AudioContext from mailto:)
+    initAudio().then(() => {
+      return resumeAudio();
+    }).then(() => {
+      console.log('[Feedback] Audio reinitialized, isAudioReady:', isAudioReady());
+
+      // Only restart menu music if returning to menu phase
+      if (gameState.phase === 'menu' && isAudioReady()) {
+        playMenuMusic();
+        console.log('[Feedback] ✓ Menu music restarted');
+      } else {
+        console.log('[Feedback] ✓ Audio system restored (phase:', gameState.phase + ')');
+      }
+    }).catch(err => {
+      console.error('[Feedback] Failed to reinitialize audio:', err);
+    });
+
     previousPhase = null;
   }
 

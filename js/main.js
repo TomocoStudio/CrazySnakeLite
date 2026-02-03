@@ -318,7 +318,11 @@ if (feedbackForm) {
 // Wire up "Back to Game" button (Story 6.4)
 const backToGameBtn = document.getElementById('back-to-game-btn');
 if (backToGameBtn) {
-  backToGameBtn.addEventListener('click', () => {
+  backToGameBtn.addEventListener('click', async () => {
+    console.log('[Main] Back to Game button clicked');
+    // Resume audio context on user interaction
+    await resumeAudio();
+    console.log('[Main] Audio resumed from button click');
     closeThankYouScreen(gameState);
   });
 }

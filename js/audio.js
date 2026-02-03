@@ -24,7 +24,17 @@ let lastPlayTime = 0;  // For rate limiting
  * Story 4.5 + Code Review Fixes + V3 Sound Upgrade
  */
 export async function initAudio() {
-  if (audioInitialized) return;
+  // Check if audio is already initialized AND context is usable
+  if (audioInitialized && audioContext && audioContext.state !== 'closed') {
+    console.log('[Audio] Already initialized, skipping');
+    return;
+  }
+
+  // Reset flag if context was closed
+  if (audioContext && audioContext.state === 'closed') {
+    console.log('[Audio] Context was closed, reinitializing...');
+    audioInitialized = false;
+  }
 
   try {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
