@@ -300,9 +300,6 @@ if (feedbackForm) {
     // Show thank you screen FIRST
     showThankYouScreen(gameState);
 
-    // Reset form for next submission
-    resetFeedbackForm();
-
     // Then trigger mailto: after a short delay
     // This ensures the thank you screen shows before email client opens
     setTimeout(() => {
@@ -311,6 +308,9 @@ if (feedbackForm) {
         // Error: show fallback message
         alert(`Failed to open email client. Please email your feedback to: ${CONFIG.FEEDBACK_EMAIL}`);
       }
+
+      // Reset form AFTER submission for next time
+      resetFeedbackForm();
     }, 100);
   });
 }

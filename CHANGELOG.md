@@ -10,6 +10,63 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Bug Fixes - 2026-02-03
 
+#### Fixed - Feedback Email Missing Stars and Comments
+
+**Issue:** Email sent after feedback submission contained empty ratings (0 stars) and no comments
+- Players filled out feedback form completely but email showed no data
+- Star ratings appeared as all empty stars regardless of selection
+- Comments field was blank even when player entered text
+- Only auto-captured metadata appeared correctly in email
+
+**Root Cause:**
+- Form reset called BEFORE email submission in event handler (js/main.js:304)
+- `resetFeedbackForm()` cleared all star ratings to 0 and emptied textarea
+- `submitFeedback()` called 100ms later via setTimeout read the already-cleared form
+- `getFormData()` captured empty values instead of user input
+
+**Solution Implemented:**
+- Moved `resetFeedbackForm()` to execute AFTER `submitFeedback()` completes
+- Form data now captured while user input still intact
+- Reset still happens for next submission, just at correct time in flow
+
+**Implementation Details:**
+- **js/main.js:** Relocated resetFeedbackForm() call inside setTimeout after submitFeedback()
+- **Files Modified:** 1 file, 3 line moves
+- **Code Path:** showThankYouScreen() → setTimeout(100ms) → submitFeedback() → resetFeedbackForm()
+
+**User Experience:**
+- Feedback emails now contain complete user input (stars + comments)
+- All player feedback data properly transmitted to developer
+- No user-facing behavior change (reset still happens transparently)
+
+#### Added - Star Rating Deselection Support
+
+**Issue:** Players unable to deselect star ratings once selected
+- After selecting any rating (1-5 stars), no way to return to 0 stars
+- Clicking different stars changed rating but couldn't clear it completely
+- Players forced to submit some rating even if they wanted to skip it
+
+**Root Cause:**
+- Click handler always set rating to clicked star's value (js/feedback.js:68-72)
+- No toggle logic to detect re-clicking same star
+- No alternative UI mechanism to clear rating
+
+**Solution Implemented:**
+- Added toggle behavior: clicking same star again resets rating to 0
+- Compare current rating with clicked star value
+- If same, set to 0 (deselect); if different, set to new value
+
+**Implementation Details:**
+- **js/feedback.js:** Enhanced click handler with toggle logic
+- Added currentRating check before setting newRating
+- **Files Modified:** 1 file, 7 insertions, 2 deletions
+
+**User Experience:**
+- Click any star to set rating (1-5)
+- Click same star again to clear rating back to 0 (all empty stars)
+- Intuitive toggle interaction matches user expectations
+- Optional ratings truly optional (can submit with 0 stars)
+
 #### Fixed - Audio System Not Resuming After Feedback Submission (Commit 20aec1a)
 
 **Issue:** Audio stopped working after submitting feedback from any screen

@@ -64,11 +64,16 @@ export function initStarRatings() {
     const stars = container.querySelectorAll('.star');
 
     stars.forEach(star => {
-      // Click handler
+      // Click handler with toggle behavior
       star.addEventListener('click', () => {
         const value = parseInt(star.dataset.value);
-        container.dataset.rating = value;
-        updateStarDisplay(container, value);
+        const currentRating = parseInt(container.dataset.rating) || 0;
+
+        // Toggle: if clicking same star, reset to 0
+        const newRating = (currentRating === value) ? 0 : value;
+
+        container.dataset.rating = newRating;
+        updateStarDisplay(container, newRating);
       });
 
       // Hover preview (only on devices with hover capability)
