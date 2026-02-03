@@ -44,6 +44,64 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Visual Polish Updates - 2026-02-03
 
+#### Added - Unified Design System (Commit 2fd0d32)
+
+**Feature: Comprehensive Design System Unification**
+- Established single cohesive visual language across entire UI
+- Unified color palette: Single purple shade rgb(157, 178, 221) throughout
+- Consistent rounded corners: 12px on frames (menu, game over, modals), 8px on buttons
+- Standardized transparency: 90% for direct screens, 60% for modal containers over 80% overlays
+- Unified button behavior: black inactive, purple-blue active, white text always
+
+**Button Improvements:**
+- Consistent scale animations: 1.05x on hover, 0.98x on active/click
+- Border color never changes (always light purple-blue)
+- Removed gold hover borders and default selected states
+- All buttons share identical interaction patterns
+
+**Elements Updated:**
+- Menu screen, Game Over screen, Feedback modal, Thank You screen, Phone overlay, Score display
+- All buttons across the application
+- Removed multiple purple variants for visual consistency
+
+**Implementation Details:**
+- **Files Modified:** `css/style.css` (168 lines changed), `index.html` (4 lines), UX spec documentation (517 lines added)
+- Added comprehensive Design System section to UX specification
+- Documented color palette, frame patterns, button styles, modal guidelines
+
+**User Experience:**
+- Entire UI now uses one elegant visual language
+- Smooth, consistent interactions throughout
+- Professional polish with transparent depth effects
+- Modern aesthetic while maintaining retro gaming charm
+
+#### Added - Epic 6: User Feedback Collection System UI (Commit a3c8dfc)
+
+**Feature: Complete Feedback System Interface**
+- Always-visible feedback button (top-right corner, responsive)
+- Full-screen feedback modal with star ratings and form inputs
+- Thank you screen with auto-close and manual dismiss
+- Seamless integration with unified design system
+
+**Components:**
+- **Feedback Button:** Fixed position, speech bubble icon, responsive (desktop text + icon, mobile icon only)
+- **Feedback Modal:** Star ratings (fun, difficulty), textarea for comments, optional email input
+- **Thank You Screen:** Celebration message, auto-close after 3 seconds, manual "Back to Game" button
+- **Character Counter:** Real-time feedback on textarea (500 char limit)
+
+**Implementation Details:**
+- **CSS Added:** 391 lines for complete feedback system styling
+- **HTML Added:** 85 lines for feedback modal, thank you screen, feedback button
+- **Files Modified:** `css/style.css`, `index.html`, `js/feedback.js`, `js/main.js`
+- Blur effect on game canvas when modals open
+- Z-index layering: feedback (1000), thank you (1001)
+
+**User Experience:**
+- Accessible from any game state (menu, playing, game over)
+- Auto-pauses game when feedback opened during play
+- Form data persists (email remembered across sessions)
+- Mobile-optimized touch targets and responsive design
+
 #### Added - Phone Call Visual Enhancement (Commit 01456ad)
 
 **Feature: Custom Animated Phone Icon**
@@ -77,6 +135,44 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Ensures score visibility without obscuring game
 
 **Files Modified:** `css/style.css`
+
+#### Changed - Feedback Button Focus Behavior (Commit 42fc886)
+
+**Feature: Improved Focus State for Mouse Users**
+- Changed feedback button from `:focus` to `:focus-visible` pseudo-class
+- Prevents persistent yellow outline when clicking button with mouse
+- Maintains keyboard navigation accessibility (focus indicator still appears when tabbing)
+
+**Implementation Details:**
+- **File Modified:** `css/style.css` (1 line changed)
+- Uses modern CSS `:focus-visible` selector for intelligent focus management
+
+**User Experience:**
+- No visual clutter (yellow border) when clicking feedback button with mouse
+- Button doesn't compete visually with open feedback modal
+- Keyboard users still get helpful focus indicator for navigation
+- Best of both worlds: accessibility + clean visual experience
+
+#### Changed - Design Consistency Polish (Commits 55c6089, c095157)
+
+**Feature: Additional UI Refinements**
+- Score display and game canvas frame improvements
+- Documentation updates for design system consistency
+- Project context and architecture documentation enhanced
+
+**Implementation Details:**
+- **Files Modified:** `css/style.css`, project documentation files
+- Refinements to support unified design system rollout
+
+#### Changed - Production Email Configuration (Commits 7dfa3fe, 5d2148a)
+
+**Feature: Feedback Email Updates**
+- Updated feedback email address to production address
+- Phone call screen UI refinements
+
+**Implementation Details:**
+- **Files Modified:** Configuration files, feedback system
+- Ready for production user feedback collection
 
 #### Changed - Menu High Score Text Sizing (Commit faf53cc)
 
@@ -187,6 +283,42 @@ Additional Sounds (2 files):
 - Tilable background adds visual texture while maintaining readability
 - Dark blue outer border creates stronger contrast against textured background
 - Unified border styling between canvas and score display improves visual cohesion
+
+---
+
+### Post-MVP Visual Overhaul - 2026-01-31
+
+#### Added - Jersey 20 Custom Retro Font (Commit 83d55e5)
+
+**Feature: Complete Typography Upgrade**
+- Replaced default system fonts with custom Jersey 20 retro gaming font
+- Applied across all UI elements for cohesive retro aesthetic
+- Font designed for pixel-perfect rendering and gaming nostalgia
+
+**Typography Application:**
+- Menu screen (title, buttons, high score)
+- Game Over screen (all text elements)
+- Score display (current score and top score)
+- Phone call overlay (caller name, status, instructions)
+- Feedback system (modal, form, buttons)
+- Thank you screen (all text)
+
+**Implementation Details:**
+- **New Asset:** `assets/Jersey_20/Jersey20-Regular.ttf` - Custom font file
+- **CSS:** `@font-face` declaration with fallback to Courier New, monospace
+- **Font Family:** Applied via `font-family: 'Jersey20', 'Courier New', monospace`
+- **Files Modified:** `css/style.css`, all UI elements updated
+
+**Visual Impact:**
+- Strong retro gaming identity
+- Improved readability with gaming-optimized letterforms
+- Consistent typography across entire application
+- Enhanced brand personality and user immersion
+
+**Additional Updates in This Commit:**
+- Improved graphics for snake, food items, and canvas rendering
+- New death sound asset added
+- Foundation for upcoming visual polish (Epic 5)
 
 ---
 
