@@ -368,4 +368,395 @@ body {
     font-size: 16px;
     padding: 14px 30px;  /* Larger touch target on mobile */
   }
+
+  /* Feedback Modal Mobile Styles */
+  .feedback-container {
+    padding: 20px;
+    max-width: 95%;
+  }
+
+  .feedback-header h2 {
+    font-size: 14px;
+  }
+
+  .star-rating {
+    font-size: 28px;
+    gap: 6px;
+  }
+
+  .btn-primary {
+    font-size: 12px;
+    padding: 10px 16px;
+  }
+}
+
+/* ========================================
+   Thank You Screen - Story 6.4
+   ======================================== */
+
+/* Thank You Screen Overlay */
+.thank-you-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;  /* Above feedback modal */
+}
+
+.thank-you-screen.hidden {
+  display: none;
+}
+
+.thank-you-container {
+  background-color: #1a1a1a;
+  border: 4px solid #FFD700;
+  border-radius: 12px;
+  padding: 40px;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+  animation: fadeInScale 0.3s ease;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.thank-you-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+
+.thank-you-content h2 {
+  font-family: 'Jersey20', 'Courier New', monospace;
+  font-size: 32px;
+  color: #FFD700;
+  margin: 0 0 15px 0;
+}
+
+.thank-you-content p {
+  font-family: 'Jersey20', 'Courier New', monospace;
+  font-size: 20px;
+  color: #fff;
+  margin: 0 0 30px 0;
+  line-height: 1.6;
+}
+
+#back-to-game-btn {
+  width: 100%;
+  padding: 12px 20px;
+  font-family: 'Jersey20', 'Courier New', monospace;
+  font-size: 18px;
+  background-color: #FFD700;
+  color: #1a1a1a;
+  border: 2px solid #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#back-to-game-btn:hover {
+  background-color: rgb(157, 78, 221);
+  transform: translateY(-2px);
+}
+
+#back-to-game-btn:active {
+  transform: translateY(0);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .thank-you-container {
+    padding: 30px;
+    max-width: 90%;
+  }
+
+  .thank-you-icon {
+    font-size: 48px;
+  }
+
+  .thank-you-content h2 {
+    font-size: 24px;
+  }
+
+  .thank-you-content p {
+    font-size: 16px;
+  }
+
+  #back-to-game-btn {
+    font-size: 14px;
+  }
+}
+
+/* ========================================
+   Feedback Modal - Story 6.1
+   ======================================== */
+
+/* Feedback Modal Overlay */
+.feedback-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.feedback-modal.hidden {
+  display: none;
+}
+
+/* Feedback Container */
+.feedback-container {
+  background-color: #1a1a1a;
+  border: 4px solid #9D4EDD;
+  border-radius: 8px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 0 20px rgba(157, 78, 221, 0.5);
+}
+
+/* Feedback Header */
+.feedback-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.feedback-header h2 {
+  font-family: 'Jersey20', 'Courier New', monospace;
+  font-size: 32px;
+  color: #FFD700;
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+}
+
+.close-btn:hover {
+  color: #FFD700;
+}
+
+/* Form Groups */
+.rating-group, .form-group {
+  margin-bottom: 20px;
+}
+
+.rating-group label, .form-group label {
+  display: block;
+  font-family: 'Jersey20', 'Courier New', monospace;
+  font-size: 20px;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+/* Star Rating */
+.star-rating {
+  display: flex;
+  gap: 8px;
+  font-size: 32px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.star {
+  transition: color 0.2s ease;
+  color: #555;
+}
+
+.star.filled {
+  color: #FFD700;
+}
+
+.star:hover {
+  color: #FFA500;
+}
+
+/* Disable hover effects on touch devices */
+@media (hover: none) {
+  .star:hover {
+    color: #555;
+  }
+  .star.filled:hover {
+    color: #FFD700;
+  }
+}
+
+/* Text Area */
+.feedback-textarea {
+  width: 100%;
+  padding: 10px;
+  font-family: 'Jersey20', 'Courier New', monospace;
+  font-size: 24px;
+  background-color: #2a2a2a;
+  color: #fff;
+  border: 2px solid #555;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+.feedback-textarea:focus {
+  outline: none;
+  border-color: #9D4EDD;
+}
+
+.char-counter {
+  text-align: right;
+  font-family: 'Jersey20', 'Courier New', monospace;
+  font-size: 20px;
+  color: #888;
+  margin-top: 5px;
+}
+
+/* Email Input */
+.feedback-email {
+  width: 100%;
+  padding: 10px;
+  font-family: 'Jersey20', 'Courier New', monospace;
+  font-size: 24px;
+  background-color: #2a2a2a;
+  color: #fff;
+  border: 2px solid #555;
+  border-radius: 4px;
+}
+
+.feedback-email:focus {
+  outline: none;
+  border-color: #9D4EDD;
+}
+
+/* Submit Button */
+.btn-primary {
+  width: 100%;
+  padding: 12px 20px;
+  font-family: 'Jersey20', 'Courier New', monospace;
+  font-size: 24px;
+  background-color: #9D4EDD;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #B565FF;
+  border-color: #FFD700;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(157, 78, 221, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Blur effect for game canvas (reuse from phone overlay) */
+#game-canvas.blurred {
+  filter: blur(4px);
+  pointer-events: none;
+}
+
+/* ========================================
+   Feedback Button - Story 6.2
+   ======================================== */
+
+/* Always-Visible Feedback Button */
+.feedback-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 500;  /* Above canvas, below overlays */
+
+  /* Styling */
+  font-family: 'Jersey20', 'Courier New', monospace;
+  font-size: 13px;
+  background-color: rgba(26, 26, 26, 0.9);
+  color: #fff;
+  border: 2px solid #9D4EDD;
+  border-radius: 6px;
+  padding: 9px 13px;
+  cursor: pointer;
+  box-shadow: 0 0 0 6px rgb(26, 26, 46);  /* Extra border for visibility */
+
+  /* Flexbox for icon + text */
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  /* Transitions */
+  transition: all 0.2s ease;
+}
+
+.feedback-button:hover {
+  background-color: #9D4EDD;
+  color: #fff;
+  border-color: #FFD700;
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 6px rgb(26, 26, 46), 0 4px 8px rgba(157, 78, 221, 0.3);
+}
+
+.feedback-button:active {
+  transform: translateY(0);
+}
+
+.feedback-button:focus {
+  outline: 2px solid #FFD700;
+  outline-offset: 2px;
+}
+
+.feedback-button-icon {
+  font-size: 18px;
+}
+
+/* Desktop: Show text + icon */
+.feedback-button-text {
+  display: inline;
+}
+
+/* Mobile: Hide text, show icon only */
+@media (max-width: 768px) {
+  .feedback-button {
+    padding: 11px;
+    min-width: 48px;  /* iOS minimum tap target (10% bigger) */
+    min-height: 48px;
+    justify-content: center;
+  }
+
+  .feedback-button-text {
+    display: none;  /* Hide text on mobile */
+  }
+
+  .feedback-button-icon {
+    font-size: 22px;
+  }
 }

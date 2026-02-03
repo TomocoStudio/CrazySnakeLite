@@ -72,5 +72,10 @@ export const CONFIG = {
   // Audio settings (Story 4.5)
   SOUNDS_PATH: 'assets/sounds/',
   MASTER_VOLUME: 1.0,  // 0.0 to 1.0
-  EXPECTED_SOUND_COUNT: 14  // 7 states × 2 sounds each
+  EXPECTED_SOUND_COUNT: 14,  // 7 states × 2 sounds each
+
+  // Feedback System (Story 6.1-6.5)
+  MAX_COMMENT_LENGTH: 500,
+  FEEDBACK_EMAIL: 'tomoco@example.com',  // Update with actual email address
+  THANK_YOU_DURATION: 120000  // milliseconds (2 minutes auto-close for thank you message)
 };

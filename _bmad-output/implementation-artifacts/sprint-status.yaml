@@ -74,5 +74,14 @@ development_status:
   4-3-game-over-screen-enhancement: done
   4-4-menu-navigation-and-pause: done
   4-5-state-based-movement-sounds: done
-  4-6-game-over-melody: backlog  # Post-MVP - deferred for later improvements
+  4-6-game-over-melody: backlog  # Post-MVP enhancement (not required for MVP launch)
   epic-4-retrospective: done
+
+  # Epic 6: User Feedback Collection System
+  epic-6: in-progress
+  6-1-feedback-modal-ui-component: review
+  6-2-feedback-button-integration: review
+  6-3-auto-capture-data-collection: review
+  6-4-email-submission-thank-you-flow: review
+  6-5-multi-feedback-support: review
+  epic-6-retrospective: optional

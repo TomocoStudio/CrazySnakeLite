@@ -8,6 +8,7 @@ import { applyEffect, clearEffect, EFFECT_TYPES } from './effects.js';
 import { scheduleNextCall, initPhoneSystem } from './phone.js';
 import { saveHighScore } from './storage.js';
 import { initAudio, resumeAudio, closeAudio, playMenuMusic, stopMenuMusic, isAudioReady } from './audio.js';
+import { initStarRatings, initCharCounter, openFeedbackModal, closeFeedbackModal, resetFeedbackForm, getFormData, captureMetadata, formatEmailBody, formatEmailSubject, submitFeedback, showThankYouScreen, closeThankYouScreen, initFeedbackModal } from './feedback.js';
 
 // Initialize canvas and context
 const canvas = document.getElementById('game-canvas');
@@ -268,6 +269,60 @@ menuBtn.addEventListener('click', () => {
 // Note: Enter key handling moved to input.js (Story 4.4)
 // Removed duplicate handler to prevent double-firing
 
+// Wire up feedback button (Story 6.2)
+const feedbackButton = document.getElementById('feedback-button');
+if (feedbackButton) {
+  feedbackButton.addEventListener('click', () => {
+    openFeedbackModal(gameState);
+    console.log('[Feedback] Button clicked - Phase:', gameState.phase);
+  });
+}
+
+// Initialize feedback modal (Story 6.1 + 6.5)
+initStarRatings();
+initCharCounter();
+initFeedbackModal();  // Story 6.5: Pre-fill saved email
+
+// Wire up feedback modal close button
+const closeFeedbackBtn = document.getElementById('close-feedback-btn');
+if (closeFeedbackBtn) {
+  closeFeedbackBtn.addEventListener('click', () => {
+    closeFeedbackModal(gameState);
+  });
+}
+
+// Wire up feedback form submit (Story 6.4)
+const feedbackForm = document.getElementById('feedback-form');
+if (feedbackForm) {
+  feedbackForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    // Show thank you screen FIRST
+    showThankYouScreen(gameState);
+
+    // Reset form for next submission
+    resetFeedbackForm();
+
+    // Then trigger mailto: after a short delay
+    // This ensures the thank you screen shows before email client opens
+    setTimeout(() => {
+      const success = submitFeedback(gameState);
+      if (!success) {
+        // Error: show fallback message
+        alert(`Failed to open email client. Please email your feedback to: ${CONFIG.FEEDBACK_EMAIL}`);
+      }
+    }, 100);
+  });
+}
+
+// Wire up "Back to Game" button (Story 6.4)
+const backToGameBtn = document.getElementById('back-to-game-btn');
+if (backToGameBtn) {
+  backToGameBtn.addEventListener('click', () => {
+    closeThankYouScreen(gameState);
+  });
+}
+
 // Start game loop with UI callback
 startGameLoop(ctx, gameState, handleUIUpdate);
 
@@ -284,6 +339,51 @@ window.clearTestEffect = () => {
   console.log('Cleared effect');
   console.log('Active effect:', gameState.activeEffect);
   console.log('Snake color:', gameState.snake.color);
+};
+
+// Debug helpers for feedback modal testing (Story 6.1)
+window.testOpenFeedback = () => {
+  openFeedbackModal(gameState);
+  console.log('[Test] Feedback modal opened, phase:', gameState.phase);
+};
+
+window.testCloseFeedback = () => {
+  closeFeedbackModal(gameState);
+  console.log('[Test] Feedback modal closed, phase:', gameState.phase);
+};
+
+window.testGetFeedbackData = () => {
+  const data = getFormData();
+  console.log('[Test] Feedback form data:', data);
+  return data;
+};
+
+window.testResetFeedback = () => {
+  resetFeedbackForm();
+  console.log('[Test] Feedback form reset');
+};
+
+// Debug helpers for metadata capture testing (Story 6.3)
+window.testCaptureMetadata = () => {
+  const metadata = captureMetadata(gameState);
+  console.log('[Test] Captured metadata:', metadata);
+  return metadata;
+};
+
+window.testFormatEmailBody = () => {
+  const formData = getFormData();
+  const metadata = captureMetadata(gameState);
+  const emailBody = formatEmailBody(formData, metadata);
+  console.log('[Test] Formatted email body:\n', emailBody);
+  return emailBody;
+};
+
+window.testFormatEmailSubject = () => {
+  const formData = getFormData();
+  const metadata = captureMetadata(gameState);
+  const subject = formatEmailSubject(formData, metadata);
+  console.log('[Test] Email subject:', subject);
+  return subject;
 };
 
 window.EFFECT_TYPES = EFFECT_TYPES;

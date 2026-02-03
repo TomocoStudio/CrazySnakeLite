@@ -55,17 +55,25 @@ export function createInitialState() {
       active: false,
       caller: null,
       nextCallTime: 0
-    }
+    },
+
+    // Session tracking (Story 6.3)
+    sessionStart: Date.now(),  // Timestamp when page loaded
+    gamesPlayed: 0             // Increments on each new game
   };
 }
 
 /**
  * Resets game state for Play Again
- * Preserves high score
+ * Preserves high score, session tracking
  */
 export function resetGame(gameState) {
   const newState = createInitialState();
   newState.highScore = gameState.highScore;
+
+  // Preserve session tracking (Story 6.3)
+  newState.sessionStart = gameState.sessionStart;
+  newState.gamesPlayed = gameState.gamesPlayed + 1;  // Increment games played
 
   Object.assign(gameState, newState);
 }

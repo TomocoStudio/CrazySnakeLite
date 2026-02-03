@@ -36,3 +36,34 @@ export function saveHighScore(score) {
     console.error('[Storage] Failed to save high score:', error.message);
   }
 }
+
+// Feedback Email Persistence (Story 6.5)
+const FEEDBACK_EMAIL_KEY = 'crazysnakeLite_feedbackEmail';
+
+/**
+ * Load saved feedback email from localStorage
+ * @returns {string} Saved email or empty string
+ */
+export function loadFeedbackEmail() {
+  try {
+    return localStorage.getItem(FEEDBACK_EMAIL_KEY) || '';
+  } catch (error) {
+    console.warn('[Storage] Failed to load feedback email:', error.message);
+    return '';
+  }
+}
+
+/**
+ * Save feedback email to localStorage
+ * @param {string} email - Email address to save
+ */
+export function saveFeedbackEmail(email) {
+  if (!email || !email.trim()) return;
+
+  try {
+    localStorage.setItem(FEEDBACK_EMAIL_KEY, email.trim());
+    console.log('[Storage] Feedback email saved');
+  } catch (error) {
+    console.warn('[Storage] Failed to save feedback email:', error.message);
+  }
+}
