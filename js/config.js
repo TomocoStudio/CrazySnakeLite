@@ -76,6 +76,6 @@ export const CONFIG = {
 
   // Feedback System (Story 6.1-6.5)
   MAX_COMMENT_LENGTH: 500,
-  FEEDBACK_EMAIL: 'tomoco@example.com',  // Update with actual email address
+  FEEDBACK_EMAIL: 'tomocogemini@gmail.com',  // User feedback submission address
   THANK_YOU_DURATION: 120000  // milliseconds (2 minutes auto-close for thank you message)
 };
