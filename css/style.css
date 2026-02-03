@@ -54,9 +54,9 @@ body {
   font-weight: bold;
   background: rgba(255, 255, 255, 0.9);
   padding: 8px 16px;
-  border: 8px solid #800080;
+  border: 8px solid rgb(157, 178, 221);  /* Match menu frame color */
   box-shadow: 0 0 0 8px #1A1A2E;
-  border-radius: 0;
+  border-radius: 12px;  /* Match menu frame rounded corners */
   z-index: 100;
   pointer-events: none;
   display: flex;
@@ -71,7 +71,7 @@ body {
 }
 
 #top-score {
-  color: #9D4EDD;
+  color: rgb(157, 178, 221);
   text-align: right;
 }
 
@@ -88,9 +88,9 @@ body {
   text-align: center;
   background-color: rgba(0, 0, 0, 0.9);
   padding: 40px;
-  border: 3px solid #9D4EDD;
-  border-radius: 0;
-  box-shadow: none;
+  border: 8px solid rgb(157, 178, 221);  /* Light purple-blue frame */
+  border-radius: 12px;  /* Small rounded corners */
+  box-shadow: 0 0 0 8px #1A1A2E;  /* Double-border pattern */
   z-index: 200;
   min-width: 300px;
 }
@@ -103,7 +103,7 @@ body {
   font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 36px;
   font-weight: bold;
-  color: #9D4EDD;
+  color: rgb(157, 178, 221);
   text-shadow: none;
   margin: 0 0 30px 0;
   letter-spacing: 2px;
@@ -116,23 +116,24 @@ body {
   padding: 15px 40px;
   margin: 10px;
   cursor: pointer;
-  border: 2px solid #9D4EDD;
-  border-radius: 0;
-  background-color: #1a1a1a;
-  color: #E8E8E8;
+  border: 2px solid rgb(157, 178, 221);  /* Inactive: light purple-blue border */
+  border-radius: 8px;  /* Small rounded corners */
+  background-color: #000000;  /* Inactive: black background */
+  color: #FFFFFF;  /* Always white text */
   transition: all 0.2s;
   min-width: 200px;
 }
 
 .menu-button:hover {
-  background-color: #9D4EDD;
-  color: #000000;
+  background-color: rgb(157, 178, 221);  /* Active: light purple-blue background */
+  border-color: rgb(157, 178, 221);  /* Keep same border color */
+  color: #FFFFFF;  /* Always white text */
   transform: scale(1.05);
-  box-shadow: none;
 }
 
 .menu-button:active {
-  background: #00AA00;
+  background-color: rgb(157, 178, 221);  /* Active: light purple-blue background */
+  border-color: rgb(157, 178, 221);  /* Keep same border color */
   transform: scale(0.98);
 }
 
@@ -153,7 +154,7 @@ body {
 }
 
 #high-score-value {
-  color: #9D4EDD;
+  color: rgb(157, 178, 221);
   font-size: 24px;
   font-weight: bold;
 }
@@ -165,9 +166,9 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: rgba(0, 0, 0, 0.9);
-  border: 3px solid #9D4EDD;
-  border-radius: 0;
-  box-shadow: none;
+  border: 8px solid rgb(157, 178, 221);  /* Light purple-blue frame */
+  border-radius: 12px;  /* Small rounded corners */
+  box-shadow: 0 0 0 8px #1A1A2E;  /* Double-border pattern */
   padding: 30px;
   text-align: center;
   font-family: 'Jersey20', 'Courier New', monospace;
@@ -182,7 +183,7 @@ body {
 #gameover-screen h2 {
   font-size: 32px;
   margin: 0 0 20px 0;
-  color: #9D4EDD;
+  color: rgb(157, 178, 221);
   text-shadow: none;
   letter-spacing: 2px;
 }
@@ -215,23 +216,32 @@ body {
   font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 16px;
   font-weight: bold;
-  background-color: #1a1a1a;
-  color: #E8E8E8;
-  border: 2px solid #9D4EDD;
-  border-radius: 0;
+  background-color: #000000;  /* Inactive: black background */
+  color: #FFFFFF;  /* Always white text */
+  border: 2px solid rgb(157, 178, 221);  /* Inactive: light purple-blue border */
+  border-radius: 8px;  /* Small rounded corners */
   cursor: pointer;
   transition: all 0.2s;
 }
 
 #gameover-screen button:hover {
-  background-color: #9D4EDD;
-  color: #000000;
+  background-color: rgb(157, 178, 221);  /* Active: light purple-blue background */
+  border-color: rgb(157, 178, 221);  /* Keep same border color */
+  color: #FFFFFF;  /* Always white text */
+  transform: scale(1.05);  /* Scale up effect */
+}
+
+#gameover-screen button:active {
+  background-color: rgb(157, 178, 221);  /* Active: light purple-blue background */
+  border-color: rgb(157, 178, 221);  /* Keep same border color */
+  transform: scale(0.98);  /* Scale down when clicked */
 }
 
 #gameover-screen button.selected {
-  background-color: #9D4EDD;
-  color: #000000;
-  box-shadow: none;
+  background-color: rgb(157, 178, 221);  /* Active: light purple-blue background */
+  border-color: rgb(157, 178, 221);  /* Keep same border color */
+  color: #FFFFFF;  /* Always white text */
+  transform: scale(1.05);  /* Scale up effect */
 }
 
 /* Phone Call Overlay - Story 3.1 */
@@ -253,20 +263,20 @@ body {
 }
 
 .phone-screen {
-  background: #C0C0C0;  /* Grey Nokia background */
-  border: 4px solid #000000;  /* Black border */
-  border-radius: 0;
+  background: rgba(0, 0, 0, 0.6);  /* Match modal containers - transparent */
+  border: 8px solid rgb(157, 178, 221);  /* Match menu frame color */
+  border-radius: 12px;  /* Match menu frame rounded corners */
   padding: 40px 30px;
   text-align: center;
   min-width: 280px;
   max-width: 90vw;
-  box-shadow: none;
+  box-shadow: 0 0 0 8px #1A1A2E;  /* Double-border pattern */
 }
 
 .call-status {
   font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 14px;
-  color: #333333;
+  color: #E8E8E8;  /* Light grey for readability on dark background */
   margin: 0 0 10px 0;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -276,7 +286,7 @@ body {
 .caller-name {
   font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 24px;
-  color: #000000;  /* Black text */
+  color: #FFFFFF;  /* White text for high contrast */
   margin: 0 0 15px 0;
   font-weight: bold;
   text-transform: uppercase;
@@ -285,7 +295,7 @@ body {
 .call-instructions {
   font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 12px;
-  color: #333333;
+  color: #E8E8E8;  /* Light grey for readability on dark background */
   margin: 0 0 20px 0;
   text-align: center;
 }
@@ -294,23 +304,27 @@ body {
 .end-button {
   font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 18px;
-  color: #000000;
-  background: #A0A0A0;  /* Slightly darker grey */
-  border: 3px solid #000000;
-  border-radius: 0;
+  font-weight: bold;
+  color: #FFFFFF;  /* White text always */
+  background: #000000;  /* Black background (inactive) */
+  border: 2px solid rgb(157, 178, 221);  /* Match standard button border */
+  border-radius: 8px;  /* Match standard button rounded corners */
   padding: 12px 40px;
   cursor: pointer;
   min-width: 44px;  /* Minimum touch target */
   min-height: 44px;  /* Minimum touch target */
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
 
 .end-button:hover {
-  background: #808080;  /* Darker on hover */
+  background: rgb(157, 178, 221);  /* Fill with light purple-blue */
+  border-color: rgb(157, 178, 221);  /* Border stays same */
+  transform: scale(1.05);  /* Scale up effect */
 }
 
 .end-button:active {
-  background: #606060;  /* Even darker on click */
+  background: rgb(157, 178, 221);  /* Keep filled */
+  transform: scale(0.98);  /* Scale down when clicked */
 }
 
 /* Blur effect for game canvas */
@@ -401,7 +415,7 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(0, 0, 0, 0.8);  /* Match feedback modal opacity */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -413,13 +427,13 @@ body {
 }
 
 .thank-you-container {
-  background-color: #1a1a1a;
-  border: 4px solid #FFD700;
-  border-radius: 12px;
+  background-color: rgba(0, 0, 0, 0.6);  /* Very transparent - see through to overlay */
+  border: 8px solid rgb(157, 178, 221);  /* Light purple-blue frame */
+  border-radius: 12px;  /* Small rounded corners */
   padding: 40px;
   max-width: 400px;
   text-align: center;
-  box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+  box-shadow: 0 0 0 8px #1A1A2E;  /* Double-border pattern, no glow */
   animation: fadeInScale 0.3s ease;
 }
 
@@ -459,21 +473,23 @@ body {
   padding: 12px 20px;
   font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 18px;
-  background-color: #FFD700;
-  color: #1a1a1a;
-  border: 2px solid #fff;
-  border-radius: 6px;
+  background-color: #000000;  /* Inactive: black background */
+  color: #FFFFFF;  /* Always white text */
+  border: 2px solid rgb(157, 178, 221);  /* Inactive: light purple-blue border */
+  border-radius: 8px;  /* Small rounded corners */
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 #back-to-game-btn:hover {
-  background-color: rgb(157, 78, 221);
-  transform: translateY(-2px);
+  background-color: rgb(157, 178, 221);  /* Active: light purple-blue background */
+  border-color: rgb(157, 178, 221);  /* Keep same border color */
+  color: #FFFFFF;  /* Always white text */
+  transform: scale(1.05);
 }
 
 #back-to-game-btn:active {
-  transform: translateY(0);
+  transform: scale(0.98);  /* Scale down when clicked */
 }
 
 /* Mobile Responsiveness */
@@ -524,15 +540,15 @@ body {
 
 /* Feedback Container */
 .feedback-container {
-  background-color: #1a1a1a;
-  border: 4px solid #9D4EDD;
-  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.6);  /* Very transparent - see through to overlay */
+  border: 8px solid rgb(157, 178, 221);  /* Light purple-blue frame */
+  border-radius: 12px;  /* Small rounded corners */
   padding: 30px;
   max-width: 500px;
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 0 20px rgba(157, 78, 221, 0.5);
+  box-shadow: 0 0 0 8px #1A1A2E;  /* Double-border pattern, no glow */
 }
 
 /* Feedback Header */
@@ -621,13 +637,13 @@ body {
   background-color: #2a2a2a;
   color: #fff;
   border: 2px solid #555;
-  border-radius: 4px;
+  border-radius: 8px;  /* Small rounded corners */
   resize: vertical;
 }
 
 .feedback-textarea:focus {
   outline: none;
-  border-color: #9D4EDD;
+  border-color: rgb(157, 178, 221);
 }
 
 .char-counter {
@@ -647,12 +663,12 @@ body {
   background-color: #2a2a2a;
   color: #fff;
   border: 2px solid #555;
-  border-radius: 4px;
+  border-radius: 8px;  /* Small rounded corners */
 }
 
 .feedback-email:focus {
   outline: none;
-  border-color: #9D4EDD;
+  border-color: rgb(157, 178, 221);
 }
 
 /* Submit Button */
@@ -661,23 +677,23 @@ body {
   padding: 12px 20px;
   font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 24px;
-  background-color: #9D4EDD;
-  color: #fff;
-  border: 2px solid #fff;
-  border-radius: 4px;
+  background-color: #000000;  /* Inactive: black background */
+  color: #FFFFFF;  /* Always white text */
+  border: 2px solid rgb(157, 178, 221);  /* Inactive: light purple-blue border */
+  border-radius: 8px;  /* Small rounded corners */
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .btn-primary:hover {
-  background-color: #B565FF;
-  border-color: #FFD700;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(157, 78, 221, 0.3);
+  background-color: rgb(157, 178, 221);  /* Active: light purple-blue background */
+  border-color: rgb(157, 178, 221);  /* Keep same border color */
+  color: #FFFFFF;  /* Always white text */
+  transform: scale(1.05);
 }
 
 .btn-primary:active {
-  transform: translateY(0);
+  transform: scale(0.98);  /* Scale down when clicked */
 }
 
 /* Blur effect for game canvas (reuse from phone overlay) */
@@ -702,7 +718,7 @@ body {
   font-size: 13px;
   background-color: rgba(26, 26, 26, 0.9);
   color: #fff;
-  border: 2px solid #9D4EDD;
+  border: 2px solid rgb(157, 178, 221);
   border-radius: 6px;
   padding: 9px 13px;
   cursor: pointer;
@@ -718,11 +734,11 @@ body {
 }
 
 .feedback-button:hover {
-  background-color: #9D4EDD;
+  background-color: rgb(157, 178, 221);
   color: #fff;
-  border-color: #FFD700;
+  border-color: rgb(157, 178, 221);  /* Keep same border color */
   transform: translateY(-2px);
-  box-shadow: 0 0 0 6px rgb(26, 26, 46), 0 4px 8px rgba(157, 78, 221, 0.3);
+  box-shadow: 0 0 0 6px rgb(26, 26, 46), 0 4px 8px rgba(157, 178, 221, 0.3);
 }
 
 .feedback-button:active {
