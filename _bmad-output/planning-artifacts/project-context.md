@@ -17,6 +17,41 @@
 
 ---
 
+## Unified Design System
+
+### MANDATORY: All UI elements MUST follow this design language
+
+**Single Purple Shade:**
+- Use `rgb(157, 178, 221)` for ALL UI elements (menu borders, button active states, text highlights)
+- NEVER use multiple purple shades (#800080, #9D4EDD, etc.) - these are DEPRECATED
+
+**Rounded Corners:**
+- All menu frames: `border-radius: 12px` (Menu, Game Over, Feedback, Thank You, Phone, Score)
+- All buttons: `border-radius: 8px`
+- NO sharp corners (`border-radius: 0`) on UI elements
+
+**Transparent Backgrounds:**
+- Modal containers: `rgba(0, 0, 0, 0.6)` over 80% black overlays `rgba(0, 0, 0, 0.8)`
+- NO solid grey backgrounds (#C0C0C0) - this is DEPRECATED
+
+**Button Design:**
+- Inactive state: Black background (#000000)
+- Active/hover state: Purple-blue background (rgb(157, 178, 221))
+- Text: White (#FFFFFF) always
+- Animation: Scale transform on hover/active
+- NO Nokia-style grey buttons - this is DEPRECATED
+
+**Consistent Double-Border Pattern:**
+- Main border + box-shadow outer layer on all frames
+- Both use the same purple-blue color
+
+**Phone Call Overlay:**
+- Uses the SAME design as all other menus (12px rounded corners, purple-blue borders)
+- NO special "Nokia aesthetic" - this is DEPRECATED
+- Transparent background with blur effect on game underneath
+
+---
+
 ## Data Format Rules
 
 ### MANDATORY: All implementations MUST follow these exact data structures
@@ -313,10 +348,22 @@ export const CONFIG = {
     DEFAULT: '#000000',
     GROWING: '#00FF00',
     INVINCIBILITY: '#FFFF00',
-    WALL_PHASE: '#800080',
+    WALL_PHASE: '#800080',  // Purple for wall-phase food only
     SPEED_BOOST: '#FF0000',
     SPEED_DECREASE: '#00CED1',
     REVERSE: '#FFA500'
+  },
+
+  // UI Design System - Unified purple-blue theme
+  UI: {
+    PURPLE_BLUE: 'rgb(157, 178, 221)',  // Single purple shade for ALL UI elements (menus, buttons, borders)
+    MENU_BORDER_RADIUS: '12px',  // All menu frames (Menu, Game Over, Feedback, Thank You, Phone, Score)
+    BUTTON_BORDER_RADIUS: '8px',  // All buttons
+    MODAL_BG: 'rgba(0, 0, 0, 0.6)',  // Transparent backgrounds for modal containers
+    OVERLAY_BG: 'rgba(0, 0, 0, 0.8)',  // 80% black overlay behind modals
+    BUTTON_INACTIVE: '#000000',  // Black inactive state
+    BUTTON_ACTIVE: 'rgb(157, 178, 221)',  // Purple-blue active state
+    TEXT_COLOR: '#FFFFFF'  // White text always
   },
 
   // Audio: 14 alternating MP3s managed by Web Audio API in audio.js
@@ -545,6 +592,22 @@ while (accumulator >= tickRate) {
 
 // ❌ FORBIDDEN: Audio errors crashing the game loop
 source.start(); // Always wrap in try/catch
+
+// ❌ FORBIDDEN: Multiple purple colors (DEPRECATED DESIGN)
+const borderColor = '#800080'; // Use rgb(157, 178, 221) instead
+const uiColor = '#9D4EDD'; // Use rgb(157, 178, 221) instead
+
+// ❌ FORBIDDEN: Sharp corners on UI menus (DEPRECATED DESIGN)
+borderRadius: 0; // Use 12px for menus, 8px for buttons
+
+// ❌ FORBIDDEN: Grey phone call screen (DEPRECATED DESIGN)
+background: '#C0C0C0'; // Use rgba(0, 0, 0, 0.6) instead
+
+// ❌ FORBIDDEN: Nokia aesthetic references (DEPRECATED DESIGN)
+// Phone call overlay should match all other menus with unified design system
+
+// ❌ FORBIDDEN: Black borders on phone (DEPRECATED DESIGN)
+border: '4px solid #000000'; // Use purple-blue rgb(157, 178, 221) instead
 ```
 
 ---
@@ -553,18 +616,34 @@ source.start(); // Always wrap in try/catch
 
 Before submitting ANY code, verify:
 
+**Data Formats:**
 - ✅ Positions use `{ x, y }` objects
-- ✅ Colors use hex strings `'#RRGGBB'`
+- ✅ Colors use hex strings `'#RRGGBB'` or `rgb()` format
 - ✅ Time values are in milliseconds
 - ✅ Directions are string literals
+
+**Design System:**
+- ✅ ALL UI elements use `rgb(157, 178, 221)` for purple-blue (single shade only)
+- ✅ Menu frames have 12px rounded corners
+- ✅ Buttons have 8px rounded corners
+- ✅ Modal backgrounds use `rgba(0, 0, 0, 0.6)` over 80% black overlays
+- ✅ Buttons: black inactive → purple-blue active, white text always
+- ✅ NO Nokia aesthetic, NO grey backgrounds, NO black borders on phone
+- ✅ Phone call overlay matches all other menus (unified design)
+
+**Code Patterns:**
 - ✅ No magic numbers (all values in CONFIG)
 - ✅ Named exports only
 - ✅ State passed explicitly to functions
 - ✅ Module stays within its responsibility boundary
+
+**Audio:**
 - ✅ Audio uses Web Audio API (AudioContext + AudioBufferSourceNode), NOT HTML5 Audio
 - ✅ Audio files are MP3 format (44.1kHz, 16-bit, mono)
 - ✅ Audio playback decoupled from while loop (once per frame, not per tick)
 - ✅ Audio playback has error handling (try/catch, never crash game loop)
+
+**Performance:**
 - ✅ Code maintains 60 FPS performance
 
 ---

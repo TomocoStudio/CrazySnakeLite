@@ -274,7 +274,7 @@ const gameState = {
 
 **Pattern:**
 - Phone UI built with HTML/CSS (not canvas-rendered)
-- Retro Nokia aesthetic via CSS
+- Unified design system matching all other menus
 - Show/hide with class toggle
 - Button handles click/tap natively
 
@@ -282,7 +282,7 @@ const gameState = {
 - Native text rendering (crisp caller names)
 - Easy responsive scaling for mobile
 - Built-in accessibility (button is focusable)
-- CSS handles the retro look without pixel-by-pixel drawing
+- CSS handles the unified look without pixel-by-pixel drawing
 
 ### Input Handling Architecture
 
@@ -665,9 +665,20 @@ export const CONFIG = {
   COLORS: {
     background: '#E8E8E8',
     grid: '#D0D0D0',
-    border: '#800080',
+    uiPurpleBlue: 'rgb(157, 178, 221)',  // Single purple shade for ALL UI elements
     snake: { /* ... */ },
     food: { /* ... */ }
+  },
+
+  // UI Design System
+  UI: {
+    menuBorderRadius: '12px',  // All menu frames
+    buttonBorderRadius: '8px',  // All buttons
+    modalBackground: 'rgba(0, 0, 0, 0.6)',  // Transparent modal containers
+    overlayBackground: 'rgba(0, 0, 0, 0.8)',  // 80% black overlay behind modals
+    buttonInactive: '#000000',  // Black inactive state
+    buttonActive: 'rgb(157, 178, 221)',  // Purple-blue active state
+    textColor: '#FFFFFF'  // White text always
   }
 };
 ```
@@ -907,10 +918,13 @@ CrazySnakeLite/
 
 **style.css sections:**
 - Game container layout (centered, responsive)
-- Canvas styling (border with purple glow)
-- Phone overlay (Nokia aesthetic, blur backdrop)
-- Menu screens (retro styling)
-- Score display
+- Canvas styling (no border or glow for MVP)
+- Phone overlay (unified design: 12px rounded corners, purple-blue borders, transparent bg)
+- Menu screens (unified styling: 12px rounded frames, purple-blue borders)
+- Score display (12px rounded corners, purple-blue border)
+- Buttons (8px rounded corners, black inactive → purple-blue active, scale animations)
+- Consistent double-border pattern (main border + box-shadow outer layer)
+- 80% black overlays behind all modals
 - Responsive breakpoints for mobile
 
 ### Integration Points

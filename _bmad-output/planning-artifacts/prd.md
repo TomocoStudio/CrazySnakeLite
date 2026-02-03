@@ -105,13 +105,13 @@ Alex Googles "snake game" hoping to find something nostalgic. CrazySnakeLite app
 
 **Rising Action - The Discovery:**
 
-The page loads instantly. Retro 8-bit pixel art fills the screen with a super light grey background and purple glowing border - playful and inviting. Big "NEW GAME" button. Alex clicks it.
+The page loads instantly. Retro 8-bit pixel art fills the screen with a super light grey background - playful and inviting. Big "NEW GAME" button with rounded corners and a purple-blue border. Alex clicks it.
 
 The snake appears (black by default). Arrow keys work. First food (green square) appears in the grid. Alex guides the snake to it, eats it. Snake grows by one segment and turns green. "Yeah, same old Snake," they think, smiling at the nostalgia but expecting to get bored in 30 seconds.
 
 Then a cyan food appears. Alex eats it. Suddenly the snake **SLOWS DOWN** dramatically. "Wait, what?! Why am I crawling?!" Alex is frustrated but intrigued. They keep playing, waiting for the effect to wear off.
 
-10 seconds later, a phone call popup interrupts the screen - a Nokia-era phone UI (black-on-grey) with "Mom" calling and an "End" button. But the game keeps running underneath, visible but blurry! Alex can sense the snake still moving. "Oh no!" They frantically hit Space bar. Phone disappears. Snake barely avoided hitting the wall.
+10 seconds later, a phone call popup interrupts the screen - a rounded phone call overlay with a purple-blue border showing "Mom" calling and an "End" button. But the game keeps running underneath, visible but blurred! Alex can sense the snake still moving. "Oh no!" They frantically hit Space bar. Phone disappears. Snake barely avoided hitting the wall.
 
 "This is NOT regular Snake!"
 
@@ -237,7 +237,7 @@ Alex becomes a regular. Every break, they play 2-3 games. They've learned to lov
 
 4. **Phone Call Interruption Requirements:**
    - Random timing algorithm for pop-ups
-   - Visual phone call UI overlay (retro aesthetic)
+   - Visual phone call UI overlay (unified design: 12px rounded corners, purple-blue borders)
    - Game continues running during interruption (CRITICAL for tension)
    - Space bar (desktop) / tap End (mobile) to dismiss
    - Clear visual feedback when dismissed
@@ -584,7 +584,7 @@ CrazySnakeLite follows an experience MVP strategy focused on validating that the
 
 2. **Phone Call Interruption Mechanic:**
    - Random timing algorithm (start at 45-60 second intervals)
-   - Visual phone call UI overlay (retro aesthetic)
+   - Visual phone call UI overlay (unified design matching all menus)
    - Game continues running during interruption (CRITICAL for innovation)
    - Space bar (desktop) / End tap (mobile) to dismiss
    - Clear visual feedback
@@ -602,12 +602,14 @@ CrazySnakeLite follows an experience MVP strategy focused on validating that the
    - Post-launch: dial up/down based on completion rates
 
 5. **Essential UI:**
-   - Retro pixel art aesthetic (Nokia homage)
+   - Retro pixel art aesthetic with unified design system
    - Simple, clean game board
+   - All menus use rounded corners (12px) with purple-blue borders (rgb(157, 178, 221))
+   - All buttons use rounded corners (8px) with black → purple-blue states
    - Distinct visual representation for each food type (color + shape/icon)
-   - Score display during gameplay
-   - Game over screen with final score
-   - "PLAY AGAIN" button (instant restart, no friction)
+   - Score display during gameplay (rounded frame with purple-blue border)
+   - Game over screen with final score (unified design)
+   - "PLAY AGAIN" button (instant restart, no friction, rounded corners)
 
 6. **Session Flow:**
    - One-click start from landing page
@@ -633,7 +635,7 @@ CrazySnakeLite follows an experience MVP strategy focused on validating that the
 - Settings/preferences menu
 - Pause functionality
 - Tutorial or onboarding
-- Visual polish beyond basic retro aesthetic
+- Advanced visual effects beyond unified design system
 
 ### Post-MVP Features
 
@@ -643,7 +645,7 @@ CrazySnakeLite follows an experience MVP strategy focused on validating that the
 - Multiple refined difficulty levels (Easy/Medium/Hard with tuned probabilities)
 - Advanced scoring system (combos, food-sequence bonuses)
 - Sound design and retro audio effects
-- Visual polish and smooth animations
+- Additional visual effects and smooth animations (beyond unified design system)
 - Better mobile optimization (native feel on mobile browsers)
 - Settings menu (difficulty, sound volume, phone call frequency)
 
@@ -783,10 +785,10 @@ CrazySnakeLite follows an experience MVP strategy focused on validating that the
 ### Phone Call Interruption Mechanic
 
 **Visual Design:**
-- FR25: Phone call UI uses Nokia-era phone screen aesthetic (black-on-grey, monochrome, simple)
-- FR26: Phone call overlay covers full screen with blurry game visible in background
-- FR27: Phone call overlay is centered on screen
-- FR28: Phone call displays a random funny caller name and "End" button at bottom center
+- FR25: Phone call UI uses the unified design system with rounded corners (12px) and purple-blue borders matching all other menus
+- FR26: Phone call overlay covers full screen with blurred game visible in background
+- FR27: Phone call overlay is centered on screen with transparent background (rgba(0, 0, 0, 0.6)) over 80% black overlay
+- FR28: Phone call displays a random funny caller name and "End" button at bottom center with rounded corners (8px)
 
 **Funny Caller Names Pool:**
 Family & Friends: "Mom", "Dad", "Grandma", "Your Ex", "Best Friend", "That Cousin"
@@ -823,10 +825,20 @@ Random Numbers: "555-0123", "1-800-CHAOS", "666-6666"
 
 ### User Interface
 
+**Unified Design System:**
+
+All UI elements follow a consistent design language:
+- **Single Purple Shade:** rgb(157, 178, 221) for ALL UI elements (menu borders, button active states, text highlights)
+- **Rounded Corners:** 12px on all menu frames (Menu, Game Over, Feedback, Thank You, Phone, Score)
+- **Button Corners:** 8px on all buttons
+- **Transparent Backgrounds:** rgba(0, 0, 0, 0.6) for modal containers over 80% black overlays
+- **Button States:** Black inactive → purple-blue active, white text always, scale animations
+- **Consistent Double-Border Pattern:** Main border + box-shadow outer layer on all frames
+
 **Visual Style:**
 - FR46: Game uses retro arcade 8-bit pixel art style (colorful, playful, fun mood)
 - FR47: Game board has super light grey background with subtle light grey grid
-- FR48: Game board border is a regular line with purple neon glow (matching wall-phase food color)
+- FR48: All UI menus use consistent rounded corners (12px) with purple-blue borders (rgb(157, 178, 221))
 - FR49: Food items are simple geometric shapes in pixel style with distinct colors
 
 **Snake Appearance:**
@@ -837,77 +849,78 @@ Random Numbers: "555-0123", "1-800-CHAOS", "666-6666"
 
 **Other UI:**
 - FR54: Players can distinguish between different food types by color and shape
-- FR55: The phone call overlay displays Nokia-era aesthetic (black-on-grey, monochrome)
-- FR56: Score counter displays at top-center of the game board
+- FR55: The phone call overlay uses the unified design system matching all other menus (rounded corners, purple-blue borders, transparent background)
+- FR56: Score counter displays at top-center of the game board with rounded corners (12px) and purple-blue border
 - FR57: Active effects are indicated by snake color + movement sound only (no additional UI elements)
 - FR58: UI elements use clear visual hierarchy for important information
+- FR59: All buttons use 8px rounded corners with black inactive state and purple-blue active state, white text always, and scale animations
 
 **Screens:**
 
 *Main Menu Screen:*
-- FR59: Main menu displays "New Game" and "Top Score" options
-- FR60: "New Game" starts a new game session
-- FR61: "Top Score" displays the player's best score stored in browser localStorage
-- FR62: Post-MVP: Player accounts with database storage for scores
+- FR60: Main menu displays "New Game" and "Top Score" options with rounded purple-blue bordered frames
+- FR61: "New Game" starts a new game session
+- FR62: "Top Score" displays the player's best score stored in browser localStorage
+- FR63: Post-MVP: Player accounts with database storage for scores
 
 *Game Over Screen:*
-- FR63: Game over screen displays "GAME OVER!" title text
-- FR64: Game over screen displays "Your score: XX" with final snake length
-- FR65: Game over screen shows two options: "Play Again" and "Menu"
-- FR66: "Play Again" is selected by default on game over screen
-- FR67: "Play Again" starts a new game immediately
-- FR68: "Menu" returns to main menu screen
+- FR64: Game over screen displays "GAME OVER!" title text
+- FR65: Game over screen displays "Your score: XX" with final snake length
+- FR66: Game over screen shows two options: "Play Again" and "Menu" with rounded buttons (8px)
+- FR67: "Play Again" is selected by default on game over screen
+- FR68: "Play Again" starts a new game immediately
+- FR69: "Menu" returns to main menu screen
 
 **Menu Navigation:**
-- FR69: Enter key validates/selects the current menu choice
-- FR70: Mouse click on buttons validates the choice
-- FR71: Esc key cancels current action and opens the Menu screen
-- FR72: Esc key during gameplay opens the Menu screen (pauses game)
+- FR70: Enter key validates/selects the current menu choice
+- FR71: Mouse click on buttons validates the choice
+- FR72: Esc key cancels current action and opens the Menu screen
+- FR73: Esc key during gameplay opens the Menu screen (pauses game)
 
 ### Input Controls
 
 **Snake Movement:**
-- FR73: Arrow keys control snake direction (Up, Down, Left, Right)
-- FR74: Numpad controls snake direction (8=Up, 2=Down, 4=Left, 6=Right)
-- FR75: WASD keys control snake direction for US keyboards (W=Up, S=Down, A=Left, D=Right)
-- FR76: ZQSD keys control snake direction for French AZERTY keyboards (Z=Up, S=Down, Q=Left, D=Right)
-- FR77: Swipe gestures control snake direction on mobile
+- FR74: Arrow keys control snake direction (Up, Down, Left, Right)
+- FR75: Numpad controls snake direction (8=Up, 2=Down, 4=Left, 6=Right)
+- FR76: WASD keys control snake direction for US keyboards (W=Up, S=Down, A=Left, D=Right)
+- FR77: ZQSD keys control snake direction for French AZERTY keyboards (Z=Up, S=Down, Q=Left, D=Right)
+- FR78: Swipe gestures control snake direction on mobile
 
 **Other Controls:**
-- FR78: Space bar dismisses phone calls on desktop
-- FR79: Tap on "End" button dismisses phone calls on mobile
-- FR80: Input controls respond with minimal latency
+- FR79: Space bar dismisses phone calls on desktop
+- FR80: Tap on "End" button dismisses phone calls on mobile
+- FR81: Input controls respond with minimal latency
 
 ### Sound Design
 
 **Movement Sounds (8-bit style, short impulse, played at each snake step):**
-- FR81: Each snake movement step plays a sound based on current snake color/state
-- FR82: Default state (black snake): Neutral "blip" - classic arcade step sound
-- FR83: After Growing food (green snake): Pleasant, positive tone
-- FR84: After Invincibility food (yellow snake): Powerful, strong tone
-- FR85: After Wall-Phase food (purple snake): Ethereal, magical tone
-- FR86: After Speed Boost food (red snake): Quick, energetic tone - higher pitch
-- FR87: After Speed Decrease food (cyan snake): Slow, heavy tone - lower pitch, sluggish
-- FR88: After Reverse Controls food (orange snake): Dissonant, off-kilter tone
+- FR82: Each snake movement step plays a sound based on current snake color/state
+- FR83: Default state (black snake): Neutral "blip" - classic arcade step sound
+- FR84: After Growing food (green snake): Pleasant, positive tone
+- FR85: After Invincibility food (yellow snake): Powerful, strong tone
+- FR86: After Wall-Phase food (purple snake): Ethereal, magical tone
+- FR87: After Speed Boost food (red snake): Quick, energetic tone - higher pitch
+- FR88: After Speed Decrease food (cyan snake): Slow, heavy tone - lower pitch, sluggish
+- FR89: After Reverse Controls food (orange snake): Dissonant, off-kilter tone
 
 **Game Over Music:**
-- FR89: Game over screen plays 8-bit style short melody
+- FR90: Game over screen plays 8-bit style short melody
 
 ### Platform Support
 
-- FR90: The game runs in Chrome, Firefox, Safari, and Edge browsers
-- FR91: The game supports desktop screen resolutions from 1024x768 and above
-- FR92: The game adapts to mobile screen sizes with responsive layout
-- FR93: Touch controls function on mobile browsers
-- FR94: The game loads and becomes playable within 3 seconds
+- FR91: The game runs in Chrome, Firefox, Safari, and Edge browsers
+- FR92: The game supports desktop screen resolutions from 1024x768 and above
+- FR93: The game adapts to mobile screen sizes with responsive layout
+- FR94: Touch controls function on mobile browsers
+- FR95: The game loads and becomes playable within 3 seconds
 
 ### Analytics & Tracking
 
-- FR95: The system tracks game session starts
-- FR96: The system tracks game session completions (deaths)
-- FR97: The system tracks which food types are consumed
-- FR98: The system tracks phone call dismissal response times
-- FR99: The system tracks player return rate across sessions
+- FR96: The system tracks game session starts
+- FR97: The system tracks game session completions (deaths)
+- FR98: The system tracks which food types are consumed
+- FR99: The system tracks phone call dismissal response times
+- FR100: The system tracks player return rate across sessions
 
 ## Non-Functional Requirements
 
