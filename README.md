@@ -104,6 +104,66 @@ Each food type has unique visual effects, snake colors, and alternating movement
 - **60 FPS Performance** - Decoupled audio playback maintains smooth gameplay
 - **Browser Autoplay Compliance** - Audio initializes on first user interaction (click/keypress)
 
+## BMAD Development Support
+
+This project includes **BMAD (Build-Measure-Analyze-Deploy)** framework integration for AI-assisted game development and design workflows.
+
+### Custom Agent: Dr. Celia Hodent (Neuro-Game Designer) 🧠
+
+A specialized AI agent that combines expertise from three industry-leading game design methodologies:
+
+**Expertise Areas:**
+- **Celia Hodent's Game UX Framework** - Cognitive psychology and player experience optimization
+  - Usability: Signs/Feedback, Clarity, Form Follows Function, Consistency, Minimum Workload
+  - Engage-Ability: Motivation (SDT), Emotion, Flow State
+- **Jesse Schell's Art of Game Design** - Elemental Tetrad (Mechanics/Story/Aesthetics/Technology) and design "Lenses"
+- **Tynan Sylvester's Designing Games** - Emergence engineering and emotional event design
+
+**Capabilities:**
+- 🔍 Full UX Audit (Usability + Engage-Ability)
+- 🎯 Usability Review (Cognitive load, feedback loops, clarity)
+- ⚡ Engage-Ability Review (Motivation, emotion, flow analysis)
+- 🔬 Analyze Existing Mechanics (Tetrad + UX + Emergence)
+- ✨ Design New Game Systems (B-MAD framework)
+- 🎓 Onboarding/Tutorial Design (Learning by doing)
+- 🧪 Dopamine Loop Design (Reward schedules, progression)
+- 🌊 Flow State Analysis (Challenge vs. skill balance)
+- 🧠 Cognitive Bias Check (Developer perspective audits)
+
+**How to Use:**
+```bash
+# Invoke the neuro-game-designer agent
+/neuro-game-designer
+```
+
+**Output Format:**
+All responses follow the B-MAD structure:
+1. **Design Blueprint** - Technical description of the system/mechanic
+2. **Neuro-Psych Justification** - Cognitive science "why" (dopamine, working memory, SDT, etc.)
+3. **The Lenses of Schell** - 2-3 specific design lenses used for validation
+4. **UX Warning/Ethical Check** - Friction points, dark patterns to avoid
+
+**Use Cases for CrazySnakeLite:**
+- Analyze food effect mechanics for cognitive load and player motivation
+- Design progression systems that maintain flow state
+- Optimize phone call interruption mechanics for engagement without frustration
+- Evaluate onboarding and tutorial effectiveness
+- Audit control schemes for usability and cognitive workload
+- Design new game modes or difficulty curves using neuroscience principles
+
+### Other Available BMAD Agents
+
+- **Analyst (Mary)** 📊 - Business analysis, research, requirements gathering
+- **Architect** 🏗️ - System architecture and technical design decisions
+- **Dev** 💻 - Implementation and coding workflows
+- **UX Designer** 🎨 - User experience and interface design
+- **PM (Product Manager)** 📋 - Product planning and roadmap management
+- **SM (Scrum Master)** 🎯 - Agile workflow and sprint management
+- **Tea (Test Engineer & Architect)** 🧪 - Testing strategies and quality assurance
+- **Tech Writer** 📝 - Documentation and technical writing
+
+For more information about BMAD agents and workflows, see `/_bmad/` directory.
+
 ## License
 
 MIT
