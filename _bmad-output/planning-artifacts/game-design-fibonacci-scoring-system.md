@@ -2,7 +2,7 @@
 ## Game Design Document v1.0
 
 **Designer:** Tomoko
-**Analyst:** Dr. Celia Hodent (Neuro-Game Design Expert)
+**Analyst:** Celia (Neuro-Game Design Expert)
 **Date:** February 6, 2026
 **Status:** Ready for Implementation
 
@@ -607,7 +607,7 @@ Combo Mode:   Dark Purple (#4A148C)
 ## ✅ Final Approval Status
 
 **Designer Sign-off:** Tomoko ✅
-**Analyst Approval:** Dr. Celia Hodent ✅
+**Analyst Approval:** Celia ✅
 
 **Status:** ✅ **READY FOR IMPLEMENTATION**
 
@@ -637,6 +637,6 @@ Now go build something beautiful. 🧠✨
 
 ---
 
-*Document prepared by Dr. Celia Hodent*
+*Document prepared by Celia*
 *Neuro-Game Design Expert*
 *"Respect the player's brain. Design for humans, not for your ego."*

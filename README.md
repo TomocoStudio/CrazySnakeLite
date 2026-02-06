@@ -108,7 +108,7 @@ Each food type has unique visual effects, snake colors, and alternating movement
 
 This project includes **BMAD (Build-Measure-Analyze-Deploy)** framework integration for AI-assisted game development and design workflows.
 
-### Custom Agent: Dr. Celia Hodent (Neuro-Game Designer) 🧠
+### Custom Agent: Celia (Neuro-Game Designer) 🧠
 
 A specialized AI agent that combines expertise from three industry-leading game design methodologies:
 
