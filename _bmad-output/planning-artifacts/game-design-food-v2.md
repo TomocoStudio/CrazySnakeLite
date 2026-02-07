@@ -331,7 +331,7 @@ If the player dies while in Combo Mode AND during an active Pick Up blur:
 **Game State:**
 - All food colors visible and consistent
 - No blinking, no combos
-- No phone calls until score 5, then introduced at relaxed 12-20s intervals (see Phone Calls V2 design doc)
+- No phone calls until score 5, then introduced at relaxed 12-20s intervals (see game-design-phone-calls-v2.md)
 
 **Player Experience:**
 - Learning color-effect associations
