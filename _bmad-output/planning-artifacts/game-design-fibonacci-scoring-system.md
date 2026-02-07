@@ -31,7 +31,7 @@ Replace flat scoring with a Fibonacci-based reward system that creates proportio
 | **Invincibility** | Yellow | **0** | Pure safety net - no skill required, no reward |
 | **Growing** | Green | **+1** | Baseline snake gameplay - standard difficulty |
 | **Speed Decrease** | Cyan | **+2** | Easier/relaxing - gives cognitive breathing room |
-| **Wall Phase** | Purple | **+3** | Requires active wall interaction to gain value |
+| **Wall Phase** | Purple | **+1** then **+3** | Default +1, requires active wall interaction to gain value +3|
 | **Speed Boost** | Red | **+5** | Challenging - less control, requires better reflexes |
 | **Reverse Controls** | Orange | **+8** | Extreme challenge - motor conflict, high cognitive load |
 
@@ -76,7 +76,7 @@ Replace flat scoring with a Fibonacci-based reward system that creates proportio
 | +1 | Small (16px) | White | None | 500ms |
 | +2 | Small (16px) | Light Green | None | 600ms |
 | +3 | Medium (20px) | Yellow | Slight bounce | 700ms |
-| +5 | Large (28px) | Orange | Bounce + glow | 800ms |
+| +5 | Large (28px) | Orange | Bounce | 800ms |
 | +8 | X-Large (36px) | Red/Gold | Bounce + screen shake (subtle) + particle effect | 1000ms |
 
 #### Audio Feedback:
@@ -284,6 +284,45 @@ Combo Mode:   Dark Purple (#4A148C)
 
 ---
 
+## 🔗 Cross-System Interaction Rules
+
+### Combo Mode + Phone Call Collision
+
+When a phone call arrives during an active Combo Mode:
+
+1. **Combo timer pauses** — the "third food exits combo" rule is suspended while the phone overlay is active
+2. Phone overlay renders on top of the dark combo canvas (blur + dark background stack)
+3. Player resolves the phone call (End or Pick Up) normally
+4. After phone dismissal, combo mode resumes — the player still needs to eat food B (or food C to exit)
+5. Combo canvas color remains visible *under* the phone blur as an ambient reminder
+
+**Why pause combo during calls:** At score 40-60, combos are being *learned*. Forcing the player to manage a brand-new combo system AND a phone call simultaneously exceeds working memory limits (Miller's 4±1 chunks). Pausing the combo respects the player's cognitive budget. At score 100+, the phone calls are frequent enough that combo pauses create natural micro-breathers — this is a feature, not a bug.
+
+### Visual Feedback Priority Hierarchy
+
+When multiple visual events fire within 500ms of each other, apply this z-order:
+
+| Priority | Event | Behavior |
+|----------|-------|----------|
+| 1 (highest) | Phone overlay | Always renders on top; is a modal interruption |
+| 2 | Combo entrance/exit transition | Canvas fade delays 200ms if a phone call is active |
+| 3 | Score popups | Queue with 300ms stagger — never show two popups simultaneously |
+| 4 (lowest) | Snake color changes | Immediate, no queuing needed |
+
+**Popup stagger rule:** If a combo score popup (+24) and a phone bonus popup (+13 CALL BONUS) would fire within 500ms, the phone bonus popup waits until the combo popup has been visible for at least 300ms. Popups stack vertically (combo above, phone below) if both are still visible.
+
+### Death During Combo + Pick Up (Edge Case)
+
+If the player dies while in Combo Mode AND during an active Pick Up blur:
+
+- **Combo points: AWARDED** — if food B was eaten before death, the multiplicative score (A × B) is granted
+- **Pick Up bonus: AWARDED** — consolation reward applies as normal
+- **Both stack** — the player earns combo points + Pick Up Fibonacci bonus
+
+**Rationale:** The player took maximum simultaneous risk (combo stakes + blur blindness). Rewarding courage even in death is consistent with the consolation reward philosophy and reinforces the unified risk/reward identity of the game.
+
+---
+
 ## 🎮 Complete Player Progression Arc
 
 ### Phase 1: Learning (Score 0-20)
@@ -292,7 +331,7 @@ Combo Mode:   Dark Purple (#4A148C)
 **Game State:**
 - All food colors visible and consistent
 - No blinking, no combos
-- Phone calls occasional
+- No phone calls until score 5, then introduced at relaxed 12-20s intervals (see Phone Calls V2 design doc)
 
 **Player Experience:**
 - Learning color-effect associations
@@ -452,6 +491,17 @@ Combo Mode:   Dark Purple (#4A148C)
 - [ ] Test striped snake visibility at high speeds
 - [ ] Test canvas color readability (snake must remain visible)
 - [ ] Color-blind accessibility check (add shape coding if needed)
+
+### Cross-System Interactions
+- [ ] Implement combo timer pause when phone overlay is active
+- [ ] Resume combo mode after phone dismissal (preserve combo state: Effect A, canvas color)
+- [ ] Visual feedback queue system (300ms stagger for overlapping popups)
+- [ ] Phone overlay z-order: always render above combo canvas transition
+- [ ] Combo entrance/exit transition delays 200ms when phone call is active
+- [ ] Death during combo + Pick Up: award both combo multiplier and Pick Up consolation bonus
+- [ ] Test: phone call during combo at score 40-60 (combo learning phase)
+- [ ] Test: rapid phone + combo + blinking food cascade at score 100+
+- [ ] Test: visual popup stacking when combo score and phone bonus fire simultaneously
 
 ---
 

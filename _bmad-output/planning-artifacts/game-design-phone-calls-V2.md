@@ -134,7 +134,7 @@ When the player taps **Pick Up**:
 3. Countdown bar appears (horizontal bar that shrinks left-to-right)
 4. **Blur stays active** — snake continues moving
 5. Timer expires -> auto-dismiss, Fibonacci bonus awarded, score updated
-6. If player **dies during Pick Up** -> bonus **still awarded** (consolation reward)
+6. If player **dies during Pick Up** -> bonus **still awarded** (consolation reward). If also in Combo Mode, combo points (A × B) are awarded too — both rewards stack
 7. Pick Up is **irreversible** — cannot End once committed
 8. Pick Up button becomes disabled/hidden during the timer; replaced by the countdown bar
 
@@ -246,6 +246,43 @@ Phone bonuses add directly to the unified score. Economy balance:
 | Combo Mode | Varies | 40 (8x5) | Score 40+ |
 
 **Economy analysis:** A player eating mostly Growing food (+1) earns ~1 point per food. A player picking up their 6th call earns +21 — equivalent to eating ~21 Growing foods or ~2.6 Reverse Controls. This is significant but requires surviving 6 blurred risk windows. The risk/reward scales proportionally: by the 6th Pick Up, the player's snake is long, the grid is tight, and 1-3 seconds of blindness is genuinely dangerous. The Fibonacci reward compensates for the Fibonacci-level risk.
+
+### 1M. Interaction with Combo Mode (Cross-System Rule)
+
+When a phone call arrives during an active Combo Mode (score 40+):
+
+1. **Combo timer pauses** — the "third food exits combo" logic is suspended while the phone overlay is active
+2. Phone overlay renders on top of the dark combo canvas (blur + dark background stack)
+3. Player resolves the call normally (End or Pick Up)
+4. After phone dismissal, combo mode resumes with all state preserved (Effect A, canvas color, striped snake)
+
+**Pick Up during Combo Mode:** If the player Picks Up during combo mode, the blur overlay stacks on top of the dark combo canvas. The player is effectively blind with active combo stakes — maximum risk. The Fibonacci Pick Up bonus is awarded independently of combo scoring.
+
+**Death during Combo + Pick Up:** If the player dies while both systems are active:
+- Combo points awarded (if food B was eaten before death, A × B granted)
+- Pick Up Fibonacci bonus awarded (consolation reward)
+- Both stack — player earns full rewards for maximum risk
+
+**Config addition:**
+```javascript
+COMBO_PAUSE_ON_PHONE: true,  // Pause combo timer while phone overlay is active
+```
+
+### 1N. Visual Feedback Priority Rules
+
+When phone bonus popups and other score popups (food, combo) overlap:
+
+| Priority | Event | Rule |
+|----------|-------|------|
+| 1 (highest) | Phone overlay | Modal — always on top |
+| 2 | Score popups | 300ms stagger — combo popup appears first, phone bonus popup follows |
+| 3 | Combo canvas transition | Delays 200ms if phone overlay is active |
+
+**Phone bonus popup format:** `"+13 CALL BONUS"` — include source label to distinguish from food/combo popups.
+
+**Popup stacking:** If both combo popup and phone bonus popup are visible simultaneously, stack vertically (combo above, phone below) to prevent visual collision.
+
+**Button width:** Pick Up button uses fixed width to accommodate longest bonus text (`Pick Up +34`) without layout shift.
 
 ---
 
@@ -376,6 +413,12 @@ No dark patterns detected. The Fibonacci escalation rewards *skill and courage*,
 - One-liner display (only on Pick Up, not on End)
 - Mobile touch targets (both buttons accessible)
 - State reset on new game (pickUpCount resets to 0)
+- Combo timer pause when phone overlay active (combo state preserved)
+- Combo resume after phone dismissal (Effect A, canvas color, stripe pattern intact)
+- Death during combo + Pick Up awards both combo multiplier and Pick Up consolation bonus
+- Visual popup stagger: phone bonus waits 300ms if combo popup is active
+- Combo canvas transition delays 200ms when phone overlay is active
+- Phone bonus popup includes source label ("+N CALL BONUS")
 
 ---
 
