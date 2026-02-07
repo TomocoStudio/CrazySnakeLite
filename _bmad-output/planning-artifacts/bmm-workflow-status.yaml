@@ -79,8 +79,9 @@ workflow_status:
         command: "/bmad:bmm:workflows:create-architecture"
         status: "_bmad-output/planning-artifacts/architecture.md"
         completed: "2026-01-25"
-        output: "System architecture document"
-        note: "Complete system design for greenfield projects"
+        v2_completed: "2026-02-07"
+        output: "System architecture document (v1 + v2 evolution)"
+        note: "V2 evolution: Food v2 + Phone Calls v2 + UX design integrated"
 
       - id: "create-epics-and-stories"
         name: "Epics & Stories"

@@ -1,658 +1,456 @@
-# CrazySnakeLite - Project Context
+---
+project_name: 'CrazySnakeLite'
+user_name: 'Tomoco'
+date: '2026-02-07'
+v1_date: '2026-01-23'
+sections_completed: ['technology_stack', 'implementation_rules', 'anti_patterns', 'architecture_rules', 'file_responsibilities', 'testing']
+status: 'complete'
+v2_update: true
+optimized_for_llm: true
+---
 
-> **Critical Implementation Rules for AI Agents**
-> This document contains the non-negotiable patterns and specifications that MUST be followed when implementing code for CrazySnakeLite.
+# Project Context for AI Agents
+
+_Critical rules and patterns for implementing CrazySnakeLite. Read this before writing any code._
+_Updated for v2: Food v2 (Fibonacci scoring, blinking food, combo mode) + Phone Calls v2 (Pick Up vs End, caller portraits)._
 
 ---
 
 ## Technology Stack
 
-- **Language:** Vanilla JavaScript (ES6+)
-- **Rendering:** HTML5 Canvas API (2D context)
-- **Modules:** ES6 modules (`type="module"`)
-- **Styling:** Plain CSS (no preprocessor)
-- **Build System:** None - direct file serving
-- **Dependencies:** Zero external dependencies
-- **Deployment:** Static hosting (GitHub Pages, Netlify, Vercel)
+| Technology | Details |
+|------------|---------|
+| **Language** | Vanilla JavaScript (ES6+) |
+| **Rendering** | HTML5 Canvas API |
+| **Modules** | ES6 modules (`type="module"` in script tag) |
+| **Styling** | Plain CSS |
+| **Build** | None - direct file serving |
+| **Dependencies** | Zero external dependencies |
+
+**Local Development:** Requires local server for ES6 modules (use `python -m http.server 8000` or VS Code Live Server)
 
 ---
 
-## Unified Design System
+## Critical Implementation Rules
 
-### MANDATORY: All UI elements MUST follow this design language
-
-**Single Purple Shade:**
-- Use `rgb(157, 178, 221)` for ALL UI elements (menu borders, button active states, text highlights)
-- NEVER use multiple purple shades (#800080, #9D4EDD, etc.) - these are DEPRECATED
-
-**Rounded Corners:**
-- All menu frames: `border-radius: 12px` (Menu, Game Over, Feedback, Thank You, Phone, Score)
-- All buttons: `border-radius: 8px`
-- NO sharp corners (`border-radius: 0`) on UI elements
-
-**Transparent Backgrounds:**
-- Modal containers: `rgba(0, 0, 0, 0.6)` over 80% black overlays `rgba(0, 0, 0, 0.8)`
-- NO solid grey backgrounds (#C0C0C0) - this is DEPRECATED
-
-**Button Design:**
-- Inactive state: Black background (#000000)
-- Active/hover state: Purple-blue background (rgb(157, 178, 221))
-- Text: White (#FFFFFF) always
-- Animation: Scale transform on hover/active
-- NO Nokia-style grey buttons - this is DEPRECATED
-
-**Consistent Double-Border Pattern:**
-- Main border + box-shadow outer layer on all frames
-- Both use the same purple-blue color
-
-**Phone Call Overlay:**
-- Uses the SAME design as all other menus (12px rounded corners, purple-blue borders)
-- NO special "Nokia aesthetic" - this is DEPRECATED
-- Transparent background with blur effect on game underneath
-
----
-
-## Data Format Rules
-
-### MANDATORY: All implementations MUST follow these exact data structures
-
-#### Positions
-```javascript
-// CORRECT: Always use { x, y } objects
-const position = { x: 5, y: 10 };
-const snakeHead = gameState.snake.segments[0]; // { x, y }
-
-// WRONG: Never use arrays for positions
-const position = [5, 10]; // ❌ FORBIDDEN
-```
-
-#### Colors
-```javascript
-// CORRECT: Always use hex strings
-const color = '#FF0000';
-gameState.snake.color = '#00FF00';
-
-// WRONG: Never use RGB arrays or other formats
-const color = [255, 0, 0]; // ❌ FORBIDDEN
-const color = 'rgb(255, 0, 0)'; // ❌ FORBIDDEN
-```
-
-#### Time Values
-```javascript
-// CORRECT: Always use milliseconds
-const tickRate = 125; // ms
-const phoneDelay = 5000; // ms
-const duration = performance.now(); // ms
-
-// WRONG: Never use seconds
-const tickRate = 0.125; // ❌ FORBIDDEN
-```
-
-#### Directions
-```javascript
-// CORRECT: Always use string literals
-const direction = 'up'; // 'up' | 'down' | 'left' | 'right'
-
-// WRONG: Never use numbers or objects
-const direction = 0; // ❌ FORBIDDEN
-const direction = { dx: 0, dy: -1 }; // ❌ FORBIDDEN
-```
-
-#### Food Types
-```javascript
-// CORRECT: String identifiers
-const foodType = 'growing'; // 'growing' | 'invincibility' | 'wallPhase' | 'speedBoost' | 'speedDecrease' | 'reverseControls'
-
-// WRONG: Never use numbers or abbreviations
-const foodType = 0; // ❌ FORBIDDEN
-const foodType = 'inv'; // ❌ FORBIDDEN
-```
-
----
-
-## Audio Implementation Rules
-
-### API: Web Audio API (NOT HTML5 Audio)
-
-**MANDATORY:** Use Web Audio API (`AudioContext` + `AudioBufferSourceNode`), NOT HTML5 Audio (`HTMLAudioElement`).
-
-HTML5 Audio causes game freezes and sync issues at 8 sounds/second due to:
-- `currentTime = 0` seek operations blocking the main thread
-- `play()` promises scheduling microtasks
-- Audio pipeline re-initialization on rapid calls
-
-### File Format Specifications
-
-**Format:** MP3 (.mp3)
-- Sample Rate: 44.1 kHz
-- Bit Depth: 16-bit
-- Channels: Mono
-- Target File Size: < 50KB per sound
-
-### Required Audio Files (14 Alternating Sounds)
-
-All audio files MUST be placed in `assets/sounds/`:
-
-```
-assets/sounds/
-├── move-default-1.mp3 & move-default-2.mp3           # Neutral blips (black snake)
-├── move-growing-1.mp3 & move-growing-2.mp3           # Pleasant tones (green snake)
-├── move-invicibility-1.mp3 & move-invicibility-2.mp3 # Powerful tones (yellow snake)
-├── move-wallphase-1.mp3 & move-wallphase-2.mp3       # Ethereal tones (purple snake)
-├── move-speedboost-1.mp3 & move-speedboost-2.mp3     # Energetic, high pitch (red snake)
-├── move-speeddecrease-1.mp3 & move-speeddecrease-2.mp3 # Slow, low pitch (cyan snake)
-└── move-reverse-1.mp3 & move-reverse-2.mp3           # Dissonant tones (orange snake)
-```
-
-**Alternation Pattern:** Sound 1 -> Sound 2 -> Sound 1 -> Sound 2...
-**State Change Reset:** When state changes, alternation resets to Sound 1.
-
-### Effect-to-Sound State Mapping
-
-**MANDATORY:** Active effects take priority over snake color:
+### Data Formats (MUST follow exactly)
 
 ```javascript
-// Effect types map to sound state names
-const EFFECT_SOUND_MAP = {
-  'invincibility': 'invicibility',  // Note: typo in filenames
-  'wallPhase': 'wallphase',
-  'speedBoost': 'speedboost',
-  'speedDecrease': 'speeddecrease',
-  'reverseControls': 'reverse'
-};
+// Positions: ALWAYS use { x, y } objects
+const position = { x: 5, y: 10 };     // CORRECT
+const position = [5, 10];              // WRONG
 
-// Fallback: snake color maps to sound state
-const COLOR_SOUND_MAP = {
-  '#00FF00': 'growing',   // Green (growing food)
-  '#000000': 'default'    // Black (neutral state)
-};
+// Colors: ALWAYS use hex strings
+const color = '#FF0000';               // CORRECT
+const color = [255, 0, 0];             // WRONG
+
+// Time: ALWAYS use milliseconds
+const delay = 15000;                   // CORRECT (15 seconds)
+const delay = 15;                      // WRONG
+
+// Directions: ALWAYS use string literals
+const dir = 'up';                      // CORRECT
+const dir = 0;                         // WRONG
 ```
 
-### Audio Playback Rules
-
-1. **Initialization:** Call `initAudio()` on first user interaction (creates AudioContext + fetches/decodes all MP3s)
-2. **Resume:** Call `resumeAudio()` on user interaction (resumes AudioContext if suspended by browser)
-3. **Movement Sounds:** Play ONCE per frame after the while accumulator loop, NOT inside `update()`
-4. **Sound Selection:** Based on `gameState.activeEffect` (priority) then `gameState.snake.color`
-5. **Error Handling:** Wrap in try/catch, never let audio errors break the game loop
-6. **NEVER** call `playMoveSound()` inside the fixed-timestep `while` loop -- this causes multiple sounds per visual frame
-
-### Audio Module Pattern
+### Module Patterns (MUST follow exactly)
 
 ```javascript
-// js/audio.js - MANDATORY STRUCTURE (Web Audio API)
+// ALWAYS use named exports
+export function update(gameState) {}   // CORRECT
+export default update;                 // WRONG
 
-let audioContext = null;
-const audioBuffers = {};
-let audioInitialized = false;
-let currentAlternator = 0;
-let previousState = null;
+// ALWAYS import only what's needed
+import { update } from './game.js';    // CORRECT
+import * as game from './game.js';     // AVOID
 
-export async function initAudio() {
-  if (audioInitialized) return;
-  audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-  // Fetch and decode all 14 MP3s into AudioBuffers (parallel)
-  const states = ['default', 'growing', 'invicibility', 'wallphase',
-                  'speedboost', 'speeddecrease', 'reverse'];
-  const promises = [];
-  states.forEach(state => {
-    for (const num of [1, 2]) {
-      const key = `${state}-${num}`;
-      promises.push(
-        fetch(`assets/sounds/move-${state}-${num}.mp3`)
-          .then(r => r.arrayBuffer())
-          .then(buf => audioContext.decodeAudioData(buf))
-          .then(decoded => { audioBuffers[key] = decoded; })
-          .catch(() => {})
-      );
-    }
-  });
-  await Promise.all(promises);
-  audioInitialized = true;
+// ALWAYS pass gameState explicitly
+export function moveSnake(gameState) { // CORRECT
+  gameState.snake.segments.unshift(newHead);
 }
-
-export function resumeAudio() {
-  if (audioContext && audioContext.state === 'suspended') {
-    audioContext.resume();
-  }
-}
-
-export function playMoveSound(gameState) {
-  if (!audioInitialized || !audioContext || audioContext.state === 'suspended') return;
-
-  const currentState = getCurrentState(gameState);
-  if (currentState !== previousState) {
-    currentAlternator = 0;  // Reset to Sound 1 on state change
-    previousState = currentState;
-  }
-
-  const buffer = audioBuffers[`${currentState}-${currentAlternator + 1}`];
-  if (buffer) {
-    const source = audioContext.createBufferSource();
-    source.buffer = buffer;
-    source.connect(audioContext.destination);
-    source.start(0);  // Near-zero latency, non-blocking
-  }
-  currentAlternator = 1 - currentAlternator;
-}
+// NEVER use global state access
 ```
 
-### Game Loop Integration (CRITICAL)
+### V2 Data Formats (MUST follow exactly)
 
 ```javascript
-// js/game.js - Sound DECOUPLED from while loop
-let tickedThisFrame = false;
-while (accumulator >= currentTickRate) {
-  update(gameState);       // Game logic only, NO sound here
-  accumulator -= currentTickRate;
-  tickedThisFrame = true;
-}
-// Sound ONCE per frame, after all updates settle
-if (tickedThisFrame && gameState.phase === 'playing') {
-  playMoveSound(gameState);
-}
-render(ctx, gameState);
+// Effect data crossing module boundaries: ALWAYS include scoreValue
+const effect = { type: 'speedBoost', scoreValue: 5 };  // CORRECT
+const effect = 'speedBoost';                            // WRONG
+
+// Popup labels: consistent convention
+scorePopup.spawnPopup(5, x, y, '');              // Food (no label)
+scorePopup.spawnPopup(24, x, y, 'COMBO');        // Combo multiplier
+scorePopup.spawnPopup(13, x, y, 'CALL BONUS');   // Phone bonus
 ```
 
----
+### V2 DOM & CSS Patterns (MUST follow exactly)
 
-## Module Organization
+```javascript
+// DOM popup cleanup: ALWAYS use animationend
+el.addEventListener('animationend', () => el.remove()); // CORRECT
+setTimeout(() => el.remove(), 800);                     // WRONG
 
-### File Responsibilities
+// Visual state changes: ALWAYS use CSS classes
+overlay.classList.add('picked-up');                      // CORRECT
+endBtn.style.display = 'none';                          // WRONG
 
-| Module | Responsibility | MUST NOT Do |
-|--------|---------------|-------------|
-| **main.js** | Entry point, initialization, wiring | Game logic, rendering |
-| **config.js** | ALL tunable parameters (CONFIG object) | Computation, logic |
-| **state.js** | State structure, createInitialState(), resetGame() | Game logic updates |
-| **game.js** | Game loop, update orchestration | Direct rendering |
-| **snake.js** | Snake movement, growth, effect application | Collision detection |
-| **food.js** | Food spawning, type selection | Effect application |
-| **collision.js** | All collision detection | Movement logic |
-| **effects.js** | Effect application, duration tracking | Rendering |
-| **phone.js** | Phone call timing, overlay control | Game state updates |
-| **input.js** | Keyboard + touch → action mapping | Game logic |
-| **render.js** | Canvas drawing ONLY | State mutation |
-| **audio.js** | Web Audio API: sound loading, decoding, playback | Game logic |
+// Canvas state: CSS class + custom property
+canvas.classList.add('combo-active');                    // CORRECT
+canvas.style.setProperty('--combo-color', '#4A148C');   // For dynamic value
+canvas.style.backgroundColor = '#4A148C';               // WRONG
+
+// Reduced motion: read CONFIG flag (detected once in main.js)
+if (CONFIG.REDUCED_MOTION) { /* ... */ }                // CORRECT
+if (window.matchMedia('(prefers-reduced-motion)').matches) // WRONG
+```
+
+### V2 Module Patterns (MUST follow exactly)
+
+```javascript
+// Progression: call getState() once per context, destructure
+const { blinkProbability, comboProbability } = progression.getState(score); // CORRECT
+
+// WRONG: redundant calls in same scope
+const a = progression.getState(score).blinkProbability;  // WRONG
+const b = progression.getState(score).comboProbability;   // WRONG
+```
+
+### Configuration Rules
+
+**ALL tunable values MUST be in config.js:**
+- Grid dimensions, unit size
+- Snake starting parameters
+- Speed values and modifiers
+- Food probabilities
+- Phone call timing
+- All colors
+- V2: Fibonacci score values, blink/combo/phone threshold tables, combo canvas colors, popup tier specs, phone pickup Fibonacci sequence, phone grace score
+
+**NEVER hardcode magic numbers in other files.**
+
+### V2 Asset Path Rules
+
+```javascript
+// Sound files: assets/sounds/{category}-{descriptor}.mp3
+'assets/sounds/score-5.mp3'
+'assets/sounds/combo-entrance.mp3'
+'assets/sounds/phone-ring.mp3'
+
+// Portrait files: assets/callers/{kebab-case-name}.png
+'assets/callers/al-gorithm.png'
+'assets/callers/floppy-phil.png'
+```
+
+All paths relative to project root. All filenames kebab-case.
+
+### Naming Conventions
+
+| Element | Convention | Example |
+|---------|------------|---------|
+| Variables | camelCase | `snakeHead`, `foodPosition` |
+| Functions | camelCase | `getSnakeHead()`, `spawnFood()` |
+| Constants | SCREAMING_SNAKE_CASE | `TICK_RATE`, `GRID_WIDTH` |
+| Files | kebab-case | `game-loop.js`, `phone-overlay.js` |
+| CSS classes | kebab-case | `.game-container`, `.phone-overlay` |
+| CSS IDs | kebab-case | `#game-canvas`, `#phone-overlay` |
+
+### Code Style
+
+- 2-space indentation
+- Single quotes for strings: `'hello'` not `"hello"`
+- Semicolons required
+- One blank line between functions
 
 ### Module Boundaries
 
-**CRITICAL RULE:** Modules MUST NOT cross their responsibility boundaries.
-
-```javascript
-// CORRECT: Clear separation
-// In game.js
-import { moveSnake } from './snake.js';
-import { checkCollision } from './collision.js';
-import { playMoveSound } from './audio.js';
-
-// update() handles game logic ONLY (no sound)
-function update(gameState) {
-  moveSnake(gameState);
-  if (checkCollision(gameState)) handleDeath(gameState);
-}
-// playMoveSound() called ONCE per frame in gameLoop(), outside the while loop
-
-// WRONG: Mixing responsibilities
-// In snake.js (DO NOT DO THIS)
-function moveSnake(gameState) {
-  // Move logic...
-  checkCollision(gameState); // ❌ Collision detection doesn't belong in snake.js
-  playSound(); // ❌ Audio doesn't belong in snake.js
-}
-```
+| Module | Allowed Access |
+|--------|---------------|
+| **State** | Only through passed `gameState` parameter |
+| **DOM** | Only in `main.js` (setup), `phone.js` (overlay), `score-popup.js` (popups) |
+| **Canvas** | Only in `render.js` |
+| **Scoring Logic** | Only in `scoring.js` — pure calculation, no side effects |
+| **Threshold Data** | Only in `config.js` — `progression.js` reads, never owns |
+| **Tier Resolution** | Only in `progression.js` — consumers call `getState()` once, destructure |
+| **Combo Logic** | Only in `combo.js` — `game.js` delegates, never manipulates combo fields directly |
+| **localStorage** | Only in `storage.js` |
+| **Audio** | Only in `audio.js` (v2: includes priority system) |
+| **Config** | Import `CONFIG` from `config.js` everywhere |
 
 ---
 
-## Naming Conventions
+## Anti-Patterns to AVOID
 
-### MANDATORY Naming Rules
+| DO NOT | DO INSTEAD |
+|--------|------------|
+| Use arrays for positions `[x, y]` | Use objects `{ x, y }` |
+| Use default exports | Use named exports |
+| Hardcode numbers in files | Put in `config.js` |
+| Use double quotes `"string"` | Use single quotes `'string'` |
+| Access global state | Pass `gameState` to functions |
+| Manipulate DOM in game logic | Keep DOM access in designated modules |
+| `{ type: 'speedBoost' }` crossing modules without scoreValue | `{ type: 'speedBoost', scoreValue: 5 }` |
+| `setTimeout(() => popup.remove(), 800)` | `popup.addEventListener('animationend', () => popup.remove())` |
+| `canvas.style.backgroundColor = color` | `canvas.classList.add('combo-active')` + CSS custom property |
+| `endBtn.style.display = 'none'` for phone states | `overlay.classList.add('picked-up')` with CSS rules |
+| `progression.getState(score)` called multiple times in one function | Call once, destructure: `const { a, b } = getState(score)` |
+| `window.matchMedia(...)` in individual modules | Read `CONFIG.REDUCED_MOTION` (detected once in main.js) |
+| Scoring math in game.js or combo.js | All scoring calculations in `scoring.js` only |
+
+---
+
+## Game Architecture Rules
+
+### Game Loop
 
 ```javascript
-// Functions: camelCase, verb-first
-export function moveSnake(gameState) { }
-export function checkWallCollision(position) { }
-export function playMoveSound(color) { }
-
-// Constants: SCREAMING_SNAKE_CASE
-const GRID_WIDTH = 25;
+// Fixed timestep (125ms = 8 moves/sec) + RAF (60 FPS render)
 const TICK_RATE = 125;
-const FOOD_PROBABILITIES = { /* ... */ };
+let accumulator = 0;
 
-// Variables: camelCase
-let gameState = createInitialState();
-const snakeHead = getSnakeHead(gameState);
-
-// File names: kebab-case (if multi-word, but prefer single word)
-// snake.js, food.js, game.js (PREFERRED)
-// phone-call.js (ACCEPTABLE if needed)
-```
-
----
-
-## Configuration Pattern
-
-### ALL Tunable Values MUST Live in config.js
-
-```javascript
-// CORRECT: In config.js
-export const CONFIG = {
-  GRID_WIDTH: 25,
-  GRID_HEIGHT: 20,
-  UNIT_SIZE: 20,
-  BASE_SPEED: 8,
-  TICK_RATE: 125,
-
-  SNAKE_COLORS: {
-    DEFAULT: '#000000',
-    GROWING: '#00FF00',
-    INVINCIBILITY: '#FFFF00',
-    WALL_PHASE: '#800080',  // Purple for wall-phase food only
-    SPEED_BOOST: '#FF0000',
-    SPEED_DECREASE: '#00CED1',
-    REVERSE: '#FFA500'
-  },
-
-  // UI Design System - Unified purple-blue theme
-  UI: {
-    PURPLE_BLUE: 'rgb(157, 178, 221)',  // Single purple shade for ALL UI elements (menus, buttons, borders)
-    MENU_BORDER_RADIUS: '12px',  // All menu frames (Menu, Game Over, Feedback, Thank You, Phone, Score)
-    BUTTON_BORDER_RADIUS: '8px',  // All buttons
-    MODAL_BG: 'rgba(0, 0, 0, 0.6)',  // Transparent backgrounds for modal containers
-    OVERLAY_BG: 'rgba(0, 0, 0, 0.8)',  // 80% black overlay behind modals
-    BUTTON_INACTIVE: '#000000',  // Black inactive state
-    BUTTON_ACTIVE: 'rgb(157, 178, 221)',  // Purple-blue active state
-    TEXT_COLOR: '#FFFFFF'  // White text always
-  },
-
-  // Audio: 14 alternating MP3s managed by Web Audio API in audio.js
-  // Sound states: default, growing, invicibility, wallphase, speedboost, speeddecrease, reverse
-  // Each state has 2 alternating sounds: move-{state}-1.mp3 & move-{state}-2.mp3
-  // Files located in: assets/sounds/
-};
-
-// WRONG: Magic numbers in code
-function moveSnake() {
-  if (position.x > 25) { /* ... */ } // ❌ Use CONFIG.GRID_WIDTH
-  setTimeout(tick, 125); // ❌ Use CONFIG.TICK_RATE
-}
-```
-
----
-
-## State Management
-
-### Single State Object Pattern
-
-```javascript
-// Defined in state.js, passed to all functions that need it
-const gameState = {
-  phase: 'playing',  // 'menu' | 'playing' | 'gameover'
-  snake: {
-    segments: [{ x, y }, ...],
-    direction: 'right',
-    nextDirection: 'right',
-    color: '#000000'
-  },
-  food: {
-    position: { x, y },
-    type: 'growing'
-  },
-  activeEffect: null,  // { type: 'invincibility', speedMultiplier: 1.0 } or null
-  score: 0,
-  highScore: 0,
-  phoneCall: {
-    active: false,
-    caller: null,
-    nextCallTime: 0
-  }
-};
-```
-
-### State Access Rules
-
-```javascript
-// CORRECT: Pass state explicitly
-function moveSnake(gameState) {
-  const head = gameState.snake.segments[0];
-  // ...
-}
-
-// WRONG: Access global state
-let globalState; // ❌ FORBIDDEN
-function moveSnake() {
-  const head = globalState.snake.segments[0]; // ❌ FORBIDDEN
-}
-```
-
----
-
-## Performance Requirements
-
-### Non-Negotiable Performance Targets
-
-- **Frame Rate:** 60 FPS ALWAYS (even during phone call overlay)
-- **Input Lag:** < 50ms from key press to state update
-- **Memory Usage:** < 100MB total
-- **Audio Latency:** < 100ms from movement to sound playback
-- **Load Time:** < 3 seconds (including all assets)
-
-### Performance Validation
-
-```javascript
-// Game loop MUST maintain 60 FPS
 function gameLoop(currentTime) {
   const deltaTime = currentTime - lastTime;
-
-  // Fixed timestep for consistent gameplay
+  lastTime = currentTime;
   accumulator += deltaTime;
+
   while (accumulator >= TICK_RATE) {
-    update(gameState);  // MUST complete in < 16ms
+    update(gameState);  // Fixed timestep
     accumulator -= TICK_RATE;
   }
 
-  render(ctx, gameState);  // MUST complete in < 16ms
+  render(ctx, gameState);  // Every frame
   requestAnimationFrame(gameLoop);
 }
 ```
 
----
-
-## Testing Requirements
-
-### Required Test Coverage
-
-1. **Effect Application:** Each food type applies correct effect
-2. **Effect Duration:** Effects persist until next food is eaten
-3. **Invincibility:** Wall collision ignored, self-collision ignored
-4. **Wall Phase:** Pass through walls to opposite side
-5. **Phone Call Timing:** Triggered within min/max delay range
-6. **Phone Dismissal:** Spacebar clears overlay
-7. **Audio Mapping:** Correct sound plays for each snake color
-
-### Test Pattern
+### State Structure (V2)
 
 ```javascript
-// Test files in /test directory
-// Use simple assertions, no framework needed for MVP
+const gameState = {
+  phase: 'menu',  // 'menu' | 'playing' | 'gameover'
+  isPaused: false,
 
-function testInvincibility() {
-  const state = createInitialState();
-  applyEffect(state, 'invincibility');
+  snake: {
+    segments: [{ x, y }, ...],
+    direction: 'right',
+    nextDirection: 'right',
+    color: '#000000'    // Combo stripe colors derived at render time, NOT stored here
+  },
 
-  // Verify color changed
-  assert(state.snake.color === '#FFFF00', 'Color should be yellow');
+  food: {
+    position: { x, y },
+    type: 'growing',
+    isBlinking: false,       // V2: true if mystery food
+    hiddenType: null,        // V2: actual type when blinking
+    blinkCycleIndex: 0       // V2: current color in cycle (0-5), updated by game.js each frame
+  },
 
-  // Verify wall collision ignored
-  const collided = checkWallCollision(state);
-  assert(!collided, 'Should ignore wall collision');
-}
-```
+  activeEffect: null,  // { type: 'invincibility' } or null
+  score: 0,
+  highScore: 0,
 
----
+  phoneCall: {
+    active: false,
+    caller: null,
+    callerData: null,        // V2: { name, portrait, line }
+    nextCallTime: 0,
+    pickedUp: false,         // V2: true after Pick Up pressed
+    pickUpEndTime: 0,        // V2: when blur timer expires
+    pickUpBonus: 0,          // V2: Fibonacci bonus value
+    pickUpCount: 0,          // V2: consecutive pickups this game (resets on new game)
+    graceActive: true        // V2: no calls until score >= PHONE_GRACE_SCORE
+  },
 
-## Error Handling
+  // V2 NEW
+  combo: {
+    active: false,
+    phase: 'inactive',       // 'inactive' | 'waitingForB' | 'waitingForExit'
+    effectA: null,           // { type, scoreValue }
+    effectB: null,           // { type, scoreValue }
+    canvasColor: null,       // '#4A148C', '#0D47A1', '#B71C1C', or '#1B5E20'
+    paused: false            // true when phone overlay active
+  },
 
-### Graceful Degradation Rules
+  effects: {
+    wallPhaseUsed: false     // V2: true if wall phased through (for +1/+3 conditional scoring)
+  },
 
-```javascript
-// CORRECT: Non-blocking error handling (Web Audio API)
-export function playMoveSound(gameState) {
-  if (!audioInitialized || !audioContext || audioContext.state === 'suspended') return;
-
-  try {
-    const buffer = audioBuffers[soundKey];
-    if (buffer) {
-      const source = audioContext.createBufferSource();
-      source.buffer = buffer;
-      source.connect(audioContext.destination);
-      source.start(0);  // Non-blocking, no promises
-    }
-  } catch (error) {
-    console.warn('[Audio] Error:', error.message);  // Never crash the game loop
+  ui: {
+    mysteryFoodTooltipShown: false,  // V2: first-time "Mystery Food!" tooltip
+    lastPopupTime: 0                 // V2: for 300ms popup stagger
   }
-}
-
-// WRONG: Throwing errors that could crash the game
-if (!sound) {
-  throw new Error('Invalid color'); // ❌ FORBIDDEN: would crash game loop
-}
+};
 ```
+
+**Reset Rules:** On new game / Play Again: ALL fields reset. `phoneCall.pickUpCount` → 0. `combo` → inactive. `ui.mysteryFoodTooltipShown` → false.
+
+### Effect Duration Rule
+
+ALL timed effects (invincibility, wall phase, speed boost, speed decrease, reverse controls) end when the NEXT food is eaten. Not time-based.
+
+### V2 Scoring Pipeline
+
+**Score-based, NOT time-based** — all game systems use score thresholds to gate progression.
+
+```
+scoring.js (pure calc) → game.js (orchestrate) → score-popup.js (display)
+```
+
+**Fibonacci Food Scores:**
+
+| Food Type | Score | Condition |
+|-----------|-------|-----------|
+| Invincibility | 0 | Always |
+| Growing | +1 | Always |
+| Speed Decrease | +2 | Always |
+| Wall Phase | +1 / +3 | +1 default, +3 if wall actively phased through |
+| Speed Boost | +5 | Always |
+| Reverse Controls | +8 | Always |
+
+**Combo:** Effect A score × Effect B score (multiplicative)
+**Phone:** End = +1 flat. Pick Up = Fibonacci sequence [+2, +3, +5, +8, +13, +21, +34] per consecutive pickup.
+
+### V2 Combo State Machine
+
+```
+inactive → waitingForB → waitingForExit → inactive
+```
+
+- Probability-based activation (10% at score 40, up to 50% at score 120+)
+- Canvas transitions to random dark color (500ms fade)
+- Snake renders with alternating stripe pattern (Effect A / Effect B colors)
+- 3-food lifecycle: activate → eat food B (stripe + multiply) → eat food C (exit)
+- Pauses when phone overlay active, resumes when dismissed
+
+### V2 Phone Call Mechanic
+
+- Game CONTINUES running during phone overlay (critical requirement)
+- CSS `filter: blur()` applied to game canvas
+- Phone UI is DOM elements, not canvas-rendered
+- 60 FPS must be maintained during overlay
+- V2: Two buttons — End (Space, +1) and Pick Up (Enter, Fibonacci bonus)
+- V2: Pick Up starts 1-3s blur timer with countdown bar, reveals caller one-liner
+- V2: Pick Up is irreversible — cannot End once committed
+- V2: Consolation reward — Pick Up bonus awarded even on death during blur
+- V2: Score-based call frequency (5 tiers from relaxed to relentless)
+- V2: Grace period — no calls until score >= 5
+- V2: 21 callers with tech pun names, 64x64 pixel portraits, funny one-liners
+
+### V2 Cross-System Orchestration
+
+**Rules live in game.js as guard clauses (NOT event bus):**
+
+| Rule | Implementation |
+|------|---------------|
+| Combo pauses during phone | `combo.pause()` on phone show, `combo.resume()` on dismiss |
+| Combo transition delays 200ms when phone active | Guard clause in combo.js |
+| Popup stagger 300ms | score-popup.js checks `lastPopupTime` |
+| Phone bonus labeled "CALL BONUS" | Label param passed to spawnPopup() |
+| Death awards both combo + phone | game.js onDeath() checks both states |
+
+### V2 Progression Engine
+
+All systems query `progression.getState(score)` for score-based thresholds:
+- `blinkProbability` — food.js at spawn time
+- `comboProbability` — game.js after food eaten
+- `phoneTier` — phone.js when scheduling next call
+- `phoneGraceActive` — phone.js before scheduling
+
+Threshold tables live in `config.js`. Resolution logic in `progression.js`.
+
+### Visual Specifications
+
+**Grid Styling:**
+- Background: `#E8E8E8` (light grey)
+- Grid lines: `#A0A0A0` (darker grey)
+- Grid line width: `0.5px`
+- Grid opacity: `0.9`
+- Unit size: `20px` (canvas 500x400)
+
+**Border Styling:**
+- Border color: `#9D4EDD` (purple)
+- Border width: `6px`
+- No glow effect (solid border only)
+
+**Food Shapes (all 10x10 pixels at grid unit center):**
+- Growing (green): Filled square
+- Invincibility (yellow): 4-point star
+- Wall-Phase (purple): Ring/donut (hollow circle, 2px stroke)
+- Speed Boost (red): Cross/plus (+)
+- Speed Decrease (dark turquoise #00CED1): Hollow square (2px stroke)
+- Reverse Controls (orange): X shape (diagonal cross)
 
 ---
 
-## Code Style
+## File Responsibilities
 
-### Module Exports
-
-```javascript
-// CORRECT: Named exports only
-export function moveSnake(gameState) { }
-export function checkCollision(position) { }
-
-// WRONG: Default exports
-export default function moveSnake(gameState) { } // ❌ FORBIDDEN
-```
-
-### Function Style
-
-```javascript
-// CORRECT: Clear, single-purpose functions
-export function moveSnake(gameState) {
-  const head = getSnakeHead(gameState);
-  const newHead = calculateNewHead(head, gameState.snake.direction);
-  gameState.snake.segments.unshift(newHead);
-}
-
-// WRONG: Functions doing too many things
-export function updateEverything(state) { /* ... */ } // ❌ Too vague
-```
+| File | Does | Does NOT |
+|------|------|----------|
+| `config.js` | Define all parameters (v2: +thresholds, +Fibonacci values, +tiers) | Contain logic |
+| `state.js` | Create/reset state (v2: +combo, +phone v2, +effects, +ui fields) | Modify state during gameplay |
+| `game.js` | Orchestrate update loop (v2: +cross-system coordination, +popup triggering, +blink cycling) | Render anything, calculate scores |
+| `render.js` | Draw to canvas (v2: +blink colors, +striped snake, +combo bg, +food shadows) | Modify state |
+| `input.js` | Emit actions (v2: +Enter key for Pick Up) | Process game logic |
+| `phone.js` | Control overlay DOM, phone state machine (v2: two-button UI, Pick Up timer, portraits, one-liners, scheduling) | Modify snake/food/score state, calculate bonuses |
+| `audio.js` | Play sounds (v2: +score sounds, +combo sounds, +phone sounds, +priority system) | Access game logic |
+| `storage.js` | localStorage access | Contain game logic |
+| `scoring.js` | Calculate food/combo/phone score values (pure functions) | Trigger popups, modify state, access DOM |
+| `progression.js` | Resolve score → tier (blink, combo, phone probabilities/tiers) | Own threshold data (that's config.js), hold state |
+| `combo.js` | Manage combo state machine (activate, lifecycle, pause/resume) | Calculate scores (delegates to scoring.js), render |
+| `score-popup.js` | Spawn/animate/cleanup DOM popups, particles, screen shake | Contain game logic, calculate scores |
 
 ---
 
-## Critical Anti-Patterns
+## Testing Approach
 
-### NEVER Do These Things
+**Test Strategy:**
+- Unit tests for core game logic (snake movement, collision detection, food spawning, effects)
+- Manual browser testing for UI/UX and cross-browser compatibility
+- Performance validation using browser DevTools
 
-```javascript
-// ❌ FORBIDDEN: Positions as arrays
-const position = [x, y];
+**Unit Testing:**
+- Test framework: None (vanilla JS, manual test functions in `/test` folder)
+- Test files: Mirror structure (`test/snake.test.js` for `js/snake.js`)
+- Run tests: Open `test/index.html` in browser, verify console output
+- Coverage target: Core game logic modules (state, snake, food, collision, effects)
 
-// ❌ FORBIDDEN: Colors as RGB arrays
-const color = [255, 0, 0];
+**Manual Testing Checklist:**
+- Cross-browser: Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
+- All 6 food types spawn and apply effects correctly
+- All 4 keyboard layouts work (Arrow, WASD, ZQSD, Numpad) + mobile touch
+- Phone call dismissal with Space bar (desktop) and End button (mobile)
+- 60 FPS maintained during phone overlay
+- V2: Blinking food cycles colors correctly at score 20+
+- V2: Combo mode activates/deactivates with canvas color transition
+- V2: Striped snake renders correctly during combo
+- V2: Phone Pick Up (Enter key) starts timer with countdown bar
+- V2: Phone End (Space) and Pick Up both award correct bonuses
+- V2: Score popups display with correct tier visuals
+- V2: Combo pauses during phone overlay, resumes after
+- V2: Death during combo + phone awards both bonuses
+- V2: Caller portraits display (fallback icon if missing)
+- V2: Reduced motion mode respects `prefers-reduced-motion`
 
-// ❌ FORBIDDEN: Time in seconds
-const delay = 0.125;
-
-// ❌ FORBIDDEN: Direction as numbers
-const direction = 0; // up
-
-// ❌ FORBIDDEN: Magic numbers in code
-if (snake.x > 25) { }
-
-// ❌ FORBIDDEN: Global state access
-let globalState;
-function update() { globalState.score++; }
-
-// ❌ FORBIDDEN: Default exports
-export default something;
-
-// ❌ FORBIDDEN: Throwing errors in game loop
-throw new Error('Collision'); // Use return values or flags
-
-// ❌ FORBIDDEN: HTML5 Audio for game sound effects
-new Audio('assets/sounds/move.mp3'); // Use Web Audio API (AudioContext + AudioBufferSourceNode)
-
-// ❌ FORBIDDEN: Sound playback inside the while accumulator loop
-while (accumulator >= tickRate) {
-  update(gameState);
-  playMoveSound(gameState); // ❌ Causes multiple sounds per frame
-}
-
-// ❌ FORBIDDEN: Audio errors crashing the game loop
-source.start(); // Always wrap in try/catch
-
-// ❌ FORBIDDEN: Multiple purple colors (DEPRECATED DESIGN)
-const borderColor = '#800080'; // Use rgb(157, 178, 221) instead
-const uiColor = '#9D4EDD'; // Use rgb(157, 178, 221) instead
-
-// ❌ FORBIDDEN: Sharp corners on UI menus (DEPRECATED DESIGN)
-borderRadius: 0; // Use 12px for menus, 8px for buttons
-
-// ❌ FORBIDDEN: Grey phone call screen (DEPRECATED DESIGN)
-background: '#C0C0C0'; // Use rgba(0, 0, 0, 0.6) instead
-
-// ❌ FORBIDDEN: Nokia aesthetic references (DEPRECATED DESIGN)
-// Phone call overlay should match all other menus with unified design system
-
-// ❌ FORBIDDEN: Black borders on phone (DEPRECATED DESIGN)
-border: '4px solid #000000'; // Use purple-blue rgb(157, 178, 221) instead
-```
+**Performance Validation:**
+- Load time: Use DevTools Network tab → verify DOMContentLoaded < 3 seconds
+- FPS: Use DevTools Performance tab → record 10-second gameplay, verify 60 FPS avg
+- Phone overlay FPS: Record during active phone call, verify no frame drops
+- V2: Verify DOM popup cleanup (no orphaned elements after popups animate out)
+- V2: Audio priority system — no sound mud during combo + phone + score overlap
 
 ---
 
-## Implementation Checklist
+## Usage Guidelines
 
-Before submitting ANY code, verify:
+**For AI Agents:**
+- Read this file before implementing any code
+- Follow ALL rules exactly as documented — both v1 and v2 sections
+- When in doubt, prefer the more restrictive option
+- Architecture reference for full details: `_bmad-output/planning-artifacts/architecture.md`
 
-**Data Formats:**
-- ✅ Positions use `{ x, y }` objects
-- ✅ Colors use hex strings `'#RRGGBB'` or `rgb()` format
-- ✅ Time values are in milliseconds
-- ✅ Directions are string literals
+**For Humans:**
+- Keep this file lean and focused on agent needs
+- Update when technology stack or patterns change
+- Remove rules that become obvious over time
 
-**Design System:**
-- ✅ ALL UI elements use `rgb(157, 178, 221)` for purple-blue (single shade only)
-- ✅ Menu frames have 12px rounded corners
-- ✅ Buttons have 8px rounded corners
-- ✅ Modal backgrounds use `rgba(0, 0, 0, 0.6)` over 80% black overlays
-- ✅ Buttons: black inactive → purple-blue active, white text always
-- ✅ NO Nokia aesthetic, NO grey backgrounds, NO black borders on phone
-- ✅ Phone call overlay matches all other menus (unified design)
-
-**Code Patterns:**
-- ✅ No magic numbers (all values in CONFIG)
-- ✅ Named exports only
-- ✅ State passed explicitly to functions
-- ✅ Module stays within its responsibility boundary
-
-**Audio:**
-- ✅ Audio uses Web Audio API (AudioContext + AudioBufferSourceNode), NOT HTML5 Audio
-- ✅ Audio files are MP3 format (44.1kHz, 16-bit, mono)
-- ✅ Audio playback decoupled from while loop (once per frame, not per tick)
-- ✅ Audio playback has error handling (try/catch, never crash game loop)
-
-**Performance:**
-- ✅ Code maintains 60 FPS performance
-
----
-
-## Questions?
-
-If unclear about any pattern, refer to:
-1. This document (project-context.md) - FIRST
-2. architecture.md - For architectural decisions
-3. Existing code in the project - For implementation examples
-
-**When in doubt:** Follow the simplest pattern that maintains these rules.
+Last Updated: 2026-02-07
