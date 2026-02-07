@@ -116,6 +116,41 @@ const a = progression.getState(score).blinkProbability;  // WRONG
 const b = progression.getState(score).comboProbability;   // WRONG
 ```
 
+### V2 Behavioral Invariants (MUST follow exactly)
+
+```javascript
+// combo.isActive() MUST check paused state — paused combo is NOT active for food eating
+export function isActive(gameState) {
+  return gameState.combo.active && !gameState.combo.paused; // CORRECT
+  // return gameState.combo.active;                         // WRONG — ignores pause
+}
+
+// Wall Phase scoring reset sequence — STRICT ORDER, never reorder:
+// 1. READ wallPhaseUsed  2. SCORE  3. CLEAR effect  4. RESET boolean  5. APPLY new effect
+const wallPhaseUsed = gameState.effects.wallPhaseUsed;     // 1. Read FIRST
+const value = scoring.calculateFoodScore(type, wallPhaseUsed); // 2. Score
+effects.clearEffect(gameState);                             // 3. Clear
+gameState.effects.wallPhaseUsed = false;                    // 4. Reset
+effects.applyEffect(gameState, newType);                    // 5. Apply new
+
+// score-popup.js gridToPixel — MUST use getBoundingClientRect()
+function gridToPixel(gridX, gridY) {
+  const rect = canvas.getBoundingClientRect();              // CORRECT — dynamic
+  return {
+    x: rect.left + (gridX * CONFIG.UNIT_SIZE) + (CONFIG.UNIT_SIZE / 2),
+    y: rect.top + (gridY * CONFIG.UNIT_SIZE) + (CONFIG.UNIT_SIZE / 2)
+  };
+  // const x = gridX * CONFIG.UNIT_SIZE;                    // WRONG — ignores layout
+}
+
+// game.js orchestration — named handlers, thin loop body
+function onFoodEaten(gameState) { /* all food logic here */ }     // CORRECT
+function onPhoneCallShow(gameState) { /* all show logic here */ } // CORRECT
+function onPhoneCallDismiss(gameState) { /* all dismiss logic */ } // CORRECT
+function onDeath(gameState) { /* all death logic here */ }        // CORRECT
+// Inline if-else chains in the game loop body                    // WRONG
+```
+
 ### Configuration Rules
 
 **ALL tunable values MUST be in config.js:**

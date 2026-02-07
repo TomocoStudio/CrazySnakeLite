@@ -1283,7 +1283,7 @@ Three new design documents drive this architecture evolution:
 | `render.js` | Blinking food color cycling (frame-aware), striped snake rendering (combo), conditional segment borders, combo canvas background color, food drop shadows |
 | `config.js` | Massive expansion: Fibonacci score values, PHONE_CALL_TIERS, PHONE_PICKUP_FIBONACCI, blinking thresholds, combo thresholds, combo canvas colors, popup specs |
 | `state.js` | Extended gameState: combo object, phone v2 fields (pickedUp, pickUpEndTime, pickUpBonus, pickUpCount, graceActive), blinkingFood tracking |
-| `game.js` | Cross-system orchestration: combo↔phone pause/resume coordination, popup triggering, progression state queries |
+| `game.js` | Cross-system orchestration: combo↔phone pause/resume coordination, popup triggering, progression state queries. **Hard rule:** all orchestration logic MUST be organized into named handler functions: `onFoodEaten()`, `onPhoneCallShow()`, `onPhoneCallDismiss()`, `onDeath()`. The game loop itself stays thin — it only calls these handlers. No inline orchestration logic in the loop body. |
 | `food.js` | Blinking determination at spawn (queries progression.js), foodType → Fibonacci score value mapping, Wall Phase conditional scoring context |
 | `input.js` | Enter key binding for Pick Up |
 | `effects.js` | Wall Phase usage tracking (wallPhaseUsed boolean for +1/+3 conditional scoring) |
@@ -1299,11 +1299,34 @@ Three new design documents drive this architecture evolution:
 
 **Rationale:** Guard clauses are simpler, more testable, and more debuggable than event systems for this scale of cross-system interaction. Each coordination rule maps to one `if` check in one location.
 
+### Combo-Paused Food Eating Semantics (Invariant)
+
+**Rule:** When `combo.paused === true` (phone overlay is active), the combo lifecycle **freezes entirely**. If the snake eats food while combo is paused, that food scores normally (non-combo path) and does NOT advance the combo state machine.
+
+**Implementation:** `combo.isActive(gameState)` MUST return `false` when `gameState.combo.active === true && gameState.combo.paused === true`. The check is: `return gameState.combo.active && !gameState.combo.paused`.
+
+**Rationale:** This respects Celia's cognitive pause philosophy — at score 40-60, combos are being *learned*. Forcing the player to track combo lifecycle while managing a phone call blur exceeds working memory limits. The pause means "combo is on hold, everything else is normal until the phone resolves." After phone dismissal, `combo.resume()` restores `paused = false` and the combo lifecycle picks up where it left off.
+
+**Edge case sequence:**
+1. Player in combo `waitingForB`, phone call fires → combo pauses
+2. Player picks up (1-3s blur), snake eats food during blur
+3. Food scores normally via `scoring.calculateFoodScore()` (non-combo path, because `combo.isActive()` returns `false`)
+4. Phone timer expires → combo resumes → next food eaten advances combo to `waitingForB` → `waitingForExit` normally
+
 ### Wall Phase Conditional Scoring (Edge Case)
 
 Wall Phase food scores +1 by default, +3 if the player actively phases through a wall during the effect. This means the scoring pipeline is not purely `foodType → fixedValue`. It becomes `(foodType, context) → score`.
 
-**Architectural implication:** `effects.js` or `collision.js` tracks a `wallPhaseUsed` boolean. When the next food is eaten, the scoring function checks: was Wall Phase active AND was the wall actually used? If yes → +3. If no → +1. This boolean resets when the effect clears.
+**Architectural implication:** `effects.js` tracks a `wallPhaseUsed` boolean in `gameState.effects.wallPhaseUsed`. When the next food is eaten, the scoring function checks: was Wall Phase active AND was the wall actually used? If yes → +3. If no → +1.
+
+**Reset Sequence (Invariant):** When food is eaten, the following operations execute in this exact order:
+1. **Read** `gameState.effects.wallPhaseUsed` (scoring function consumes it)
+2. **Score** the food via `scoring.calculateFoodScore(foodType, wallPhaseUsed)`
+3. **Clear** the current effect via `effects.clearEffect(gameState)`
+4. **Reset** `gameState.effects.wallPhaseUsed = false`
+5. **Apply** the new food's effect via `effects.applyEffect(gameState, newFoodType)`
+
+This ordering guarantees the scoring function reads `wallPhaseUsed` before it resets, and the reset happens before the next effect applies. The boolean never carries over between food cycles.
 
 ---
 
@@ -1379,6 +1402,8 @@ Implementation: Simple `currentPriority` tracker in `audio.js`. When a high-prio
 **Pre-load Strategy:**
 - **All 27 audio files pre-loaded at init** (~1.3MB total at <50KB each). Same as v1 pattern. Preserves <200ms temporal contiguity for score sounds.
 - **Portraits loaded on-demand** per call via `<img>` tag. `onerror` fallback to generic phone icon. No pre-loading.
+
+**Post-launch optimization path (not required for MVP):** If mobile load times exceed the 3-second budget on slower connections, consider tiered audio loading: (1) v1 movement sounds + gameover at init (essential for first game), (2) score sounds + phone sounds lazy-loaded after first frame renders (needed by score 1 and score 5 respectively), (3) combo sounds lazy-loaded after score 30 (not needed until score 40). This preserves temporal contiguity for each sound category while reducing initial payload. The `audio.js` module's existing `fetch → decodeAudioData` pattern naturally supports deferred loading — no architectural change needed, only scheduling logic.
 
 **Graceful Asset Degradation:**
 - Missing sound file → silent skip (no crash, no error visible to player)
@@ -1557,7 +1582,10 @@ export function resume(gameState) {
 }
 
 export function isActive(gameState) {
-  // Returns gameState.combo.active
+  // Returns gameState.combo.active && !gameState.combo.paused
+  // IMPORTANT: A paused combo is NOT active for food-eating purposes.
+  // Food eaten while combo is paused scores normally (non-combo path).
+  // See "Combo-Paused Food Eating Semantics" invariant above.
 }
 ```
 
@@ -1726,7 +1754,9 @@ export function triggerScreenShake() {
 | Phone bonus | `score-popup-phone` | Medium gold, 800ms, "CALL BONUS" label |
 | Combo result | Tier based on value | Uses standard tier for calculated value |
 
-**Coordinate Conversion:** `score-popup.js` uses a `gridToPixel(x, y)` utility to convert grid coordinates to DOM pixel positions. This function reads `CONFIG.UNIT_SIZE` and canvas offset. Lives in `score-popup.js` as an internal helper (only this module needs it for positioning).
+**Coordinate Conversion:** `score-popup.js` uses a `gridToPixel(x, y)` utility to convert grid coordinates to DOM pixel positions. Lives in `score-popup.js` as an internal helper (only this module needs it for positioning).
+
+**Implementation rule:** `gridToPixel` MUST use `canvas.getBoundingClientRect()` at call time to determine the canvas's actual screen position, then compute: `pixelX = rect.left + (gridX * CONFIG.UNIT_SIZE) + (CONFIG.UNIT_SIZE / 2)` and equivalent for Y. Do NOT assume static canvas positioning or use hardcoded offsets — the canvas may be centered, responsive-resized, or scrolled. `getBoundingClientRect()` accounts for all CSS layout, transforms, and scroll offset automatically.
 
 **300ms Stagger Rule:** `score-popup.js` tracks `gameState.ui.lastPopupTime`. Before spawning, checks if 300ms have elapsed since last popup. If not, delays via `setTimeout`. Prevents visual collision when combo + phone popups fire near-simultaneously.
 
@@ -2160,6 +2190,10 @@ if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { ... }
 5. Follow asset path naming: `assets/sounds/{cat}-{desc}.mp3`, `assets/callers/{kebab-name}.png`
 6. Read `CONFIG.REDUCED_MOTION` flag — never query `window.matchMedia` directly in modules
 7. Pass popup labels consistently: `''` for food, `'COMBO'` for combo, `'CALL BONUS'` for phone
+8. `combo.isActive()` returns `active && !paused` — a paused combo is NOT active for food-eating. Food eaten during combo pause scores normally via non-combo path
+9. Wall Phase scoring reset sequence: read `wallPhaseUsed` → score → clear effect → reset boolean → apply new effect (strict order, never reorder)
+10. `score-popup.js` `gridToPixel()` MUST use `canvas.getBoundingClientRect()` at call time — never assume static canvas positioning
+11. Organize `game.js` orchestration into named handler functions (`onFoodEaten()`, `onPhoneCallShow()`, `onPhoneCallDismiss()`, `onDeath()`) — keep the game loop body thin
 
 **V2 Anti-Patterns to Avoid:**
 
@@ -2171,6 +2205,10 @@ if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { ... }
 | `endBtn.style.display = 'none'` for phone states | `overlay.classList.add('picked-up')` with CSS rules |
 | `progression.getState(score)` called 3 times in one function | Call once, destructure: `const { a, b } = progression.getState(score)` |
 | `window.matchMedia('(prefers-reduced-motion)').matches` in render.js | Read `CONFIG.REDUCED_MOTION` |
+| `combo.isActive()` returning `true` when paused | `return gameState.combo.active && !gameState.combo.paused` |
+| Scoring Wall Phase after resetting `wallPhaseUsed` | Read boolean FIRST, then score, then reset — strict order |
+| `gridToPixel` using hardcoded canvas offset | Use `canvas.getBoundingClientRect()` at call time |
+| Inline orchestration logic in game loop body | Named handlers: `onFoodEaten()`, `onPhoneCallShow()`, etc. |
 
 ---
 
@@ -2598,7 +2636,7 @@ V2 project structure directly supports all architectural decisions:
 **Critical Gaps:** None
 
 **Minor Observations (implementation-time clarification, not blocking):**
-1. `feedback.js` exists in v1 codebase but not in v1 architecture doc — its relationship to `score-popup.js` should be clarified during story creation (potential consolidation or deprecation)
+1. **`feedback.js` vs `score-popup.js` — No overlap, no consolidation needed.** `feedback.js` is the email feedback modal system (star ratings, character counter, mailto submission) — entirely unrelated to score popups. The naming may appear to suggest overlap, but the modules serve completely different purposes. `feedback.js` manages a persistent user-initiated modal; `score-popup.js` manages ephemeral game-triggered DOM popups. Both are valid DOM-accessing modules with distinct lifecycles. No deprecation or consolidation required.
 2. Phone ring audio looping strategy (Web Audio loop property vs re-trigger on interval) — implementation detail within `audio.js`
 3. Exact combo canvas color selection algorithm (random from 4 vs round-robin) — implementation detail within `combo.js`
 
