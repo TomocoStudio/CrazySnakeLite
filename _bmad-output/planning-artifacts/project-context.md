@@ -160,7 +160,7 @@ function onDeath(gameState) { /* all death logic here */ }        // CORRECT
 - Food probabilities
 - Phone call timing
 - All colors
-- V2: Fibonacci score values, blink/combo/phone threshold tables, combo canvas colors, popup tier specs, phone pickup Fibonacci sequence, phone grace score
+- V2: Fibonacci score values, blink/combo/phone threshold tables, combo canvas colors, popup tier specs, phone pickup Fibonacci sequence, phone grace score (3), cognitive stats tracking
 
 **NEVER hardcode magic numbers in other files.**
 
@@ -313,11 +313,21 @@ const gameState = {
   ui: {
     mysteryFoodTooltipShown: false,  // V2: first-time "Mystery Food!" tooltip
     lastPopupTime: 0                 // V2: for 300ms popup stagger
+  },
+
+  // V2: Cognitive feedback stats (displayed post-game)
+  cognitiveStats: {
+    rcSurvived: 0,           // Food eaten while reverse controls active
+    phoneCallsManaged: 0,    // End or Pick Up completed
+    mysteryFoodsEaten: 0,    // Blinking food consumed
+    comboMultipliers: 0,     // Combo food B eaten (multiplier triggered)
+    pickUpStreak: 0,         // Consecutive Pick Ups this game (mirrors pickUpCount)
+    peakComboScore: 0        // Highest single combo score this game
   }
 };
 ```
 
-**Reset Rules:** On new game / Play Again: ALL fields reset. `phoneCall.pickUpCount` → 0. `combo` → inactive. `ui.mysteryFoodTooltipShown` → false.
+**Reset Rules:** On new game / Play Again: ALL fields reset. `phoneCall.pickUpCount` → 0. `combo` → inactive. `ui.mysteryFoodTooltipShown` → false. `cognitiveStats` → all 0.
 
 ### Effect Duration Rule
 
@@ -325,7 +335,7 @@ ALL timed effects (invincibility, wall phase, speed boost, speed decrease, rever
 
 ### V2 Scoring Pipeline
 
-**Score-based, NOT time-based** — all game systems use score thresholds to gate progression.
+**Score-based, NOT time-based** — all game systems use score thresholds to gate progression. CrazySnakeLite is a cognitive fitness tool disguised as an arcade game (see `game-ux-principles.md` for the full vision).
 
 ```
 scoring.js (pure calc) → game.js (orchestrate) → score-popup.js (display)
@@ -333,17 +343,17 @@ scoring.js (pure calc) → game.js (orchestrate) → score-popup.js (display)
 
 **Fibonacci Food Scores:**
 
-| Food Type | Score | Condition |
-|-----------|-------|-----------|
-| Invincibility | 0 | Always |
-| Growing | +1 | Always |
-| Speed Decrease | +2 | Always |
-| Wall Phase | +1 / +3 | +1 default, +3 if wall actively phased through |
-| Speed Boost | +5 | Always |
-| Reverse Controls | +8 | Always |
+| Food Type | Score | Condition | Cognitive Training |
+|-----------|-------|-----------|-------------------|
+| Invincibility | 0 | Always | Impulse control (resist safe option) |
+| Growing | +1 | Always | Baseline motor |
+| Speed Decrease | +2 | Always | Cognitive breathing room |
+| Wall Phase | +1 / +3 | +1 default, +3 if wall actively phased through | Spatial reasoning |
+| Speed Boost | +5 | Always | Reflex + motor control |
+| Reverse Controls | +8 | Always | Executive function override (crown jewel) |
 
-**Combo:** Effect A score × Effect B score (multiplicative)
-**Phone:** End = +1 flat. Pick Up = Fibonacci sequence [+2, +3, +5, +8, +13, +21, +34] per consecutive pickup.
+**Combo:** Effect A score × Effect B score (multiplicative). Cap at 40% probability at score 120+.
+**Phone:** End = +1 flat. Pick Up = Fibonacci sequence [+2, +3, +5, +8, +13, +21, +34] per consecutive pickup. Grace period at score 3.
 
 ### V2 Combo State Machine
 
@@ -351,7 +361,7 @@ scoring.js (pure calc) → game.js (orchestrate) → score-popup.js (display)
 inactive → waitingForB → waitingForExit → inactive
 ```
 
-- Probability-based activation (10% at score 40, up to 50% at score 120+)
+- Probability-based activation (10% at score 40, up to 40% at score 120+)
 - Canvas transitions to random dark color (500ms fade)
 - Snake renders with alternating stripe pattern (Effect A / Effect B colors)
 - 3-food lifecycle: activate → eat food B (stripe + multiply) → eat food C (exit)
@@ -367,8 +377,8 @@ inactive → waitingForB → waitingForExit → inactive
 - V2: Pick Up starts 1-3s blur timer with countdown bar, reveals caller one-liner
 - V2: Pick Up is irreversible — cannot End once committed
 - V2: Consolation reward — Pick Up bonus awarded even on death during blur
-- V2: Score-based call frequency (5 tiers from relaxed to relentless)
-- V2: Grace period — no calls until score >= 5
+- V2: Score-based call frequency (5 tiers from relaxed to relentless, starting at score 3)
+- V2: Grace period — no calls until score >= 3 (brain gym: short comfort zone)
 - V2: 21 callers with tech pun names, 64x64 pixel portraits, funny one-liners
 
 ### V2 Cross-System Orchestration
@@ -455,7 +465,7 @@ Threshold tables live in `config.js`. Resolution logic in `progression.js`.
 - All 4 keyboard layouts work (Arrow, WASD, ZQSD, Numpad) + mobile touch
 - Phone call dismissal with Space bar (desktop) and End button (mobile)
 - 60 FPS maintained during phone overlay
-- V2: Blinking food cycles colors correctly at score 20+
+- V2: Blinking food cycles colors correctly at score 15+
 - V2: Combo mode activates/deactivates with canvas color transition
 - V2: Striped snake renders correctly during combo
 - V2: Phone Pick Up (Enter key) starts timer with countdown bar
@@ -479,6 +489,7 @@ Threshold tables live in `config.js`. Resolution logic in `progression.js`.
 
 **For AI Agents:**
 - Read this file before implementing any code
+- **MANDATORY: Read `_bmad-output/planning-artifacts/game-ux-principles.md` before any game design decision.** This is the cognitive science and UX baseline for the project. All new mechanics, system changes, and feature proposals must pass the Five-Question Filter and comply with the 7 Design Axioms defined there.
 - Follow ALL rules exactly as documented — both v1 and v2 sections
 - When in doubt, prefer the more restrictive option
 - Architecture reference for full details: `_bmad-output/planning-artifacts/architecture.md`

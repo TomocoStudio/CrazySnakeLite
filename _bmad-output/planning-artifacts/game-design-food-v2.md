@@ -15,7 +15,7 @@ This document defines a three-phase progression system for CrazySnakeLite that i
 2. **Progressive blinking food** that gradually introduces unpredictability as player skill increases
 3. **Combo mode system** that creates peak emotional moments through multiplicative scoring
 
-**Design Philosophy:** Transform Snake from a simple arcade game into a skill-based progression system with emergent depth, using cognitive psychology principles to maintain flow state while escalating challenge.
+**Design Philosophy:** CrazySnakeLite is a **cognitive fitness tool disguised as an arcade game**. Transform the universally known Snake into a progressively demanding brain training system that targets cognitive flexibility, working memory, divided attention, and executive function — the faculties most threatened by AI-driven cognitive offloading. Every mechanic is a targeted cognitive exercise delivered through fun gameplay. See `game-ux-principles.md` for the complete vision and cognitive training map.
 
 ---
 
@@ -94,21 +94,25 @@ Replace flat scoring with a Fibonacci-based reward system that creates proportio
 ## 🎲 PHASE 2: Progressive Blinking Food System
 
 ### Overview
-After score 20, food begins cycling through colors, hiding its effect type until consumed. Percentage of blinking food increases gradually with score.
+After score 15, food begins cycling through colors, hiding its effect type until consumed. Percentage of blinking food increases gradually with score, capping at 60% to maintain signal-to-noise ratio at high scores.
+
+**Cognitive Training Target:** Decision-making under uncertainty. The player must act with incomplete information — exactly the skill that AI-assisted decision-making is eroding.
 
 ### Blinking Probability Curve
 
-| Score Range | Blinking Food % | Player State |
-|-------------|-----------------|--------------|
-| 0-19 | 0% | Learning phase - pattern recognition |
-| 20-24 | 10% | Uncertainty introduction - occasional surprises |
-| 25-29 | 20% | Strategic adaptation phase |
-| 30-39 | 30% | Increasing unpredictability |
-| 40-59 | 40% | Major uncertainty - half visible, half mystery |
-| 60-79 | 50% | Equal predictability/chaos |
-| 80-99 | 60% | Majority mystery - strategic retreat difficult |
-| 100-119 | 70% | High chaos - expert territory |
-| 120+ | 80% | Maximum chaos - peak mastery required |
+| Score Range | Blinking Food % | Player State | Cognitive Training |
+|-------------|-----------------|--------------|-------------------|
+| 0-14 | 0% | Learning phase - pattern recognition | Baseline motor + perception |
+| 15-19 | 10% | Uncertainty introduction - occasional surprises | First uncertainty tolerance test |
+| 20-29 | 20% | Strategic adaptation phase | Risk assessment with partial info |
+| 30-39 | 30% | Increasing unpredictability | Comfort with ambiguity |
+| 40-59 | 40% | Significant uncertainty - combo adds complexity | Multi-system uncertainty management |
+| 60-79 | 50% | Equal predictability/chaos | Peak uncertainty challenge |
+| 80+ | 60% | Maximum uncertainty (cap) | Sustained ambiguity management |
+
+**Why cap at 60% (changed from 80%):** At 80% blinking, almost everything is mystery, and the player has so little information that decisions become effectively random — the brain enters reactive (amygdala-driven) mode rather than strategic (prefrontal-cortex-driven) mode. At 60%, 40% of food remains identifiable, preserving meaningful pattern recognition and strategic decision-making even at the highest scores. **A brain gym should always have a learnable skill dimension. Pure chaos is noise, not training.**
+
+**Why start at score 15 (changed from 20):** The comfort zone must be shorter. By score 15, the player has eaten 15+ foods, encountered multiple types, and processed several phone calls (which now start at score 3). They have a solid mental model of the food system. Introducing uncertainty 5 points earlier shortens the "autopilot" window and engages the brain sooner. This follows the **progressive overload** principle — cognitive training requires working at the edge of capacity, not below it.
 
 ### Blinking Behavior
 
@@ -142,7 +146,7 @@ After score 20, food begins cycling through colors, hiding its effect type until
 
 - No UI indicator needed (players "feel" the escalation naturally)
 - Blinking food uses same spawning probabilities as visible food (40% growing, 10% invincibility, etc.)
-- First time blinking food appears (score 20), consider brief tooltip: "Mystery Food! Effect hidden until consumed"
+- First time blinking food appears (score 15), consider brief tooltip: "Mystery Food! Effect hidden until consumed"
 
 ---
 
@@ -155,14 +159,18 @@ At high scores, players can enter "Combo Mode" where two food effects combine fo
 
 **Automatic Threshold-Based System:**
 
-| Score Range | Combo Probability per Food Eaten |
-|-------------|----------------------------------|
-| 0-39 | 0% (combos disabled) |
-| 40-59 | 10% |
-| 60-79 | 20% |
-| 80-99 | 30% |
-| 100-119 | 40% |
-| 120+ | 50% (cap) |
+**Cognitive Training Target:** Working memory + multiplicative thinking under time pressure. Combo mode demands the player hold two effect types in mind, anticipate their interaction, and execute under the stress of a transformed environment.
+
+| Score Range | Combo Probability per Food Eaten | Cognitive Load |
+|-------------|----------------------------------|----------------|
+| 0-39 | 0% (combos disabled) | N/A - other systems being learned |
+| 40-59 | 10% | Introduction — learn the new system |
+| 60-79 | 20% | Integration — manage combo with blinking + phone |
+| 80-99 | 30% | Mastery — combo becomes a regular challenge |
+| 100-119 | 35% | Expert — frequent but not dominant |
+| 120+ | 40% (cap) | Peak — combo is regular but never the only challenge |
+
+**Why cap at 40% (changed from 50%):** At 50%, the player spends more time in combo mode than out of it, diluting the "special event" feeling and overloading working memory alongside blinking food (60% cap) and relentless phone calls. At 40%, combo mode remains a *distinct peak experience* — the player enters it often enough to develop mastery but not so often that it becomes background noise. **Targeted challenge over raw chaos (Design Axiom #9).**
 
 **Activation Sequence:**
 1. When probability triggers after eating a food, **Combo Mode Activates**
@@ -325,40 +333,48 @@ If the player dies while in Combo Mode AND during an active Pick Up blur:
 
 ## 🎮 Complete Player Progression Arc
 
-### Phase 1: Learning (Score 0-20)
-**Duration:** ~1-2 minutes for new players
+### Phase 1: Learning (Score 0-14)
+**Duration:** ~1 minute for new players
 
 **Game State:**
 - All food colors visible and consistent
 - No blinking, no combos
-- No phone calls until score 5, then introduced at relaxed 12-20s intervals (see game-design-phone-calls-v2.md)
+- Phone calls begin at score 3 at relaxed 12-20s intervals (see game-design-phone-calls-v2.md)
 
 **Player Experience:**
 - Learning color-effect associations
 - Building motor memory (arrow key → direction)
 - Discovering Fibonacci scoring values
+- First phone call at score 3: "Wait, what's this? End or Pick Up?"
 - "Oh, orange gives +8 points! That's a lot!"
 
-**Brain State:** Pattern recognition, procedural memory formation
+**Brain State:** Pattern recognition, procedural memory formation, first divided attention challenge (phone calls)
+
+**Cognitive Training:** Motor control, basic pattern recognition, first real-time decision (End vs Pick Up)
 
 **Emotion:** Curiosity, learning excitement
 
+**Design Note (shorter comfort zone):** The brain doesn't grow in autopilot. Phone calls arrive at score 3 — only 3 foods into the game — ensuring the player's brain is *working* within the first 30 seconds. The pure "relaxed learning" window is deliberately short. This follows the progressive overload principle.
+
 ---
 
-### Phase 2: Uncertainty (Score 20-40)
+### Phase 2: Uncertainty (Score 15-39)
 **Duration:** ~1-2 minutes for intermediate players
 
 **Game State:**
-- 10-30% blinking food (gradual increase)
+- 10-30% blinking food (gradual increase from score 15)
 - No combos yet
-- Phone calls more frequent
+- Phone calls more frequent (8-15s at score 20+)
 
 **Player Experience:**
 - Strategic decision-making: "Should I risk that blinking food?"
 - Can't rely on pure memorization anymore
 - Learning to assess risk vs. reward in real-time
+- Phone calls add decision pressure alongside food uncertainty
 
 **Brain State:** Executive function, risk assessment, prefrontal cortex engagement
+
+**Cognitive Training:** Decision-making under uncertainty, risk tolerance, dual-system management (food uncertainty + phone decisions)
 
 **Emotion:** Tension, excitement, calculated risk
 
@@ -412,26 +428,98 @@ If the player dies while in Combo Mode AND during an active Pick Up blur:
 
 ---
 
-### Phase 5: Chaos Mastery (Score 100+)
+### Phase 5: Peak Cognitive Demand (Score 100+)
 **Duration:** Only the top 5-10% of players reach this
 
 **Game State:**
-- 70-80% blinking food (almost everything is mystery)
-- 40-50% combo chance (almost always in combo mode)
-- Canvas changes constantly
-- Phone calls relentless
+- 60% blinking food (cap — significant mystery but 40% still identifiable)
+- 35-40% combo chance (frequent but not dominant)
+- Phone calls relentless (4-8s intervals)
 - Snake very long (high collision risk)
 
 **Player Experience:**
-- Pure chaos management
-- Survival mode with scoring optimization
-- Cannot predict anything - pure adaptation
-- High-stakes combo multipliers (8 × 5 = 40 points possible)
-- Every food matters enormously
+- Every cognitive faculty under sustained demand
+- Pattern recognition still meaningful (40% visible food enables strategy)
+- Combo mode creates peak scoring moments (8 × 5 = 40 points possible)
+- Phone calls force rapid context-switching during already-demanding gameplay
+- Reverse Controls at this stage = the "heavy deadlift" of the cognitive gym
 
-**Brain State:** Peak arousal, flow + emergence, mastery
+**Brain State:** Sustained prefrontal cortex engagement, flow state for skilled players
 
-**Emotion:** "This is impossibly hard but I'm DOING IT!" - peak experience
+**Cognitive Training:** Full cognitive workout — simultaneous demands on working memory, attention, executive function, risk assessment, and context-switching. Unlike pure chaos, each demand remains *manageable individually* — the challenge is managing them *together*.
+
+**Emotion:** "This is incredibly hard but I'm DOING IT!" — peak experience
+
+**Design Note (targeted challenge, not raw chaos):** The previous design had all systems at maximum simultaneously (80% blinking, 50% combo, relentless phones). This created cognitive *noise* rather than cognitive *training*. The brain in noise mode enters amygdala-driven reactivity — surviving, but not learning. The revised caps (60% blink, 40% combo) ensure the player's prefrontal cortex stays engaged. **A brain gym should always have a learnable skill dimension at every difficulty level.** The player at score 150 should still be making *strategic* decisions, not just reacting randomly.
+
+---
+
+## 🧠 Reverse Controls: The Crown Jewel Mechanic
+
+### Why Reverse Controls Is Special
+
+Of all food effects, Reverse Controls (+8) is the most cognitively demanding — and the most aligned with CrazySnakeLite's brain-gym mission. It requires **executive function override**: the player must consciously suppress a deeply ingrained motor response (press right → go right) and replace it with the opposite (press right → go left). This engages the **prefrontal cortex** — the brain region responsible for critical thinking, decision-making, impulse control, and cognitive flexibility.
+
+These are precisely the faculties that AI dependency threatens most. Reverse Controls is the "heavy deadlift" of CrazySnakeLite's cognitive gym.
+
+### Mastery Recognition
+
+When the player **successfully navigates a Reverse Controls effect** (eats the next food without dying while controls are reversed), the existing +8 popup celebration (40px font, particles, screen shake, C major chord) already provides strong feedback. This moment should feel like the peak achievement of any game session.
+
+**Additional recognition (subtle, no extra points):**
+- After surviving Reverse Controls, a brief text flash: **"RC SURVIVED"** appears beneath the +8 popup (12px, white, 400ms fade). This is a cognitive acknowledgment — the game sees what the player's brain just accomplished.
+- The post-game cognitive feedback screen (see below) tracks total RC survivals as a headline stat.
+
+**No bonus points added** — the +8 Fibonacci reward already compensates the difficulty. Adding more would distort the scoring economy. The recognition is *informational*, not *monetary*.
+
+### Cognitive Science Rationale
+
+Executive function override is one of the highest-demand cognitive tasks the human brain can perform. It requires:
+1. **Inhibition** — suppressing the automatic motor response
+2. **Task switching** — activating the reversed mapping
+3. **Monitoring** — continuously checking that the reversed mapping is being applied
+4. **Error correction** — recovering when the automatic response slips through
+
+This is the same cognitive circuitry used for: resisting impulses, adapting to new situations, considering alternative perspectives, and solving novel problems. Training it through gameplay has direct transfer to real-world cognitive flexibility.
+
+---
+
+## 🏋️ Post-Game Cognitive Feedback
+
+### Overview
+
+After each game over, before the "Play Again" prompt, display 2-3 brief cognitive achievement stats. These transform the death screen from "you failed" into "look what your brain just did" — reinforcing the brain-gym identity without clinical language.
+
+### Design
+
+**Display: 3-second overlay after death animation, before Play Again button appears.**
+
+**Stats shown (pick the top 2-3 most impressive from the session):**
+
+| Stat | Display Text | Cognitive Faculty |
+|------|-------------|-------------------|
+| Reverse Controls survived | "Reverse Controls survived: 4" | Executive function |
+| Phone calls managed | "Phone calls managed: 7" | Divided attention |
+| Mystery foods eaten | "Mystery foods decoded: 12" | Decision under uncertainty |
+| Combo multipliers earned | "Combo multipliers: 3" | Working memory + strategy |
+| Pick Up streak | "Pick Up streak: 5" | Risk assessment + impulse control |
+| Peak combo score | "Best combo: ×24" | Peak cognitive performance |
+
+**Selection logic:** Show the 2-3 stats where the player performed best relative to the session. If the player survived 0 reverse controls, don't show that stat — only show achievements, never failures.
+
+**Visual style:**
+- Same Jersey20 font, 14px, white text with dark shadow
+- Appears centered below the score display
+- Fades in over 300ms, holds for 2.5s, fades out over 500ms
+- Play Again button appears after stats fade
+
+**Tone:** Celebratory, not clinical. These are achievements, not a medical report. The player should feel: "My brain did that."
+
+### Cognitive Science Rationale
+
+**Metacognitive feedback** — awareness of one's own cognitive processes — has been shown to improve learning and motivation (Flavell, 1979). By naming what the player's brain accomplished, the game creates a **self-efficacy loop**: "I can do hard cognitive tasks" → increased confidence → willingness to attempt harder challenges → improved cognitive fitness.
+
+This also directly combats the narrative of cognitive helplessness that AI dependency can create. The player sees concrete evidence that their brain is capable and active.
 
 ---
 
@@ -446,14 +534,24 @@ If the player dies while in Combo Mode AND during an active Pick Up blur:
 
 ### Blinking Food System
 - [ ] Implement color cycling animation (200ms per color)
-- [ ] Create probability curve based on score thresholds
+- [ ] Create probability curve based on score thresholds (starts at score 15, caps at 60% at score 80+)
 - [ ] Lock effect type at spawn, hide until consumed
 - [ ] Add "Reduce Motion" accessibility option (slower cycling or alpha pulse)
-- [ ] First-time tooltip at score 20: "Mystery Food! Effect hidden until consumed"
+- [ ] First-time tooltip at score 15: "Mystery Food! Effect hidden until consumed"
 - [ ] Test visual clarity at different cycle speeds
 
+### Reverse Controls Recognition
+- [ ] Add "RC SURVIVED" text flash after surviving Reverse Controls effect (12px, white, 400ms fade)
+- [ ] Track RC survival count per game session in gameState
+
+### Post-Game Cognitive Feedback
+- [ ] Track cognitive stats during gameplay: RC survivals, phone calls managed, mystery foods eaten, combo multipliers, pick up streak, peak combo score
+- [ ] After death: display top 2-3 cognitive achievement stats (300ms fade-in, 2.5s hold, 500ms fade-out)
+- [ ] Selection logic: show most impressive stats, never show zero-value stats
+- [ ] Play Again button appears after stats fade
+
 ### Combo Mode
-- [ ] Implement probability-based trigger system (10% at 40, cap at 50% at 120+)
+- [ ] Implement probability-based trigger system (10% at 40, cap at 40% at 120+)
 - [ ] Create canvas color change system (4 dark colors, random selection)
 - [ ] Implement 500ms smooth fade transition
 - [ ] Code striped snake rendering (alternating segment colors)
@@ -515,7 +613,7 @@ If the player dies while in Combo Mode AND during an active Pick Up blur:
    - Does Invincibility (0) create strategic trade-offs as intended?
 
 2. **Blinking Food Balance**
-   - Is 80% blinking at score 120+ exciting or overwhelming?
+   - Is 60% blinking at score 80+ (cap) providing the right challenge level?
    - Do players notice the gradual escalation (10% → 80%)?
    - Is 200ms cycle speed comfortable, or does it need to be slower?
 
@@ -535,7 +633,7 @@ If the player dies while in Combo Mode AND during an active Pick Up blur:
    - Are expert players (120+ score) still engaged, or is it just chaos?
 
 6. **Cognitive Load**
-   - At high scores (80% blinking + 40% combo + phone calls), is it exciting or overwhelming?
+   - At high scores (60% blinking + 40% combo + relentless phone calls), is the cognitive demand targeted or just noise?
    - Do players need breaks, or is the pacing manageable?
    - Does Speed Decrease food provide the intended "breathing room"?
 
@@ -675,18 +773,16 @@ If the player dies while in Combo Mode AND during an active Pick Up blur:
 
 ---
 
-## 🎮 Closing Notes
+## Closing Notes
 
-This system transforms CrazySnakeLite from a nostalgic Snake clone into a **skill-based progression game with emergent depth**. The three-phase structure (Learning → Uncertainty → Mastery) creates a natural narrative arc that respects player skill development.
+This system transforms CrazySnakeLite from a nostalgic Snake clone into a **cognitive fitness tool with emergent depth** — a brain gym for the age of AI. The five-phase structure (Learning → Uncertainty → Combo Introduction → Mastery → Peak Cognitive Demand) creates a natural progression that systematically engages deeper cognitive faculties as the player demonstrates mastery.
 
-The Fibonacci scoring is mathematically elegant and psychologically sound. The blinking food system prevents habituation. The combo mode creates peak emotional moments.
+The Fibonacci scoring rewards cognitive difficulty proportionally. The blinking food system trains decision-making under uncertainty. The combo mode trains working memory and multiplicative thinking. The Reverse Controls mechanic trains executive function override — the crown jewel of the cognitive gym. And the post-game cognitive feedback tells the player what their brain just accomplished.
 
-**This is player-centered game design at its finest.**
-
-Now go build something beautiful. 🧠✨
+**Difficulty is the product. Comedy makes it fun. Together, they build stronger brains.**
 
 ---
 
 *Document prepared by Celia*
 *Neuro-Game Design Expert*
-*"Respect the player's brain. Design for humans, not for your ego."*
+*"Respect the player's brain. Train it. Make it laugh."*

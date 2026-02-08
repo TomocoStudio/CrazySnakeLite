@@ -14,13 +14,13 @@ This document defines the "Pick Up vs End" phone call enhancement system that tr
 
 1. **Two-button phone overlay** (End for safety, Pick Up for risk/reward)
 2. **Fibonacci-based Pick Up bonus** escalating per consecutive pickup per game
-3. **Score-based progressive discovery** (no calls until score 5)
+3. **Score-based progressive discovery** (no calls until score 3)
 4. **Score-based call frequency tiers** (calls get more frequent as score rises)
 5. **Variable Pick Up timer** (1–3s random blur duration)
 6. **Caller portraits** (64x64 retro pixel art per caller)
 7. **Caller one-liners** (unique joke per caller, revealed only on Pick Up)
 
-**Core Design Philosophy:** Score-based, NOT time-based. All progression, difficulty, and rewards are gated by player achievement (score thresholds), not survival time. Reward what the player *achieves*.
+**Core Design Philosophy:** CrazySnakeLite is a **cognitive fitness tool disguised as an arcade game**. Score-based, NOT time-based. All progression, difficulty, and rewards are gated by player achievement (score thresholds), not survival time. The phone call system is a **divided attention and risk assessment trainer** — it forces rapid context-switching and real-time decision-making under incomplete information. See `game-ux-principles.md` for the complete vision and cognitive training map.
 
 ---
 
@@ -95,23 +95,27 @@ function getPickUpBonus(pickUpCount) {
 
 ### 1E. Score-Based Progressive Discovery
 
-Aligned with the existing Fibonacci Scoring System design where Score 0-19 is the "Learning phase":
+Aligned with the brain-gym principle that the comfort zone must be short — the brain doesn't grow in autopilot:
 
 | Score Threshold | Phone Call Behavior | Rationale |
 |----------------|-------------------|-----------|
-| **Score 0-4** | No phone calls | Player is learning movement + food types. Cognitive load budget spent on base mechanics. |
-| **Score 5+** | Phone calls active, End + Pick Up both available | Player has eaten 5+ foods, understands the food loop. Phone calls are the first "chaos layer" — introduced before blinking food (score 20). |
+| **Score 0-2** | No phone calls | Player is learning basic movement. Minimal grace period — just enough to understand direction controls. |
+| **Score 3+** | Phone calls active, End + Pick Up both available | Player has eaten 3 foods, understands the basic eat-to-score loop. Phone calls are the first cognitive challenge layer — arrives early to engage the brain before autopilot sets in. |
 
-**Why score 5:** It's the Fibonacci value for Speed Boost — the player has likely encountered 2-3 different food types by this point and built a basic mental model. Introducing phones at this threshold means they arrive *after* food understanding but *before* blinking food (score 20), creating a clean progression of surprise:
+**Why score 3 (changed from 5):** The brain-gym mission demands that cognitive challenge arrives *before* the player settles into routine. By score 3, the player has made 3 successful eat decisions and has a basic mental model of "move → eat → score." Introducing the first decision-layer (End vs Pick Up) at this point ensures the brain is *working* within the first 30 seconds of gameplay.
+
+The progression of cognitive demands is:
 
 ```
-Score 0-4:   Learn food -> movement -> scoring
-Score 5-19:  Phone calls introduced (End + Pick Up)
-Score 20+:   Blinking food introduced
-Score 40+:   Combo mode introduced
+Score 0-2:   Learn food -> movement -> scoring (pure motor learning)
+Score 3-14:  Phone calls introduced (divided attention + risk assessment)
+Score 15+:   Blinking food introduced (uncertainty management)
+Score 40+:   Combo mode introduced (working memory + multiplicative thinking)
 ```
 
-Each new system arrives as the previous one becomes familiar — textbook scaffolded learning.
+Each new system arrives as the previous one becomes familiar — textbook scaffolded learning, but with a **shorter comfort zone** than traditional entertainment-first design. The player should never feel like the game is "too easy" for more than a few seconds.
+
+**Cognitive training rationale:** The phone call mechanic targets **divided attention** and **rapid context-switching** — the player must interrupt snake navigation to evaluate a risk/reward decision, then resume navigation. This is the same cognitive skill demanded by real-world multitasking, and one of the faculties most atrophied by AI assistance.
 
 ### 1F. Phone Call Frequency — Score-Based Intervals
 
@@ -119,11 +123,11 @@ All call frequency is driven by score thresholds, not game time:
 
 | Score Range | Min Delay | Max Delay | Avg Calls/Min | Rationale |
 |------------|-----------|-----------|---------------|-----------|
-| 5-19 | 12s | 20s | ~3-4 | Introduction pace — learn the mechanic |
-| 20-39 | 8s | 15s | ~4-6 | Blinking food coexists — moderate pressure |
-| 40-59 | 6s | 12s | ~5-8 | Combo mode active — calls add to chaos |
+| 3-14 | 12s | 20s | ~3-4 | Introduction pace — learn the mechanic |
+| 15-39 | 8s | 15s | ~4-6 | Blinking food coexists — moderate pressure |
+| 40-59 | 6s | 12s | ~5-8 | Combo mode active — calls add to cognitive load |
 | 60-99 | 5s | 10s | ~6-10 | Mastery zone — high pressure |
-| 100+ | 4s | 8s | ~8-12 | Chaos mastery — relentless |
+| 100+ | 4s | 8s | ~8-12 | Peak cognitive demand — relentless context-switching |
 
 ### 1G. Pick Up Timer — Variable Duration (1-3s)
 
@@ -212,7 +216,7 @@ phoneCall: {
 
 ```javascript
 // Phone call enhancement - Score-based system
-PHONE_GRACE_SCORE: 5,                              // No calls until player reaches this score
+PHONE_GRACE_SCORE: 3,                              // No calls until player reaches this score (brain gym: short comfort zone)
 PHONE_END_BONUS: 1,                                // Points for ending a call (flat)
 PHONE_PICKUP_FIBONACCI: [2, 3, 5, 8, 13, 21, 34],  // Bonus per pickup #
 PHONE_PICKUP_MAX_BONUS: 34,                         // Cap at F(9)
@@ -221,8 +225,8 @@ PHONE_PICKUP_MAX_DURATION: 3000,                    // Max pick-up blur time (3s
 
 // Score-based call frequency tiers
 PHONE_CALL_TIERS: [
-  { minScore: 5,   minDelay: 12000, maxDelay: 20000 },
-  { minScore: 20,  minDelay: 8000,  maxDelay: 15000 },
+  { minScore: 3,   minDelay: 12000, maxDelay: 20000 },
+  { minScore: 15,  minDelay: 8000,  maxDelay: 15000 },
   { minScore: 40,  minDelay: 6000,  maxDelay: 12000 },
   { minScore: 60,  minDelay: 5000,  maxDelay: 10000 },
   { minScore: 100, minDelay: 4000,  maxDelay: 8000  },
@@ -371,14 +375,14 @@ No dark patterns detected. The Fibonacci escalation rewards *skill and courage*,
 
 ## 5. Complete Player Progression — Phone Calls Integrated
 
-| Score | Food System | Phone System | Combo System | Player State |
-|-------|------------|-------------|-------------|--------------|
-| 0-4 | All visible, Fibonacci scoring | **No calls** | None | Learning basics |
-| 5-19 | All visible | **Calls active** (12-20s), End+PickUp | None | Learning phone mechanic |
-| 20-39 | 10-30% blinking | Calls tighter (8-15s) | None | Managing uncertainty |
-| 40-59 | 30-40% blinking | Calls tighter (6-12s) | 10-20% combo chance | Peak complexity intro |
-| 60-99 | 50-60% blinking | Calls tighter (5-10s) | 30-40% combo chance | Mastery zone |
-| 100+ | 70-80% blinking | **Relentless** (4-8s) | 40-50% combo chance | Chaos mastery |
+| Score | Food System | Phone System | Combo System | Cognitive Training Focus |
+|-------|------------|-------------|-------------|--------------------------|
+| 0-2 | All visible, Fibonacci scoring | **No calls** | None | Motor learning, pattern recognition |
+| 3-14 | All visible | **Calls active** (12-20s), End+PickUp | None | Divided attention, first risk decisions |
+| 15-39 | 10-30% blinking | Calls tighter (8-15s) | None | Uncertainty management, dual-system load |
+| 40-59 | 30-40% blinking | Calls tighter (6-12s) | 10-20% combo chance | Working memory, multiplicative thinking |
+| 60-99 | 50-60% blinking | Calls tighter (5-10s) | 30% combo chance | Full cognitive engagement, flow state |
+| 100+ | 60% blinking (cap) | **Relentless** (4-8s) | 35-40% combo chance (cap) | Peak cognitive demand — all faculties |
 
 ---
 
@@ -404,7 +408,7 @@ No dark patterns detected. The Fibonacci escalation rewards *skill and courage*,
 ### Test Coverage Required
 
 - Fibonacci bonus calculation (all positions + cap)
-- Score-based grace period (no calls below score 5)
+- Score-based grace period (no calls below score 3)
 - Score-based tier selection (correct intervals per score range)
 - Pick Up timer lifecycle (start, countdown, auto-dismiss)
 - Consolation reward on death during Pick Up
@@ -465,4 +469,4 @@ No dark patterns detected. The Fibonacci escalation rewards *skill and courage*,
 
 *Document prepared by Celia*
 *Neuro-Game Design Expert*
-*"Respect the player's brain. Design for humans, not for your ego."*
+*"Respect the player's brain. Train it. Make it laugh."*

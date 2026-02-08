@@ -1,398 +1,303 @@
 ---
 stepsCompleted: ['step-01-init', 'step-02-discovery', 'step-03-success', 'step-04-journeys', 'step-05-domain', 'step-06-innovation', 'step-07-project-type', 'step-08-scoping', 'step-09-functional', 'step-10-nonfunctional', 'step-11-polish']
-inputDocuments: ['_bmad-output/planning-artifacts/product-brief-CrazySnakeLite-2026-01-13.md']
+inputDocuments: ['_bmad-output/planning-artifacts/product-brief-CrazySnakeLite-2026-01-13.md', '_bmad-output/planning-artifacts/game-ux-principles.md', '_bmad-output/planning-artifacts/game-design-food-v2.md', '_bmad-output/planning-artifacts/game-design-phone-calls-v2.md', '_bmad-output/planning-artifacts/ux-design-food-phone-v2.md']
 workflowType: 'prd'
 briefCount: 1
 researchCount: 0
 brainstormingCount: 0
-projectDocsCount: 0
+projectDocsCount: 4
 classification:
   projectType: 'web_app'
-  domain: 'gaming'
-  complexity: 'low'
+  domain: 'cognitive_fitness_gaming'
+  complexity: 'medium'
   projectContext: 'greenfield'
+v2_rewrite: true
+repositioning: 'Brain Gym for the Age of AI'
 ---
 
-# Product Requirements Document - CrazySnakeLite
+# Product Requirements Document — CrazySnakeLite
 
-**Author:** Tomoco
-**Date:** 2026-01-13
+**Author:** Mary (Analyst) with Celia (Neuro-Game Design Expert)
+**Date:** 2026-02-08
+**Version:** 2.0 — Brain Gym Repositioning
+
+---
+
+## Vision Statement
+
+CrazySnakeLite is a **cognitive fitness tool disguised as an arcade game** — a brain gym built for the age of AI. It transforms the universally known Snake into a progressively demanding cognitive training system that targets the faculties most threatened by AI dependency: executive function, working memory, divided attention, decision-making under uncertainty, impulse control, and cognitive flexibility.
+
+**Core Design Axioms:**
+- Score-based, never time-based — reward what the player achieves
+- Difficulty is the product — the cognitive challenge is what the player came for
+- Comedy is a system — humor makes the brain workout enjoyable
+- Teach by encounter — every mechanic is learned through play
+- Targeted challenge over raw chaos — a brain gym rotates cognitive demands
+
+**Mandatory Foundation:** All design decisions must reference `game-ux-principles.md` — the cognitive science baseline derived from Hodent (2018), Schell (2008), and Sylvester (2013).
+
+---
 
 ## Success Criteria
 
 ### User Success
 
-**Primary Success Signal:** Players come back for more
+**Primary Success Signal:** Players feel mentally sharper after playing
 
-- **Return Rate:** Players return for another session (indicates fun, not one-time curiosity)
-- **Session Completion:** Players finish games vs quit mid-session (engagement vs frustration)
-- **Multiple Plays Per Visit:** Players immediately hit "play again" (chaos/variety working)
-- **Spontaneous Reactions:** Laughter, surprise, "one more game" behavior during first play
+- **Cognitive Engagement:** Players regularly reach score 40+ (indicates sustained engagement beyond comfort zone)
+- **System Engagement:** Players use Pick Up (not just End), engage with blinking food, survive combo mode (indicates cognitive systems are being exercised)
+- **Replay Rate:** Players immediately hit "Play Again" after death (challenge is compelling, not frustrating)
+- **Score Progression:** Scores improve over multiple sessions (indicates genuine cognitive skill growth)
+- **Perceived Benefit:** Players describe the experience as "hard but fun" and feel sharper after playing
 
-**Success Moment:** Within 30 seconds of playing, user encounters first unexpected food type or phone call interruption and thinks "this is NOT regular Snake!"
+**Success Moment:** Within 30 seconds of playing, the first phone call arrives (score 3). The player must split attention between navigating the snake and deciding End vs Pick Up. "This is NOT regular Snake — this is making me think!"
 
 ### Business Success
 
-**Primary Goal:** Ship working Snake variant with strategic depth and chaotic mechanics
-
-**The Win:** Coworkers like it. That's the bar.
+**Primary Goal:** Establish CrazySnakeLite as the first casual browser game positioned as cognitive fitness for the AI age
 
 **Success at 1 Month:**
-- MVP shipped and playable
-- 5+ coworkers tested and provided feedback
-- Core mechanics (6 food types + phone interruptions) working as intended
-- At least 3 coworkers play multiple times without prompting
+- V2 shipped and playable with all five cognitive challenge systems functional
+- Prototype testing with knowledge workers validates the "brain gym" positioning
+- Core cognitive loop working: Fibonacci scoring → phone calls → blinking food → combo mode → reverse controls
+- Players report feeling cognitively engaged, not just entertained
 
 **Success at 3 Months:**
-- Positive coworker feedback validates "fun chaos" experience
-- Return players demonstrate replayability
-- Decision point clear: iterate on mechanics or consider broader release
+- Return rate validates lasting engagement (players come back for the cognitive workout)
+- Post-game cognitive feedback ("Your Brain Today") resonates with players
+- Decision point clear: expand cognitive training features or broaden distribution
 
 ### Technical Success
 
 **Performance Requirements:**
-- **Frame Rate:** Smooth 60 FPS gameplay (game continues running during phone interruptions without lag)
+- **Frame Rate:** Smooth 60 FPS gameplay (maintained during phone overlays, combo mode, blinking food, and all concurrent systems)
 - **Browser Compatibility:** Works on Chrome, Firefox, Safari, Edge (desktop primary)
-- **Mobile Responsive:** Playable on mobile browsers (touch controls functional, even if not perfectly optimized)
+- **Mobile Responsive:** Playable on mobile browsers with touch controls
 - **Load Time:** Game loads and starts within 3 seconds
-- **No Game-Breaking Bugs:** Core mechanics work reliably
+- **No Game-Breaking Bugs:** All five cognitive challenge systems function reliably
 
 **Technical Validation:**
 - Snake movement responsive and predictable
-- Food effects trigger immediately when consumed
-- Phone call interruptions display correctly and dismiss on Space/tap
-- Collision detection accurate
-- Score tracking persists through session
+- Food effects trigger within 200ms of consumption (temporal contiguity — Hodent)
+- Phone call overlay renders correctly with game continuing underneath
+- Blinking food color cycling smooth at 200ms intervals
+- Combo mode canvas transitions at 500ms smooth fade
+- Score popup system queues correctly with 300ms stagger
+- Post-game cognitive feedback displays correct stats
+- Collision detection accurate across all effect states
 
 ### Measurable Outcomes
 
-**MVP Launch (Week 1-2):**
-- Game deployed and accessible via web URL
-- All 6 food types functional with distinct behaviors
-- Phone call mechanic working (game continues during interruption)
-- Basic analytics tracking sessions and returns
+| Metric | Target | What It Validates |
+|--------|--------|-------------------|
+| Session replay rate | 70%+ play 2+ games | Challenge is compelling, not frustrating |
+| Score 40+ reach rate | 50%+ of sessions | Players engage beyond comfort zone |
+| Pick Up usage | 40%+ of phone calls | Risk/reward decision is appealing |
+| Return rate (next day) | 30%+ | Lasting engagement, not one-time novelty |
+| Post-game stats viewed | 80%+ see stats before Play Again | Cognitive feedback resonates |
+| Average session length | 5-10 minutes | Fits break-time cognitive workout use case |
 
-**Prototype Testing (Week 2-4):**
-- 5+ coworkers test during breaks
-- 70%+ finish their first game (vs quit)
-- 50%+ play 2+ games in first session
-- Qualitative feedback collected (fun? frustrating? boring?)
-
-**Validation Gate (Month 1):**
-- If coworkers love it → continue development
-- If mechanics need tuning → iterate on probabilities/timing
-- If "meh" → reassess core assumptions
+---
 
 ## User Journeys
 
-### Primary User: Alex, The Office Break Gamer
+### Primary User: Alex, The Cognitive Athlete
 
 **Persona Overview:**
 - **Name:** Alex
-- **Context:** Office worker, mid-20s to late 30s
-- **Situation:** Brain-fried from work, needs quick mental reset during breaks
-- **Goal:** Fun, engaging break entertainment that's quick and guilt-free
-- **Obstacle:** Traditional Snake is boring, social media scrolling feels empty
-- **Solution:** CrazySnakeLite delivers unpredictable chaos and nostalgia
+- **Context:** Knowledge worker, mid-20s to late 30s, heavy AI tool user
+- **Situation:** Notices they're less sharp — harder to focus, harder to hold complex ideas, more reliant on AI assistants for tasks they used to do mentally
+- **Goal:** A quick cognitive workout during breaks that leaves the brain feeling active, not numb
+- **Obstacle:** Traditional break activities (social media, passive video) make cognitive softness worse. Brain training apps feel like homework.
+- **Solution:** CrazySnakeLite delivers genuine cognitive exercise through a game they already know how to play
 
-#### Journey 1: Discovery & First Play (Happy Path)
+#### Journey 1: Discovery & First Cognitive Workout (Happy Path)
 
-**Opening Scene - The Need:**
+**Opening Scene — The Need:**
 
-It's 2:30pm on a Tuesday. Alex is staring at spreadsheets, brain fried from a morning full of Zoom calls. Coffee isn't helping. They need a mental reset, but doom-scrolling Twitter feels empty and makes them feel worse. They remember playing Snake on their Nokia 3310 back in high school during boring classes - that was simple, mindless fun that actually refreshed them.
+It's 2:30pm on a Tuesday. Alex is staring at spreadsheets, brain fried from a morning of meetings. They realize they just asked their AI assistant to write an email they could have written themselves — it was easier than thinking. That thought nags. They remember playing Snake on their Nokia 3310 — simple, engaging, no cognitive outsourcing. They search for a quick brain break.
 
-Alex Googles "snake game" hoping to find something nostalgic. CrazySnakeLite appears in the results with its retro pixel art thumbnail. "That looks like the old Nokia game," they think. They click.
+CrazySnakeLite appears: "A brain gym disguised as Snake." Curiosity piqued. Click.
 
-**Rising Action - The Discovery:**
+**Rising Action — The Cognitive Layers Unfold:**
 
-The page loads instantly. Retro 8-bit pixel art fills the screen with a super light grey background - playful and inviting. Big "NEW GAME" button with rounded corners and a purple-blue border. Alex clicks it.
+The page loads instantly. Retro 8-bit pixel art, light grey canvas. Big "NEW GAME" button. Alex clicks.
 
-The snake appears (black by default). Arrow keys work. First food (green square) appears in the grid. Alex guides the snake to it, eats it. Snake grows by one segment and turns green. "Yeah, same old Snake," they think, smiling at the nostalgia but expecting to get bored in 30 seconds.
+The snake appears. Arrow keys work. Green food — eat it — +1 popup. Classic Snake. "Yeah, I know this."
 
-Then a cyan food appears. Alex eats it. Suddenly the snake **SLOWS DOWN** dramatically. "Wait, what?! Why am I crawling?!" Alex is frustrated but intrigued. They keep playing, waiting for the effect to wear off.
+Score reaches 3. A phone rings — **AL GORITHM is calling.** Two buttons: End (+1) or Pick Up (+2). The game keeps running underneath, blurred! Alex's brain snaps to attention — navigate the snake AND make a decision? They hit Space (End). +1 point. Phone vanishes. "Wait, the game was still going? That's... different."
 
-10 seconds later, a phone call popup interrupts the screen - a rounded phone call overlay with a purple-blue border showing "Mom" calling and an "End" button. But the game keeps running underneath, visible but blurred! Alex can sense the snake still moving. "Oh no!" They frantically hit Space bar. Phone disappears. Snake barely avoided hitting the wall.
+Score 8. Another call — **Floppy Phil**. Pick Up +3 this time. Alex presses Enter. A countdown bar appears. "I only have 1.44 MB to talk, so quick!" Alex laughs — but the snake is moving under blur. Bar expires. +3 CALL BONUS popup. Survived!
 
-"This is NOT regular Snake!"
+Score 15. A food item starts blinking through colors — green, yellow, purple, red, cycling rapidly. Tooltip: "Mystery Food! Effect hidden until consumed." Alex eats it — it's Reverse Controls. Up is down, left is right. Brain scrambles. +8 points (huge popup, particles, screen shake). They crash. "WHAT?!"
 
-**Climax - The Chaos:**
+**Climax — The Realization:**
 
-Over the next 3 minutes, Alex experiences:
-- **Invincibility food (yellow):** Snake starts blinking rapidly like an old-school power-up! Alex intentionally crashes into a wall to test it - bounces off harmlessly. "WHAT?!"
-- **Wall-Phase food (purple):** Snake heads toward a wall and... passes right through, appearing on the opposite side! "Whoa, that's a lifesaver!"
-- **Speed Boost food (red):** Snake moves FAST. Alex struggles to control it, laughing at the chaos.
-- **Speed Decrease food (cyan):** Snake crawls at a snail's pace. "Ugh, come ON!" Alex waits impatiently for it to wear off.
-- **Reverse Controls (orange):** Up becomes down, left becomes right. Complete mayhem. Alex crashes into themselves while laughing.
+Play Again. This time Alex knows the systems. By score 40, the canvas turns dark purple — **combo mode.** Snake becomes striped. They eat a second food: 3 × 8 = 24 points! Massive popup. Phone rings during combo — Mona Tor, +8 bonus. Triple cognitive load: combo stakes + phone decision + snake navigation.
 
-**Another phone call interrupts.** This time Alex is ready - hits Space immediately while the snake weaves through tight spaces. Survives!
+Alex survives. Score 67. Dies to self-collision during reverse controls.
 
-Alex finally crashes into themselves after 4 minutes of increasingly chaotic gameplay. Final score: 287 points.
+**Your Brain Today** appears:
+- Reverse Controls survived: 3
+- Phone calls managed: 6
+- Mystery foods decoded: 9
 
-Game over screen: "GAME OVER!" with "Your score: 287" and "Play Again" button selected by default.
+Alex stares at the stats. They didn't just play a game. Their brain did real cognitive work — divided attention, executive function override, decisions under uncertainty. And it was *fun*.
 
-**Resolution - The Hook:**
+**Resolution — The Habit:**
 
-Without thinking, Alex clicks "PLAY AGAIN" immediately. They want to see what crazy combinations happen this time.
+Alex plays 2 more games. Shares the link with a coworker: "Try this — it's like a gym for your brain."
 
-They play 4 more games over the next 10 minutes. Each one feels different - different food sequences, different phone call timing, different chaos.
+Next day during morning break, Alex opens CrazySnakeLite without prompting. Not for entertainment. For the cognitive workout.
 
-Alex finally closes the browser tab feeling genuinely refreshed. They're smiling. The mental fog from spreadsheets is gone. They actually had FUN for 10 minutes.
+#### Journey 2: Edge Case — Frustration to Mastery Motivation
 
-Later that afternoon, Alex Slacks the link to a coworker: "Try this snake game - it's insane 😂"
+**Opening Scene:**
 
-The next day during morning break, Alex opens CrazySnakeLite again without prompting.
+Second day. Alex starts confident. Score 3 — phone rings immediately. "Already?" Fumbles, hits End. Score 6 — orange food. Reverse Controls. Crashes instantly. 15 seconds. "This is annoying."
 
-#### Journey 2: Edge Case - Initial Frustration to Recovery
+**The Learning:**
 
-**Opening Scene - The Struggle:**
+Third attempt: Alex avoids colored foods, only eats green. No chaos. No challenge. After 2 minutes — bored. Deliberately crashes.
 
-It's Alex's second day playing. They had fun yesterday, so they're back for more chaos. They start a new game, feeling confident.
+"Wait. The challenge IS the point."
 
-Within 15 seconds, they eat reverse control food. Up/down/left/right are inverted. Alex immediately crashes into a wall, confused. "Ugh, what was that?"
+**The Breakthrough:**
 
-They hit "PLAY AGAIN," determined to do better.
+Fourth attempt: Alex embraces everything. Speed Boost while long? Navigate carefully. Reverse Controls? Deep breath, think before pressing. Phone call during blinking food? End it fast, reassess.
 
-Second attempt: Phone call interrupts at 20 seconds. Alex panics, fumbles for Space bar. Misses it. By the time they dismiss the call, snake has crashed. 23 seconds. Score: 12 points.
+Score 52. Combo mode triggers. Canvas turns dark blue. Strategic eating — chase the +8 Reverse Controls for maximum combo multiplier. 8 × 5 = 40 points!
 
-"This is annoying."
+Alex dies at score 78. New personal best. **Your Brain Today:** Reverse Controls survived: 5. That number feels like a medal.
 
-**Rising Action - The Learning:**
+**The Mastery:**
 
-Alex is frustrated but refuses to quit. They start a third game, this time being more cautious. They avoid the weird-colored foods, only eating the safe green growing food.
+Alex realizes: this isn't about avoiding difficulty. Difficulty is the product. Every system is training a different part of the brain. Reverse Controls = executive function. Phone calls = divided attention. Blinking food = uncertainty tolerance. Combo mode = working memory.
 
-The game becomes... regular boring Snake. No chaos. No surprise. After 2 minutes, Alex is bored and deliberately crashes.
-
-"Wait, the weird foods are what make this fun."
-
-**Climax - The Breakthrough:**
-
-Fourth attempt: Alex decides to embrace the chaos. They intentionally eat every weird food they see just to experience the madness.
-
-Speed Decrease? Annoying, but I can wait it out.
-Wall-Phase? Okay, that's actually useful for escaping tight spots!
-Invincibility? YES, plow through everything!
-Phone call? Bring it on, I'm ready now.
-
-Alex survives for 5 minutes, score: 412. New personal best.
-
-**Resolution - The Mastery:**
-
-Alex realizes the game isn't about avoiding chaos - it's about **riding the chaos**. The phone calls aren't annoying interruptions; they're part of the challenge. The weird foods aren't bugs; they're features.
-
-Alex keeps playing. Now they're strategically choosing which foods to eat based on their current situation. Wall-phase when trapped in a corner. Speed boost when there's open space. It's actually... tactical?
-
-Alex becomes a regular. Every break, they play 2-3 games. They've learned to love the chaos.
+They play every break. Not because it's fun (though it is). Because it makes their brain *work*.
 
 ### Journey Requirements Summary
 
-**Core Gameplay Capabilities Revealed:**
+**Core Capabilities Revealed:**
 
-1. **Game Engine Requirements:**
-   - Instant load (< 3 seconds) - Alex needs quick access during short breaks
-   - 60 FPS smooth performance - chaos feels laggy/broken if frame rate drops
-   - Grid-based snake movement with arrow key/WASD controls
-   - Food spawning system with visual distinction between 6 types
-   - Collision detection (walls, self-collision, food consumption)
+1. **Five Cognitive Challenge Systems (All Required):**
+   - Fibonacci scoring (6 food types, difficulty-proportional rewards)
+   - Phone call interruptions (End vs Pick Up, Fibonacci bonuses, 21 callers)
+   - Progressive blinking food (mystery food from score 15, caps at 60%)
+   - Combo mode (multiplicative scoring from score 40, caps at 40%)
+   - Post-game cognitive feedback ("Your Brain Today" stats)
 
-2. **Game Configuration Parameters (all values tweakable for testing/balancing):**
+2. **Core Game Engine:**
+   - Grid-based snake movement, 60 FPS, collision detection
+   - Four keyboard layouts + mobile touch controls
+   - Food spawning with probability-based distribution
+   - Effect system (invincibility, wallPhase, speedBoost, speedDecrease, reverseControls)
 
-   **Grid & Units:**
-   - Grid dimensions: 25 x 20 units
-   - Unit size: 10x10 pixels (default, configurable for different screen sizes)
-   - Base resolution: 250 x 200 pixels (scales with unit size)
+3. **Progressive Difficulty Curve (Score-Gated):**
+   - Score 0-2: Pure motor learning (no phone calls)
+   - Score 3-14: Phone calls introduced (divided attention)
+   - Score 15-39: Blinking food introduced (uncertainty management)
+   - Score 40-99: Combo mode introduced (working memory)
+   - Score 100+: Peak cognitive demand (all systems at calibrated levels)
 
-   **Snake Starting State:**
-   - Starting length: 5 segments
-   - Starting position: Bottom left corner
-   - Starting direction: Moving right
+4. **Session Design:**
+   - 5-10 minute cognitive workout sessions
+   - Play until death (classic arcade style)
+   - Immediate restart (no friction)
+   - No login, no save/load, zero installation friction
 
-   **Speed Settings:**
-   - Base speed: 8 moves per second
-   - Speed Boost: Random multiplier between 1.5x and 2x base speed
-   - Speed Decrease: Random multiplier between 0.3x and 0.5x base speed
+5. **Platform Support:**
+   - Desktop web browser primary (Chrome, Firefox, Safari, Edge)
+   - Mobile responsive with touch controls (secondary)
+   - Static site, no backend for core gameplay
 
-   **Food Spawn Probabilities (must total 100%):**
-   - Growing (green): 40%
-   - Invincibility (yellow): 10%
-   - Wall-Phase (purple): 10%
-   - Speed Boost (red): 15%
-   - Speed Decrease (cyan): 15%
-   - Reverse Controls (orange): 10%
-
-   **Phone Call Timing:**
-   - Random interval: 15-45 seconds between calls
-
-3. **Food System Requirements:**
-   - 6 distinct food types with immediate visual/behavioral feedback
-   - **ALL food types give +1 segment when consumed (score = snake length)**
-   - Food visuals: simple geometric shapes in pixel style (5x5 pixels)
-   - Growing food (green, filled square) - +1 segment only, no special effect (instant)
-   - Invincibility food (yellow, 4-point star) - +1 segment + wall/self immunity with rapid strobe/blinking visual
-   - Wall-Phase food (purple, ring/donut) - +1 segment + pass through one wall, wrap to opposite side (single use)
-   - Speed Boost food (red, cross/plus) - +1 segment + increased movement speed
-   - Speed Decrease food (cyan, hollow square) - +1 segment + decreased movement speed (chaos element!)
-   - Reverse Control food (orange, X shape) - +1 segment + inverted controls
-   - **Duration rule:** ALL timed effects (Invincibility, Speed Boost, Speed Decrease, Reverse Controls) end after eating 1 new food
-   - Probability-based spawning system (configurable for difficulty)
-
-4. **Phone Call Interruption Requirements:**
-   - Random timing algorithm for pop-ups
-   - Visual phone call UI overlay (unified design: 12px rounded corners, purple-blue borders)
-   - Game continues running during interruption (CRITICAL for tension)
-   - Space bar (desktop) / tap End (mobile) to dismiss
-   - Clear visual feedback when dismissed
-
-5. **Session Flow Requirements:**
-   - One-click start (no friction)
-   - Death → immediate "PLAY AGAIN" option (no navigation away)
-   - Score display (simple points)
-   - Game over screen with score
-
-6. **Learning Curve Requirements:**
-   - Immediate food effect feedback (player learns through play)
-   - Visual distinction between food types (color/shape)
-   - Tolerant of early deaths (fast restart encourages experimentation)
-   - Edge case recovery: player can learn to embrace chaos after initial frustration
-
-7. **Platform Requirements:**
-   - Desktop browser primary (Alex at work computer)
-   - Keyboard controls (arrow keys/WASD/Space)
-   - Mobile responsive touch controls (secondary)
-   - Works across Chrome, Firefox, Safari, Edge
-
-8. **Session Design Requirements:**
-   - 5-10 minute typical session length
-   - Multiple plays per visit (fast restart)
-   - No save/load needed (pure session-based)
-   - No login/account required (zero friction)
+---
 
 ## Innovation & Novel Patterns
 
 ### Detected Innovation Areas
 
-**1. Phone Call Interruption Mechanic (Meta Gameplay)**
+**1. Cognitive Fitness Through Familiar Gameplay — A New Category**
 
-CrazySnakeLite introduces a novel mechanic where "phone calls" interrupt gameplay while the game continues running underneath. This is innovative on multiple levels:
+CrazySnakeLite creates a new product category: **casual cognitive fitness gaming**. No existing product combines universal accessibility (everyone knows Snake), genuine cognitive targeting (each mechanic trains a specific faculty), progressive difficulty (score-gated complexity), and intrinsic entertainment (comedy, emotional peaks, arcade charm).
 
-- **Social Commentary:** Turns modern phone distraction behavior into a gameplay mechanic - phones interrupt us constantly in real life, now they interrupt in-game
-- **Attention-Splitting Challenge:** Unlike traditional Snake where focus is uninterrupted, this forces split attention and quick reactions
-- **Thematic Resonance:** Meta commentary on how phones have changed from Snake's Nokia origins to today's constant interruption machines
+**Innovation Type:** Category innovation — positioning a casual game as deliberate cognitive exercise for the AI age
 
-**Innovation Type:** Mechanic innovation - novel gameplay pattern not seen in Snake variants or casual browser games
+**Why This Matters Now:**
+- AI integration is accelerating cognitive offloading across daily tasks
+- Brain training apps (Lumosity, Peak) failed on engagement — they feel like homework
+- Traditional Snake variants add cosmetic changes, not cognitive depth
+- No product addresses the specific concern: "AI is making my brain softer"
+- CrazySnakeLite is the answer positioned at the intersection of nostalgia, science, and fun
 
-**2. Strategic Depth + Chaos Fusion**
+**2. Five-Layer Progressive Cognitive Training System**
 
-Most Snake variants choose either complexity OR chaos. CrazySnakeLite delivers both simultaneously:
+Each game mechanic targets a specific cognitive faculty, introduced through score-gated progression:
 
-- **6 Food Types:** Create strategic decision-making (which food to pursue based on current situation)
-- **Random Interruptions:** Inject unpredictable chaos that disrupts strategic planning
-- **Result:** Players must plan tactically while adapting to chaos - higher cognitive engagement than traditional Snake
+| Layer | Mechanic | Cognitive Faculty Trained | Score Gate |
+|-------|----------|--------------------------|------------|
+| 1 | Fibonacci Scoring | Pattern recognition, risk assessment | Score 0+ |
+| 2 | Phone Call Interruptions | Divided attention, context-switching | Score 3+ |
+| 3 | Progressive Blinking Food | Decision-making under uncertainty | Score 15+ |
+| 4 | Combo Mode | Working memory, multiplicative thinking | Score 40+ |
+| 5 | Reverse Controls | Executive function override (crown jewel) | Any time |
 
-**Innovation Type:** Design philosophy innovation - challenging the assumption that casual games must be simple/predictable or complex/strategic (not both)
+**Innovation Type:** Mechanic innovation — structured cognitive training through layered game systems, not random difficulty spikes
 
-**3. Difficulty Through Probability Distribution**
+**3. Comedy as Cognitive Engagement System**
 
-Traditional Snake difficulty = increase speed. CrazySnakeLite uses configurable food spawn probabilities:
+21 tech-pun callers with retro pixel portraits and one-liners (revealed only on Pick Up) make cognitive interruptions *entertaining*. Humor functions as an epistemic reward (Kang et al., 2009) — satisfying curiosity activates the same dopamine pathways as monetary rewards. Players Pick Up partly to *discover* what each caller says.
 
-- **Easy Mode:** Higher percentage of safe growing food, lower chaos food
-- **Hard Mode:** Higher percentage of chaos-inducing foods (reverse controls, speed decrease, speed boost)
-- **Result:** More elegant difficulty scaling that changes experience variety, not just reflexes
+**Innovation Type:** Engagement innovation — humor as a systemic driver of risk-taking and replay, not decoration
 
-**Innovation Type:** Technical innovation - probability-based difficulty tuning in casual games
+**4. Post-Game Metacognitive Feedback**
+
+"Your Brain Today" transforms the death screen from failure into cognitive achievement recognition. This is **metacognitive feedback** (Flavell, 1979) — awareness of one's own cognitive processes improves learning and motivation. No other casual game tells the player what their brain just accomplished.
+
+**Innovation Type:** Experience innovation — game-over as cognitive reflection, not just retry prompt
 
 ### Market Context & Competitive Landscape
 
-**Current Snake Variants:**
-- **Cosmetic Only:** Different skins/themes, identical mechanics (boring)
-- **Multiplayer (Snake.io):** Changes context to competitive, but core gameplay unchanged
-- **Speed Increases:** Just make it faster (lazy difficulty)
-- **Obstacles Added:** Static barriers that don't fundamentally change decision-making
+| Category | Examples | Why They Fall Short |
+|----------|---------|---------------------|
+| **Brain training apps** | Lumosity, Peak, Elevate | Feel like homework. Low engagement. Repetitive. FTC fined Lumosity for false advertising. |
+| **Traditional Snake variants** | Snake.io, cosmetic reskins | Zero cognitive innovation. Same mechanics since 1998. |
+| **Casual mobile games** | Candy Crush, Wordle | Engaging but don't deliberately target cognitive faculties. |
+| **Hardcore brain games** | Chess, Go | Excellent cognitive exercise but high barrier to entry. |
 
-**What's Missing in the Market:**
-- No Snake variant uses attention-splitting interruption mechanics
-- No casual browser game has turned phone distractions into gameplay
-- No Snake variant combines strategic food choices with unpredictable chaos
-- Probability-based difficulty is rare in casual web games
-
-**Competitive Advantage:**
-- **Phone call mechanic is defensible:** Thematically tied to phones/Snake nostalgia, not easily copied without looking derivative
-- **Chaos + strategy combination:** Creates unique player experience that's hard to replicate with single-axis changes
-- **Fast iteration:** Web-based delivery allows rapid tuning of probabilities and timing based on feedback
+**The gap:** No product combines universal accessibility, genuine cognitive targeting, progressive difficulty, and intrinsic entertainment in a single experience. CrazySnakeLite fills this gap.
 
 ### Validation Approach
 
-**Primary Validation: Coworker Testing**
+**Primary Validation: Knowledge Worker Testing**
 
-Test with 5+ office workers (target demographic) to validate:
+Test with knowledge workers who actively use AI tools daily:
 
-1. **Phone Call Mechanic Validation:**
-   - **Success Signal:** Laughter, surprise, "one more game" despite interruptions
-   - **Failure Signal:** Frustration, complaints about "annoying," quit mid-session
-   - **Tuning Levers:** Frequency of calls, timing windows, visual clarity of phone UI
+1. **Cognitive Engagement Validation:**
+   - **Success Signal:** Players report feeling "sharper" or "more alert" after playing
+   - **Success Signal:** Players describe specific cognitive demands ("the reverse controls really made me think")
+   - **Failure Signal:** Players describe it as "just a game" with no cognitive awareness
+   - **Tuning Levers:** Score thresholds, blinking food percentages, phone call frequency
 
-2. **Food System Validation:**
-   - **Success Signal:** Players intentionally pursue/avoid specific foods based on strategy
-   - **Failure Signal:** Players ignore food types, play like traditional Snake
-   - **Tuning Levers:** Visual distinction, effect duration, spawn probabilities
+2. **Brain Gym Positioning Validation:**
+   - **Success Signal:** Players spontaneously use words like "workout," "training," "brain exercise"
+   - **Success Signal:** Players share framed around cognitive benefit, not just fun
+   - **Failure Signal:** Players focus only on entertainment, miss cognitive dimension
+   - **Tuning Levers:** Post-game cognitive feedback framing, "Your Brain Today" stats
 
-3. **Chaos Balance Validation:**
-   - **Success Signal:** 50%+ play multiple games per session (replayability)
-   - **Failure Signal:** <30% completion rate (too hard/frustrating)
-   - **Tuning Levers:** Probability distribution by difficulty, effect durations
+3. **Difficulty Curve Validation:**
+   - **Success Signal:** 50%+ reach score 40 (engage beyond comfort zone)
+   - **Failure Signal:** Most players die before score 15 (too hard) or reach 100+ easily (too easy)
+   - **Tuning Levers:** Food probabilities, phone call intervals, blinking/combo percentages
 
 **Validation Metrics:**
-- Session completion rate (70%+ target)
-- Return rate next day (50%+ target)
-- Multiple plays per visit (2+ games target)
-- Qualitative feedback (fun/frustrating/boring scale)
+- Session replay rate (70%+ target)
+- Score 40+ reach rate (50%+ target)
+- Pick Up usage (40%+ of calls target)
+- Return rate next day (30%+ target)
+- Qualitative: "Did that feel like a cognitive workout?"
 
-**Iteration Cycle:**
-- Week 1: Ship MVP with baseline probabilities
-- Week 2-3: Gather coworker feedback
-- Week 3-4: Tune probabilities/timing based on data
-- Month 1: Validation gate - proceed or pivot
-
-### Risk Mitigation
-
-**Risk 1: Phone calls are annoying, not fun**
-
-**Mitigation Strategy:**
-- Start with lower frequency (every 45-60 seconds)
-- Make dismissal obvious and fast (big DECLINE button, Space bar)
-- Visual clarity: game continues underneath with slight transparency on phone UI
-- **Fallback:** Frequency slider in settings (post-MVP) or reduce default frequency
-
-**Risk 2: Too much chaos = unplayable frustration**
-
-**Mitigation Strategy:**
-- Configurable probability percentages (easy to tune without code changes)
-- Start conservative on chaos foods (lower spawn rates)
-- Monitor completion rates - if <50%, dial down chaos
-- **Fallback:** "Classic Mode" with just growing food (no chaos effects)
-
-**Risk 3: Innovation doesn't resonate with target users**
-
-**Mitigation Strategy:**
-- Test with actual office workers (target demographic), not just any gamers
-- A/B test: control group plays traditional Snake, test group plays CrazySnakeLite
-- Measure engagement difference (session length, return rate)
-- **Fallback:** If innovation falls flat, ship traditional Snake with retro aesthetic (still viable product)
-
-**Risk 4: Technical implementation of "game continues during interruption"**
-
-**Mitigation Strategy:**
-- Prototype phone call mechanic first (highest technical risk)
-- Ensure 60 FPS maintained during overlay (performance testing)
-- Test across browsers for rendering consistency
-- **Fallback:** Pause game during phone call (less innovative but still unique)
-
-**Risk 5: Hard to tune without data**
-
-**Mitigation Strategy:**
-- Build analytics from day 1 (session tracking, food consumption, phone call dismissal speed)
-- Instrument everything: which foods eaten, death causes, session lengths
-- Use coworker feedback + data to inform tuning decisions
-- **Fallback:** Manual observation during coworker testing sessions (watch them play)
+---
 
 ## Web App Specific Requirements
 
@@ -401,10 +306,11 @@ Test with 5+ office workers (target demographic) to validate:
 CrazySnakeLite is a Single Page Application (SPA) delivered via web browser. Pure client-side JavaScript game with no server-side rendering or backend dependencies for core gameplay. Designed for instant load and immediate play with zero installation friction.
 
 **Architecture:**
-- Client-side JavaScript game engine
+- Vanilla JavaScript, module-based (ES modules)
 - Canvas-based rendering for retro pixel art
-- Stateless sessions (no server persistence for MVP)
-- Basic analytics via client-side tracking
+- DOM-based overlays for phone calls, menus, cognitive feedback
+- Stateless sessions (no server persistence)
+- High score via localStorage
 
 ### Browser Support Matrix
 
@@ -421,39 +327,35 @@ CrazySnakeLite is a Single Page Application (SPA) delivered via web browser. Pur
 4. Safari desktop and iOS
 5. Edge desktop
 
-**Known Limitations:**
-- IE11 not supported (EOL, no longer relevant)
-- Older mobile browsers may have performance issues (acceptable for MVP)
-
 ### Responsive Design Approach
 
-**Desktop Primary (Primary Target):**
+**Desktop Primary:**
 - Game board sized for typical desktop browser window
-- Keyboard controls (arrow keys, WASD, Space bar)
-- Optimized for 1920x1080 and 1366x768 common resolutions
+- Keyboard controls (Arrow keys, WASD, ZQSD, Numpad, Space, Enter)
+- Optimized for 1920x1080 and 1366x768 resolutions
 - Minimum viable resolution: 1024x768
 
-**Mobile Responsive (Secondary Target):**
+**Mobile Responsive (Secondary):**
 - Touch swipe controls for snake direction
-- Tap to dismiss phone call overlay
+- Tap buttons for phone call decisions (End/Pick Up)
 - Game board scales to fit mobile viewport
 - Portrait and landscape orientations supported
-- Acceptable if not perfectly optimized for MVP
+- Phone call buttons stack vertically on mobile (End on top for safe-choice priority)
 
 **Control Mapping:**
-- Desktop: Arrow keys or WASD for movement, Space for phone dismiss
-- Mobile: Swipe gestures for movement, tap for phone dismiss
-- No virtual D-pad needed (swipe is more intuitive)
+- Desktop: Arrow keys/WASD/ZQSD/Numpad for movement, Space for End call, Enter for Pick Up
+- Mobile: Swipe for movement, tap End/Pick Up buttons
 
 ### Performance Targets
 
 **Critical Performance Requirements:**
 
 1. **Frame Rate:**
-   - 60 FPS during normal gameplay (CRITICAL)
+   - 60 FPS during normal gameplay
    - 60 FPS maintained during phone call overlay (game continues underneath)
-   - No frame drops during food consumption or snake growth
-   - Smooth animation for all visual effects
+   - 60 FPS maintained during combo mode (canvas transitions, striped snake)
+   - 60 FPS maintained with blinking food cycling + score popups + particles
+   - No frame drops during peak cognitive demand (all systems active simultaneously)
 
 2. **Load Time:**
    - Initial page load: < 3 seconds
@@ -462,68 +364,55 @@ CrazySnakeLite is a Single Page Application (SPA) delivered via web browser. Pur
 
 3. **Memory:**
    - Client-side memory usage < 100MB
-   - No memory leaks during extended play sessions
+   - No memory leaks during extended play sessions (30+ minutes)
    - Garbage collection doesn't cause frame drops
 
 4. **Responsiveness:**
    - Input lag < 50ms (keyboard/touch to snake movement)
+   - Score popup spawn < 200ms after food consumption (temporal contiguity)
    - Phone call dismiss < 100ms (Space/tap to overlay removal)
-   - Instant restart on "PLAY AGAIN" click
-
-**Performance Validation:**
-- Test on mid-range devices (not just high-end)
-- Monitor frame rate during chaos (multiple effects active)
-- Test prolonged sessions (30+ minutes) for memory leaks
+   - Instant restart on "Play Again" click
 
 ### SEO Strategy
 
-**Minimal SEO for MVP:**
-
-CrazySnakeLite is a game, not content. SEO is low priority for MVP.
-
-**Basic SEO Requirements:**
-- Descriptive page title: "CrazySnakeLite - Chaotic Snake Game"
-- Meta description: "Classic Nokia Snake with chaotic twists - 6 food types, phone interruptions, pure chaos!"
-- Open Graph tags for link sharing (image preview when shared)
+**Brain Gym Positioning SEO:**
+- Page title: "CrazySnakeLite — Brain Gym for the Age of AI"
+- Meta description: "A cognitive fitness tool disguised as Snake. Five brain training systems. 21 tech-pun callers. Difficulty is the product."
+- Open Graph tags for link sharing (retro pixel art preview)
 - Semantic HTML structure
 
-**Out of Scope for MVP:**
-- Dynamic meta tags
-- Schema.org markup
-- Sitemap generation
-- Blog/content marketing
-
-**Post-MVP Considerations:**
-- If game goes viral, add proper OG tags for Twitter/Slack previews
-- Landing page with game embedded (better for SEO)
+**Post-MVP:**
+- Landing page with brain-gym positioning and embedded game
+- Schema.org Game markup
+- OG tags optimized for Twitter/Slack/LinkedIn sharing
 
 ### Accessibility Level
 
-**MVP Accessibility:**
-
-**Included in MVP:**
-- Keyboard navigation (arrow keys, WASD, Space) - inherently accessible
+**Included in V2:**
+- Keyboard navigation (4 layout options) — inherently accessible
 - Clear visual distinction between food types (color + shape)
-- Large tap targets for mobile (phone dismiss button)
-- No reliance on audio (visual-only feedback)
+- Large tap targets for mobile (minimum 44px, phone buttons)
+- No reliance on audio (visual-only feedback sufficient)
+- Reduced motion mode (prefers-reduced-motion detection)
+  - Blinking food: 500ms per color instead of 200ms, or alpha pulse
+  - Score popups: simple fade, no bounce/rotation
+  - Screen shake disabled
+  - Combo canvas transition instant (no 500ms fade)
 
-**Post-MVP Accessibility:**
-- Colorblind mode (alternative color palettes)
+**Post-V2 Accessibility:**
+- Colorblind mode (shape-coded food types)
 - Screen reader support for scores and game state
-- Adjustable game speed for motor impairments
+- Adjustable game speed
 - High contrast mode
 - WCAG 2.1 AA compliance
 
-**Rationale:**
-Focus MVP on core mechanics validation with coworkers (target demographic has no specific accessibility needs identified). Add accessibility features based on user feedback and broader release.
-
-### Technical Implementation Considerations
+### Technical Implementation
 
 **Technology Stack:**
-- Vanilla JavaScript or lightweight framework (React/Vue if needed)
-- HTML5 Canvas for rendering
-- CSS for UI elements (score, game over, phone overlay)
-- No build tool required for MVP (optional optimization for production)
+- Vanilla JavaScript (ES modules, no framework)
+- HTML5 Canvas for game rendering
+- CSS for UI overlays (phone calls, menus, cognitive feedback, score popups)
+- Web Audio API for 8-bit sound system
 
 **Game Loop Architecture:**
 - RequestAnimationFrame for smooth 60 FPS rendering
@@ -532,480 +421,504 @@ Focus MVP on core mechanics validation with coworkers (target demographic has no
 - Event-driven input handling
 
 **State Management:**
-- Simple client-side state (no Redux needed for MVP)
-- Game state: snake position, food positions, active effects, score
-- Session state: current game only (no persistence)
-- Config state: food probability percentages (tunable without code changes)
+- Module-based state (no external state library)
+- Game state: snake position, food positions, active effects, score, cognitiveStats
+- Phone state: active, caller, pickedUp, pickUpCount, pickUpEndTime
+- Combo state: active, effectA, effectB, canvasColor
+- Config state: all tunable parameters in config.js
 
 **Deployment:**
 - Static site hosting (Netlify, Vercel, GitHub Pages)
-- Single HTML file + JS + CSS (simple deployment)
-- No server-side components for MVP
-- Analytics via client-side snippet (Google Analytics or similar)
+- Single HTML file + JS modules + CSS + assets
+- No server-side components
+- No build step required (optional for production optimization)
+
+---
 
 ## Project Scoping & Phased Development
 
-### MVP Strategy & Philosophy
+### V2 Strategy & Philosophy
 
-**MVP Approach:** Experience MVP - Validate Innovation
+**V2 Approach:** Cognitive Fitness MVP — Validate Brain Gym Positioning
 
-CrazySnakeLite follows an experience MVP strategy focused on validating that the innovative chaos mechanics (6 food types + phone interruptions) create a fun, replayable experience. Success is defined by coworker validation, not feature completeness.
+CrazySnakeLite V2 ships all five cognitive challenge systems. Success is defined by whether knowledge workers perceive the game as a cognitive workout — not just entertainment.
 
 **Core Philosophy:**
-- Ship ALL innovative mechanics in MVP (no partial implementation)
-- Validate with target demographic (office workers) through direct testing
-- Iterate quickly based on real user feedback and observed behavior
-- Prioritize core gameplay perfection over polish or features
+- Ship ALL five cognitive training layers in V2 (no partial implementation)
+- Validate the "Brain Gym for the AI Age" positioning with target users
+- Cognitive engagement is the primary success metric, not just fun
+- Every mechanic must have a clear cognitive training target
+- Difficulty is the product — never make it easier just to reduce churn
 
-**Success Bar:** Coworkers like it and play multiple sessions
-
-**Resource Requirements:**
-- Solo developer or small team (1-2 developers)
-- 2-4 weeks for MVP development
-- UX designer collaboration for visual distinction of food types (mentioned working with "Sally")
-- Coworker testers (5+) for validation
-
-### MVP Feature Set (Phase 1)
+### V2 Feature Set (Current)
 
 **Core User Journey Supported:**
-- Alex's Happy Path: Discovery → First Play → Multiple Sessions → Return Next Day
+Alex's Journey: Discovery → First Cognitive Workout → Mastery Motivation → Daily Brain Gym Habit
 
-**Must-Have Capabilities:**
+**1. Fibonacci Scoring System (6 Food Types)**
 
-1. **Complete Food System (All 6 Types):**
-   - Growing food (green) - traditional Snake growth, +1 segment
-   - Invincibility food (yellow) - temporary wall/self immunity with rapid strobe/blinking visual
-   - Wall-Phase food (purple) - pass through one wall and wrap to opposite side (single use)
-   - Speed Boost food (red) - increased movement speed for duration
-   - Speed Decrease food (cyan) - decreased movement speed for duration (chaos element!)
-   - Reverse Control food (orange) - inverted controls for duration
-   - Configurable probability distribution (easy to tune)
-   - Immediate visual feedback for each food effect
+| Food Type | Color | Shape | Points | Cognitive Training |
+|-----------|-------|-------|--------|-------------------|
+| Invincibility | Yellow | Star | 0 | Impulse control (safety vs. score trade-off) |
+| Growing | Green | Circle | +1 | Baseline motor + pattern recognition |
+| Speed Decrease | Cyan | Square | +2 | Cognitive breathing room, strategic planning |
+| Wall Phase | Purple | Diamond | +1/+3 | Spatial reasoning, active skill expression |
+| Speed Boost | Red | Triangle | +5 | Reflexes under pressure, motor precision |
+| Reverse Controls | Orange | Hexagon | +8 | Executive function override (crown jewel) |
 
-2. **Phone Call Interruption Mechanic:**
-   - Random timing algorithm (start at 45-60 second intervals)
-   - Visual phone call UI overlay (unified design matching all menus)
-   - Game continues running during interruption (CRITICAL for innovation)
-   - Space bar (desktop) / End tap (mobile) to dismiss
-   - Clear visual feedback
+- Score = foods eaten + phone bonuses + combo multipliers
+- All food types give +1 segment when consumed
+- Duration rule: timed effects end after eating next food
+- Probability distribution configurable in config.js
 
-3. **Core Snake Gameplay:**
-   - Grid-based movement with arrow keys/WASD controls
-   - Collision detection (walls, self-collision = death)
-   - Dynamic snake length based on food consumed
-   - 60 FPS smooth performance
-   - Food spawning with probability-based system
+**Score Popup System (Visual Feedback Proportional to Difficulty):**
 
-4. **One Balanced Difficulty Mode:**
-   - Single default probability configuration
-   - Tuned for "fun chaos" balance (not too easy, not frustrating)
-   - Post-launch: dial up/down based on completion rates
+| Points | Font Size | Color | Effects | Duration |
+|--------|-----------|-------|---------|----------|
+| +1 | 16px | White | Simple fade | 500ms |
+| +2 | 16px | Light green | Slightly longer | 600ms |
+| +3 | 20px | Gold | Slight bounce | 700ms |
+| +5 | 28px | Orange | Bounce + glow | 800ms |
+| +8 | 40px | Red/Gold | Bounce + rotation + particles + screen shake | 1000ms |
 
-5. **Essential UI:**
-   - Retro pixel art aesthetic with unified design system
-   - Simple, clean game board
-   - All menus use rounded corners (12px) with purple-blue borders (rgb(157, 178, 221))
-   - All buttons use rounded corners (8px) with black → purple-blue states
-   - Distinct visual representation for each food type (color + shape/icon)
-   - Score display during gameplay (rounded frame with purple-blue border)
-   - Game over screen with final score (unified design)
-   - "PLAY AGAIN" button (instant restart, no friction, rounded corners)
+**2. Phone Call V2 — Pick Up vs End (Divided Attention Training)**
 
-6. **Session Flow:**
-   - One-click start from landing page
-   - Play until death
-   - Display score
-   - Immediate restart option
-   - No login, no save/load, no persistence
+- Two-button overlay: End (+1, safe, instant) or Pick Up (+Fibonacci bonus, risky, 1-3s blur)
+- 21 tech-pun callers with 64x64 retro pixel portraits and comedy one-liners
+- One-liners revealed only on Pick Up (humor as reward for risk-taking)
+- Fibonacci Pick Up bonus per game: +2, +3, +5, +8, +13, +21, +34 (cap)
+- Pick Up is irreversible — committed once pressed
+- Consolation reward: bonus still awarded if player dies during Pick Up
+- Score-based grace period: no calls until score 3
+- Score-based frequency tiers:
 
-7. **Platform Support:**
-   - Desktop web browser (Chrome, Firefox, Safari, Edge)
-   - Mobile responsive with touch controls (good enough, not perfect)
+| Score Range | Min Delay | Max Delay | Cognitive Training |
+|------------|-----------|-----------|-------------------|
+| 3-14 | 12s | 20s | Introduction — learn divided attention |
+| 15-39 | 8s | 15s | Integration — manage with uncertainty |
+| 40-59 | 6s | 12s | Load stacking — calls + combos |
+| 60-99 | 5s | 10s | Mastery — sustained divided attention |
+| 100+ | 4s | 8s | Peak — relentless context-switching |
 
-8. **Basic Analytics:**
-   - Session tracking (starts, completions, deaths)
-   - Food consumption tracking (which types eaten)
-   - Phone call dismissal speed
-   - Return rate tracking
+**3. Progressive Blinking Food (Uncertainty Training)**
 
-**Out of MVP Scope:**
-- Multiple difficulty levels (post-validation)
-- Advanced scoring algorithms or combos
-- Leaderboards or score persistence
-- Settings/preferences menu
-- Pause functionality
-- Tutorial or onboarding
-- Advanced visual effects beyond unified design system
+- Mystery food cycling through all 6 colors at 200ms/color
+- Effect type locked at spawn, hidden until consumed
+- Starts at score 15, caps at 60% at score 80+
 
-### Post-MVP Features
+| Score Range | Blinking % | Cognitive Training |
+|-------------|-----------|-------------------|
+| 0-14 | 0% | Baseline pattern recognition |
+| 15-19 | 10% | First uncertainty tolerance |
+| 20-29 | 20% | Risk assessment with partial info |
+| 30-39 | 30% | Comfort with ambiguity |
+| 40-59 | 40% | Multi-system uncertainty |
+| 60-79 | 50% | Peak uncertainty challenge |
+| 80+ | 60% (cap) | Sustained ambiguity management |
 
-**Phase 2: Growth (If Coworkers Love It)**
+Why cap at 60%: At higher percentages, decisions become random (amygdala-driven reactivity). At 60%, 40% of food remains identifiable — preserving strategic thinking. A brain gym should always have a learnable skill dimension.
 
-**Enhancements Based on Validation:**
-- Multiple refined difficulty levels (Easy/Medium/Hard with tuned probabilities)
-- Advanced scoring system (combos, food-sequence bonuses)
-- Sound design and retro audio effects
-- Additional visual effects and smooth animations (beyond unified design system)
-- Better mobile optimization (native feel on mobile browsers)
-- Settings menu (difficulty, sound volume, phone call frequency)
+First-time tooltip at score 15: "Mystery Food! Effect hidden until consumed"
 
-**Additional Features:**
-- Leaderboards (local or global)
-- Score persistence across sessions
-- Player stats (games played, high score, average score)
-- Pause functionality
+**4. Combo Mode (Working Memory Training)**
 
-**Phase 3: Expansion (If It Goes Viral)**
+- Two food effects combine for multiplicative scoring
+- Canvas changes to dark color (purple, blue, red, or green — random), 500ms fade
+- Snake becomes striped (alternating Effect A / Effect B colors)
+- Score for food B = A × B (e.g., Reverse 8 × Speed Boost 5 = 40 points)
+- Third food eaten = exit combo mode
+- Starts at score 40, caps at 40% probability at score 120+
 
-**Platform Expansion:**
-- Progressive Web App (PWA) for offline play
-- Native mobile app (iOS/Android)
-- Steam release as premium retro game
+| Score Range | Combo % | Cognitive Training |
+|-------------|---------|-------------------|
+| 0-39 | 0% | Other systems being learned |
+| 40-59 | 10% | Introduction — learn new system |
+| 60-79 | 20% | Integration with blinking + phone |
+| 80-99 | 30% | Regular challenge |
+| 100-119 | 35% | Frequent but not dominant |
+| 120+ | 40% (cap) | Regular but never the only challenge |
 
-**Social Features:**
-- Share score screenshots with visual summary
-- Challenge a friend with seed-based replication
-- Global leaderboards with rankings
-- Social media integration
+Why cap at 40%: Above 50%, combo becomes background noise, not a special event. At 40%, it remains a distinct peak experience. Targeted challenge over raw chaos.
 
-**Gameplay Expansion:**
-- Additional food types based on feedback
-- Daily challenge modes or special events
-- Multiple game modes (time attack, endless, classic)
-- Customization (snake skins, board themes)
+**Cross-system rule:** Combo timer pauses during phone calls (respects cognitive budget at combo learning phase).
 
-**Monetization (If Desired):**
-- Cosmetic skins (retro phone aesthetics, snake colors/patterns)
-- Premium difficulty modes
-- Ad-supported free play with ad-removal option
-- Donation/tip jar model
+**5. Post-Game Cognitive Feedback ("Your Brain Today")**
+
+After death, before Play Again, display 2-3 cognitive achievement stats:
+
+| Stat | Display Text | Cognitive Faculty |
+|------|-------------|-------------------|
+| RC survived | "Reverse Controls survived: N" | Executive function |
+| Phone calls managed | "Phone calls managed: N" | Divided attention |
+| Mystery foods eaten | "Mystery foods decoded: N" | Uncertainty tolerance |
+| Combo multipliers | "Combo multipliers: N" | Working memory |
+| Pick Up streak | "Pick Up streak: N" | Risk assessment |
+| Peak combo score | "Best combo: ×N" | Peak cognitive performance |
+
+Selection logic: Show top 2-3 stats (highest values). Never show zero-value stats. Only show achievements, never failures.
+
+Timing: Stats fade in 300ms after score, stagger 300ms per line, hold 2.5s, fade out 500ms. Play Again button appears after stats fade (~3.3s total).
+
+Tone: Celebratory, not clinical. "My brain did that." — not a medical report.
+
+**6. Reverse Controls: The Crown Jewel**
+
+- Highest Fibonacci reward (+8) for highest cognitive demand
+- Requires executive function override: suppress learned motor pattern, remap controls
+- Engages prefrontal cortex — the brain region most threatened by AI dependency
+- "RC SURVIVED" flash (12px, white, 400ms) after navigating successfully
+- Tracked in cognitive stats as headline achievement
+
+**7. Core Snake Gameplay**
+
+- Grid-based movement (25 × 20 units, 10px/unit)
+- Collision detection: walls (unless invincibility/wall-phase), self (unless invincibility)
+- Starting length: 5 segments, bottom-left, moving right
+- Base speed: 8 moves/second
+- Speed Boost: 1.5-2x, Speed Decrease: 0.3-0.5x
+- Four keyboard layouts: Arrow, WASD, ZQSD, Numpad
+- Mobile: swipe gestures for direction, tap for phone buttons
+- 60 FPS via RequestAnimationFrame
+- Persistent high score via localStorage
+
+**8. Audio System**
+
+- Web Audio API for zero-latency playback
+- Fibonacci musical progression: C(+1), D(+2), E(+3), G(+5), C-major-chord(+8)
+- State-based movement sounds (7 states × 2 alternating sounds)
+- Combo entrance fanfare (rising arpeggio) + exit deflation (descending slide)
+- Nokia-style phone ring loop
+- Game over melody
+- Menu background music (8-bit looping)
+
+**9. Visual Design System**
+
+- Retro 8-bit pixel art aesthetic
+- Jersey20 font throughout
+- Purple theme: rgb(157, 178, 221) for UI elements
+- Sharp corners on phone overlay (Nokia aesthetic)
+- Rounded corners (12px) on menus, (8px) on buttons
+- Z-index hierarchy: Phone overlay (400) > Tooltips (300) > Score popups (200) > Score display (100) > Canvas (0)
+
+### Out of V2 Scope (Future)
+
+- Multiple difficulty levels / difficulty selection
+- Leaderboards / global score persistence
+- Player accounts / profiles
+- Native mobile app packaging
+- Haptic feedback on mobile
+- Caller collection / discovery system
+- Social sharing of cognitive stats
+- Longitudinal cognitive tracking across sessions
+- Targeted workout modes ("Focus Training," "Flexibility Training")
+
+### Post-V2 Vision
+
+**Phase 2: Cognitive Fitness Platform (If Brain Gym Positioning Validates)**
+
+- Longitudinal tracking: "Your brain this week" — trends in RC survivals, attention management
+- Targeted workout modes: Focus (phone-heavy), Flexibility (RC-heavy), Uncertainty (high blinking)
+- Cognitive warm-up mode for pre-work brain activation
+- Challenge a coworker with shared seeds
+- Cognitive stats sharing ("I survived 8 reverse controls today")
+
+**Phase 3: Platform Expansion**
+
+- Progressive Web App for offline play
+- Native mobile with haptic feedback
+- Steam release as premium cognitive fitness game
+- Corporate wellness programs (brain breaks during work)
+- Educational institutions (cognitive warm-ups before classes)
 
 ### Risk Mitigation Strategy
 
-**Technical Risks:**
+**Risk 1: Brain gym positioning doesn't resonate**
+- **Mitigation:** Test with knowledge workers who actively use AI tools daily
+- **Signal:** Players use cognitive language spontaneously vs. only describe "fun"
+- **Fallback:** Position as "the smartest Snake game ever made" (cognitive depth without clinical framing)
 
-**Risk:** Game continues running during phone call overlay (highest technical complexity)
-**Mitigation:**
-- Prototype this mechanic FIRST before building full game
-- Ensure 60 FPS maintained during overlay rendering
-- Test across all target browsers for consistency
-- **Fallback:** Pause game during phone call (less innovative but still unique differentiator)
+**Risk 2: Difficulty curve too aggressive (frustration)**
+- **Mitigation:** Score-gated progression ensures each system is introduced after demonstrated readiness
+- **Tuning levers:** All thresholds, percentages, and intervals configurable in config.js
+- **Fallback:** Widen score gates (e.g., blinking at 20 instead of 15)
 
-**Risk:** Performance degradation with multiple active effects
-**Mitigation:**
-- Optimize render loop from day 1
-- Test with all 6 food effects active simultaneously
-- Profile on mid-range devices, not just high-end
-- **Fallback:** Limit number of concurrent active effects to 3
+**Risk 3: Difficulty curve too gentle (cognitive autopilot)**
+- **Mitigation:** Short comfort zone (phone calls at score 3, blinking at 15)
+- **Signal:** Average scores too high, players report game is "easy"
+- **Fallback:** Tighten phone call intervals, lower blinking/combo start thresholds
 
-**Risk:** Browser compatibility issues
-**Mitigation:**
-- Test on all target browsers weekly
-- Use well-supported Canvas APIs (no experimental features)
-- Graceful degradation for older browsers
-- **Fallback:** Display "Unsupported browser" message with recommendations
+**Risk 4: Too much concurrent cognitive load at high scores**
+- **Mitigation:** Caps on blinking (60%) and combo (40%) prevent information overload
+- **Mitigation:** Combo timer pauses during phone calls (respects cognitive budget)
+- **Signal:** Death rate spikes unnaturally at specific score ranges
+- **Fallback:** Lower caps further, increase breathing room between phone calls
 
-**Market Risks:**
+**Risk 5: Phone calls feel annoying, not cognitively challenging**
+- **Mitigation:** Comedy (21 callers with one-liners) transforms interruption into entertainment
+- **Mitigation:** Fibonacci escalation makes Pick Up increasingly tempting
+- **Mitigation:** Consolation reward prevents "I wasted my Pick Up" frustration
+- **Fallback:** Reduce frequency at lower tiers, make Pick Up timer shorter
 
-**Risk:** Innovation doesn't resonate (phone calls are annoying, not fun)
-**Mitigation:**
-- Test with actual target demographic (office workers), not just any gamers
-- Start with conservative phone call frequency, tune based on feedback
-- Observe play sessions to see emotional reactions
-- **Fallback:** Reduce frequency or make optional in settings
+**Risk 6: Technical — game continues during phone overlay (60 FPS under blur)**
+- **Mitigation:** Prototype phone overlay mechanic first (highest technical risk)
+- **Mitigation:** Test across all target browsers for consistent rendering
+- **Fallback:** Pause game during phone call (less innovative but still functional)
 
-**Risk:** Too much chaos = frustration, not fun
-**Mitigation:**
-- Configurable probability system (easy to tune without code changes)
-- Monitor completion rates - if <50%, dial down chaos
-- Start conservative, gradually increase chaos based on tolerance
-- **Fallback:** Classic mode with just growing food (no chaos effects)
-
-**Risk:** Coworker feedback is mixed or negative
-**Mitigation:**
-- Get detailed qualitative feedback on what works/doesn't work
-- Iterate on specific mechanics (don't scrap entire concept)
-- A/B test variations (higher/lower phone frequency, fewer food types)
-- **Fallback:** If mechanics fail, pivot to traditional Snake with excellent polish
-
-**Resource Risks:**
-
-**Risk:** Development takes longer than expected (scope creep)
-**Mitigation:**
-- Ruthlessly stick to MVP scope - NO feature additions before validation
-- Track development velocity weekly
-- Cut visual polish first if timeline slips (function > form for MVP)
-- **Fallback:** Launch with 4 food types instead of 6 if needed to hit timeline
-
-**Risk:** Can't get coworker participation for testing
-**Mitigation:**
-- Make testing low-friction (send link, 5-minute commitment)
-- Offer incentive (coffee, lunch) for detailed feedback
-- Test with friends/family if coworkers unavailable
-- **Fallback:** Launch publicly and gather feedback from early adopters online
-
-**Risk:** Solo developer burnout or availability issues
-**Mitigation:**
-- Set realistic 2-4 week timeline (not overly aggressive)
-- Focus on MVP scope only (prevents overwhelm)
-- Partner with UX designer (Sally) to share workload
-- **Fallback:** Simplify visual aesthetic to reduce scope
+---
 
 ## Functional Requirements
 
 ### Core Gameplay
 
-- FR1: Players can control snake movement in four cardinal directions (up, down, left, right)
-- FR2: The snake automatically moves in the current direction at a consistent speed
-- FR3: The snake grows in length when consuming ANY food type (+1 segment per food)
-- FR4: The snake dies upon collision with walls (unless invincibility or wall-phase active)
-- FR5: The snake dies upon collision with itself (unless invincibility active)
-- FR6: Players can see the snake's current position and length on the game board
-- FR7: The game board has defined boundaries that trigger death on collision (with exceptions)
-- FR8: The game continues until the player's snake dies
+- FR1: Players control snake direction in four cardinal directions
+- FR2: Snake automatically moves in current direction at configurable speed
+- FR3: Snake grows by +1 segment when consuming ANY food type
+- FR4: Snake dies on wall collision (unless invincibility or wall-phase active)
+- FR5: Snake dies on self-collision (unless invincibility active)
+- FR6: Game board displays snake position, food positions, score, and active effects
+- FR7: Game board uses grid-based layout (25 × 20 units, 10px per unit)
+- FR8: Game continues until player's snake dies
 
-### Food System
+### Fibonacci Scoring System
 
-- FR10: Food items spawn randomly on the game board at available grid positions
-- FR11: Food items are consumed when the snake's head occupies the same position
-- FR12: Growing food (green) increases snake length by one segment (no special effect)
-- FR13: Invincibility food (yellow) increases snake length by one segment AND grants immunity to wall and self-collision until next food is eaten
-- FR14: Invincibility effect displays as rapid strobe/blinking visual (old-school arcade style)
-- FR15: Wall-Phase food (purple) increases snake length by one segment AND allows snake to pass through one wall and wrap to the opposite side
-- FR16: Wall-Phase effect is single-use: activates on consumption, ends after snake fully passes through one wall
-- FR17: Speed Boost food (red) increases snake length by one segment AND increases movement speed until next food is eaten
-- FR18: Speed Decrease food (cyan) increases snake length by one segment AND decreases movement speed significantly until next food is eaten
-- FR19: Reverse Control food (orange) increases snake length by one segment AND inverts directional controls until next food is eaten
-- FR20: ALL timed effects (Invincibility, Speed Boost, Speed Decrease, Reverse Controls) end immediately when the next food is consumed
-- FR21: Each food type has a distinct visual appearance (color and shape)
-- FR22: Food spawning follows configurable probability distribution for each food type
-- FR23: Only one food item exists on the board at a time
-- FR24: New food spawns immediately after current food is consumed
+- FR10: Food spawns with configurable probability distribution (Growing 40%, Invincibility 10%, Wall-Phase 10%, Speed Boost 15%, Speed Decrease 15%, Reverse Controls 10%)
+- FR11: Food consumed when snake head occupies food position
+- FR12: Growing food (green, +1) — baseline, no special effect
+- FR13: Invincibility food (yellow, 0 pts) — wall/self immunity until next food eaten, rapid strobe visual
+- FR14: Wall-Phase food (purple, +1 default, +3 on wall interaction) — pass through one wall, wrap to opposite side
+- FR15: Speed Boost food (red, +5) — increased movement speed until next food eaten
+- FR16: Speed Decrease food (cyan, +2) — decreased movement speed until next food eaten
+- FR17: Reverse Controls food (orange, +8) — inverted directional controls until next food eaten
+- FR18: All timed effects end when next food consumed
+- FR19: Score popup system displays value with visual salience proportional to Fibonacci value (+1 through +8)
+- FR20: +8 score popup includes particles (5-7 stars), screen shake (3px, 200ms), and rotation wiggle
+- FR21: Score popup spawns within 200ms of food consumption (temporal contiguity)
+- FR22: Score popup queue uses 300ms stagger when multiple popups overlap
+- FR23: Only one food item exists on the board at a time; new food spawns immediately after consumption
 
-### Phone Call Interruption Mechanic
+### Progressive Blinking Food System
 
-**Visual Design:**
-- FR25: Phone call UI uses the unified design system with rounded corners (12px) and purple-blue borders matching all other menus
-- FR26: Phone call overlay covers full screen with blurred game visible in background
-- FR27: Phone call overlay is centered on screen with transparent background (rgba(0, 0, 0, 0.6)) over 80% black overlay
-- FR28: Phone call displays a random funny caller name and "End" button at bottom center with rounded corners (8px)
+- FR30: At score 15+, a configurable percentage of food items cycle through all 6 colors
+- FR31: Color cycling speed: 200ms per color (5 colors/second)
+- FR32: Blinking food effect type locked at spawn, hidden until consumed
+- FR33: Blinking food probability increases with score (10% at 15, caps at 60% at 80+)
+- FR34: Blinking food uses same spawn probability distribution as visible food
+- FR35: First-time tooltip at score 15: "Mystery Food! Effect hidden until consumed" (auto-dismisses after 3s)
+- FR36: Blinking food has 2px drop shadow for spatial anchoring during color cycling
 
-**Funny Caller Names Pool:**
-Family & Friends: "Mom", "Dad", "Grandma", "Your Ex", "Best Friend", "That Cousin"
-Work & Responsibility: "Boss", "HR Department", "Meeting Reminder", "Quick Question", "Monday Morning"
-Annoying & Spam: "Spam Likely", "Unknown", "Debt Collector", "Extended Warranty", "Free Vacation", "Nigerian Prince"
-Existential & Absurd: "Your Conscience", "Future You", "Past Mistakes", "Anxiety", "The Void", "Destiny Calling", "Reality Check"
-Meta & Silly: "Not A Scam", "Please Answer", "Important!!!", "Last Chance", "Snake Headquarters", "Game Over (calling early)"
-Random Numbers: "555-0123", "1-800-CHAOS", "666-6666"
+### Combo Mode System
 
-**Behavior:**
-- FR29: Phone call interruptions occur at random intervals between 15-45 seconds
-- FR30: The game continues running underneath the phone call overlay (CRITICAL)
-- FR31: Phone call stays on screen until player dismisses it (does not auto-dismiss)
-- FR32: Players dismiss phone calls by pressing Space bar on desktop
-- FR33: Players dismiss phone calls by tapping "End" button on mobile
-- FR34: Phone call overlay disappears immediately upon dismissal
+- FR40: At score 40+, combo mode can activate after eating food (probability-based)
+- FR41: Combo probability increases with score (10% at 40, caps at 40% at 120+)
+- FR42: On activation: canvas background transitions to random dark color (500ms fade)
+- FR43: Current food effect becomes Effect A; next food becomes Effect B
+- FR44: Score for food B = Effect A points × Effect B points (multiplicative)
+- FR45: Snake renders with striped pattern (alternating Effect A / Effect B colors, head = Effect B)
+- FR46: Third food eaten exits combo mode; canvas returns to light grey (500ms fade)
+- FR47: Combo timer pauses during active phone call overlay
+- FR48: After phone dismissal during combo, combo resumes with all state preserved
+
+### Phone Call System
+
+- FR50: Phone calls disabled until player reaches score 3 (grace period)
+- FR51: Phone call frequency determined by score-based tiers (12-20s at score 3-14, down to 4-8s at score 100+)
+- FR52: Phone overlay displays caller portrait (64x64 pixel art), caller name, and two buttons (End / Pick Up)
+- FR53: Game continues running underneath phone overlay with 4px blur
+- FR54: End button awards +1 point and instantly dismisses overlay
+- FR55: Pick Up button starts 1-3s random timer with countdown bar, awards Fibonacci bonus
+- FR56: Pick Up bonus follows Fibonacci sequence per game: +2, +3, +5, +8, +13, +21, +34 (cap)
+- FR57: Pick Up bonus value displayed on button before decision ("Pick Up +8")
+- FR58: Pick Up is irreversible — cannot End once committed
+- FR59: Caller one-liner displayed only after Pick Up (replaces "Incoming call..." text)
+- FR60: If player dies during Pick Up, bonus is still awarded (consolation reward)
+- FR61: 21 unique callers with tech-pun names, pixel portraits, and one-liners
+- FR62: Portrait fallback: generic phone icon if portrait asset missing (onerror handler)
+- FR63: Desktop controls: Space = End, Enter = Pick Up
+- FR64: Mobile: tap End button or Pick Up button
+
+### Death During Combo + Pick Up (Edge Case)
+
+- FR65: If player dies during active combo AND Pick Up, both rewards stack
+- FR66: Combo multiplier awarded (A × B if food B was eaten)
+- FR67: Pick Up Fibonacci bonus awarded (consolation reward)
+
+### Reverse Controls Recognition
+
+- FR70: When player survives Reverse Controls (eats next food without dying), display "RC SURVIVED" flash
+- FR71: RC SURVIVED flash: 12px, white, 400ms fade, spawns below +8 popup
+- FR72: RC survival count tracked in cognitiveStats.rcSurvived
+
+### Post-Game Cognitive Feedback
+
+- FR75: After death, display "Your Brain Today" cognitive stats before Play Again button
+- FR76: Track 6 cognitive stats during gameplay: rcSurvived, phoneCallsManaged, mysteryFoodsEaten, comboMultipliers, pickUpStreak, peakComboScore
+- FR77: Show top 2-3 stats with highest values; never show zero-value stats
+- FR78: Stats stagger in at 300ms intervals, hold 2.5s, fade out 500ms
+- FR79: Play Again button appears after stats fade (~3.3s total)
+- FR80: All cognitiveStats reset on new game
 
 ### Session Flow
 
-- FR35: Players can start a new game from the landing page
-- FR36: Each game session begins with a snake of default starting length
-- FR37: Game sessions end when the player's snake dies
-- FR38: Players can see their final score upon death
-- FR39: Players can restart immediately after death without navigation
-- FR40: Game sessions are independent with no state persistence between sessions
-
-### Scoring System
-
-- FR41: ALL food types increase snake length by one segment when consumed
-- FR42: Score equals snake length (simple, visual scoring)
-- FR43: Players can see a small score counter during gameplay displaying current snake length
-- FR44: Players can visually gauge their score by the snake's size on screen
-- FR45: Final score (snake length at death) is displayed on the game over screen
+- FR85: One-click start from landing page (New Game)
+- FR86: Each game begins with snake at default starting state (length 5, bottom-left, moving right)
+- FR87: Game ends when snake dies
+- FR88: Game over screen displays: score, high score, "Your Brain Today" cognitive stats, Play Again / Menu buttons
+- FR89: Play Again immediately starts new game (no navigation)
+- FR90: High score persisted via localStorage
+- FR91: Esc key during gameplay pauses game
 
 ### User Interface
 
 **Unified Design System:**
-
-All UI elements follow a consistent design language:
-- **Single Purple Shade:** rgb(157, 178, 221) for ALL UI elements (menu borders, button active states, text highlights)
-- **Rounded Corners:** 12px on all menu frames (Menu, Game Over, Feedback, Thank You, Phone, Score)
-- **Button Corners:** 8px on all buttons
-- **Transparent Backgrounds:** rgba(0, 0, 0, 0.6) for modal containers over 80% black overlays
-- **Button States:** Black inactive → purple-blue active, white text always, scale animations
-- **Consistent Double-Border Pattern:** Main border + box-shadow outer layer on all frames
-
-**Visual Style:**
-- FR46: Game uses retro arcade 8-bit pixel art style (colorful, playful, fun mood)
-- FR47: Game board has super light grey background with subtle light grey grid
-- FR48: All UI menus use consistent rounded corners (12px) with purple-blue borders (rgb(157, 178, 221))
-- FR49: Food items are simple geometric shapes in pixel style with distinct colors
-
-**Snake Appearance:**
-- FR50: Snake uses classic blocky pixel segments
-- FR51: Snake color matches the last food eaten (default: black)
-- FR52: Snake blinks briefly when transitioning from one color to another (on eating new food)
-- FR53: Invincibility effect displays as rapid strobe/blinking on the snake (yellow)
-
-**Other UI:**
-- FR54: Players can distinguish between different food types by color and shape
-- FR55: The phone call overlay uses the unified design system matching all other menus (rounded corners, purple-blue borders, transparent background)
-- FR56: Score counter displays at top-center of the game board with rounded corners (12px) and purple-blue border
-- FR57: Active effects are indicated by snake color + movement sound only (no additional UI elements)
-- FR58: UI elements use clear visual hierarchy for important information
-- FR59: All buttons use 8px rounded corners with black inactive state and purple-blue active state, white text always, and scale animations
+- FR95: All UI elements use Jersey20 font family
+- FR96: Purple theme color: rgb(157, 178, 221) for UI borders, active states, cognitive stats header
+- FR97: Rounded corners: 12px on menu frames, 8px on buttons
+- FR98: Phone overlay uses sharp corners (Nokia aesthetic exception)
+- FR99: Button states: black inactive → purple-blue active, white text, scale animations
+- FR100: Retro 8-bit pixel art aesthetic throughout
 
 **Screens:**
-
-*Main Menu Screen:*
-- FR60: Main menu displays "New Game" and "Top Score" options with rounded purple-blue bordered frames
-- FR61: "New Game" starts a new game session
-- FR62: "Top Score" displays the player's best score stored in browser localStorage
-- FR63: Post-MVP: Player accounts with database storage for scores
-
-*Game Over Screen:*
-- FR64: Game over screen displays "GAME OVER!" title text
-- FR65: Game over screen displays "Your score: XX" with final snake length
-- FR66: Game over screen shows two options: "Play Again" and "Menu" with rounded buttons (8px)
-- FR67: "Play Again" is selected by default on game over screen
-- FR68: "Play Again" starts a new game immediately
-- FR69: "Menu" returns to main menu screen
+- FR101: Main menu with "New Game" and "Top Score" options
+- FR102: Game board with score display (top-center, rounded frame with purple border)
+- FR103: Game over screen with score, high score, cognitive feedback, Play Again / Menu
+- FR104: Phone call overlay (Nokia grey, centered, game blurred underneath)
+- FR105: Play Again selected by default on game over screen
 
 **Menu Navigation:**
-- FR70: Enter key validates/selects the current menu choice
-- FR71: Mouse click on buttons validates the choice
-- FR72: Esc key cancels current action and opens the Menu screen
-- FR73: Esc key during gameplay opens the Menu screen (pauses game)
+- FR106: Enter validates current selection
+- FR107: Arrow Up/Down navigates between options
+- FR108: Mouse click on buttons validates choice
+- FR109: Esc returns to menu or pauses gameplay
 
 ### Input Controls
 
 **Snake Movement:**
-- FR74: Arrow keys control snake direction (Up, Down, Left, Right)
-- FR75: Numpad controls snake direction (8=Up, 2=Down, 4=Left, 6=Right)
-- FR76: WASD keys control snake direction for US keyboards (W=Up, S=Down, A=Left, D=Right)
-- FR77: ZQSD keys control snake direction for French AZERTY keyboards (Z=Up, S=Down, Q=Left, D=Right)
-- FR78: Swipe gestures control snake direction on mobile
+- FR110: Arrow keys (Up, Down, Left, Right)
+- FR111: Numpad (8=Up, 2=Down, 4=Left, 6=Right)
+- FR112: WASD (W=Up, S=Down, A=Left, D=Right)
+- FR113: ZQSD for AZERTY keyboards (Z=Up, S=Down, Q=Left, D=Right)
+- FR114: Swipe gestures on mobile
 
-**Other Controls:**
-- FR79: Space bar dismisses phone calls on desktop
-- FR80: Tap on "End" button dismisses phone calls on mobile
-- FR81: Input controls respond with minimal latency
+**Phone Call Controls:**
+- FR115: Space = End call (desktop)
+- FR116: Enter = Pick Up call (desktop)
+- FR117: Tap End/Pick Up buttons (mobile)
+
+**Other:**
+- FR118: Esc = pause/resume during gameplay
+- FR119: Input responds with < 50ms latency
 
 ### Sound Design
 
-**Movement Sounds (8-bit style, short impulse, played at each snake step):**
-- FR82: Each snake movement step plays a sound based on current snake color/state
-- FR83: Default state (black snake): Neutral "blip" - classic arcade step sound
-- FR84: After Growing food (green snake): Pleasant, positive tone
-- FR85: After Invincibility food (yellow snake): Powerful, strong tone
-- FR86: After Wall-Phase food (purple snake): Ethereal, magical tone
-- FR87: After Speed Boost food (red snake): Quick, energetic tone - higher pitch
-- FR88: After Speed Decrease food (cyan snake): Slow, heavy tone - lower pitch, sluggish
-- FR89: After Reverse Controls food (orange snake): Dissonant, off-kilter tone
+**Fibonacci Musical Progression:**
+- FR120: +1 score: soft beep (C4, 261Hz, sine wave)
+- FR121: +2 score: soft chime (D4, 293Hz, sine wave)
+- FR122: +3 score: mid chime (E4, 329Hz, triangle wave)
+- FR123: +5 score: high chime (G4, 392Hz, triangle wave)
+- FR124: +8 score: triumphant C-major chord (C5-E5-G5, 523/659/784Hz)
 
-**Game Over Music:**
-- FR90: Game over screen plays 8-bit style short melody
+**State-Based Movement Sounds:**
+- FR125: Each snake state has distinct movement sound (7 states × 2 alternating sounds)
+- FR126: Default (black): neutral blip; Green: pleasant; Yellow: powerful; Purple: ethereal; Red: energetic; Cyan: heavy; Orange: dissonant
+
+**Combo Audio:**
+- FR127: Combo entrance: 8-bit fanfare (rising arpeggio)
+- FR128: Combo exit: deflating descending sound
+- FR129: High-value combo (15+ pts): jackpot fanfare
+- FR130: Legendary combo (30+ pts): extended triumphant chord
+
+**Phone Audio:**
+- FR131: Incoming call: Nokia-style retro ring (loops until answered)
+- FR132: Pick Up: click/accept tone
+- FR133: End: hang-up click
+
+**Game Over:**
+- FR134: 8-bit short melody
 
 ### Platform Support
 
-- FR91: The game runs in Chrome, Firefox, Safari, and Edge browsers
-- FR92: The game supports desktop screen resolutions from 1024x768 and above
-- FR93: The game adapts to mobile screen sizes with responsive layout
-- FR94: Touch controls function on mobile browsers
-- FR95: The game loads and becomes playable within 3 seconds
+- FR140: Game runs on Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
+- FR141: Desktop resolutions 1024x768 and above
+- FR142: Mobile responsive layout (320px to 768px width)
+- FR143: Touch controls functional on mobile browsers
+- FR144: Game loads within 3 seconds on broadband (5 Mbps+)
 
-### Analytics & Tracking
-
-- FR96: The system tracks game session starts
-- FR97: The system tracks game session completions (deaths)
-- FR98: The system tracks which food types are consumed
-- FR99: The system tracks phone call dismissal response times
-- FR100: The system tracks player return rate across sessions
+---
 
 ## Non-Functional Requirements
 
 ### Performance
 
 **Frame Rate:**
-- NFR1: The game maintains 60 frames per second (FPS) during normal gameplay
-- NFR2: The game maintains 60 FPS when phone call overlay is active with game running underneath
-- NFR3: Frame rate does not drop below 55 FPS during food consumption or snake growth
-- NFR4: Frame rate does not drop below 55 FPS when multiple food effects are active simultaneously
+- NFR1: 60 FPS during normal gameplay
+- NFR2: 60 FPS during phone call overlay with game running underneath
+- NFR3: 60 FPS during combo mode (canvas transitions, striped snake rendering)
+- NFR4: 60 FPS with blinking food animation (200ms color cycling)
+- NFR5: No frame drops below 55 FPS when all systems active simultaneously (peak cognitive demand at score 100+)
 
 **Load Time:**
-- NFR5: Initial page load completes within 3 seconds on broadband connections (5 Mbps+)
-- NFR6: Game becomes playable (start button clickable) within 0.5 seconds after page load
-- NFR7: No loading screens or delays during gameplay transitions
+- NFR6: Initial page load < 3 seconds on broadband
+- NFR7: Game playable within 0.5 seconds after page load
+- NFR8: No loading screens during gameplay transitions
 
 **Responsiveness:**
-- NFR8: Input lag from keyboard/touch to snake direction change is less than 50 milliseconds
-- NFR9: Phone call dismissal (Space/tap) removes overlay within 100 milliseconds
-- NFR10: "PLAY AGAIN" button responds within 100 milliseconds and restarts game immediately
+- NFR9: Input lag < 50ms (keyboard/touch to snake movement)
+- NFR10: Score popup spawn < 200ms after food consumption (temporal contiguity)
+- NFR11: Phone call dismiss < 100ms
+- NFR12: Play Again restart < 100ms
 
 **Memory:**
-- NFR11: Client-side memory usage remains below 100 MB during gameplay
-- NFR12: No memory leaks occur during extended play sessions (30+ minutes)
-- NFR13: Garbage collection does not cause noticeable frame drops or stuttering
+- NFR13: Client-side memory < 100MB
+- NFR14: No memory leaks during extended play (30+ minutes)
+- NFR15: Garbage collection doesn't cause frame drops
 
 ### Browser Compatibility
 
-**Supported Browsers:**
-- NFR14: Game functions correctly on Chrome 90+ (desktop and mobile)
-- NFR15: Game functions correctly on Firefox 88+ (desktop and mobile)
-- NFR16: Game functions correctly on Safari 14+ (desktop and iOS)
-- NFR17: Game functions correctly on Edge 90+ (desktop)
-
-**Cross-Browser Consistency:**
-- NFR18: Visual appearance is consistent across all supported browsers (within 95% similarity)
-- NFR19: Gameplay mechanics behave identically across all supported browsers
-- NFR20: Performance targets (60 FPS, load time) are met across all supported browsers
-
-**Resolution Support:**
-- NFR21: Game is playable on desktop resolutions from 1024x768 up to 4K displays
-- NFR22: Game scales appropriately to mobile screen sizes (320px to 768px width)
-- NFR23: Touch controls function correctly on mobile browsers (iOS Safari, Chrome Mobile)
-
-**Graceful Degradation:**
-- NFR24: Unsupported browsers display clear message with browser recommendations
-- NFR25: Older browsers that partially support features degrade gracefully without crashes
+- NFR16: Visual appearance consistent across all supported browsers (95% similarity)
+- NFR17: Gameplay mechanics identical across all supported browsers
+- NFR18: Performance targets met across all supported browsers
+- NFR19: Desktop resolutions 1024x768 to 4K
+- NFR20: Mobile 320px to 768px width
+- NFR21: Touch controls on iOS Safari and Chrome Mobile
+- NFR22: Unsupported browsers show clear message
 
 ### Reliability
 
-**Stability:**
-- NFR26: Game does not crash or freeze during normal gameplay
-- NFR27: Game recovers gracefully from unexpected errors without losing current session
-- NFR28: No game-breaking bugs that prevent core gameplay loop from functioning
-
-**Consistency:**
-- NFR29: Snake movement speed is consistent across different devices and browsers
-- NFR30: Food effects trigger reliably 100% of the time when consumed
-- NFR31: Collision detection is accurate and consistent (no false positives/negatives)
-- NFR32: Phone call interruptions trigger consistently based on configured timing algorithm
-
-**Data Integrity:**
-- NFR33: Score calculations are accurate for all food types and scenarios
-- NFR34: Analytics data is captured reliably without affecting gameplay performance
-- NFR35: Game state remains consistent throughout a session (no state corruption)
+- NFR23: Game does not crash during normal gameplay
+- NFR24: Snake movement speed consistent across devices and browsers
+- NFR25: Food effects trigger 100% of the time when consumed
+- NFR26: Collision detection accurate (no false positives/negatives)
+- NFR27: Phone call intervals consistent with configured tier for current score
+- NFR28: Score calculations accurate for all food types, phone bonuses, and combo multipliers
+- NFR29: Cognitive stats tracking accurate for all 6 tracked stats
+- NFR30: Game state consistent throughout session (no state corruption)
 
 ### Usability
 
-**Learnability:**
-- NFR36: New players understand basic controls (arrow keys/swipe) without instructions within first 30 seconds
-- NFR37: Food effect behaviors are clear from visual feedback alone (no text required)
-- NFR38: Phone call dismissal mechanism is immediately obvious upon first occurrence
-
-**Error Tolerance:**
-- NFR39: Rapid input changes (multiple quick key presses) do not cause erratic behavior
-- NFR40: Game handles edge cases gracefully (snake length of 1, wall-phase wrap-around)
+- NFR31: New players understand basic controls within 30 seconds
+- NFR32: Food effect behaviors clear from visual feedback alone
+- NFR33: Phone call End/Pick Up choice immediately obvious on first occurrence
+- NFR34: Blinking food findable despite color cycling (shadow anchor)
+- NFR35: Combo mode recognizable within 5 seconds of activation (striped snake, dark canvas)
+- NFR36: Post-game cognitive stats feel celebratory, not clinical
+- NFR37: Rapid input changes do not cause erratic behavior
 
 ### Maintainability
 
-**Code Quality:**
-- NFR41: Game logic is modular and separable from rendering logic
-- NFR42: Food probability configuration is easily adjustable without code changes
-- NFR43: Phone call timing algorithm parameters are configurable without code recompilation
+- NFR38: Game logic modular and separable from rendering
+- NFR39: All game parameters configurable in config.js without code changes:
+  - Food probability distribution
+  - Phone call intervals per score tier
+  - Blinking food percentage curve
+  - Combo probability curve
+  - Grace period score threshold
+  - Pick Up Fibonacci sequence
+  - Effect durations and speed multipliers
+- NFR40: Core gameplay mechanics unit testable
+- NFR41: Food effects testable in isolation
+- NFR42: Cross-browser compatibility validatable through automated testing
 
-**Testing:**
-- NFR44: Core gameplay mechanics are unit testable
-- NFR45: Food effects can be tested in isolation
-- NFR46: Cross-browser compatibility can be validated through automated testing
+---
+
+*PRD prepared by Mary (Analyst) with Celia (Neuro-Game Design Expert)*
+*"A brain gym disguised as Snake. Difficulty is the product. Comedy makes it fun."*

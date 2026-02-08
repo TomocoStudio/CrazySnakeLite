@@ -1,20 +1,41 @@
-# CrazySnakeLite
+# CrazySnakeLite — Brain Gym for the Age of AI
 
-A chaotic twist on the classic Nokia Snake game. Features 6 food types with special effects, phone call interruptions, and state-based audio feedback!
+A **cognitive fitness tool disguised as an arcade game.** Five brain training systems layered on top of classic Snake — each targeting a different cognitive faculty, each unlocking as you demonstrate mastery.
 
-## Features
+AI handles more of our thinking every day. CrazySnakeLite makes your brain work hard — and makes it fun.
 
-- **Classic Snake Gameplay** with modern chaos and retro aesthetics
-- **6 Different Food Types** with unique visual and audio effects
-- **Phone Call Interruptions** that blur the game and test your focus
-- **Score System** with persistent high score tracking
-- **Main Menu & Game Over Screens** with keyboard and mouse navigation
-- **Looping Menu Music** - Immersive 8-bit background soundtrack
-- **State-Based Movement Sounds** - 14 alternating 8-bit sounds (2 per state)
-- **V3 Audio Quality** - All sounds upgraded to improved quality versions
-- **Full Keyboard Support** - Enter, Esc, Arrow keys for complete navigation
-- **Pause & Resume** - Press Esc during gameplay to pause
-- **Retro 8-bit Pixel Art Aesthetic** throughout
+## The Five Cognitive Training Layers
+
+| Layer | Mechanic | What It Trains | Score Gate |
+|-------|----------|---------------|------------|
+| 1 | **Fibonacci Scoring** — 6 food types with difficulty-proportional rewards | Pattern recognition, risk assessment | Score 0+ |
+| 2 | **Phone Call Interruptions** — End (+1 safe) or Pick Up (+Fibonacci bonus, risky) | Divided attention, context-switching | Score 3+ |
+| 3 | **Progressive Blinking Food** — Mystery food hides its type until consumed | Decision-making under uncertainty | Score 15+ |
+| 4 | **Combo Mode** — Two effects combine for multiplicative scoring | Working memory, strategic thinking | Score 40+ |
+| 5 | **Reverse Controls** — Up is down, left is right (the crown jewel) | Executive function override | Any time |
+
+**Post-Game:** "Your Brain Today" shows 2-3 cognitive achievement stats after each death. Transforms "I failed" into "look what my brain just did."
+
+## Food Types & Fibonacci Scoring
+
+| Food | Color | Points | Effect | Cognitive Training |
+|------|-------|--------|--------|-------------------|
+| Growing | Green | +1 | Snake grows | Baseline motor control |
+| Speed Decrease | Cyan | +2 | Slower movement | Cognitive breathing room |
+| Wall Phase | Purple | +1/+3 | Pass through walls | Spatial reasoning |
+| Speed Boost | Red | +5 | Faster movement | Reflexes under pressure |
+| Reverse Controls | Orange | +8 | Controls inverted | Executive function (crown jewel) |
+| Invincibility | Yellow | 0 | Temporary immunity | Impulse control (safety vs. score) |
+
+## Phone Call System — 21 Tech-Pun Callers
+
+Random phone calls interrupt gameplay while the snake keeps moving under blur. Two choices:
+- **End** (+1 point, instant, safe)
+- **Pick Up** (+Fibonacci bonus, 1-3s blur, risky) — bonus escalates per game: +2, +3, +5, +8, +13, +21, +34
+
+Pick Up reveals the caller's comedy one-liner. Comedy is a reward for courage.
+
+**Sample callers:** Al Gorithm, Meg A. Byte, Floppy Phil, Mona Tor, DJ Snake, GAME OVER...
 
 ## Getting Started
 
@@ -40,130 +61,107 @@ Then open http://localhost:8000 in your browser.
 **Option 3: Any Local Server**
 Use any HTTP server that can serve static files (Node.js http-server, PHP built-in server, etc.)
 
+## Controls
+
+### Gameplay
+- **Arrow Keys** / **WASD** / **ZQSD** / **Numpad** — Move snake
+- **Space** — End phone call
+- **Enter** — Pick Up phone call
+- **Esc** — Pause game
+- **Swipe** — Touch controls for mobile
+
+### Menu Navigation
+- **Enter** — Activate selected button
+- **Arrow Up/Down** — Navigate options
+- **Esc** — Return to menu / Resume
+- **Mouse/Touch** — Click/tap any button
+
 ## Project Structure
 
 ```
 CrazySnakeLite/
 ├── index.html          # Entry point, game container
 ├── css/
-│   └── style.css       # Retro styling, game board, overlays
+│   └── style.css       # Retro styling, overlays, cognitive feedback
 ├── js/
 │   ├── main.js         # Entry point, game initialization
-│   ├── config.js       # Tunable game parameters
+│   ├── config.js       # All tunable game parameters
 │   ├── game.js         # Game loop, state management
-│   ├── state.js        # State creation/reset
+│   ├── state.js        # State creation/reset (incl. cognitiveStats)
 │   ├── snake.js        # Snake entity, movement
-│   ├── food.js         # Food spawning, types
+│   ├── food.js         # Food spawning, types, blinking system
 │   ├── collision.js    # Collision detection
-│   ├── effects.js      # Effect system
-│   ├── phone.js        # Phone call overlay
-│   ├── input.js        # Keyboard/touch input
-│   ├── render.js       # Canvas rendering
-│   ├── audio.js        # Sound system
+│   ├── effects.js      # Effect system (6 typed effects)
+│   ├── phone.js        # Phone call overlay, Pick Up/End, callers
+│   ├── input.js        # Keyboard/touch input (4 layouts)
+│   ├── render.js       # Canvas rendering, combo mode visuals
+│   ├── audio.js        # Web Audio API sound system
 │   └── storage.js      # localStorage for high scores
 ├── assets/
-│   └── sounds/         # 8-bit audio files
-└── README.md
+│   ├── sounds/         # 8-bit audio files
+│   └── callers/        # 21 caller portraits (64x64 pixel art)
+└── _bmad-output/       # Design documents and planning artifacts
+    └── planning-artifacts/
+        ├── game-ux-principles.md          # Cognitive science foundation
+        ├── game-design-food-v2.md         # Fibonacci scoring & progression
+        ├── game-design-phone-calls-v2.md  # Phone call enhancement system
+        ├── ux-design-food-phone-v2.md     # Visual implementation guide
+        ├── product-brief-*.md             # Product brief
+        ├── prd.md                         # Product requirements
+        └── project-context.md             # AI agent implementation guide
 ```
-
-## Controls
-
-### Gameplay
-- **Arrow Keys** / **WASD** / **ZQSD** / **Numpad** - Move snake
-- **Space** - Dismiss phone calls
-- **Esc** - Pause game (press again to resume)
-- **Swipe** - Touch controls for mobile
-
-### Menu Navigation
-- **Enter** - Activate selected button (New Game / Play Again)
-- **Arrow Up/Down** - Navigate between menu options
-- **Esc** - Return to menu (from game over) or Resume (from pause)
-- **Mouse/Touch** - Click/tap any button
-
-## Food Types & Effects
-
-Each food type has unique visual effects, snake colors, and alternating movement sounds!
-
-1. **Green (Growing)** - Classic food, snake grows, pleasant tones
-2. **Yellow (Invincibility)** - Temporary invincibility, powerful shield sounds
-3. **Purple (Wall Phase)** - Pass through walls, ethereal whoosh sounds
-4. **Red (Speed Boost)** - Move faster, energetic high-pitch tones
-5. **Cyan (Speed Decrease)** - Move slower, deep heavy tones
-6. **Orange (Reverse)** - Controls reversed, dissonant warped sounds
 
 ## Audio System
 
-- **Web Audio API** for zero-latency, synchronized sound playback
-- **Menu Background Music** - Looping 8-bit soundtrack on menu screen (V3)
-- **16 Total Sound Files** - All upgraded to V3 versions for improved quality
-  - 14 Movement Sounds (7 states × 2 alternating sounds)
-  - 1 Death Sound
-  - 1 Menu Music Loop
-- **Alternation Pattern** - Movement sounds alternate (1→2→1→2) for dynamic variation
-- **State Change Reset** - New state always starts with Sound 1
-- **60 FPS Performance** - Decoupled audio playback maintains smooth gameplay
-- **Browser Autoplay Compliance** - Audio initializes on first user interaction (click/keypress)
+- **Web Audio API** for zero-latency playback
+- **Fibonacci Musical Progression** — Each score value has a distinct note (C, D, E, G, C-major chord for +8)
+- **State-Based Movement Sounds** — 7 states × 2 alternating sounds per state
+- **Combo Audio** — Entrance fanfare (rising arpeggio), exit deflation, jackpot sounds for high combos
+- **Nokia-Style Phone Ring** — Retro ringtone loops until answered
+- **Browser Autoplay Compliance** — Audio initializes on first user interaction
+
+## Design Philosophy
+
+**Score-based, never time-based.** All progression is gated by player achievement, not survival time.
+
+**Difficulty is the product.** The cognitive challenge is what the player came for.
+
+**Comedy is a system.** 21 tech-pun callers, retro portraits, funny one-liners — humor makes the workout enjoyable.
+
+**Targeted challenge over raw chaos.** A gym rotates muscle groups. CrazySnakeLite rotates cognitive demands. Blinking food caps at 60%, combo at 40% — ensuring strategic thinking is always possible, even at peak difficulty.
+
+**Teach by encounter.** Every mechanic is learned through play, not instruction.
+
+## Cognitive Science Foundation
+
+All game design decisions are grounded in cognitive psychology:
+- **Hodent (2018)** — Usability + Engage-ability framework, working memory limits, temporal contiguity
+- **Schell (2008)** — Elemental Tetrad, Lenses of Design (Surprise, Challenge, Flow, Skill, Risk)
+- **Sylvester (2013)** — Emergence engineering, emotional event design, dopamine loops
+- **Csikszentmihalyi** — Flow state (challenge must match rising skill)
+- **Deci & Ryan** — Self-Determination Theory (competence, autonomy, relatedness)
+
+See `_bmad-output/planning-artifacts/game-ux-principles.md` for the complete foundation.
 
 ## BMAD Development Support
 
-This project includes **BMAD (Build-Measure-Analyze-Deploy)** framework integration for AI-assisted game development and design workflows.
+This project uses the **BMAD (Build-Measure-Analyze-Deploy)** framework for AI-assisted game development.
 
-### Custom Agent: Celia (Neuro-Game Designer) 🧠
+### Key Agents
 
-A specialized AI agent that combines expertise from three industry-leading game design methodologies:
+- **Celia (Neuro-Game Designer)** — Cognitive psychology, player experience optimization, B-MAD analysis framework
+- **Mary (Analyst)** — Business analysis, product briefs, PRDs, market positioning
+- **Sally (UX Designer)** — Visual specifications, interaction design, accessibility
+- **Architect** — System architecture and technical design
+- **Dev** — Implementation and coding workflows
+- **Tea (Test Engineer)** — Testing strategies and quality assurance
 
-**Expertise Areas:**
-- **Celia Hodent's Game UX Framework** - Cognitive psychology and player experience optimization
-  - Usability: Signs/Feedback, Clarity, Form Follows Function, Consistency, Minimum Workload
-  - Engage-Ability: Motivation (SDT), Emotion, Flow State
-- **Jesse Schell's Art of Game Design** - Elemental Tetrad (Mechanics/Story/Aesthetics/Technology) and design "Lenses"
-- **Tynan Sylvester's Designing Games** - Emergence engineering and emotional event design
-
-**Capabilities:**
-- 🔍 Full UX Audit (Usability + Engage-Ability)
-- 🎯 Usability Review (Cognitive load, feedback loops, clarity)
-- ⚡ Engage-Ability Review (Motivation, emotion, flow analysis)
-- 🔬 Analyze Existing Mechanics (Tetrad + UX + Emergence)
-- ✨ Design New Game Systems (B-MAD framework)
-- 🎓 Onboarding/Tutorial Design (Learning by doing)
-- 🧪 Dopamine Loop Design (Reward schedules, progression)
-- 🌊 Flow State Analysis (Challenge vs. skill balance)
-- 🧠 Cognitive Bias Check (Developer perspective audits)
-
-**How to Use:**
-```bash
-# Invoke the neuro-game-designer agent
-/neuro-game-designer
-```
-
-**Output Format:**
-All responses follow the B-MAD structure:
-1. **Design Blueprint** - Technical description of the system/mechanic
-2. **Neuro-Psych Justification** - Cognitive science "why" (dopamine, working memory, SDT, etc.)
-3. **The Lenses of Schell** - 2-3 specific design lenses used for validation
-4. **UX Warning/Ethical Check** - Friction points, dark patterns to avoid
-
-**Use Cases for CrazySnakeLite:**
-- Analyze food effect mechanics for cognitive load and player motivation
-- Design progression systems that maintain flow state
-- Optimize phone call interruption mechanics for engagement without frustration
-- Evaluate onboarding and tutorial effectiveness
-- Audit control schemes for usability and cognitive workload
-- Design new game modes or difficulty curves using neuroscience principles
-
-### Other Available BMAD Agents
-
-- **Analyst (Mary)** 📊 - Business analysis, research, requirements gathering
-- **Architect** 🏗️ - System architecture and technical design decisions
-- **Dev** 💻 - Implementation and coding workflows
-- **UX Designer** 🎨 - User experience and interface design
-- **PM (Product Manager)** 📋 - Product planning and roadmap management
-- **SM (Scrum Master)** 🎯 - Agile workflow and sprint management
-- **Tea (Test Engineer & Architect)** 🧪 - Testing strategies and quality assurance
-- **Tech Writer** 📝 - Documentation and technical writing
-
-For more information about BMAD agents and workflows, see `/_bmad/` directory.
+For agent details, see `/_bmad/` directory.
 
 ## License
 
-TBD
+MIT
+
+---
+
+*"Train your brain. Laugh while you do it. Come back tomorrow."*

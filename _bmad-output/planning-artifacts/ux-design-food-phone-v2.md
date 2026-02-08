@@ -17,7 +17,7 @@ This document provides pixel-perfect UX specifications for integrating two major
 
 All specifications are grounded in cognitive psychology principles (from Celia's game design documents) and seamlessly integrated with CrazySnakeLite's existing visual design language (Jersey20 font, `rgb(157, 178, 221)` purple theme, retro pixel aesthetic).
 
-**Design Philosophy:** Every visual element serves both **usability** (clear feedback, spatial clarity) and **engage-ability** (emotional impact, reward prediction error, flow state maintenance).
+**Design Philosophy:** CrazySnakeLite is a **cognitive fitness tool disguised as an arcade game**. Every visual element serves both **usability** (clear feedback, spatial clarity) and **engage-ability** (emotional impact, reward prediction error, flow state maintenance) while reinforcing the brain-gym identity. See `game-ux-principles.md` for the complete vision and cognitive training map.
 
 ---
 
@@ -434,7 +434,7 @@ function queueScorePopup(value, x, y, label = '') {
 
 ### Overview
 
-At score 20+, a percentage of food items cycle through all 6 colors, hiding their effect type until consumed. Visual design must balance **mystery** (core mechanic) with **spatial findability** (usability).
+At score 15+, a percentage of food items cycle through all 6 colors, hiding their effect type until consumed (caps at 60% at score 80+). Visual design must balance **mystery** (core mechanic) with **spatial findability** (usability).
 
 ### Color Cycling Animation
 
@@ -508,9 +508,9 @@ function drawFoodShadow(x, y) {
 
 ---
 
-### First-Time Tooltip (Score 20)
+### First-Time Tooltip (Score 15)
 
-When the first blinking food appears (player reaches score 20), show brief tooltip:
+When the first blinking food appears (player reaches score 15), show brief tooltip:
 
 **Tooltip Design:**
 ```css
@@ -546,7 +546,7 @@ Effect hidden until consumed
 ```
 
 **Behavior:**
-- Appears once per game session when score reaches 20
+- Appears once per game session when score reaches 15
 - Auto-dismisses after 3 seconds (fade-out)
 - Game continues running underneath (no pause)
 - Dismissed immediately if player presses any key
@@ -1529,15 +1529,34 @@ Draw small icon shape in center of food square using canvas path drawing.
 - [ ] Verify keyboard navigation (all interactions accessible)
 - [ ] Add ARIA labels for screen readers
 
+### Reverse Controls Recognition
+- [ ] Implement "RC SURVIVED" flash (12px, white, 400ms, spawns below +8 popup)
+- [ ] Track rcSurvived count in gameState.cognitiveStats
+- [ ] Stagger 200ms after +8 popup
+
+### Post-Game Cognitive Feedback
+- [ ] Add cognitiveStats object to gameState (6 tracked stats)
+- [ ] Implement stat tracking increments in game.js event handlers
+- [ ] Build cognitive stats display container (centered below score)
+- [ ] Implement "Your Brain Today" header (14px, purple theme)
+- [ ] Build stat line stagger animation (300ms per line)
+- [ ] Implement stat selection logic (top 2-3, never show zeros)
+- [ ] Add 3.3s delay before Play Again button appears (after stats)
+- [ ] Reduced motion: instant appearance, no stagger
+- [ ] Reset all cognitiveStats on new game
+
 ### Testing & Validation
-- [ ] Test all systems at score 20 (blinking food introduction)
+- [ ] Test all systems at score 15 (blinking food introduction)
 - [ ] Test all systems at score 40 (combo mode introduction)
 - [ ] Test edge case: death during combo + Pick Up (both rewards awarded)
-- [ ] Test visual clarity under maximum chaos (80% blinking, active combo, phone call)
+- [ ] Test visual clarity under peak demand (60% blinking, active combo, phone call)
 - [ ] User test: Can players find blinking food with shadow anchor?
 - [ ] User test: Do +8 popups feel like micro-celebrations?
+- [ ] User test: Does "RC SURVIVED" flash feel rewarding without being distracting?
 - [ ] User test: Is combo mode striped snake immediately recognizable?
 - [ ] User test: Are phone button choices perceived as neutral (autonomy test)?
+- [ ] User test: Do post-game cognitive stats make players feel accomplished?
+- [ ] User test: Does "Your Brain Today" feel celebratory, not clinical?
 - [ ] Performance test: Frame rate stable with particles + popups + stripes?
 
 ---
@@ -1578,6 +1597,186 @@ Draw small icon shape in center of food square using canvas path drawing.
 
 ---
 
+## Reverse Controls Mastery Recognition
+
+### Overview
+
+Reverse Controls (+8) is the "crown jewel" of CrazySnakeLite's cognitive gym — the most demanding cognitive exercise in the game (executive function override). When a player **survives** a Reverse Controls effect (eats the next food without dying while controls are reversed), they receive additional recognition beyond the standard +8 popup.
+
+### RC Survived Flash
+
+**Trigger:** Player eats food while Reverse Controls effect is active (proving they navigated successfully).
+
+**Visual:**
+```css
+.rc-survived-flash {
+  position: absolute;
+  font-family: 'Jersey20', monospace;
+  font-size: 12px;
+  color: #FFFFFF;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  pointer-events: none;
+  z-index: 200;
+  animation: rc-flash 400ms ease-out forwards;
+}
+
+@keyframes rc-flash {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+}
+```
+
+**Content:** `"RC SURVIVED"`
+
+**Positioning:** Spawns 20px below the +8 score popup at the same x coordinate. Appears 200ms after the +8 popup (stagger rule).
+
+**Duration:** 400ms total (fast, unobtrusive)
+
+**Rationale:** This is cognitive *acknowledgment*, not reward. No extra points — the +8 already compensates the difficulty. The flash tells the player: "The game saw what your brain just did." This builds metacognitive awareness and reinforces the brain-gym identity.
+
+---
+
+## Post-Game Cognitive Feedback Screen
+
+### Overview
+
+After each game over, before the Play Again prompt, display 2-3 brief cognitive achievement stats. This transforms the death screen from "you failed" into "look what your brain just did."
+
+**Design Axiom #10:** The player should see what their brain accomplished.
+
+### Layout
+
+```
++-------------------------------+
+|                               |
+|        GAME OVER              |
+|                               |
+|        Score: 87              |
+|        Best: 124              |
+|                               |
+|   --- Your Brain Today ---    |   <- Cognitive feedback section
+|                               |
+|   Reverse Controls: 4         |   <- Stat 1 (most impressive)
+|   Phone Calls Managed: 7     |   <- Stat 2
+|   Mystery Foods Decoded: 12  |   <- Stat 3
+|                               |
+|       [Play Again]            |
+|                               |
++-------------------------------+
+```
+
+### Stat Display Specifications
+
+**Container:**
+```css
+.cognitive-stats {
+  margin-top: 20px;
+  padding: 15px;
+  text-align: center;
+  animation: stats-fade 3300ms ease-in-out forwards;
+}
+
+.cognitive-stats-header {
+  font-family: 'Jersey20', monospace;
+  font-size: 14px;
+  color: rgb(157, 178, 221); /* Purple theme color */
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.cognitive-stat-line {
+  font-family: 'Jersey20', monospace;
+  font-size: 16px;
+  color: #FFFFFF;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  margin: 5px 0;
+  opacity: 0;
+  animation: stat-line-appear 300ms ease-out forwards;
+}
+
+.cognitive-stat-line:nth-child(2) { animation-delay: 300ms; }
+.cognitive-stat-line:nth-child(3) { animation-delay: 600ms; }
+.cognitive-stat-line:nth-child(4) { animation-delay: 900ms; }
+
+@keyframes stat-line-appear {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes stats-fade {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { opacity: 0; }
+}
+```
+
+### Header Text
+
+`"Your Brain Today"` — celebratory, not clinical. The word "brain" subtly reinforces the cognitive fitness identity without medical framing.
+
+### Stat Selection Logic
+
+**Track these stats during gameplay:**
+
+| Internal Key | Display Text | Condition to Show |
+|---|---|---|
+| `rcSurvived` | "Reverse Controls survived: N" | N > 0 |
+| `phoneCallsManaged` | "Phone calls managed: N" | N > 0 |
+| `mysteryFoodsEaten` | "Mystery foods decoded: N" | N > 0 |
+| `comboMultipliers` | "Combo multipliers earned: N" | N > 0 |
+| `pickUpStreak` | "Pick Up streak: N" | N >= 2 |
+| `peakComboScore` | "Best combo: xN" | N >= 6 |
+
+**Selection rule:** Show the top 2-3 stats where N is highest. Never show a stat with N = 0. If only 1 stat qualifies (very short game), show only 1.
+
+**Priority order (if tied):** RC survived > combo multipliers > pick up streak > mystery foods > phone calls managed > peak combo score. (Ordered by cognitive demand of the tracked faculty.)
+
+### Timing
+
+1. Death animation plays (existing)
+2. Game Over text + score appears (existing)
+3. **Cognitive stats fade in** (300ms after score appears, stats stagger 300ms each)
+4. Stats hold for 2.5 seconds
+5. Stats fade out (500ms)
+6. Play Again button appears
+
+**Total added time before Play Again:** ~3.3 seconds. This is acceptable — the player just died and needs a brief cooldown. The cognitive stats provide that cooldown while reinforcing the brain-gym identity.
+
+### Reduced Motion Mode
+
+In reduced motion mode, stats appear instantly (no stagger animation) and hold for the same 2.5s duration.
+
+### State Requirements
+
+```javascript
+// Add to gameState for cognitive tracking
+cognitiveStats: {
+  rcSurvived: 0,           // Incremented when food eaten during reverse controls
+  phoneCallsManaged: 0,    // Incremented on End or Pick Up completion
+  mysteryFoodsEaten: 0,    // Incremented when blinking food consumed
+  comboMultipliers: 0,     // Incremented when combo food B eaten
+  pickUpStreak: 0,         // Current consecutive Pick Up count (same as pickUpCount)
+  peakComboScore: 0        // Highest single combo score this game
+}
+```
+
+**Reset on new game:** All cognitive stats reset to 0.
+
+---
+
 ## Closing Notes
 
 ### For Developers
@@ -1607,15 +1806,19 @@ This specification provides pixel-perfect implementation details for all Food v2
 **Playtest Questions:**
 1. Do players understand combo mode within 5 seconds of activation?
 2. Does the +8 popup make players smile?
-3. Can players locate blinking food without frustration?
-4. Do players feel the Pick Up vs End choice is genuinely optional?
-5. At score 100+ (maximum chaos), is the game exciting or overwhelming?
+3. Does the "RC SURVIVED" flash feel like earned recognition?
+4. Can players locate blinking food without frustration?
+5. Do players feel the Pick Up vs End choice is genuinely optional?
+6. At score 100+ (peak cognitive demand), is the game exciting or overwhelming?
+7. Do post-game cognitive stats make players feel accomplished ("look what my brain did")?
+8. Does the "Your Brain Today" framing feel celebratory, not clinical?
+9. Do phone calls arriving at score 3 feel fair, or too early?
 
 ---
 
-**This specification is ready for implementation. Let's build something beautiful that players will love! 🎨✨**
+**This specification is ready for implementation. Build something that makes brains stronger — and makes them laugh while doing it.**
 
 ---
 
 *Document prepared by Sally (UX Designer) with Celia (Neuro-Game Design Expert)*
-*"Every pixel serves the player. Every animation tells a story. Every choice respects autonomy."*
+*"Every pixel serves the player. Every animation trains the brain. Every choice respects autonomy."*

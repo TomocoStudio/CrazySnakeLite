@@ -1,20 +1,37 @@
 ---
 stepsCompleted: [1, 2, 3, 4, 5]
-inputDocuments: []
-date: 2026-01-13
+inputDocuments: ['_bmad-output/planning-artifacts/game-ux-principles.md']
+date: 2026-02-08
 author: Tomoco
+analyst: Mary
+v2_rewrite: true
+repositioning: 'Brain Gym for the Age of AI'
 ---
 
 # Product Brief: CrazySnakeLite
 
 ## Executive Summary
 
-CrazySnakeLite reimagines the classic Nokia Snake game by injecting strategic depth and chaotic unpredictability into a beloved formula. While traditional Snake has become predictable and boring after decades of identical gameplay, CrazySnakeLite introduces two core innovations: a strategic food system with six distinct types (growing, invincibility, wall-phase, speed boost, speed decrease, and reverse controls), and random "phone call" interruptions that force players to maintain split attention while the game continues running. Built as a web-first experience with retro arcade 8-bit pixel art aesthetics, the game targets players seeking quick, intense, chaotic sessions with a playful, fun mood.
+CrazySnakeLite is a **cognitive fitness tool disguised as an arcade game** — a brain gym built for the age of AI.
 
-**Target Audience:** Players who remember Snake from Nokia phones and want a fresh, chaotic twist on the classic formula
+As artificial intelligence increasingly handles our daily cognitive tasks — planning, writing, problem-solving, navigation — research from MIT, Anthropic, and broader cognitive science highlights a pattern: the human brain regions responsible for those functions receive less activation. Use-dependent plasticity means what we don't exercise, we lose. CrazySnakeLite exists to counter this.
+
+The entry point is deliberately familiar: Snake, one of the most universally known games ever made. Every player already knows the base mechanic. This zero-barrier entry is the front door to a **progressively demanding cognitive training system** that targets the faculties most threatened by AI dependency: executive function, working memory, divided attention, decision-making under uncertainty, impulse control, and cognitive flexibility.
+
+The game layers five cognitive challenge systems on top of classic Snake — each targeting a different brain faculty, each unlocking as the player demonstrates mastery of the previous layer:
+
+1. **Fibonacci Scoring** — Six food types with difficulty-proportional rewards, training pattern recognition and risk assessment
+2. **Phone Call Interruptions** — Two-choice decisions (End vs Pick Up) while the game continues running, training divided attention and rapid context-switching
+3. **Progressive Blinking Food** — Mystery food that hides its type, training decision-making under uncertainty
+4. **Combo Mode** — Multiplicative scoring events requiring working memory and strategic thinking
+5. **Reverse Controls** — The crown jewel: executive function override, forcing the brain to suppress learned motor patterns
+
+Difficulty is the product. Comedy makes it fun. Together, they build stronger brains.
+
+**Target Audience:** Anyone who wants to give their brain a workout without it feeling like work — delivered through a game they already know how to play
 **Platform:** Web browser (desktop and mobile responsive)
-**Core Innovation:** Strategic food choices + attention-splitting phone call mechanic
-**Session Type:** Single-player, play until death (classic arcade style)
+**Core Innovation:** Progressive cognitive training through score-gated game mechanics, wrapped in comedy and retro arcade charm
+**Session Type:** Single-player, play until death (classic arcade style with post-game cognitive feedback)
 
 ---
 
@@ -22,158 +39,124 @@ CrazySnakeLite reimagines the classic Nokia Snake game by injecting strategic de
 
 ### Problem Statement
 
-Traditional Snake is a well-known classic, but it has become predictable and boring. Players know exactly what to expect: eat food, grow longer, avoid walls and yourself. There's no surprise, no strategic depth, and no reason to play more than a few minutes before the repetitive nature sets in. The game that once captivated millions on Nokia phones now feels stale in a world of dynamic, engaging experiences.
+We are entering an era where AI handles an increasing share of human cognitive work. GPS navigates for us. AI writes for us. Autocomplete thinks for us. Coding assistants solve problems for us. The convenience is real — but so is the cost.
+
+Multiple studies highlight a consistent pattern: **when an external tool handles a cognitive function, the brain's capacity for that function atrophies.** GPS dependency reduces hippocampal spatial reasoning. Calculator dependency reduces mental arithmetic. Autocomplete reduces creative language production. The brain allocates resources to functions that are regularly demanded and prunes those that aren't.
+
+This isn't a future risk — it's happening now. And the trajectory is clear: as AI becomes more capable and more integrated into daily life, the cognitive demands on the average human will continue to decrease. The faculties most at risk are precisely the ones that make us effective thinkers: critical reasoning, cognitive flexibility, sustained attention, working memory, decision-making under uncertainty, and impulse control.
 
 ### Problem Impact
 
-Players who have nostalgia for Snake find themselves losing interest quickly when they try modern versions. The lack of variety and strategic decision-making means:
-- Low replay value (every game feels the same)
-- Predictable outcomes (only difficulty is speed increase)
-- Minimal engagement (can play mindlessly without real focus)
-- Missed opportunity to evolve a beloved classic
+- **Cognitive atrophy is invisible.** People don't notice their spatial reasoning declining because GPS always works. They don't notice their problem-solving weakening because AI assistants always help. The erosion is gradual and silent.
+- **No accessible countermeasure exists.** Brain training apps (Lumosity, etc.) have struggled with engagement — they feel like homework. Traditional games don't target specific cognitive faculties intentionally. There is no product that makes genuine cognitive exercise *feel like fun*.
+- **The gap widens with time.** Each year of AI integration compounds the effect. The sooner people have accessible, enjoyable cognitive fitness tools, the better positioned they are to maintain sharp minds in an AI-augmented world.
 
 ### Why Existing Solutions Fall Short
 
-Current Snake variants typically fall into these categories:
-- **Cosmetic changes only:** Different skins, themes, or graphics but identical mechanics
-- **Multiplayer variants (Snake.io):** Change the context but not the core gameplay innovation
-- **Simple difficulty increases:** Just make the snake faster, which doesn't add strategic depth
-- **Obstacle additions:** Add barriers but don't fundamentally change decision-making
+| Category | Examples | Why They Fail |
+|----------|---------|---------------|
+| **Brain training apps** | Lumosity, Peak, Elevate | Feel like homework. Low engagement. Repetitive. Overpromise clinical benefits. FTC fined Lumosity for false advertising. |
+| **Traditional Snake variants** | Snake.io, cosmetic reskins | Zero cognitive innovation. Same mechanics since 1998. No targeted brain training. |
+| **Casual mobile games** | Candy Crush, Wordle | Engaging but don't deliberately target cognitive faculties. Accidental benefits at best. |
+| **Hardcore brain games** | Chess, Go | Excellent cognitive exercise but high barrier to entry. Not accessible to casual players. Intimidating. |
 
-None of these solutions address the core issue: **the mechanics themselves have become boring**. They add complexity or visual polish without injecting genuine surprise, strategy, or chaos into the experience.
+**The gap:** No product combines **universal accessibility** (everyone knows Snake), **genuine cognitive targeting** (each mechanic trains a specific faculty), **progressive difficulty** (score-gated complexity), and **intrinsic entertainment** (comedy, emotional peaks, arcade charm) in a single experience.
 
 ### Proposed Solution
 
-**CrazySnakeLite** transforms Snake through two core mechanical innovations:
+**CrazySnakeLite** transforms the universally known Snake into a progressive cognitive fitness system through five layered challenge mechanics:
 
-**1. Strategic Food System (6 Types):**
-ALL foods give +1 segment (score = snake length). Simple geometric shapes (5x5 pixels):
-- Growing food (green, filled square) - +1 segment only, no special effect
-- Invincibility food (yellow, 4-point star) - +1 segment + immunity with rapid strobe/blinking (until next food)
-- Wall-Phase food (purple, ring/donut) - +1 segment + pass through one wall, wrap to opposite side (single use)
-- Speed Boost food (red, cross/plus) - +1 segment + faster movement (until next food)
-- Speed Decrease food (cyan, hollow square) - +1 segment + slower movement (until next food)
-- Reverse Control food (orange, X shape) - +1 segment + inverted controls (until next food)
+**Layer 1: Fibonacci Scoring (Score 0+)**
+Six food types with difficulty-proportional rewards. Invincibility (0 pts) creates impulse control training. Reverse Controls (+8 pts) creates executive function training. The Fibonacci ratios feel mathematically elegant and psychologically fair.
 
-**Duration Rule:** ALL timed effects end after eating 1 new food. Simple!
+**Layer 2: Phone Call Interruptions (Score 3+)**
+Random phone calls with two choices — End (+1, safe) or Pick Up (+Fibonacci bonus, risky). The game continues running under blur. Trains divided attention, rapid context-switching, and risk assessment. 21 tech-pun callers with retro pixel portraits and comedy one-liners make the interruptions entertaining. Comedy is a system, not decoration.
 
-Each food type appears based on configurable probability percentages, allowing difficulty levels from "Easy" (mostly traditional) to "Hard" (maximum craziness). Players must make strategic choices about which food to pursue based on their current situation, adding tactical depth absent from traditional Snake.
+**Layer 3: Progressive Blinking Food (Score 15+)**
+Food items cycle through all colors, hiding their type until consumed. Probability increases with score (caps at 60%). Trains decision-making under uncertainty — the skill most eroded by AI's data-backed recommendations.
 
-**2. Phone Call Interruption Mechanic:**
-Random "phone calls" interrupt gameplay at random intervals (15-45 seconds). Players hit Space (desktop) or tap "End" button (mobile) to dismiss. Critically, **the game continues running during interruptions** (visible but blurry behind overlay), forcing split attention and quick reactions.
+**Layer 4: Combo Mode (Score 40+)**
+Two food effects combine for multiplicative scoring. Canvas changes to dark colors, snake becomes striped. Demands working memory (holding two effect types) and strategic thinking. Peak emotional moments when 8x5=40 combos land.
 
-**Phone Call UI:**
-- Nokia-era phone screen aesthetic (black-on-grey, monochrome)
-- Full screen overlay with blurry game visible in background
-- Displays random funny caller name + "End" button at bottom center
-- Caller names pool includes: "Mom", "Boss", "Your Ex", "Spam Likely", "Anxiety", "Nigerian Prince", "Snake Headquarters", "1-800-CHAOS", and many more
-- Stays on screen until dismissed (does not auto-dismiss)
+**Layer 5: Reverse Controls — The Crown Jewel**
+Executive function override: suppress learned motor patterns, remap controls in real time. Engages the prefrontal cortex — the brain region responsible for critical thinking, decision-making, and cognitive flexibility. The hardest cognitive task in the game, rewarded with the highest Fibonacci score (+8).
 
-**Presentation:**
-- Retro arcade 8-bit pixel art style (colorful, playful, fun mood)
-- Super light grey background with subtle light grey grid
-- Game board border: regular line with purple neon glow
-- Snake: classic blocky segments, color matches last food eaten (default: black), blinks on color transition
-- Food: simple geometric shapes in pixel style (5x5 pixels)
-- Web-first, mobile-responsive (works in any browser)
-- Single-player, play until death
-- Score system: Snake length = score (counter at top-center + visual snake size)
-- Active effects indicated by snake color + movement sound only (minimal UI)
-- Pure personal experience (no social sharing initially)
+**Post-Game: Cognitive Feedback**
+After each death, "Your Brain Today" shows 2-3 cognitive achievement stats — reverse controls survived, phone calls managed, mystery foods decoded. Transforms death from "I failed" into "look what my brain just did."
 
-**Screens:**
-- Main Menu: "New Game" and "Top Score" options
-- Game Over: "GAME OVER!" + "Your score: XX" + "Play Again" (default) / "Menu" options
-- Top Score: Displays best score (stored in browser localStorage; post-MVP: player accounts + database)
-
-**Controls:**
-- Arrow keys: Up, Down, Left, Right
-- Numpad: 8=Up, 2=Down, 4=Left, 6=Right
-- WASD (US keyboards): W=Up, S=Down, A=Left, D=Right
-- ZQSD (French AZERTY): Z=Up, S=Down, Q=Left, D=Right
-- Mobile: Swipe gestures
-- Enter/Click: Validate menu choice
-- Esc: Open menu / cancel
-
-**Sound Design (8-bit style):**
-- Movement sounds: Short impulse played at each snake step, varies by snake color/state:
-  - Default (black): Neutral "blip" - classic arcade
-  - Growing (green): Pleasant, positive tone
-  - Invincibility (yellow): Powerful, strong tone
-  - Wall-Phase (purple): Ethereal, magical tone
-  - Speed Boost (red): Quick, energetic - higher pitch
-  - Speed Decrease (cyan): Slow, heavy - lower pitch
-  - Reverse Controls (orange): Dissonant, off-kilter tone
-- Game Over: 8-bit style short melody
-
-**Game Configuration (all values tweakable for balancing):**
-- Grid: 25 x 20 units
-- Unit size: 10x10 pixels (default, configurable for screen scaling)
-- Snake start: 5 segments, bottom left corner, moving right
-- Base speed: 8 moves/second
-- Speed Boost: Random 1.5x-2x multiplier
-- Speed Decrease: Random 0.3x-0.5x multiplier
-- Food probabilities: Growing 40%, Invincibility 10%, Wall-Phase 10%, Speed Boost 15%, Speed Decrease 15%, Reverse Controls 10%
-- Phone call interval: 15-45 seconds (random)
+**The Design Philosophy:**
+- **Score-based, never time-based.** Reward what the player achieves, not how long they survive.
+- **Difficulty is the product.** The cognitive challenge is what the player came for.
+- **Comedy is a system.** Tech pun callers, funny one-liners, retro portraits — humor makes the workout enjoyable.
+- **Teach by encounter.** Every mechanic is learned through play, not instruction.
+- **Targeted challenge over raw chaos.** A gym rotates muscle groups. CrazySnakeLite rotates cognitive demands.
 
 ### Key Differentiators
 
 **What makes CrazySnakeLite unique:**
 
-1. **Strategic Depth + Chaos:** Unlike variants that choose complexity OR chaos, CrazySnakeLite delivers both. Food choices require strategy, while phone calls inject unpredictable chaos.
+1. **Brain Gym for the Age of AI.** No other casual game positions itself as cognitive fitness for a world of increasing AI dependency. This is a new product category.
 
-2. **Phone Call Mechanic is Meta:** The game literally comments on how phones distract us, turning interruption into a gameplay mechanic. This is clever, funny, and thematically resonant with modern life.
+2. **Universal Entry Point.** Snake is known by virtually everyone. Zero learning curve for the base mechanic means the cognitive training layers can build on a foundation that already exists in the player's brain.
 
-3. **Difficulty Through Probability:** Rather than just increasing speed, difficulty comes from the probability distribution of chaotic food types. This is more elegant and creates varied experiences.
+3. **Progressive Cognitive Targeting.** Each game system targets a specific cognitive faculty. The score-gated progression ensures players encounter each challenge only after they've demonstrated readiness. This isn't random difficulty — it's structured brain training.
 
-4. **Nostalgia with Substance:** Not just a cosmetic retro skin - this genuinely innovates on the formula while honoring the Nokia original.
+4. **Comedy as Engagement Engine.** 21 tech-pun callers with retro pixel portraits and one-liners make the cognitive workout *fun*. Brain training that makes you laugh is brain training you'll come back to.
 
-5. **Challenge + Chaos + Surprise = Replayability:** Every game feels different due to random food spawns and call interruptions, ensuring players stay engaged and surprised.
+5. **Honest Positioning.** No false clinical claims. No "scientifically proven" promises. Just a game that makes your brain work hard — and makes that work feel good.
 
 **Why Now:**
-- Browser games are experiencing a renaissance (quick play, no install friction)
-- Nostalgia for early mobile gaming is strong (Nokia-era players are adults now)
-- Meta commentary on attention/distraction resonates in our notification-heavy world
-- Web technology makes responsive, cross-device experiences trivial to deploy
+- AI integration is accelerating. The cognitive offloading problem grows every year.
+- Browser games require zero installation — cognitive fitness with zero friction.
+- Nostalgia for Nokia-era gaming is strong among adults who now use AI daily.
+- The "brain training" app market failed on engagement, not on the underlying insight. The insight is sound — the delivery needs to be a *game*, not a test.
 
 **Success Looks Like:**
-Players saying "I need to try this again" because each session delivers a unique combination of challenge and chaos, creating moments of surprise, laughter, and intense focus that traditional Snake never could.
+Players saying "that was hard but I feel sharper" — because each session delivered genuine cognitive exercise wrapped in arcade fun, comedy, and emotional peaks that made them hit "Play Again" before they even thought about it.
 
 ---
 
 ## Target Users
 
-### Primary User: Alex, The Office Break Gamer
+### Primary User: Alex, The Cognitive Athlete
 
 **Profile:**
-- **Context:** Office worker spending workdays at a computer
-- **Age Range:** Mid-20s to late 30s (has nostalgic memories of Nokia Snake)
-- **Gaming Background:** Remembers and enjoyed the original Snake, but not a hardcore gamer
-- **Access:** Desktop web browser (primary), though responsive design allows mobile play
-- **Play Pattern:** Quick break entertainment - sessions fit within short work breaks
+- **Context:** Knowledge worker spending workdays at a computer, increasingly reliant on AI tools
+- **Age Range:** Mid-20s to late 30s (nostalgic for Nokia Snake, actively using AI assistants)
+- **Cognitive Profile:** Notices they're less sharp than they used to be — harder to focus, harder to hold complex ideas in mind, more reliant on tools for things they used to do mentally
+- **Gaming Background:** Remembers Snake from Nokia phones. Not a hardcore gamer, but enjoys quick, engaging experiences
+- **Access:** Desktop web browser (primary), mobile browser (secondary)
+- **Play Pattern:** Quick cognitive workout during breaks — 5-10 minute sessions that leave the brain feeling *active*
 
 **Problem Experience:**
-Alex finds traditional Snake too predictable and boring after a few plays. Current break-time options (scrolling social media, repetitive mobile games) either feel mindless or don't provide the engaging mental refresh they're looking for. They want something quick, fun, and surprising that doesn't turn into a time sink.
+Alex uses AI for writing, coding, planning, and research. It's efficient. But lately they've noticed something: without the AI, tasks feel harder than they used to. Their attention drifts faster. They reach for the AI assistant before trying to solve problems themselves. They can't quite articulate it, but their brain feels... softer.
+
+Traditional break activities (social media scrolling, passive video watching) make this worse — more passive consumption, less cognitive engagement. Alex wants something that refreshes their brain *by using it*, not by numbing it.
 
 **Success Vision:**
 For Alex, success means:
-- A quick game that fits their 5-10 minute break perfectly
-- Enough variety and chaos that each play feels fresh
-- A mental reset that's engaging without guilt
-- Something fun that brings back Nokia nostalgia with a modern twist
+- A 5-10 minute break that leaves them feeling mentally sharper, not duller
+- Genuine cognitive challenge that feels like play, not homework
+- Variety and surprise that makes each session different (no habituation)
+- The satisfaction of improving — higher scores reflecting genuine skill growth
+- A game they can explain to coworkers as "it's actually really good for your brain"
 
 **Validation Approach:**
-Additional user insights and refinements will be gathered through prototype testing with real office workers to validate assumptions about play patterns, session length preferences, and feature priorities.
+Prototype testing with knowledge workers who actively use AI tools in their daily work. Measure both engagement (replay rate, session length) and perceived cognitive effect ("did that feel like a workout?").
 
-### User Journey (Lightweight)
+### User Journey
 
-**Discovery:** Alex discovers CrazySnakeLite through a shared link from a coworker or stumbles upon it during a web search for "snake game."
+**Discovery:** Alex sees CrazySnakeLite described as "a brain gym disguised as Snake" — their curiosity is immediately piqued. They click the link.
 
-**First Play:** Opens the web page during a break, immediately recognizes the Snake concept, notices the retro aesthetic, and starts playing. Within 30 seconds, encounters their first unexpected food type or phone call interruption - they're hooked by the chaos.
+**First Play (Score 0-14):** Familiar Snake mechanics. Within 30 seconds, a phone call interrupts — "AL GORITHM is calling." Two buttons: End (+1) or Pick Up (+2). Alex hits End, plays safe. The phone goes away. "That was weird."
 
-**Return:** During the next break, Alex returns to play again, curious to see what crazy combinations will happen this time. The unpredictability and quick session length make it perfect for repeated break-time play without guilt or time investment concerns.
+**The Hook (Score 15-39):** A blinking food item appears, cycling through colors. Alex eats it — it's Reverse Controls. Suddenly up is down, left is right. Their brain scrambles. They die. "Wait, what just happened?!" They hit Play Again immediately.
 
-**Note:** User journey will be refined based on prototype testing feedback from actual office workers.
+**The Realization (Score 40+):** Third game. Alex picks up a call — Floppy Phil appears with a pixel portrait. "I only have 1.44 MB to talk, so quick!" Alex laughs. The game is blurred, the snake keeps moving, a countdown bar ticks. They survive. +5 bonus. Then the canvas turns dark purple — combo mode. Their snake becomes striped. They eat a second food: 3 x 5 = 15 points. A massive popup explodes on screen.
+
+Alex realizes: this isn't just a game. Every system is making their brain *work*. The reverse controls force them to think differently. The phone calls force them to split attention. The blinking food forces decisions without full information. And it's *fun*.
+
+**The Habit:** Alex plays 2-3 games every break. After each death, "Your Brain Today" shows: "Reverse Controls survived: 3 | Phone calls managed: 6 | Mystery foods decoded: 9." They feel accomplished. Their brain feels active. They share the link with a coworker: "Try this — it's like a gym for your brain."
 
 ---
 
@@ -181,155 +164,124 @@ Additional user insights and refinements will be gathered through prototype test
 
 ### User Success Indicators
 
-**Engagement Signals:**
-- **Return Rate:** Do players come back for another session? (indicates the game is fun and not just a one-time curiosity)
-- **Session Completion:** Do players finish games or quit mid-session? (indicates engagement vs frustration)
-- **Multiple Plays Per Visit:** Do players immediately hit "play again" after a game? (indicates the chaos/variety is working)
+**Cognitive Engagement Signals:**
+- **Replay Rate:** Players immediately hit "Play Again" (indicates the challenge is compelling)
+- **Score Progression:** Scores improve over multiple sessions (indicates genuine skill/cognitive growth)
+- **Feature Engagement:** Players use Pick Up (not just End), engage with blinking food, survive combo mode (indicates cognitive systems are being exercised)
+- **Session Depth:** Players regularly reach score 40+ (indicates sustained cognitive engagement beyond comfort zone)
 
 **Qualitative Feedback:**
-- Coworker feedback during prototype testing
-- Observing player reactions during first play (laughter, surprise, frustration)
-- Spontaneous sharing (did anyone share the link without prompting?)
+- Players describe the experience as "hard but fun" (cognitive challenge + enjoyment)
+- Players notice the cognitive demands ("that reverse controls thing really makes my brain work")
+- Players feel sharper after playing (perceived cognitive benefit)
+- Spontaneous sharing framed around "brain workout" not just "fun game"
 
 ### Business Objectives
 
-**Primary Goal:** Ship a working, fun Snake variant with strategic depth and chaotic mechanics
+**Primary Goal:** Establish CrazySnakeLite as the first casual browser game positioned as cognitive fitness for the AI age
 
 **Success Criteria:**
-- Game is playable on desktop and mobile browsers
-- Core mechanics (6 food types + phone interruptions) work as intended
-- Prototype testing with coworkers validates the "fun chaos" experience
-- Game provides quick, replayable break entertainment
+- Game is playable on desktop and mobile browsers with all V2 systems functional
+- Players experience all five cognitive challenge layers within their first few sessions
+- Post-game cognitive feedback ("Your Brain Today") makes players feel accomplished
+- Prototype testing validates the "brain gym" positioning resonates with knowledge workers
 
-### Key Performance Indicators (Lightweight)
+### Key Performance Indicators
 
-**Basic Usage Tracking:**
-- **Total Sessions:** How many games are played
-- **Unique Players:** How many different people try it
-- **Average Session Length:** Are sessions fitting the 5-10 minute break window?
-- **Return Players:** How many players come back for a second session
-
-**Implementation Note:** Simple analytics (page views, session tracking) - no complex instrumentation needed for initial launch. Focus on shipping and validating the core experience first.
+| Metric | Target | What It Validates |
+|--------|--------|-------------------|
+| Session replay rate | 70%+ play 2+ games | Challenge is compelling, not frustrating |
+| Score 40+ reach rate | 50%+ of sessions | Players engage beyond comfort zone |
+| Pick Up usage | 40%+ of phone calls | Risk/reward decision is appealing |
+| Return rate (next day) | 30%+ | Lasting engagement, not one-time novelty |
+| Post-game stats viewed | 80%+ see stats before Play Again | Cognitive feedback resonates |
+| Average session length | 5-10 minutes | Fits break-time use case |
 
 ---
 
-## MVP Scope
+## Scope
 
-### Core Features (Full Chaos Included!)
+### Core Features (V2 — Current)
 
-**Essential Gameplay Mechanics:**
-1. **All 6 Food Types** (the strategic chaos core):
-   ALL foods give +1 segment (score = snake length). Simple geometric shapes (5x5 pixels):
-   - Growing food (green, filled square) - +1 segment only, no special effect
-   - Invincibility food (yellow, 4-point star) - +1 segment + immunity with rapid strobe/blinking (until next food)
-   - Wall-Phase food (purple, ring/donut) - +1 segment + pass through one wall, wrap to opposite side (single use)
-   - Speed Boost food (red, cross/plus) - +1 segment + faster movement (until next food)
-   - Speed Decrease food (cyan, hollow square) - +1 segment + slower movement (until next food)
-   - Reverse Control food (orange, X shape) - +1 segment + inverted controls (until next food)
+**1. Fibonacci Scoring System**
+Six food types with difficulty-proportional Fibonacci rewards:
+- Growing (+1), Speed Decrease (+2), Wall Phase (+1/+3), Speed Boost (+5), Reverse Controls (+8), Invincibility (0)
+- Score-gated progression: all systems unlock based on player achievement
 
-2. **Phone Call Interruption Mechanic:**
-   - Random phone call pop-ups during gameplay
-   - Game continues running during interruption (CRITICAL)
-   - Space bar (desktop) / End button (mobile) to dismiss
-   - Visual phone call UI overlay
-   - Algorithm for random timing (start simple, can tune later)
+**2. Phone Call V2 — Pick Up vs End**
+- Two-button overlay: End (+1, safe) or Pick Up (+Fibonacci bonus, risky)
+- 21 tech-pun callers with 64x64 retro pixel portraits and comedy one-liners
+- Variable blur timer (1-3s), irreversible commitment, consolation reward on death
+- Score-based frequency tiers (relaxed at score 3, relentless at score 100+)
 
-3. **Core Snake Gameplay:**
-   - Grid-based movement (arrow keys/WASD on desktop, touch swipe on mobile)
-   - Collision detection (walls, self-collision = death)
-   - Dynamic snake length based on food consumed
-   - Food spawning system with probability distribution
+**3. Progressive Blinking Food**
+- Mystery food cycling through colors, hiding effect type until consumed
+- Starts at score 15, caps at 60% at score 80+
+- First-time tooltip: "Mystery Food! Effect hidden until consumed"
 
-4. **Difficulty System:**
-   - At least one balanced difficulty mode with configurable food probability percentages
-   - Easy to add more difficulty levels post-MVP (just different probability configs)
+**4. Combo Mode**
+- Two food effects combine for multiplicative scoring (e.g., 8 x 5 = 40)
+- Canvas color change, striped snake, dramatic audio
+- Starts at score 40, caps at 40% probability at score 120+
+- Pauses during phone calls to respect cognitive budget
 
-5. **Visual Presentation:**
-   - Retro pixel art aesthetic (Nokia homage)
-   - Simple, clean game board
-   - Distinct visual representations for each food type
-   - Basic UI (snake length counter, game over screen with final score, play again button)
+**5. Post-Game Cognitive Feedback**
+- "Your Brain Today" stats after each death
+- Tracks: RC survived, phone calls managed, mystery foods decoded, combo multipliers, pick up streak, peak combo score
+- Shows top 2-3 most impressive stats per session
 
-6. **Session Flow:**
-   - Start game → Play until death → Display final score → Play Again option
-   - Simple score tracking: snake length = score (small counter + visual snake size)
+**6. Core Snake Gameplay**
+- Grid-based movement, collision detection, food spawning
+- Four keyboard layouts (Arrow, WASD, ZQSD, Numpad) + mobile touch
+- 60 FPS performance, retro 8-bit pixel art aesthetic
+- Persistent high score via localStorage
 
-7. **Platform Support:**
-   - Desktop web browser (primary target)
-   - Responsive design works on mobile browsers (good enough for MVP)
+### Out of Scope (Future)
 
-### Out of Scope for MVP
+- Multiple difficulty levels / difficulty selection
+- Leaderboards / global score persistence
+- Player accounts / profiles
+- Native mobile app packaging
+- Haptic feedback on mobile
+- Caller collection / discovery system
+- Social sharing of cognitive stats
+- Longitudinal cognitive tracking across sessions
 
-**Deferred to V2+ (Don't let these creep in!):**
-- ❌ Multiple polished difficulty levels (start with one, add more after validation)
-- ❌ Advanced scoring algorithms or combo systems
-- ❌ Leaderboards or score persistence
-- ❌ Settings/preferences menu
-- ❌ Pause functionality
-- ❌ Animations and visual polish beyond basic retro aesthetic
-- ❌ Tutorial or onboarding
-- ❌ Analytics dashboard (basic tracking only)
-- ❌ Mobile app packaging (web-only for MVP)
-- ❌ Additional game modes or variations
+---
 
-**Rationale:** Focus 100% on making the core chaotic mechanics WORK and FEEL FUN. Polish, features, and optimization come after we validate that the 6 food types + phone interruptions create the experience we envision.
+## Future Vision
 
-### MVP Success Criteria
+If CrazySnakeLite validates the "Brain Gym for the AI Age" positioning:
 
-**The MVP is successful when:**
+**Cognitive Fitness Platform:**
+- Longitudinal tracking: "Your brain this week" — trends in RC survivals, attention management, decision quality
+- Targeted workout modes: "Focus Training" (phone-heavy), "Flexibility Training" (reverse-controls-heavy), "Uncertainty Training" (high blinking %)
+- Cognitive warm-up mode for pre-work brain activation
 
-1. **Core Experience Works:**
-   - All 6 food types behave as intended with clear visual feedback
-   - Phone call interruptions create the intended "split attention" pressure
-   - Game feels chaotic, surprising, and replayable
-
-2. **Prototype Validation:**
-   - Coworkers test and provide feedback
-   - Players experience "aha!" moments with unexpected food effects
-   - Multiple plays per session (indicates engagement)
-   - Positive reactions to chaos mechanics
-
-3. **Technical Validation:**
-   - Runs smoothly on desktop browsers
-   - Works on mobile browsers (even if not perfectly optimized)
-   - No game-breaking bugs that ruin the experience
-
-4. **Decision Point:**
-   - If coworkers love it → invest in polish, more difficulty levels, scoring improvements
-   - If mechanics need tuning → iterate on food probabilities and phone call timing
-   - If it's "meh" → reassess core assumptions about what makes it fun
-
-### Future Vision
-
-**If CrazySnakeLite is wildly successful, it could evolve into:**
-
-**Enhanced Gameplay (V2):**
-- Multiple refined difficulty levels (Easy/Medium/Hard/Insane with tuned probabilities)
-- Additional food types based on player feedback and testing
-- Combo scoring system (reward strategic food sequences)
-- Daily challenges or special event modes
-- Sound design and retro audio effects
+**Community & Social:**
+- Leaderboards framed as cognitive fitness rankings
+- "Challenge a coworker" with shared seeds
+- Cognitive stats sharing ("I survived 8 reverse controls today")
 
 **Platform Expansion:**
-- Native mobile app with touch optimization
-- Progressive Web App (PWA) for offline play
-- Steam release as a premium retro game pack
+- Progressive Web App for offline play
+- Native mobile with haptic feedback
+- Steam release as a premium cognitive fitness game
 
-**Social Features:**
-- Global leaderboards
-- Share score screenshots with visual summary
-- "Challenge a friend" with seed-based game replication
-- Spectator mode or replay system
+**Content Expansion:**
+- New food types targeting additional cognitive faculties
+- Seasonal caller rosters with themed one-liners
+- Difficulty curves designed by cognitive scientists
 
-**Monetization (if desired):**
-- Cosmetic skins (different retro phone aesthetics, snake colors)
-- Premium difficulty modes or special food types
-- Ad-supported free play with option to remove ads
+**Partnerships:**
+- Corporate wellness programs (brain breaks during work)
+- Educational institutions (cognitive warm-ups before classes)
+- Research collaboration (anonymized cognitive data for academic studies)
 
-**Market Expansion:**
-- Localization for international markets
-- Accessibility features (colorblind modes, keyboard alternatives)
-- Educational variant (math problems during phone calls?)
-- Corporate team-building version (office-themed interruptions)
+**Ethical Commitment:**
+CrazySnakeLite will never claim clinical benefits it cannot prove. The positioning is aspirational and experiential: "a game that makes your brain work hard." If research eventually validates cognitive transfer effects, that's a bonus — not a marketing prerequisite.
 
-**Note:** Future vision is aspirational - MVP focus is on validating the core chaos mechanics work and are fun. Everything else builds on that foundation.
+---
+
+*Product brief prepared by Mary (Business Analyst) with Celia (Neuro-Game Design Expert)*
+*"Train your brain. Laugh while you do it. Come back tomorrow."*
