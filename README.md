@@ -1,41 +1,69 @@
-# CrazySnakeLite — Brain Gym for the Age of AI
+# CrazySnakeLite
 
-A **cognitive fitness tool disguised as an arcade game.** Five brain training systems layered on top of classic Snake — each targeting a different cognitive faculty, each unlocking as you demonstrate mastery.
+**Snake just got complicated.**
+
+Six food types. Phone calls from tech-pun legends like *Al Gorithm* and *Floppy Phil*. Mystery foods that hide what they do. Your controls suddenly reverse. Two effects stacking for combo chaos. Oh, and your brain gets stronger while you laugh.
+
+Welcome to the cognitive workout hiding inside an arcade fever dream.
+
+## What Makes This Snake Crazy
+
+### Six Wild Food Types
+
+Not just "eat and grow." Every food does something different:
+
+| Food | Color | What It Does | Challenge |
+|------|-------|--------------|-----------|
+| **Growing** | Green | Classic snake growth | Keep moving |
+| **Speed Decrease** | Cyan | Slow down (breathing room) | Strategic safety |
+| **Wall Phase** | Purple | Pass through walls | Spatial chaos |
+| **Speed Boost** | Red | FAST mode | Pure reflexes |
+| **Reverse Controls** | Orange | Up is down, left is right | Brain override |
+| **Invincibility** | Yellow | Temporary safety (but zero points) | Safety vs. score |
+
+### Phone Calls from the Best (Worst?) Callers
+
+Random interruptions while your snake keeps moving under blur. Two choices every time:
+
+- **Hang Up** — Safe +1 point, instant relief
+- **Pick Up** — Risky bonus (+2, +3, +5, +8, +13, +21...) + comedy one-liner
+
+Pick Up to hear gems like:
+- *"It's Al Gorithm. I'm calling to sort things out."*
+- *"Floppy Phil here. This call won't take up much space."*
+- *"DJ Snake in the house! Let's drop the bass... line."*
+
+21 callers total. Comedy is your reward for courage.
+
+### Progressive Mystery Food (Score 15+)
+
+As you get better, some food starts **blinking through colors** — you won't know what it does until you eat it. Commit or avoid? Your call.
+
+### Combo Mode (Score 40+)
+
+Two effects at once. Multiplicative scoring. Striped snake. Transitioning canvas colors. Strategic heaven if you can handle it.
+
+### The Crown Jewel: Reverse Controls
+
+Orange food flips your brain. Up becomes down. Left becomes right. Worth the most points because it's the hardest thing your executive function can do.
+
+---
+
+## The Secret Sauce (It's Actually a Brain Gym)
+
+Here's the part we didn't mention up front: **every mechanic targets a different cognitive faculty.**
+
+- **Fibonacci scoring** trains pattern recognition and risk assessment
+- **Phone calls** train divided attention and context-switching
+- **Blinking food** trains decision-making under uncertainty
+- **Combo mode** trains working memory and strategic thinking
+- **Reverse controls** trains executive function override (the neurological equivalent of a heavy deadlift)
+
+After you die, **"Your Brain Today"** shows what your brain just accomplished. Not "you failed," but "look what you just did."
+
+**Score gates unlock complexity as you prove mastery.** No timers. No grinding. Just achievement-based progression.
 
 AI handles more of our thinking every day. CrazySnakeLite makes your brain work hard — and makes it fun.
-
-## The Five Cognitive Training Layers
-
-| Layer | Mechanic | What It Trains | Score Gate |
-|-------|----------|---------------|------------|
-| 1 | **Fibonacci Scoring** — 6 food types with difficulty-proportional rewards | Pattern recognition, risk assessment | Score 0+ |
-| 2 | **Phone Call Interruptions** — End (+1 safe) or Pick Up (+Fibonacci bonus, risky) | Divided attention, context-switching | Score 3+ |
-| 3 | **Progressive Blinking Food** — Mystery food hides its type until consumed | Decision-making under uncertainty | Score 15+ |
-| 4 | **Combo Mode** — Two effects combine for multiplicative scoring | Working memory, strategic thinking | Score 40+ |
-| 5 | **Reverse Controls** — Up is down, left is right (the crown jewel) | Executive function override | Any time |
-
-**Post-Game:** "Your Brain Today" shows 2-3 cognitive achievement stats after each death. Transforms "I failed" into "look what my brain just did."
-
-## Food Types & Fibonacci Scoring
-
-| Food | Color | Points | Effect | Cognitive Training |
-|------|-------|--------|--------|-------------------|
-| Growing | Green | +1 | Snake grows | Baseline motor control |
-| Speed Decrease | Cyan | +2 | Slower movement | Cognitive breathing room |
-| Wall Phase | Purple | +1/+3 | Pass through walls | Spatial reasoning |
-| Speed Boost | Red | +5 | Faster movement | Reflexes under pressure |
-| Reverse Controls | Orange | +8 | Controls inverted | Executive function (crown jewel) |
-| Invincibility | Yellow | 0 | Temporary immunity | Impulse control (safety vs. score) |
-
-## Phone Call System — 21 Tech-Pun Callers
-
-Random phone calls interrupt gameplay while the snake keeps moving under blur. Two choices:
-- **End** (+1 point, instant, safe)
-- **Pick Up** (+Fibonacci bonus, 1-3s blur, risky) — bonus escalates per game: +2, +3, +5, +8, +13, +21, +34
-
-Pick Up reveals the caller's comedy one-liner. Comedy is a reward for courage.
-
-**Sample callers:** Al Gorithm, Meg A. Byte, Floppy Phil, Mona Tor, DJ Snake, GAME OVER...
 
 ## Getting Started
 
@@ -122,15 +150,15 @@ CrazySnakeLite/
 
 ## Design Philosophy
 
-**Score-based, never time-based.** All progression is gated by player achievement, not survival time.
+**Fun first. Brain gains second.**
 
-**Difficulty is the product.** The cognitive challenge is what the player came for.
+Comedy is a system (21 tech-pun callers), not a garnish. Difficulty unlocks through achievement, never timers. Every mechanic teaches itself through play. The cognitive challenge is what makes it replayable — but the laughs are what bring you back tomorrow.
 
-**Comedy is a system.** 21 tech-pun callers, retro portraits, funny one-liners — humor makes the workout enjoyable.
+**Score-based, never time-based.** Reward achievement, not survival.
 
-**Targeted challenge over raw chaos.** A gym rotates muscle groups. CrazySnakeLite rotates cognitive demands. Blinking food caps at 60%, combo at 40% — ensuring strategic thinking is always possible, even at peak difficulty.
+**Targeted challenge over raw chaos.** A gym rotates muscle groups. CrazySnakeLite rotates cognitive demands.
 
-**Teach by encounter.** Every mechanic is learned through play, not instruction.
+**Comedy makes the workout stick.** Retro portraits, pun names, one-liners — you're training your brain, but you're having too much fun to notice.
 
 ## Cognitive Science Foundation
 
@@ -160,7 +188,7 @@ For agent details, see `/_bmad/` directory.
 
 ## License
 
-MIT
+TBD
 
 ---
 
