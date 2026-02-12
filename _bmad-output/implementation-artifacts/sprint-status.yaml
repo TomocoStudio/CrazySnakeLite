@@ -1,4 +1,4 @@
-# generated: 2026-01-25
+# generated: 2026-02-08
 # project: CrazySnakeLite
 # project_key: crazy-snake-lite
 # tracking_system: file-system
@@ -33,7 +33,7 @@
 # - SM typically creates next story after previous one is 'done' to incorporate learnings
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
-generated: 2026-01-25
+generated: 2026-02-08
 project: CrazySnakeLite
 project_key: crazy-snake-lite
 tracking_system: file-system
@@ -68,22 +68,22 @@ development_status:
   epic-3-retrospective: optional
 
   # Epic 4: Audio & Complete Experience
-  epic-4: done  # MVP complete (4-6 is post-MVP)
+  epic-4: done
   4-1-score-system-and-display: done
   4-2-main-menu-screen: done
   4-3-game-over-screen-enhancement: done
   4-4-menu-navigation-and-pause: done
   4-5-state-based-movement-sounds: done
-  4-6-game-over-melody: backlog  # Post-MVP enhancement (not required for MVP launch)
+  4-6-game-over-melody: backlog
   epic-4-retrospective: done
 
   # Epic 5: Visual & Audio Polish v2.0
-  epic-5: done  # Post-launch polish based on user feedback
+  epic-5: done
   5-1-visual-identity-overhaul: done
-  5-2-score-display-redesign: done  # Enhanced 2026-02-03 with background styling
+  5-2-score-display-redesign: done
   5-3-food-shape-unification: done
   5-4-snake-head-enhancement: done
-  5-5-phone-call-ux-improvement: done  # Enhanced with custom animated icon
+  5-5-phone-call-ux-improvement: done
   5-6-branding-update: done
   5-7-tech-pun-caller-names: done
   5-8-color-scheme-update: done
@@ -97,3 +97,69 @@ development_status:
   6-4-email-submission-thank-you-flow: review
   6-5-multi-feedback-support: review
   epic-6-retrospective: optional
+
+  # Epic 7: Fibonacci Scoring & Visual Feedback System
+  epic-7: in-progress
+  7-1-update-food-scoring-fibonacci: review
+  7-2-score-popup-system-basic: review
+  7-3-high-value-score-popups: done
+  7-4-fibonacci-musical-progression: ready-for-dev
+  7-5-popup-queue-system: done
+  7-6-reduced-motion-mode-popups: done
+  epic-7-retrospective: optional
+
+  # Epic 8: Progressive Blinking Food System
+  epic-8: in-progress
+  8-1-color-cycling-animation: ready-for-dev
+  8-2-score-based-blinking-percentage: ready-for-dev
+  8-3-drop-shadow-spatial-anchoring: ready-for-dev
+  8-4-first-time-mystery-food-tooltip: ready-for-dev
+  8-5-reduced-motion-mode-blinking: ready-for-dev
+  8-6-track-blinking-food-stats: ready-for-dev
+  epic-8-retrospective: optional
+
+  # Epic 9: Phone Calls v2 - Pick Up vs End
+  epic-9: in-progress
+  9-1-two-button-phone-overlay: ready-for-dev
+  9-2-fibonacci-pickup-bonus: ready-for-dev
+  9-3-variable-pickup-timer: ready-for-dev
+  9-4-caller-portraits-one-liners: ready-for-dev
+  9-5-grace-period-frequency-tiers: ready-for-dev
+  9-6-phone-bonus-popup-integration: ready-for-dev
+  9-7-phone-stats-analytics: ready-for-dev
+  epic-9-retrospective: optional
+
+  # Epic 10: Combo Mode System
+  epic-10: in-progress
+  10-1-combo-probability-activation: ready-for-dev
+  10-2-canvas-color-transition: ready-for-dev
+  10-3-striped-snake-rendering: ready-for-dev
+  10-4-multiplicative-scoring: ready-for-dev
+  10-5-third-food-exits-combo: ready-for-dev
+  10-6-combo-pause-phone-calls: ready-for-dev
+  10-7-combo-stats-analytics: ready-for-dev
+  epic-10-retrospective: optional
+
+  # Epic 11: Cognitive Feedback & RC Recognition
+  epic-11: in-progress
+  11-1-rc-survived-flash: ready-for-dev
+  11-2-track-cognitive-stats: ready-for-dev
+  11-3-your-brain-today-display: ready-for-dev
+  11-4-stat-display-timing: ready-for-dev
+  11-5-reset-cognitive-stats: ready-for-dev
+  11-6-reduced-motion-cognitive-stats: ready-for-dev
+  epic-11-retrospective: optional
+
+  # Epic 12: Cognitive Analytics System
+  epic-12: in-progress
+  12-1-plausible-integration: ready-for-dev
+  12-2-analytics-state-tracking: ready-for-dev
+  12-3-analytics-module-core-events: ready-for-dev
+  12-4-track-game-start: ready-for-dev
+  12-5-track-food-eaten: ready-for-dev
+  12-6-track-phone-call: ready-for-dev
+  12-7-track-game-over: ready-for-dev
+  12-8-track-session-end: ready-for-dev
+  12-9-session-id-generation: ready-for-dev
+  12-10-graceful-degradation-test: ready-for-dev
+  epic-12-retrospective: optional

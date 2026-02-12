@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story 7.6: Reduced Motion Mode Test</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      padding: 40px;
+      background: #1a1a1a;
+      color: #fff;
+    }
+    .test-section {
+      margin: 30px 0;
+      padding: 20px;
+      background: #2a2a2a;
+      border: 2px solid #444;
+      border-radius: 8px;
+    }
+    .test-section h2 {
+      color: #FFD700;
+      margin-bottom: 15px;
+    }
+    button {
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      padding: 12px 24px;
+      margin: 5px;
+      background: #000;
+      color: #fff;
+      border: 2px solid #9DB2DD;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    button:hover {
+      background: #9DB2DD;
+      transform: scale(1.05);
+    }
+    #game-canvas {
+      display: block;
+      margin: 20px auto;
+      background: #E8E8E8;
+      border: 6px solid #800080;
+    }
+    .results {
+      margin-top: 15px;
+      padding: 15px;
+      background: #1a1a1a;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .status-box {
+      padding: 15px;
+      margin: 15px 0;
+      background: #1a1a1a;
+      border-radius: 4px;
+      border-left: 4px solid #00CED1;
+    }
+    .enabled { color: #00FF00; }
+    .disabled { color: #FF0000; }
+    .warning { color: #FFA500; }
+  </style>
+</head>
+<body>
+  <h1>Story 7.6: Reduced Motion Mode Test</h1>
+  <p>Accessibility testing for motion-sensitive players</p>
+
+  <!-- Detection Status -->
+  <div class="status-box">
+    <h3>Detection Status</h3>
+    <div id="detection-status"></div>
+    <div id="class-status"></div>
+    <p class="warning" style="margin-top: 10px;">
+      <strong>How to enable reduced motion:</strong><br>
+      • <strong>Chrome DevTools:</strong> Cmd+Shift+P → "Emulate CSS prefers-reduced-motion"<br>
+      • <strong>macOS:</strong> System Preferences → Accessibility → Display → Reduce motion<br>
+      • <strong>Windows:</strong> Settings → Ease of Access → Display → Show animations (OFF)
+    </p>
+  </div>
+
+  <canvas id="game-canvas" width="500" height="400"></canvas>
+
+  <!-- Test 1: Simple Popups -->
+  <div class="test-section">
+    <h2>Test 1: Simple Popup (+1) - Reduced Motion</h2>
+    <p><strong>Expected:</strong> Simple fade-up, NO bounce, NO rotation</p>
+    <button onclick="test1()">Spawn +1 Popup</button>
+    <div class="results">
+      <div>[ ] Popup appears</div>
+      <div>[ ] Simple fade-up animation only</div>
+      <div>[ ] NO bounce or scale changes</div>
+      <div>[ ] Comfortable, gentle motion</div>
+    </div>
+  </div>
+
+  <!-- Test 2: High-Value Popup -->
+  <div class="test-section">
+    <h2>Test 2: High-Value Popup (+8) - Reduced Motion</h2>
+    <p><strong>Expected:</strong> Large text, simple fade-up, NO rotation wiggle</p>
+    <button onclick="test2()">Spawn +8 Popup</button>
+    <div class="results">
+      <div>[ ] Large 40px popup appears</div>
+      <div>[ ] NO rotation wiggle (-5° to +5°)</div>
+      <div>[ ] NO bounce animation</div>
+      <div>[ ] Simple fade-up only</div>
+    </div>
+  </div>
+
+  <!-- Test 3: Particles -->
+  <div class="test-section">
+    <h2>Test 3: Particles (Slower Motion)</h2>
+    <p><strong>Expected:</strong> Particles appear, move slower (900ms vs 600ms)</p>
+    <button onclick="test3()">Spawn Particles</button>
+    <div class="results">
+      <div>[ ] 6 particles appear</div>
+      <div>[ ] Particles move slower than normal</div>
+      <div>[ ] Linear, gentle motion</div>
+      <div>[ ] Duration ~900ms (not 600ms)</div>
+    </div>
+  </div>
+
+  <!-- Test 4: Screen Shake (DISABLED) -->
+  <div class="test-section">
+    <h2>Test 4: Screen Shake (MUST BE DISABLED)</h2>
+    <p><strong>Expected:</strong> NO canvas shake, completely disabled</p>
+    <button onclick="test4()">Trigger Screen Shake</button>
+    <div class="results">
+      <div>[ ] Canvas does NOT shake</div>
+      <div>[ ] No horizontal movement</div>
+      <div>[ ] .shake class not applied (check DevTools)</div>
+      <div>[ ] Game remains completely stable</div>
+    </div>
+  </div>
+
+  <!-- Test 5: Combined +8 Effect -->
+  <div class="test-section">
+    <h2>Test 5: Full +8 Celebration (Reduced Motion)</h2>
+    <p><strong>Expected:</strong> Large popup + slower particles, NO shake, NO rotation</p>
+    <button onclick="test5()">Full +8 Effect</button>
+    <div class="results">
+      <div>[ ] Large popup with simple fade-up</div>
+      <div>[ ] Particles spawn and move slower</div>
+      <div>[ ] NO screen shake occurs</div>
+      <div>[ ] NO rotation or bounce</div>
+      <div>[ ] Feels comfortable and accessible</div>
+    </div>
+  </div>
+
+  <!-- Test 6: Mode Toggle -->
+  <div class="test-section">
+    <h2>Test 6: Toggle Reduced Motion</h2>
+    <p><strong>Test Procedure:</strong></p>
+    <ol style="color: #E8E8E8; margin-left: 20px;">
+      <li>Note current detection status above</li>
+      <li>Toggle reduced motion in browser/OS settings</li>
+      <li>Refresh this page (F5)</li>
+      <li>Verify detection status changes</li>
+      <li>Test popups to confirm animations change</li>
+    </ol>
+    <div class="results">
+      <div>[ ] Detection status updates on refresh</div>
+      <div>[ ] .reduced-motion class applied/removed correctly</div>
+      <div>[ ] Animations switch between normal and reduced</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { spawnPopup, spawnParticles, triggerScreenShake, isReducedMotion } from '../js/score-popup.js';
+
+    const centerX = 12; // Grid center X
+    const centerY = 10; // Grid center Y
+
+    // Display detection status
+    const detectionStatus = document.getElementById('detection-status');
+    const classStatus = document.getElementById('class-status');
+
+    if (isReducedMotion) {
+      detectionStatus.innerHTML = '<span class="enabled">✓ Reduced Motion ENABLED</span>';
+      classStatus.innerHTML = '<span class="enabled">✓ .reduced-motion class applied to body</span>';
+    } else {
+      detectionStatus.innerHTML = '<span class="disabled">✗ Reduced Motion DISABLED (normal animations)</span>';
+      classStatus.innerHTML = '<span class="disabled">✗ .reduced-motion class NOT applied</span>';
+    }
+
+    // Test functions
+    window.test1 = function() {
+      spawnPopup(1, centerX, centerY, '', 'growing');
+      console.log('✓ Test 1: +1 popup spawned');
+    };
+
+    window.test2 = function() {
+      spawnPopup(8, centerX, centerY);
+      console.log('✓ Test 2: +8 popup spawned');
+    };
+
+    window.test3 = function() {
+      const canvas = document.getElementById('game-canvas');
+      const rect = canvas.getBoundingClientRect();
+      const centerPixelX = rect.left + (rect.width / 2);
+      const centerPixelY = rect.top + (rect.height / 2);
+      spawnParticles(6, centerPixelX, centerPixelY);
+      console.log('✓ Test 3: 6 particles spawned');
+    };
+
+    window.test4 = function() {
+      triggerScreenShake();
+      const canvas = document.getElementById('game-canvas');
+      const hasShakeClass = canvas.classList.contains('shake');
+
+      if (isReducedMotion) {
+        console.log(hasShakeClass ?
+          '✗ FAIL: .shake class applied (should be disabled!)' :
+          '✓ PASS: Screen shake correctly disabled');
+      } else {
+        console.log('⚠️ Reduced motion not enabled - shake will occur normally');
+      }
+    };
+
+    window.test5 = function() {
+      const canvas = document.getElementById('game-canvas');
+      const rect = canvas.getBoundingClientRect();
+      const centerPixelX = rect.left + (rect.width / 2);
+      const centerPixelY = rect.top + (rect.height / 2);
+
+      spawnPopup(8, centerX, centerY);
+      spawnParticles(6, centerPixelX, centerPixelY);
+      triggerScreenShake();
+
+      console.log('✓ Test 5: Full +8 celebration triggered');
+      if (isReducedMotion) {
+        console.log('  - Reduced motion active: shake should be disabled');
+      }
+    };
+
+    console.log('Test suite loaded. Story 7.6: Reduced Motion Mode');
+    console.log(`Reduced Motion Status: ${isReducedMotion ? 'ENABLED' : 'DISABLED'}`);
+  </script>
+</body>
+</html>

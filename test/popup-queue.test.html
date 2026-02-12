@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story 7.5: Popup Queue System Test</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      padding: 40px;
+      background: #1a1a1a;
+      color: #fff;
+    }
+    .test-section {
+      margin: 30px 0;
+      padding: 20px;
+      background: #2a2a2a;
+      border: 2px solid #444;
+      border-radius: 8px;
+    }
+    .test-section h2 {
+      color: #FFD700;
+      margin-bottom: 15px;
+    }
+    button {
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      padding: 12px 24px;
+      margin: 5px;
+      background: #000;
+      color: #fff;
+      border: 2px solid #9DB2DD;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    button:hover {
+      background: #9DB2DD;
+      transform: scale(1.05);
+    }
+    #game-canvas {
+      display: block;
+      margin: 20px auto;
+      background: #E8E8E8;
+      border: 6px solid #800080;
+    }
+    .results {
+      margin-top: 15px;
+      padding: 15px;
+      background: #1a1a1a;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .pass { color: #00FF00; }
+    .fail { color: #FF0000; }
+    .info { color: #00CED1; }
+  </style>
+</head>
+<body>
+  <h1>Story 7.5: Popup Queue System Test</h1>
+  <p>Manual testing for popup staggering and vertical stacking</p>
+
+  <canvas id="game-canvas" width="500" height="400"></canvas>
+
+  <!-- Test 1: Single Popup (No Queue) -->
+  <div class="test-section">
+    <h2>Test 1: Single Popup (No Queue)</h2>
+    <p><strong>Expected:</strong> Popup appears immediately at center, no stacking offset</p>
+    <button onclick="test1()">Spawn Single Popup</button>
+    <div class="results" id="test1-results">
+      <div>[ ] Popup appears immediately</div>
+      <div>[ ] No vertical offset applied</div>
+      <div>[ ] lastPopupTime updated</div>
+    </div>
+  </div>
+
+  <!-- Test 2: Two Popups Within 500ms -->
+  <div class="test-section">
+    <h2>Test 2: Two Popups Within 500ms (Stagger + Stack)</h2>
+    <p><strong>Expected:</strong> First immediate, second appears 300ms later, 50px below</p>
+    <button onclick="test2()">Spawn 2 Popups (100ms apart)</button>
+    <div class="results" id="test2-results">
+      <div>[ ] First popup appears immediately</div>
+      <div>[ ] Second popup appears ~300ms after first</div>
+      <div>[ ] Second popup is 50px below first</div>
+      <div>[ ] Both visible simultaneously</div>
+    </div>
+  </div>
+
+  <!-- Test 3: Three Popups Rapid Fire -->
+  <div class="test-section">
+    <h2>Test 3: Three Popups Rapid Fire</h2>
+    <p><strong>Expected:</strong> Stagger: 0ms, 300ms, 600ms | Stack: 0px, 50px, 100px</p>
+    <button onclick="test3()">Spawn 3 Popups Rapidly</button>
+    <div class="results" id="test3-results">
+      <div>[ ] First popup at 0ms, 0px offset</div>
+      <div>[ ] Second popup at ~300ms, 50px offset</div>
+      <div>[ ] Third popup at ~600ms, 100px offset</div>
+      <div>[ ] All 3 visible at some point</div>
+    </div>
+  </div>
+
+  <!-- Test 4: Combo + Phone Bonus Simulation -->
+  <div class="test-section">
+    <h2>Test 4: Combo + Phone Bonus (Simultaneous)</h2>
+    <p><strong>Expected:</strong> Combo appears first, phone bonus 300ms later, 50px below</p>
+    <button onclick="test4()">Spawn Combo + Phone Bonus</button>
+    <div class="results" id="test4-results">
+      <div>[ ] Combo popup (+24) appears first</div>
+      <div>[ ] Phone bonus (+13) appears ~300ms later</div>
+      <div>[ ] Phone bonus is 50px below combo</div>
+      <div>[ ] Both popups have correct labels</div>
+    </div>
+  </div>
+
+  <!-- Test 5: Queue Processing Performance (10 Popups) -->
+  <div class="test-section">
+    <h2>Test 5: Queue Processing (10 Popups Stress Test)</h2>
+    <p><strong>Expected:</strong> All 10 appear, no dropped events, smooth processing</p>
+    <button onclick="test5()">Spawn 10 Popups Rapidly</button>
+    <div class="results" id="test5-results">
+      <div>[ ] All 10 popups eventually appear</div>
+      <div>[ ] No dropped events</div>
+      <div>[ ] Queue processes smoothly (< 1ms per frame)</div>
+      <div>[ ] Stacking increases: 0, 50, 100, 150... 450px</div>
+    </div>
+  </div>
+
+  <!-- Test 6: Stack Reset After Queue Clears -->
+  <div class="test-section">
+    <h2>Test 6: Stack Reset Between Bursts</h2>
+    <p><strong>Expected:</strong> First burst stacks, then after pause, second burst resets stack to 0px</p>
+    <button onclick="test6()">2 Popups → Wait 2s → 2 More Popups</button>
+    <div class="results" id="test6-results">
+      <div>[ ] First burst: stacks to 50px</div>
+      <div>[ ] Queue clears (2 second wait)</div>
+      <div>[ ] Second burst: stack resets to 0px</div>
+      <div>[ ] Second burst also stacks from 0px</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { spawnPopup } from '../js/score-popup.js';
+
+    const centerX = 12; // Grid center X
+    const centerY = 10; // Grid center Y
+
+    // Test 1: Single popup
+    window.test1 = function() {
+      spawnPopup(8, centerX, centerY);
+      console.log('✓ Test 1: Single popup spawned');
+    };
+
+    // Test 2: Two popups within 500ms
+    window.test2 = function() {
+      spawnPopup(5, centerX, centerY);
+      setTimeout(() => {
+        spawnPopup(8, centerX, centerY);
+      }, 100); // 100ms apart (within 500ms window)
+      console.log('✓ Test 2: Two popups spawned (100ms apart)');
+    };
+
+    // Test 3: Three popups rapid fire
+    window.test3 = function() {
+      spawnPopup(3, centerX, centerY);
+      setTimeout(() => spawnPopup(5, centerX, centerY), 50);
+      setTimeout(() => spawnPopup(8, centerX, centerY), 100);
+      console.log('✓ Test 3: Three popups spawned (50ms intervals)');
+    };
+
+    // Test 4: Combo + Phone bonus
+    window.test4 = function() {
+      spawnPopup(24, centerX, centerY, 'COMBO');
+      setTimeout(() => {
+        spawnPopup(13, centerX, centerY, 'CALL BONUS');
+      }, 10); // Nearly simultaneous
+      console.log('✓ Test 4: Combo + Phone bonus spawned');
+    };
+
+    // Test 5: 10 popups stress test
+    window.test5 = function() {
+      console.log('Starting stress test: 10 popups...');
+      for (let i = 0; i < 10; i++) {
+        setTimeout(() => {
+          spawnPopup(1 + i, centerX, centerY);
+          console.log(`  Popup ${i + 1}/10 spawned`);
+        }, i * 50); // 50ms intervals
+      }
+    };
+
+    // Test 6: Stack reset between bursts
+    window.test6 = function() {
+      // First burst
+      spawnPopup(3, centerX, centerY);
+      setTimeout(() => spawnPopup(5, centerX, centerY), 100);
+
+      console.log('✓ First burst spawned (2 popups)');
+      console.log('  Waiting 2 seconds for queue to clear...');
+
+      // Second burst after 2 seconds
+      setTimeout(() => {
+        spawnPopup(8, centerX, centerY);
+        setTimeout(() => spawnPopup(13, centerX, centerY, 'BONUS'), 100);
+        console.log('✓ Second burst spawned (2 popups) - stack should reset');
+      }, 2000);
+    };
+
+    console.log('Test suite loaded. Story 7.5: Popup Queue System');
+    console.log('Expected: Tests should FAIL until queue system is implemented');
+  </script>
+</body>
+</html>

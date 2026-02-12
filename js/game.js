@@ -7,6 +7,8 @@ import { spawnFood } from './food.js';
 import { applyEffect, clearEffect } from './effects.js';
 import { checkPhoneCallTiming, dismissPhoneCall } from './phone.js';
 import { playMoveSound, playDeathSound } from './audio.js';
+import { getFoodScore } from './scoring.js';
+import { spawnPopup, spawnParticles, triggerScreenShake, gridToPixel } from './score-popup.js';
 
 const TICK_RATE = CONFIG.TICK_RATE;
 
@@ -71,11 +73,27 @@ function update(gameState) {
   // Check food collision
   if (checkFoodCollision(gameState)) {
     const foodType = gameState.food.type;
+    const foodPosition = { x: gameState.food.position.x, y: gameState.food.position.y };
 
     // Always grow snake
     growSnake(gameState);
-    // Update score: number of foods eaten (segments - starting length)
-    gameState.score = Math.max(0, (gameState.snake.segments.length - CONFIG.STARTING_LENGTH) || 0);
+
+    // Story 7.1: Update score using Fibonacci scoring system
+    // Award base food score immediately
+    const scoreIncrease = getFoodScore(foodType);
+    gameState.score += scoreIncrease;
+
+    // Story 7.2: Spawn score popup at food position (temporal contiguity <200ms)
+    spawnPopup(scoreIncrease, foodPosition.x, foodPosition.y, '', foodType);
+
+    // Story 7.3: Special effects for +8 (Reverse Controls)
+    if (foodType === 'reverseControls') {
+      const { x: pixelX, y: pixelY } = gridToPixel(foodPosition.x, foodPosition.y);
+      spawnParticles(6, pixelX, pixelY);  // 6 particles
+      triggerScreenShake();
+    }
+
+    // Note: Wall Phase bonus (+2) is awarded immediately in snake.js when wall is crossed
 
     // Handle effects based on food type
     if (foodType === 'growing') {

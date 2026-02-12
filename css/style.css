@@ -801,3 +801,206 @@ body {
     font-size: 22px;
   }
 }
+
+/* ========================================
+   Score Popups - Story 7.2
+   Food-Type Based (colors match food colors)
+   ======================================== */
+
+/* Base popup styles */
+.score-popup {
+  position: fixed;
+  font-family: 'Jersey20', 'Courier New', monospace;
+  font-weight: 900; /* Extra bold */
+  pointer-events: none;
+  z-index: 200;
+  animation-timing-function: ease-out;
+  transform-origin: center;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+  text-stroke: 1px rgba(255, 255, 255, 0.4);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Growing Food (+1) - Green */
+.score-popup-growing {
+  font-size: 44px;
+  color: #00FF00; /* Match food color */
+  animation: popup-small 500ms ease-out forwards;
+}
+
+/* Speed Decrease Food (+2) - Cyan */
+.score-popup-speedDecrease {
+  font-size: 44px;
+  color: #00CED1; /* Match food color */
+  animation: popup-small 600ms ease-out forwards;
+}
+
+/* Wall Phase Food (+1) - Purple */
+.score-popup-wallPhase {
+  font-size: 48px;
+  color: #800080; /* Match food color */
+  animation: popup-medium 700ms ease-out forwards;
+}
+
+/* Speed Boost Food (+5) - RED to match food color */
+.score-popup-speedBoost {
+  font-size: 28px;
+  color: #FF0000; /* RED - matches red food */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9),
+               0 0 8px rgba(255, 0, 0, 0.6); /* Red glow */
+  animation: popup-speedboost 800ms ease-out forwards;
+}
+
+@keyframes popup-speedboost {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  15%  { transform: translateY(-8px) scale(1.15); } /* Pronounced bounce */
+  30%  { transform: translateY(-4px) scale(1); }
+  70%  { opacity: 1; transform: translateY(-30px) scale(1); }
+  100% { opacity: 0; transform: translateY(-50px) scale(1); }
+}
+
+/* Reverse Controls Food (+8) - ORANGE to match food color */
+.score-popup-reverseControls {
+  font-size: 40px;
+  font-weight: bold;
+  color: #FFA500; /* ORANGE - matches orange food */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 1),
+               0 0 12px rgba(255, 215, 0, 0.8), /* Gold inner glow */
+               0 0 20px rgba(255, 165, 0, 0.6);  /* Orange outer glow */
+  animation: popup-reversecontrols 1000ms ease-out forwards;
+}
+
+@keyframes popup-reversecontrols {
+  0%   { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+  10%  { transform: translateY(-10px) scale(1.2) rotate(-5deg); } /* Dramatic bounce + wiggle */
+  20%  { transform: translateY(-6px) scale(1.1) rotate(5deg); }
+  30%  { transform: translateY(-8px) scale(1) rotate(0deg); }
+  70%  { opacity: 1; transform: translateY(-40px) scale(1) rotate(0deg); }
+  100% { opacity: 0; transform: translateY(-60px) scale(1) rotate(0deg); }
+}
+
+/* Invincibility Food (+0) - Yellow */
+.score-popup-invincibility {
+  font-size: 44px;
+  color: #FFFF00; /* Match food color */
+  animation: popup-small 500ms ease-out forwards;
+}
+
+/* Fallback for value-based classes (Wall Phase bonus +2) */
+.score-popup-2 {
+  font-size: 46px;
+  color: #800080; /* Purple for Wall Phase bonus */
+  animation: popup-medium 600ms ease-out forwards;
+}
+
+/* Animation: Small popups (+1, +2, +0) */
+@keyframes popup-small {
+  0%   { opacity: 1; transform: translateY(0); }
+  60%  { opacity: 1; transform: translateY(-20px); }
+  100% { opacity: 0; transform: translateY(-30px); }
+}
+
+/* Animation: Medium popups (+3, Wall Phase) */
+@keyframes popup-medium {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  20%  { transform: translateY(-5px) scale(1.1); } /* Slight bounce */
+  40%  { transform: translateY(-3px) scale(1); }
+  70%  { opacity: 1; transform: translateY(-25px) scale(1); }
+  100% { opacity: 0; transform: translateY(-40px) scale(1); }
+}
+
+/* Animation: Large popups (+5) */
+@keyframes popup-large {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  15%  { transform: translateY(-8px) scale(1.15); }
+  30%  { transform: translateY(-5px) scale(1.05); }
+  70%  { opacity: 1; transform: translateY(-30px) scale(1); }
+  100% { opacity: 0; transform: translateY(-50px) scale(1); }
+}
+
+/* Animation: Extra-large popups (+8) */
+@keyframes popup-xlarge {
+  0%   { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+  10%  { transform: translateY(-10px) scale(1.2) rotate(-5deg); }
+  25%  { transform: translateY(-7px) scale(1.1) rotate(5deg); }
+  40%  { transform: translateY(-5px) scale(1.05) rotate(0deg); }
+  70%  { opacity: 1; transform: translateY(-35px) scale(1) rotate(0deg); }
+  100% { opacity: 0; transform: translateY(-60px) scale(1) rotate(0deg); }
+}
+
+/* ========================================
+   Particle System - Story 7.3
+   ======================================== */
+
+/* Particle Stars */
+.particle-star {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle, #FFD700, #FFA500);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 200;
+  animation: particle-explode 600ms ease-out forwards;
+}
+
+@keyframes particle-explode {
+  0%   { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--particle-x), var(--particle-y)) scale(0.3); }
+}
+
+/* ========================================
+   Screen Shake - Story 7.3
+   ======================================== */
+
+/* Screen Shake */
+.shake {
+  animation: screen-shake 200ms ease-in-out;
+}
+
+@keyframes screen-shake {
+  0%, 100% { transform: translateX(0); }
+  25%      { transform: translateX(-3px); }
+  75%      { transform: translateX(3px); }
+}
+
+/* ========================================
+   Reduced Motion Mode - Story 7.6
+   Accessibility for motion sensitivity
+   ======================================== */
+
+/* Simplified popup animations (no bounce, rotation, or scale) */
+.reduced-motion .score-popup-growing,
+.reduced-motion .score-popup-speedDecrease,
+.reduced-motion .score-popup-wallPhase,
+.reduced-motion .score-popup-speedBoost,
+.reduced-motion .score-popup-reverseControls,
+.reduced-motion .score-popup-invincibility,
+.reduced-motion .score-popup-1,
+.reduced-motion .score-popup-2,
+.reduced-motion .score-popup-3 {
+  /* Override all complex animations with simple fade-up */
+  animation: popup-reduced-motion 500ms ease-out forwards !important;
+}
+
+@keyframes popup-reduced-motion {
+  0%   { opacity: 0; transform: translateY(0); }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; transform: translateY(-20px); }
+  100% { opacity: 0; transform: translateY(-30px); }
+}
+
+/* Slower particle animation (600ms → 900ms, linear motion) */
+.reduced-motion .particle-star {
+  animation: particle-reduced-motion 900ms ease-out forwards;
+}
+
+@keyframes particle-reduced-motion {
+  0%   { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--particle-x), var(--particle-y)) scale(0.5); }
+}
+
+/* Disable screen shake entirely */
+.reduced-motion .shake {
+  animation: none !important;
+}

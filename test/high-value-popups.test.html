@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story 7.3: High-Value Score Popups Test</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      padding: 40px;
+      background: #1a1a1a;
+      color: #fff;
+    }
+    .test-section {
+      margin: 30px 0;
+      padding: 20px;
+      background: #2a2a2a;
+      border: 2px solid #444;
+      border-radius: 8px;
+    }
+    .test-section h2 {
+      color: #FFD700;
+      margin-bottom: 15px;
+    }
+    button {
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      padding: 12px 24px;
+      margin: 5px;
+      background: #000;
+      color: #fff;
+      border: 2px solid #9DB2DD;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    button:hover {
+      background: #9DB2DD;
+      transform: scale(1.05);
+    }
+    #game-canvas {
+      display: block;
+      margin: 20px auto;
+      background: #E8E8E8;
+      border: 6px solid #800080;
+    }
+    .results {
+      margin-top: 15px;
+      padding: 15px;
+      background: #1a1a1a;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .pass { color: #00FF00; }
+    .fail { color: #FF0000; }
+  </style>
+</head>
+<body>
+  <h1>Story 7.3: High-Value Score Popups Test</h1>
+  <p>Manual testing checklist for +5 and +8 score popups with particles and screen shake</p>
+
+  <canvas id="game-canvas" width="500" height="400"></canvas>
+
+  <!-- Test Section 1: +5 Popup (Speed Boost) -->
+  <div class="test-section">
+    <h2>Test 1: +5 Popup (Speed Boost)</h2>
+    <p><strong>Expected:</strong> 28px orange, pronounced bounce, subtle glow, 800ms</p>
+    <button onclick="testPopup5()">Spawn +5 Popup</button>
+    <div class="results" id="test1-results">
+      <div>[ ] Orange text (#FFA500)</div>
+      <div>[ ] 28px font size</div>
+      <div>[ ] Pronounced bounce animation</div>
+      <div>[ ] Subtle orange glow visible</div>
+      <div>[ ] Completes in ~800ms</div>
+    </div>
+  </div>
+
+  <!-- Test Section 2: +8 Popup (Reverse Controls) -->
+  <div class="test-section">
+    <h2>Test 2: +8 Popup (Reverse Controls)</h2>
+    <p><strong>Expected:</strong> 40px red-orange, dramatic bounce + rotation, dual glow, 1000ms</p>
+    <button onclick="testPopup8()">Spawn +8 Popup</button>
+    <div class="results" id="test2-results">
+      <div>[ ] Red-orange text (#FF4500)</div>
+      <div>[ ] 40px font size</div>
+      <div>[ ] Dramatic bounce with rotation wiggle (-5° to +5°)</div>
+      <div>[ ] Dual glow (gold inner + red outer)</div>
+      <div>[ ] Completes in ~1000ms</div>
+    </div>
+  </div>
+
+  <!-- Test Section 3: Particle System -->
+  <div class="test-section">
+    <h2>Test 3: Particle Explosion (+8)</h2>
+    <p><strong>Expected:</strong> 5-7 star particles explode from center, fade out over 600ms</p>
+    <button onclick="testParticles()">Spawn Particles</button>
+    <div class="results" id="test3-results">
+      <div>[ ] 6 particles spawn at center</div>
+      <div>[ ] Particles travel outward radially</div>
+      <div>[ ] Particles fade out over 600ms</div>
+      <div>[ ] Particles shrink during animation</div>
+      <div>[ ] Particles auto-remove from DOM</div>
+    </div>
+  </div>
+
+  <!-- Test Section 4: Screen Shake -->
+  <div class="test-section">
+    <h2>Test 4: Screen Shake</h2>
+    <p><strong>Expected:</strong> Canvas shakes horizontally 3px for 200ms</p>
+    <button onclick="testScreenShake()">Trigger Screen Shake</button>
+    <div class="results" id="test4-results">
+      <div>[ ] Canvas shakes horizontally</div>
+      <div>[ ] Shake is subtle (3px displacement)</div>
+      <div>[ ] Shake completes in 200ms</div>
+      <div>[ ] Canvas returns to normal position</div>
+    </div>
+  </div>
+
+  <!-- Test Section 5: Combined +8 Effect -->
+  <div class="test-section">
+    <h2>Test 5: Combined +8 Celebration</h2>
+    <p><strong>Expected:</strong> Popup + particles + shake all trigger together</p>
+    <button onclick="testCombinedEffect()">Full +8 Celebration</button>
+    <div class="results" id="test5-results">
+      <div>[ ] Large popup appears with rotation</div>
+      <div>[ ] 6 particles explode simultaneously</div>
+      <div>[ ] Screen shakes</div>
+      <div>[ ] All effects feel like a mini-celebration</div>
+      <div>[ ] Smooth 60 FPS maintained</div>
+    </div>
+  </div>
+
+  <!-- Test Section 6: Performance -->
+  <div class="test-section">
+    <h2>Test 6: Performance Test</h2>
+    <p><strong>Expected:</strong> 10 rapid +8 celebrations maintain 60 FPS, no memory leaks</p>
+    <button onclick="testPerformance()">Spawn 10 Rapid +8s</button>
+    <div class="results" id="test6-results">
+      <div>[ ] All 10 celebrations render smoothly</div>
+      <div>[ ] No visible frame drops</div>
+      <div>[ ] Particles cleanup correctly (check Elements panel)</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { spawnPopup, spawnParticles, triggerScreenShake } from '../js/score-popup.js';
+
+    // Test helpers
+    window.testPopup5 = function() {
+      spawnPopup(5, 12, 10); // Grid center
+      console.log('✓ Spawned +5 popup');
+    };
+
+    window.testPopup8 = function() {
+      spawnPopup(8, 12, 10); // Grid center
+      console.log('✓ Spawned +8 popup');
+    };
+
+    window.testParticles = function() {
+      const canvas = document.getElementById('game-canvas');
+      const rect = canvas.getBoundingClientRect();
+      const centerX = rect.left + (rect.width / 2);
+      const centerY = rect.top + (rect.height / 2);
+      spawnParticles(6, centerX, centerY);
+      console.log('✓ Spawned 6 particles at canvas center');
+    };
+
+    window.testScreenShake = function() {
+      triggerScreenShake();
+      console.log('✓ Triggered screen shake');
+    };
+
+    window.testCombinedEffect = function() {
+      const canvas = document.getElementById('game-canvas');
+      const rect = canvas.getBoundingClientRect();
+      const centerX = rect.left + (rect.width / 2);
+      const centerY = rect.top + (rect.height / 2);
+
+      // Spawn all effects together
+      spawnPopup(8, 12, 10);
+      spawnParticles(6, centerX, centerY);
+      triggerScreenShake();
+
+      console.log('✓ Triggered combined +8 celebration');
+    };
+
+    window.testPerformance = function() {
+      console.log('Starting performance test: 10 rapid +8 celebrations...');
+      let count = 0;
+      const interval = setInterval(() => {
+        window.testCombinedEffect();
+        count++;
+        console.log(`  ${count}/10 celebrations spawned`);
+        if (count >= 10) {
+          clearInterval(interval);
+          console.log('✓ Performance test complete. Check for smooth rendering and DOM cleanup.');
+        }
+      }, 150); // Spawn every 150ms
+    };
+
+    console.log('Test suite loaded. Story 7.3: High-Value Score Popups');
+    console.log('Expected: Tests should FAIL until implementation is complete');
+  </script>
+</body>
+</html>
