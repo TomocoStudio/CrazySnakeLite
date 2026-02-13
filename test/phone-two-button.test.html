@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story 9.1: Two-Button Phone Overlay Test</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body {
+      padding: 20px;
+      font-family: 'Jersey20', 'Courier New', monospace;
+      background: #1A1A2E;
+      color: #E8E8E8;
+    }
+    .test-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .test-section {
+      margin: 30px 0;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+    }
+    .test-button {
+      padding: 12px 24px;
+      margin: 10px 5px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Jersey20', 'Courier New', monospace;
+      font-size: 16px;
+    }
+    .test-button:hover {
+      background: #218838;
+    }
+    .test-result {
+      margin-top: 10px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .pass { color: #28a745; }
+    .fail { color: #dc3545; }
+    h1 { color: #9D4EDD; }
+    h2 { color: rgb(157, 178, 221); }
+    code {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>📞 Story 9.1: Two-Button Phone Overlay Test</h1>
+
+    <div class="test-section">
+      <h2>Test 1: Visual Layout</h2>
+      <p>Click the button below to show the phone overlay and verify:</p>
+      <ul>
+        <li>Two buttons appear side by side (desktop)</li>
+        <li>End button (left): grey background, black text, "+1" label</li>
+        <li>Pick Up button (right): green background, white text, "+N" bonus</li>
+        <li>Both buttons are equal width</li>
+        <li>Buttons have gold glow on Pick Up button</li>
+      </ul>
+      <button class="test-button" id="show-phone-btn">Show Phone Overlay</button>
+      <div class="test-result" id="test1-result">Click button to test</div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 2: Keyboard Shortcuts</h2>
+      <p>Show the phone overlay, then test:</p>
+      <ul>
+        <li>Press <code>Space</code> key → should trigger End button (check console)</li>
+        <li>Show overlay again, press <code>Enter</code> key → should trigger Pick Up button</li>
+      </ul>
+      <button class="test-button" id="show-phone-btn-2">Show Phone Overlay</button>
+      <div class="test-result" id="test2-result">Press Space or Enter when overlay is visible</div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 3: Hover Effects</h2>
+      <p>Show the phone overlay and hover over each button:</p>
+      <ul>
+        <li>End button: darkens and scales to 1.05x</li>
+        <li>Pick Up button: darkens, scales to 1.05x, gold glow intensifies</li>
+      </ul>
+      <button class="test-button" id="show-phone-btn-3">Show Phone Overlay</button>
+      <div class="test-result" id="test3-result">Hover over buttons to test</div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 4: Click Handlers</h2>
+      <p>Show the phone overlay and click each button:</p>
+      <ul>
+        <li>End button → should award +1 point</li>
+        <li>Pick Up button → should trigger Pick Up action (placeholder)</li>
+      </ul>
+      <button class="test-button" id="show-phone-btn-4">Show Phone Overlay</button>
+      <div class="test-result" id="test4-result">Score: <span id="current-score">0</span></div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 5: Mobile Responsive (resize window)</h2>
+      <p>Resize browser window to &lt; 600px width:</p>
+      <ul>
+        <li>Buttons should stack vertically</li>
+        <li>Both buttons maintain min 44px height</li>
+      </ul>
+      <button class="test-button" id="show-phone-btn-5">Show Phone Overlay</button>
+      <div class="test-result" id="test5-result">Resize window to test</div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 6: Dynamic Fibonacci Bonus Display</h2>
+      <p>Test that Pick Up bonus displays correctly:</p>
+      <ul>
+        <li>First call: should show "+2"</li>
+        <li>After 1 pickup: should show "+3"</li>
+        <li>After 2 pickups: should show "+5"</li>
+      </ul>
+      <button class="test-button" id="increment-pickup">Increment Pick Up Count</button>
+      <button class="test-button" id="show-phone-btn-6">Show Phone Overlay</button>
+      <div class="test-result" id="test6-result">Pick Up Count: <span id="pickup-count">0</span></div>
+    </div>
+  </div>
+
+  <!-- Phone Overlay (from index.html) -->
+  <div id="phone-overlay" class="hidden">
+    <div class="phone-screen">
+      <img src="../assets/PhoneIcone01_256px.png" alt="Phone ringing" class="phone-icon">
+      <p class="call-status">Incoming call...</p>
+      <p class="caller-name">Test Caller</p>
+      <p class="call-instructions">(Press Space to End or Enter to Pick Up)</p>
+
+      <div id="phone-buttons">
+        <button id="phone-btn-end" class="phone-btn">
+          <span class="btn-label">End</span>
+          <span class="btn-points">+1</span>
+        </button>
+
+        <button id="phone-btn-pickup" class="phone-btn phone-btn-pickup">
+          <span class="btn-label">Pick Up</span>
+          <span class="btn-bonus">+2</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { showPhoneCall, dismissPhoneCall, handlePhoneDismiss } from '../js/phone.js';
+
+    // Mock game state
+    const gameState = {
+      phase: 'playing',
+      score: 0,
+      phoneCall: {
+        active: false,
+        caller: null,
+        pickUpCount: 0
+      }
+    };
+
+    // Test 1: Show phone overlay
+    document.getElementById('show-phone-btn').addEventListener('click', () => {
+      showPhoneCall('Test Caller', gameState);
+      gameState.phoneCall.active = true;
+      document.getElementById('test1-result').innerHTML = '<span class="pass">✓ Phone overlay shown</span>';
+    });
+
+    // Test 2: Keyboard shortcuts
+    document.getElementById('show-phone-btn-2').addEventListener('click', () => {
+      showPhoneCall('Test Caller', gameState);
+      gameState.phoneCall.active = true;
+      document.getElementById('test2-result').textContent = 'Press Space or Enter...';
+    });
+
+    // Test 3: Hover effects (manual test)
+    document.getElementById('show-phone-btn-3').addEventListener('click', () => {
+      showPhoneCall('Test Caller', gameState);
+      gameState.phoneCall.active = true;
+      document.getElementById('test3-result').innerHTML = '<span class="pass">✓ Hover over buttons to test</span>';
+    });
+
+    // Test 4: Click handlers
+    document.getElementById('show-phone-btn-4').addEventListener('click', () => {
+      showPhoneCall('Test Caller', gameState);
+      gameState.phoneCall.active = true;
+    });
+
+    // Test 5: Mobile responsive (manual test)
+    document.getElementById('show-phone-btn-5').addEventListener('click', () => {
+      showPhoneCall('Test Caller', gameState);
+      gameState.phoneCall.active = true;
+      document.getElementById('test5-result').innerHTML = '<span class="pass">✓ Resize window to test</span>';
+    });
+
+    // Test 6: Fibonacci bonus display
+    let pickUpCount = 0;
+    document.getElementById('increment-pickup').addEventListener('click', () => {
+      pickUpCount++;
+      gameState.phoneCall.pickUpCount = pickUpCount;
+      document.getElementById('pickup-count').textContent = pickUpCount;
+    });
+
+    document.getElementById('show-phone-btn-6').addEventListener('click', () => {
+      showPhoneCall('Test Caller', gameState);
+      gameState.phoneCall.active = true;
+      document.getElementById('test6-result').innerHTML = `<span class="pass">✓ Check Pick Up button bonus display</span><br>Pick Up Count: ${pickUpCount}`;
+    });
+
+    // Set up button click handlers
+    const endButton = document.getElementById('phone-btn-end');
+    const pickupButton = document.getElementById('phone-btn-pickup');
+
+    endButton.addEventListener('click', () => {
+      dismissPhoneCall('end', gameState);
+      document.getElementById('current-score').textContent = gameState.score;
+      console.log('End button clicked - Score:', gameState.score);
+    });
+
+    pickupButton.addEventListener('click', () => {
+      dismissPhoneCall('pickup', gameState);
+      console.log('Pick Up button clicked');
+    });
+
+    // Keyboard event handler
+    document.addEventListener('keydown', (event) => {
+      if (!gameState.phoneCall.active) return;
+
+      if (event.key === ' ' || event.key === 'Spacebar') {
+        event.preventDefault();
+        dismissPhoneCall('end', gameState);
+        document.getElementById('test2-result').innerHTML = '<span class="pass">✓ Space key triggered End button</span>';
+        document.getElementById('current-score').textContent = gameState.score;
+        console.log('Space key pressed - Score:', gameState.score);
+      }
+
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        dismissPhoneCall('pickup', gameState);
+        document.getElementById('test2-result').innerHTML = '<span class="pass">✓ Enter key triggered Pick Up button</span>';
+        console.log('Enter key pressed');
+      }
+    });
+  </script>
+</body>
+</html>

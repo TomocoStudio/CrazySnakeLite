@@ -285,6 +285,12 @@ body {
   image-rendering: crisp-edges;
 }
 
+/* Story 9.4: Stop ringing animation when call is picked up */
+.phone-icon.call-answered {
+  animation: none;
+  transform: rotate(0deg);
+}
+
 @keyframes phone-ring {
   0%, 100% { transform: rotate(0deg); }
   10%, 30% { transform: rotate(-15deg); }
@@ -300,6 +306,21 @@ body {
   text-transform: uppercase;
   letter-spacing: 1px;
   animation: none;
+  min-height: 20px; /* Prevent layout shift when one-liner appears */
+}
+
+/* Story 9.4: One-liner reveal animation (comedy reward for Pick Up) */
+.call-status.one-liner-reveal {
+  animation: fadeInOneLiner 200ms ease-out;
+}
+
+@keyframes fadeInOneLiner {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .caller-name {
@@ -319,31 +340,92 @@ body {
   text-align: center;
 }
 
+/* Two-button layout - Story 9.1 */
+#phone-buttons {
+  display: flex;
+  gap: 15px;
+  width: 100%;
+  margin-top: 20px;
+}
 
-.end-button {
+/* Base button styling */
+.phone-btn {
+  flex: 1; /* Equal width */
+  min-height: 44px; /* Mobile touch target */
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
   font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 18px;
-  font-weight: bold;
-  color: #FFFFFF;  /* White text always */
-  background: #000000;  /* Black background (inactive) */
-  border: 2px solid rgb(157, 178, 221);  /* Match standard button border */
-  border-radius: 8px;  /* Match standard button rounded corners */
-  padding: 12px 40px;
   cursor: pointer;
-  min-width: 44px;  /* Minimum touch target */
-  min-height: 44px;  /* Minimum touch target */
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
 
-.end-button:hover {
-  background: rgb(157, 178, 221);  /* Fill with light purple-blue */
-  border-color: rgb(157, 178, 221);  /* Border stays same */
-  transform: scale(1.05);  /* Scale up effect */
+/* End button (grey, safe) */
+#phone-btn-end {
+  background: #888;
+  color: #000;
 }
 
-.end-button:active {
-  background: rgb(157, 178, 221);  /* Keep filled */
-  transform: scale(0.98);  /* Scale down when clicked */
+#phone-btn-end:hover {
+  background: #666;
+  transform: scale(1.05);
+}
+
+#phone-btn-end:active {
+  transform: scale(0.98);
+}
+
+/* Pick Up button (green, risky, gold glow) */
+#phone-btn-pickup {
+  background: #28a745;
+  color: white;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+#phone-btn-pickup:hover {
+  background: #218838;
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+}
+
+#phone-btn-pickup:active {
+  transform: scale(0.98);
+}
+
+/* Button labels */
+.btn-label {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.btn-points,
+.btn-bonus {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* Countdown bar - Story 9.3: Pick Up timer */
+#phone-countdown-bar {
+  width: 100%;
+  height: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+#countdown-bar-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #28a745, #FFD700); /* Green to gold */
+  border-radius: 10px;
+  transition: width linear; /* Duration set dynamically via JS */
 }
 
 /* Blur effect for game canvas */
@@ -403,10 +485,27 @@ body {
     margin-bottom: 20px;
   }
 
-  .end-button {
-    font-size: 16px;
-    padding: 14px 30px;  /* Larger touch target on mobile */
+  /* Story 9.1: Mobile responsive phone buttons */
+  #phone-buttons {
+    flex-direction: row; /* Keep side-by-side on tablet */
   }
+
+  .phone-btn {
+    font-size: 16px;
+    padding: 14px 20px;  /* Larger touch target on mobile */
+  }
+}
+
+/* Extra small screens - stack buttons vertically */
+@media (max-width: 600px) {
+  #phone-buttons {
+    flex-direction: column; /* Stack vertically on small screens */
+  }
+
+  .phone-btn {
+    width: 100%;
+  }
+}
 
   /* Feedback Modal Mobile Styles */
   .feedback-container {
@@ -825,21 +924,21 @@ body {
 .score-popup-growing {
   font-size: 44px;
   color: #00FF00; /* Match food color */
-  animation: popup-small 500ms ease-out forwards;
+  animation: popup-small 1000ms ease-out forwards;
 }
 
 /* Speed Decrease Food (+2) - Cyan */
 .score-popup-speedDecrease {
   font-size: 44px;
   color: #00CED1; /* Match food color */
-  animation: popup-small 600ms ease-out forwards;
+  animation: popup-small 1000ms ease-out forwards;
 }
 
 /* Wall Phase Food (+1) - Purple */
 .score-popup-wallPhase {
   font-size: 48px;
   color: #800080; /* Match food color */
-  animation: popup-medium 700ms ease-out forwards;
+  animation: popup-medium 1200ms ease-out forwards;
 }
 
 /* Speed Boost Food (+5) - RED to match food color */
@@ -848,7 +947,7 @@ body {
   color: #FF0000; /* RED - matches red food */
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9),
                0 0 8px rgba(255, 0, 0, 0.6); /* Red glow */
-  animation: popup-speedboost 800ms ease-out forwards;
+  animation: popup-speedboost 1400ms ease-out forwards;
 }
 
 @keyframes popup-speedboost {
@@ -867,7 +966,7 @@ body {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 1),
                0 0 12px rgba(255, 215, 0, 0.8), /* Gold inner glow */
                0 0 20px rgba(255, 165, 0, 0.6);  /* Orange outer glow */
-  animation: popup-reversecontrols 1000ms ease-out forwards;
+  animation: popup-reversecontrols 1600ms ease-out forwards;
 }
 
 @keyframes popup-reversecontrols {
@@ -883,14 +982,42 @@ body {
 .score-popup-invincibility {
   font-size: 44px;
   color: #FFFF00; /* Match food color */
-  animation: popup-small 500ms ease-out forwards;
+  animation: popup-small 1000ms ease-out forwards;
 }
 
 /* Fallback for value-based classes (Wall Phase bonus +2) */
 .score-popup-2 {
   font-size: 46px;
   color: #800080; /* Purple for Wall Phase bonus */
-  animation: popup-medium 600ms ease-out forwards;
+  animation: popup-medium 1000ms ease-out forwards;
+}
+
+/* Story 9.6: Phone call bonus popup (gold) */
+.score-popup-phone {
+  font-size: 24px;
+  color: #FFD700; /* Gold */
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9),
+               0 0 10px rgba(255, 215, 0, 0.8); /* Gold glow */
+  animation: popup-phone 1400ms ease-out forwards;
+}
+
+@keyframes popup-phone {
+  0% {
+    transform: translateY(0) scale(0.8);
+    opacity: 0;
+  }
+  30% {
+    transform: translateY(-20px) scale(1.2);
+    opacity: 1;
+  }
+  60% {
+    transform: translateY(-10px) scale(1);
+  }
+  100% {
+    transform: translateY(-30px) scale(1);
+    opacity: 0;
+  }
 }
 
 /* Animation: Small popups (+1, +2, +0) */
@@ -976,11 +1103,12 @@ body {
 .reduced-motion .score-popup-speedBoost,
 .reduced-motion .score-popup-reverseControls,
 .reduced-motion .score-popup-invincibility,
+.reduced-motion .score-popup-phone,
 .reduced-motion .score-popup-1,
 .reduced-motion .score-popup-2,
 .reduced-motion .score-popup-3 {
   /* Override all complex animations with simple fade-up */
-  animation: popup-reduced-motion 500ms ease-out forwards !important;
+  animation: popup-reduced-motion 1000ms ease-out forwards !important;
 }
 
 @keyframes popup-reduced-motion {

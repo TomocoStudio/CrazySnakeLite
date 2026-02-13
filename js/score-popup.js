@@ -39,12 +39,23 @@ export function gridToPixel(gridX, gridY) {
 }
 
 /**
+ * Spawn a phone bonus popup (Story 9.6)
+ * Convenience wrapper for phone call bonuses with gold styling
+ * @param {number} value - Bonus points awarded
+ * @param {number} gridX - Grid X coordinate (not pixels!)
+ * @param {number} gridY - Grid Y coordinate (not pixels!)
+ */
+export function spawnPhoneBonusPopup(value, gridX, gridY) {
+  spawnPopup(value, gridX, gridY, 'CALL BONUS', 'phone');
+}
+
+/**
  * Spawn a score popup with queue management (Story 7.5)
  * @param {number} value - Point value (1, 2, 3, 5, 8, etc.)
  * @param {number} gridX - Grid X coordinate (not pixels!)
  * @param {number} gridY - Grid Y coordinate (not pixels!)
  * @param {string} label - Optional label (e.g., "COMBO", "CALL BONUS")
- * @param {string} foodType - Optional food type for color matching (e.g., "growing", "speedBoost")
+ * @param {string} foodType - Optional food type for color matching (e.g., "growing", "speedBoost", "phone")
  */
 export function spawnPopup(value, gridX, gridY, label = '', foodType = null) {
   const now = Date.now();

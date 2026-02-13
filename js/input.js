@@ -76,14 +76,28 @@ export function initInput(gameState, onPlayAgain, onPause, onResume, menuActions
 /**
  * Handle keyboard input
  * Story 4.4: Added Esc for pause, Enter for menu, Arrow keys for navigation
+ * Story 9.1: Updated Space for End, Enter for Pick Up when phone active
  */
 function handleKeyboardInput(event, gameState) {
-  // Space bar to dismiss phone call (Story 3.3)
-  // HIGHEST PRIORITY - check this first
-  if (event.key === ' ' || event.key === 'Spacebar') {
-    if (isPhoneCallActive()) {
+  // Phone call keyboard shortcuts - HIGHEST PRIORITY
+  if (isPhoneCallActive()) {
+    // Story 9.3 fix: Block all phone shortcuts during Pick Up countdown (irreversible decision)
+    if (gameState.phoneCall.pickedUp) {
+      event.preventDefault();
+      return;  // Cannot End or Pick Up again during countdown
+    }
+
+    // Space bar = End button (Story 9.1)
+    if (event.key === ' ' || event.key === 'Spacebar') {
       event.preventDefault();  // Prevent page scroll
-      handlePhoneDismiss(gameState, performance.now());
+      handlePhoneDismiss('end', gameState, performance.now());
+      return;  // Stop processing other inputs
+    }
+
+    // Enter key = Pick Up button (Story 9.1)
+    if (event.key === 'Enter') {
+      event.preventDefault();  // Prevent default behavior
+      handlePhoneDismiss('pickup', gameState, performance.now());
       return;  // Stop processing other inputs
     }
   }

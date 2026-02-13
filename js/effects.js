@@ -15,6 +15,7 @@ export const EFFECT_TYPES = {
  * Apply effect to game state
  * Clears previous effect first, then applies new effect
  * UPDATED in Story 2.4: Add speed multiplier for speed effects
+ * UPDATED in Story 7.1: Reset wallPhaseUsed flag when Wall Phase activates
  */
 export function applyEffect(gameState, effectType) {
   // Validate effect type
@@ -46,6 +47,8 @@ export function applyEffect(gameState, effectType) {
     speedMultiplier: speedMultiplier  // NEW in Story 2.4
   };
 
+  // Note: wallPhaseUsed reset is now handled in game.js after scoring (Story 7.1)
+
   // Update snake color based on effect
   updateSnakeColor(gameState);
 }
@@ -53,9 +56,13 @@ export function applyEffect(gameState, effectType) {
 /**
  * Clear active effect
  * Sets activeEffect to null and resets snake color to default
+ * UPDATED in Story 7.1: Do NOT reset wallPhaseUsed here - it's reset in game.js after scoring
  */
 export function clearEffect(gameState) {
   gameState.activeEffect = null;
+
+  // Note: wallPhaseUsed is NOT reset here - it must persist until next food is eaten
+  // and bonus is awarded in game.js (Story 7.1)
 
   // Reset snake color to default
   gameState.snake.color = CONFIG.COLORS.snakeDefault;

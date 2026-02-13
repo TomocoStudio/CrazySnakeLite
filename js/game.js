@@ -5,10 +5,11 @@ import { moveSnake, growSnake } from './snake.js';
 import { checkFoodCollision, checkWallCollision, checkSelfCollision } from './collision.js';
 import { spawnFood } from './food.js';
 import { applyEffect, clearEffect } from './effects.js';
-import { checkPhoneCallTiming, dismissPhoneCall } from './phone.js';
+import { checkPhoneCallTiming, dismissPhoneCall, scheduleNextCall, hidePhoneOverlay } from './phone.js';
+import { trackPhoneCall } from './analytics.js';
 import { playMoveSound, playDeathSound } from './audio.js';
 import { getFoodScore } from './scoring.js';
-import { spawnPopup, spawnParticles, triggerScreenShake, gridToPixel } from './score-popup.js';
+import { spawnPopup, spawnPhoneBonusPopup, spawnParticles, triggerScreenShake, gridToPixel } from './score-popup.js';
 
 const TICK_RATE = CONFIG.TICK_RATE;
 
@@ -30,7 +31,10 @@ export function gameLoop(currentTime, ctx, gameState) {
   accumulator += deltaTime;
 
   // Check for phone call timing (Story 3.2)
-  checkPhoneCallTiming(gameState, currentTime);
+  checkPhoneCallTiming(gameState);
+
+  // Check if Pick Up timer expired (Story 9.3)
+  checkPickUpTimerExpiration(gameState, currentTime);
 
   // Calculate current tick rate based on active effect
   const currentTickRate = getCurrentTickRate(gameState);
@@ -72,22 +76,37 @@ function update(gameState) {
 
   // Check food collision
   if (checkFoodCollision(gameState)) {
-    const foodType = gameState.food.type;
-    const foodPosition = { x: gameState.food.position.x, y: gameState.food.position.y };
+    const food = gameState.food;
+    const foodPosition = { x: food.position.x, y: food.position.y };
+
+    // Story 8.1: Use hiddenType for blinking food, otherwise use type
+    const effectType = food.isBlinking ? food.hiddenType : food.type;
 
     // Always grow snake
     growSnake(gameState);
 
     // Story 7.1: Update score using Fibonacci scoring system
     // Award base food score immediately
-    const scoreIncrease = getFoodScore(foodType);
+    const scoreIncrease = getFoodScore(effectType);
     gameState.score += scoreIncrease;
 
+    // Story 9.5: Check if grace period should end
+    if (gameState.phoneCall.graceActive && gameState.score >= CONFIG.PHONE_GRACE_SCORE) {
+      gameState.phoneCall.graceActive = false;
+      console.log('[Game] Grace period ended at score', gameState.score, '- phone calls now active');
+      scheduleNextCall(gameState);
+    }
+
+    // Story 8.6: Track mystery food consumption (engagement metric)
+    if (food.isBlinking) {
+      gameState.cognitiveStats.mysteryFoodsEaten += 1;
+    }
+
     // Story 7.2: Spawn score popup at food position (temporal contiguity <200ms)
-    spawnPopup(scoreIncrease, foodPosition.x, foodPosition.y, '', foodType);
+    spawnPopup(scoreIncrease, foodPosition.x, foodPosition.y, '', effectType);
 
     // Story 7.3: Special effects for +8 (Reverse Controls)
-    if (foodType === 'reverseControls') {
+    if (effectType === 'reverseControls') {
       const { x: pixelX, y: pixelY } = gridToPixel(foodPosition.x, foodPosition.y);
       spawnParticles(6, pixelX, pixelY);  // 6 particles
       triggerScreenShake();
@@ -95,14 +114,14 @@ function update(gameState) {
 
     // Note: Wall Phase bonus (+2) is awarded immediately in snake.js when wall is crossed
 
-    // Handle effects based on food type
-    if (foodType === 'growing') {
+    // Handle effects based on effect type
+    if (effectType === 'growing') {
       // Growing food clears effect and sets snake to green
       clearEffect(gameState);
       gameState.snake.color = CONFIG.COLORS.snakeGrowing;
     } else {
       // Special food applies its effect (clears previous first)
-      applyEffect(gameState, foodType);
+      applyEffect(gameState, effectType);
     }
 
     // Spawn new food
@@ -111,10 +130,39 @@ function update(gameState) {
 
   // Check death conditions
   if (checkWallCollision(gameState) || checkSelfCollision(gameState)) {
+    // Award consolation bonus if Pick Up timer is active (Story 9.3, Story 9.7)
+    if (gameState.phoneCall.pickedUp) {
+      // Story 9.7: Compute reaction time and track event (survived = false)
+      const reactionTime = Date.now() - gameState.analyticsState.phoneCallShowTime;
+
+      trackPhoneCall({
+        action: 'pickup',
+        reactionTime,
+        survived: false, // Died during countdown
+        bonus: gameState.phoneCall.pickUpBonus,
+        timestamp: Date.now()
+      });
+
+      const consolationBonus = gameState.phoneCall.pickUpBonus;
+      gameState.score += consolationBonus;
+
+      // Increment Pick Up count (consolation counts too)
+      gameState.phoneCall.pickUpCount += 1;
+
+      // Story 9.6: Spawn consolation bonus popup at snake head (suppress 0-value popups)
+      if (consolationBonus > 0) {
+        const head = gameState.snake.segments[0];
+        spawnPhoneBonusPopup(consolationBonus, head.x, head.y);
+      }
+
+      console.log('[Game] Death during Pick Up - consolation bonus awarded:', consolationBonus);
+    }
+
     // Auto-dismiss phone if active (Story 3.3)
     if (gameState.phoneCall.active) {
       dismissPhoneCall(gameState);
     }
+
     // Play death sound (Bug fix)
     playDeathSound();
     gameState.phase = 'gameover';
@@ -150,6 +198,51 @@ function getCurrentTickRate(gameState) {
   }
 
   return baseTickRate;
+}
+
+/**
+ * Check if Pick Up timer expired and award bonus
+ * Story 9.3: Award bonus when countdown completes
+ * Story 9.7: Track Pick Up event with survived = true
+ * @param {Object} gameState - Game state
+ * @param {number} currentTime - Current timestamp
+ */
+function checkPickUpTimerExpiration(gameState, currentTime) {
+  if (!gameState.phoneCall.pickedUp) return;
+  if (currentTime < gameState.phoneCall.pickUpEndTime) return;
+
+  // Story 9.7: Compute reaction time (from show to timer expiry)
+  const reactionTime = Date.now() - gameState.analyticsState.phoneCallShowTime;
+
+  // Story 9.7: Track event (survived = true, countdown completed without death)
+  trackPhoneCall({
+    action: 'pickup',
+    reactionTime,
+    survived: true,
+    bonus: gameState.phoneCall.pickUpBonus,
+    timestamp: Date.now()
+  });
+
+  // Timer expired - award bonus
+  const bonus = gameState.phoneCall.pickUpBonus;
+  gameState.score += bonus;
+
+  // Increment Pick Up count (for stats/analytics, not used in effect-based bonuses)
+  gameState.phoneCall.pickUpCount += 1;
+
+  // Story 9.6: Spawn phone bonus popup at snake head (suppress 0-value popups)
+  if (bonus > 0) {
+    const head = gameState.snake.segments[0];
+    spawnPhoneBonusPopup(bonus, head.x, head.y);
+  }
+
+  // Review fix: Use hidePhoneOverlay instead of duplicated inline logic
+  hidePhoneOverlay(gameState);
+
+  // Story 9.5: Schedule next call after Pick Up timer expires
+  scheduleNextCall(gameState);
+
+  console.log('[Game] Pick Up timer expired, awarded bonus:', bonus);
 }
 
 /**

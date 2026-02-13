@@ -1,6 +1,8 @@
 // CrazySnakeLite - Snake Movement Logic
 import { CONFIG } from './config.js';
 import { isEffectActive, clearEffect } from './effects.js';
+import { getWallPhaseBonus } from './scoring.js';
+import { spawnPopup } from './score-popup.js';
 
 /**
  * Move snake one step in current direction
@@ -22,6 +24,13 @@ export function moveSnake(gameState) {
   if (isEffectActive(gameState, 'wallPhase')) {
     const wrapped = wrapPosition(newHead);
     if (wrapped) {
+      // Award Wall Phase bonus immediately when wall is crossed (Story 7.1)
+      const bonus = getWallPhaseBonus();
+      gameState.score += bonus;
+
+      // Story 7.2: Spawn popup for Wall Phase bonus (+2)
+      spawnPopup(bonus, newHead.x, newHead.y);
+
       // Wall-phase was consumed (single-use)
       clearEffect(gameState);
     }

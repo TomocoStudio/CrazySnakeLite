@@ -23,7 +23,7 @@
 - 28px orange text
 - Pronounced bounce animation
 - Subtle orange glow (text-shadow)
-- 800ms duration
+- 1400ms duration
 
 **Given** I eat a Reverse Controls food (+8)
 **When** the food is consumed
@@ -31,7 +31,7 @@
 - 40px red-orange text
 - Dramatic bounce with rotation wiggle (-5° to +5°)
 - Dual glow (gold inner, red outer)
-- 1000ms duration
+- 1600ms duration
 **And** 5-7 star particles explode from the collision point
 **And** the canvas container shakes horizontally (3px, 200ms)
 
@@ -53,8 +53,8 @@
   - [x] Verify spawnPopup() handles value 5 and 8
   - [x] CSS classes will handle visual differences
 - [x] Add CSS classes .score-popup-5 and .score-popup-8
-  - [x] +5: 28px orange, pronounced bounce, subtle glow, 800ms
-  - [x] +8: 40px red-orange, dramatic bounce + rotation, dual glow, 1000ms
+  - [x] +5: 28px orange, pronounced bounce, subtle glow, 1400ms
+  - [x] +8: 40px red-orange, dramatic bounce + rotation, dual glow, 1600ms
   - [x] Define @keyframes popup-5 and popup-8
 - [x] Implement particle system
   - [x] Add spawnParticles(count, x, y) to score-popup.js

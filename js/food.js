@@ -1,5 +1,6 @@
 // CrazySnakeLite - Food Spawning Module
 import { CONFIG } from './config.js';
+import { getBlinkingProbability } from './progression.js';
 
 /**
  * Spawn food at random empty position
@@ -24,8 +25,21 @@ export function spawnFood(gameState) {
     position = findFirstEmptyPosition(gameState);
   }
 
+  const foodType = selectFoodType();  // Story 2.6: Use probability-based selection
+
+  // Story 8.2: Calculate blinking probability based on current score
+  const blinkingProbability = getBlinkingProbability(gameState.score);
+  const shouldBlink = Math.random() < blinkingProbability;
+
   gameState.food.position = position;
-  gameState.food.type = selectFoodType();  // NEW in Story 2.6
+  gameState.food.type = foodType;  // Always set type (used by render.js for non-blinking)
+  gameState.food.isBlinking = shouldBlink;
+  gameState.food.hiddenType = shouldBlink ? foodType : null;  // Lock effect type if blinking
+
+  // Story 8.6: Track blinking food spawn in analytics (opportunity metric)
+  if (shouldBlink) {
+    gameState.analyticsState.totalBlinkingFoodsSpawned += 1;
+  }
 }
 
 /**

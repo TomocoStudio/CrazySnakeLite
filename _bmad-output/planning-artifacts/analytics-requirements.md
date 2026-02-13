@@ -38,23 +38,23 @@ Simple client-side event tracking focused on validation, not vanity metrics. All
 
 ### Tier 1: Client-Side Event Tracking (Beta Phase)
 
-**Recommended Tool:** Google Analytics 4 (GA4) or Plausible (privacy-friendly)
+**Selected Tool:** Plausible (privacy-first, cookie-free, GDPR-compliant by default)
 
 **Why:**
-- Free, fast setup (~15 minutes)
-- Custom event tracking out of the box
+- Privacy-first: no cookies, no personal data, GDPR-compliant out of the box
+- Custom event tracking via `window.plausible()` API
 - Real-time dashboard during beta testing
+- Lightweight script (~1KB), non-blocking, no performance impact
 - No backend/database needed
 
 **Integration:**
 ```html
 <!-- Add to index.html <head> -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-5lDK3arREKbPzQ_2_Jhfm.js"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXXXXX');
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
 </script>
 ```
 
@@ -303,7 +303,7 @@ Enhance existing `storage.js` with session-level aggregation:
 
 ### Pre-Beta (Tonight)
 
-- [ ] Sign up for Google Analytics 4 or Plausible
+- [ ] Sign up for Plausible and configure site domain
 - [ ] Add tracking script to `index.html`
 - [ ] Create `js/analytics.js` with event helper functions
 - [ ] Wire up 5 core events:
@@ -312,7 +312,7 @@ Enhance existing `storage.js` with session-level aggregation:
   - [ ] `food_eaten` in `game.js → food collision handler`
   - [ ] `phone_call_dismissed` in `phone.js → dismissPhoneCall()`
   - [ ] `session_end` in `main.js → beforeunload`
-- [ ] Test locally - verify events appear in GA4 real-time view
+- [ ] Test locally - verify events appear in Plausible real-time dashboard
 - [ ] Enhance `game_over` event with:
   - [ ] `last_food_eaten`
   - [ ] `active_effect_on_death`
@@ -320,7 +320,7 @@ Enhance existing `storage.js` with session-level aggregation:
 
 ### During Beta
 
-- [ ] Monitor GA4 real-time dashboard as coworkers play
+- [ ] Monitor Plausible real-time dashboard as coworkers play
 - [ ] Take qualitative notes (laughter, frustration, confusion)
 - [ ] Check completion rates hourly
 
@@ -347,7 +347,18 @@ Enhance existing `storage.js` with session-level aggregation:
 
 ```javascript
 // js/analytics.js
-// Google Analytics 4 event tracking helpers
+// Plausible custom event tracking helpers
+// API: window.plausible(eventName, { props: { key: value } })
+// Note: Plausible props must be string or number values (no nested objects).
+
+/**
+ * Helper: fire Plausible custom event
+ * window.plausible is always defined by the inline queue snippet in <head>.
+ * Calls before script load are buffered in plausible.q and sent when ready.
+ */
+function track(eventName, props) {
+  window.plausible(eventName, { props });
+}
 
 /**
  * Generate unique session ID (persists in sessionStorage)
@@ -365,11 +376,8 @@ export function getSessionId() {
  * Track game start
  */
 export function trackGameStart(isFirstGame, previousScore = null) {
-  if (typeof gtag === 'undefined') return;
-
-  gtag('event', 'game_start', {
+  track('game_start', {
     session_id: getSessionId(),
-    timestamp: Date.now(),
     is_first_game: isFirstGame,
     previous_score: previousScore
   });
@@ -389,11 +397,8 @@ export function trackGameOver({
   activeEffectOnDeath,
   snakeColorOnDeath
 }) {
-  if (typeof gtag === 'undefined') return;
-
-  gtag('event', 'game_over', {
+  track('game_over', {
     session_id: getSessionId(),
-    timestamp: Date.now(),
     score,
     duration_seconds: durationSeconds,
     death_cause: deathCause,
@@ -410,11 +415,8 @@ export function trackGameOver({
  * Track food eaten
  */
 export function trackFoodEaten(foodType, snakeLength, timeSinceGameStart) {
-  if (typeof gtag === 'undefined') return;
-
-  gtag('event', 'food_eaten', {
+  track('food_eaten', {
     session_id: getSessionId(),
-    timestamp: Date.now(),
     food_type: foodType,
     snake_length: snakeLength,
     time_since_game_start: timeSinceGameStart
@@ -430,11 +432,8 @@ export function trackPhoneCallDismissed({
   snakeLengthWhenCalled,
   survived
 }) {
-  if (typeof gtag === 'undefined') return;
-
-  gtag('event', 'phone_call_dismissed', {
+  track('phone_call_dismissed', {
     session_id: getSessionId(),
-    timestamp: Date.now(),
     dismissal_speed_ms: dismissalSpeedMs,
     caller_name: callerName,
     snake_length_when_called: snakeLengthWhenCalled,
@@ -444,6 +443,8 @@ export function trackPhoneCallDismissed({
 
 /**
  * Track session end
+ * Note: Plausible doesn't support nested objects — food_breakdown
+ * is flattened to individual props (food_growing, food_invincibility, etc.)
  */
 export function trackSessionEnd({
   totalGamesPlayed,
@@ -454,16 +455,18 @@ export function trackSessionEnd({
   totalPhoneCalls,
   avgDismissalSpeedMs
 }) {
-  if (typeof gtag === 'undefined') return;
-
-  gtag('event', 'session_end', {
+  track('session_end', {
     session_id: getSessionId(),
-    timestamp: Date.now(),
     total_games_played: totalGamesPlayed,
     total_time_seconds: totalTimeSeconds,
     highest_score: highestScore,
     total_foods_eaten: totalFoodsEaten,
-    food_breakdown: foodBreakdown,
+    food_growing: foodBreakdown.growing,
+    food_invincibility: foodBreakdown.invincibility,
+    food_speed_boost: foodBreakdown.speedBoost,
+    food_speed_decrease: foodBreakdown.speedDecrease,
+    food_reverse_controls: foodBreakdown.reverseControls,
+    food_wall_phase: foodBreakdown.wallPhase,
     total_phone_calls: totalPhoneCalls,
     avg_dismissal_speed_ms: avgDismissalSpeedMs
   });
@@ -483,7 +486,7 @@ function generateUUID() {
 
 ---
 
-## Analysis Dashboard Queries (GA4)
+## Analysis Dashboard Queries (Plausible)
 
 ### Completion Rate
 ```
@@ -543,7 +546,7 @@ Red Flag: speedDecrease or reverseControls > 40% of deaths = too punishing
 **Data Collected:** Anonymous gameplay events only
 **No PII:** No names, emails, IP addresses stored explicitly
 **Session ID:** Randomly generated UUID, not tied to user identity
-**Compliance:** GDPR-friendly if using privacy-focused tool like Plausible
+**Compliance:** GDPR-compliant by default — Plausible is cookie-free and collects no personal data
 **User Control:** Consider adding "analytics opt-out" toggle in settings (post-beta)
 
 ---
@@ -567,5 +570,5 @@ Red Flag: speedDecrease or reverseControls > 40% of deaths = too punishing
 ---
 
 **Document Status:** Ready for implementation
-**Last Updated:** 2026-02-01
+**Last Updated:** 2026-02-08
 **Owner:** John (PM)

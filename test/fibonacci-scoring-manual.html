@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fibonacci Scoring Manual Test</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      padding: 20px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #4ec9b0;
+      border-bottom: 2px solid #4ec9b0;
+      padding-bottom: 10px;
+    }
+    .test-section {
+      background: #2d2d2d;
+      padding: 15px;
+      margin: 20px 0;
+      border-left: 4px solid #569cd6;
+    }
+    .pass {
+      color: #4ec9b0;
+    }
+    .fail {
+      color: #f48771;
+    }
+    .instruction {
+      color: #ce9178;
+      font-style: italic;
+    }
+    button {
+      background: #0e639c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+    }
+    button:hover {
+      background: #1177bb;
+    }
+    #results {
+      margin-top: 20px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧪 Fibonacci Scoring Manual Test - Story 7.1</h1>
+
+  <div class="test-section">
+    <h2>Instructions</h2>
+    <p class="instruction">This test verifies that all 6 food types award the correct Fibonacci scores.</p>
+    <p class="instruction">Test each food type and verify the score increases match expectations.</p>
+  </div>
+
+  <div class="test-section">
+    <h2>Expected Fibonacci Values</h2>
+    <ul>
+      <li>🟢 Growing (green): <strong>+1</strong></li>
+      <li>🔵 Speed Decrease (cyan): <strong>+2</strong></li>
+      <li>🟣 Wall Phase (purple): <strong>+1 default</strong> or <strong>+3 with wall crossing</strong></li>
+      <li>🔴 Speed Boost (red): <strong>+5</strong></li>
+      <li>🟠 Reverse Controls (orange): <strong>+8</strong></li>
+      <li>🟡 Invincibility (yellow): <strong>0</strong> (safety tax)</li>
+    </ul>
+  </div>
+
+  <div class="test-section">
+    <h2>Automated Tests</h2>
+    <button onclick="runTests()">Run All Tests</button>
+    <button onclick="location.reload()">Reload Page</button>
+    <div id="results"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>Play Game</h2>
+    <p class="instruction">Click below to play the game and manually verify scoring:</p>
+    <button onclick="window.open('../index.html', '_blank')">Open Game</button>
+  </div>
+
+  <script type="module">
+    import { CONFIG } from '../js/config.js';
+    import { getFoodScore, getWallPhaseBonus } from '../js/scoring.js';
+
+    window.runTests = function() {
+      const resultsDiv = document.getElementById('results');
+      let output = '\n=== FIBONACCI SCORING TESTS (Story 7.1 - Instant Wall Phase Bonus) ===\n\n';
+      let passed = 0;
+      let failed = 0;
+
+      function test(actual, expected, description) {
+        if (actual === expected) {
+          output += `✅ PASS: ${description}\n`;
+          output += `   Expected: ${expected}, Got: ${actual}\n`;
+          passed++;
+        } else {
+          output += `❌ FAIL: ${description}\n`;
+          output += `   Expected: ${expected}, Got: ${actual}\n`;
+          failed++;
+        }
+      }
+
+      // Test CONFIG values
+      output += '--- Testing CONFIG.SCORING values ---\n';
+      test(CONFIG.SCORING.FOOD.growing, 1, 'Growing = +1');
+      test(CONFIG.SCORING.FOOD.speedDecrease, 2, 'Speed Decrease = +2');
+      test(CONFIG.SCORING.FOOD.wallPhase, 1, 'Wall Phase base = +1 (on consumption)');
+      test(CONFIG.SCORING.FOOD.speedBoost, 5, 'Speed Boost = +5');
+      test(CONFIG.SCORING.FOOD.reverseControls, 8, 'Reverse Controls = +8');
+      test(CONFIG.SCORING.FOOD.invincibility, 0, 'Invincibility = 0');
+      test(CONFIG.SCORING.WALL_PHASE_BONUS, 2, 'Wall Phase bonus = +2 (instant on wall cross)');
+
+      // Test getFoodScore()
+      output += '\n--- Testing getFoodScore() ---\n';
+      test(getFoodScore('growing'), 1, 'getFoodScore(growing)');
+      test(getFoodScore('speedDecrease'), 2, 'getFoodScore(speedDecrease)');
+      test(getFoodScore('wallPhase'), 1, 'getFoodScore(wallPhase)');
+      test(getFoodScore('speedBoost'), 5, 'getFoodScore(speedBoost)');
+      test(getFoodScore('reverseControls'), 8, 'getFoodScore(reverseControls)');
+      test(getFoodScore('invincibility'), 0, 'getFoodScore(invincibility)');
+
+      // Test getWallPhaseBonus()
+      output += '\n--- Testing Wall Phase Instant Bonus ---\n';
+      test(getWallPhaseBonus(), 2, 'getWallPhaseBonus() = +2 (awarded when wall crossed)');
+
+      output += '\n--- Wall Phase Behavior (NEW: Instant Reward) ---\n';
+      output += 'ℹ️  Wall Phase now awards bonus INSTANTLY when wall is crossed:\n';
+      output += '   1. Eat purple food → +1 (immediate)\n';
+      output += '   2. Cross wall → +2 (immediate bonus)\n';
+      output += '   Total from Wall Phase = +3\n';
+
+      // Summary
+      output += '\n=== TEST SUMMARY ===\n';
+      output += `Total: ${passed + failed}\n`;
+      output += `✅ Passed: ${passed}\n`;
+      output += `❌ Failed: ${failed}\n`;
+
+      if (failed === 0) {
+        output += '\n🎉 ALL TESTS PASSED!\n';
+        resultsDiv.className = 'pass';
+      } else {
+        output += '\n❌ SOME TESTS FAILED\n';
+        resultsDiv.className = 'fail';
+      }
+
+      resultsDiv.textContent = output;
+    };
+
+    // Auto-run tests on page load
+    window.addEventListener('load', () => {
+      setTimeout(() => window.runTests(), 100);
+    });
+  </script>
+</body>
+</html>

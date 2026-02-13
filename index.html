@@ -41,14 +41,31 @@
       <button id="menu-btn">Menu</button>
     </div>
 
-    <!-- Phone Call Overlay - Story 3.1 -->
+    <!-- Phone Call Overlay - Story 3.1, Story 9.1: Two-button layout, Story 9.3: Countdown bar -->
     <div id="phone-overlay" class="hidden">
       <div class="phone-screen">
         <img src="assets/PhoneIcone01_256px.png" alt="Phone ringing" class="phone-icon">
         <p class="call-status">Incoming call...</p>
         <p class="caller-name">Mom</p>
-        <p class="call-instructions">(Press space bar or click on End)</p>
-        <button class="end-button">End</button>
+        <p class="call-instructions">(Press Space to End or Enter to Pick Up)</p>
+
+        <!-- Two-button layout - Story 9.1 -->
+        <div id="phone-buttons">
+          <button id="phone-btn-end" class="phone-btn">
+            <span class="btn-label">End</span>
+            <span class="btn-points">+1</span>
+          </button>
+
+          <button id="phone-btn-pickup" class="phone-btn phone-btn-pickup">
+            <span class="btn-label">Pick Up</span>
+            <span class="btn-bonus">+2</span>
+          </button>
+        </div>
+
+        <!-- Countdown bar - Story 9.3: Pick Up timer -->
+        <div id="phone-countdown-bar" class="hidden">
+          <div id="countdown-bar-fill"></div>
+        </div>
       </div>
     </div>
 

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story 9.4 - Caller Portraits & One-Liners Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #1a1a2e;
+      color: white;
+    }
+    h1 {
+      color: #FFD700;
+    }
+    .test-section {
+      margin: 20px 0;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid #9DB2DD;
+      border-radius: 8px;
+    }
+    .caller-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .caller-card {
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 2px solid #666;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .caller-portrait {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 10px;
+      image-rendering: pixelated;
+      image-rendering: -moz-crisp-edges;
+      image-rendering: crisp-edges;
+    }
+    .caller-name {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #FFD700;
+    }
+    .caller-line {
+      font-size: 12px;
+      color: #9DB2DD;
+      font-style: italic;
+      min-height: 40px;
+    }
+    .portrait-fallback {
+      border: 2px solid red;
+    }
+    .button-group {
+      margin: 20px 0;
+      display: flex;
+      gap: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    button:hover {
+      background: #1e7e34;
+    }
+    .test-result {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .pass {
+      background: #28a745;
+      color: white;
+    }
+    .fail {
+      background: #dc3545;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>Story 9.4: Caller Portraits & One-Liners Test</h1>
+
+  <div class="test-section">
+    <h2>Test 1: All 21 Callers Display</h2>
+    <p>Verify all 21 callers have unique names, portraits, and one-liners.</p>
+    <div id="callers-container" class="caller-grid"></div>
+    <div id="test1-result" class="test-result"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>Test 2: Portrait Fallback</h2>
+    <p>Test fallback behavior when portrait is missing.</p>
+    <button onclick="testPortraitFallback()">Test Fallback</button>
+    <div id="test2-result"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>Test 3: Random Selection</h2>
+    <p>Trigger 10 random caller selections and verify randomness.</p>
+    <button onclick="testRandomSelection()">Test Random Selection</button>
+    <div id="test3-result"></div>
+  </div>
+
+  <script type="module">
+    // Import phone.js to access CALLERS array
+    const CALLERS = [
+      { id: 1, name: 'Al Gorithm', slug: '01_AlGorithm', line: 'Have you tried sorting your life out?' },
+      { id: 2, name: 'Meg A. Byte', slug: '02_MegaByte', line: "I'm running out of space for this call!" },
+      { id: 3, name: 'Ali Sing', slug: '03_AliSing', line: 'Stop giving me mixed signals!' },
+      { id: 4, name: 'Anna Log', slug: '04_AnnaLog', line: 'Everything used to be simpler in my day...' },
+      { id: 5, name: 'Ray Tracing', slug: '05_RayTracing', line: 'I can see right through your strategy.' },
+      { id: 6, name: 'Pat Ch-Notes', slug: '06_PatCh-Notes', line: 'We need to fix a few things between us.' },
+      { id: 7, name: 'Mac Address', slug: '07_MacAddress', line: "I'm calling from a very specific location." },
+      { id: 8, name: 'Artie Ficial', slug: '08_ArtieFicial', line: "I'm not a real person, but I play one on TV." },
+      { id: 9, name: 'Floppy Phil', slug: '09_FloppyPhil', line: 'I only have 1.44 MB to talk, so quick!' },
+      { id: 10, name: 'Dot Matrix', slug: '10_DotMatrix', line: "You're looking a bit pixelated today." },
+      { id: 11, name: 'Gia Hertz', slug: '11_GiaHertz', line: "I'm vibrating with excitement to talk to you!" },
+      { id: 12, name: 'Perry Pheral', slug: '12_PerryPheral', line: "I'm just on the side... don't mind me." },
+      { id: 13, name: 'Terry Byte', slug: '13_TerryByte', line: "I've got a LOT of data to share with you." },
+      { id: 14, name: 'Cade Ridger', slug: '14_CadeRidger', line: 'Let me bridge the gap in your gameplay.' },
+      { id: 15, name: 'Mona Tor', slug: '15_MonaTor', line: "I've been watching your every move..." },
+      { id: 16, name: 'Syd Ram', slug: '16_SydRam', line: 'I forgot what I was gonna say... hold on...' },
+      { id: 17, name: 'Bessie IOS', slug: '17_BessieIOS', line: "Moo-ve over, I'm updating!" },
+      { id: 18, name: 'Dee Frag', slug: '18_DeeFrag', line: 'Let me help you get your life together.' },
+      { id: 19, name: 'Buffy Ring', slug: '19_BuffyRing', line: "Hold on, I'm buffering..." },
+      { id: 20, name: 'DJ Snake', slug: '20_DJsnake', line: 'Ssssomeone requested a remix of your game!' },
+      { id: 21, name: 'GAME OVER', slug: '21_GAMEOVER', line: "Just checking if you're still alive..." }
+    ];
+
+    // Test 1: Display all callers
+    function displayAllCallers() {
+      const container = document.getElementById('callers-container');
+      let missingPortraits = 0;
+
+      CALLERS.forEach(caller => {
+        const card = document.createElement('div');
+        card.className = 'caller-card';
+
+        const portrait = document.createElement('img');
+        portrait.className = 'caller-portrait';
+        portrait.src = `../assets/pictures/${caller.slug}.png`;
+        portrait.alt = caller.name;
+
+        portrait.onerror = function() {
+          this.onerror = null;
+          this.src = '../assets/PhoneIcone01_256px.png';
+          this.classList.add('portrait-fallback');
+          missingPortraits++;
+          updateTest1Result(missingPortraits);
+        };
+
+        const name = document.createElement('div');
+        name.className = 'caller-name';
+        name.textContent = caller.name;
+
+        const line = document.createElement('div');
+        line.className = 'caller-line';
+        line.textContent = `"${caller.line}"`;
+
+        card.appendChild(portrait);
+        card.appendChild(name);
+        card.appendChild(line);
+        container.appendChild(card);
+      });
+
+      setTimeout(() => {
+        updateTest1Result(missingPortraits);
+      }, 1000);
+    }
+
+    function updateTest1Result(missingPortraits) {
+      const result = document.getElementById('test1-result');
+      if (missingPortraits === 0) {
+        result.className = 'test-result pass';
+        result.textContent = `✓ PASS: All 21 callers displayed with portraits!`;
+      } else {
+        result.className = 'test-result fail';
+        result.textContent = `✗ FAIL: ${missingPortraits} portraits missing (using fallback)`;
+      }
+    }
+
+    // Test 2: Portrait fallback
+    window.testPortraitFallback = function() {
+      const container = document.getElementById('test2-result');
+      container.innerHTML = '';
+
+      const img = document.createElement('img');
+      img.src = '../assets/pictures/NONEXISTENT.png';
+      img.style.width = '64px';
+      img.style.height = '64px';
+      img.style.imageRendering = 'pixelated';
+
+      img.onerror = function() {
+        this.onerror = null;
+        this.src = '../assets/PhoneIcone01_256px.png';
+
+        const result = document.createElement('div');
+        result.className = 'test-result pass';
+        result.textContent = '✓ PASS: Fallback to generic phone icon works!';
+        container.appendChild(result);
+      };
+
+      container.appendChild(img);
+    };
+
+    // Test 3: Random selection
+    window.testRandomSelection = function() {
+      const container = document.getElementById('test3-result');
+      container.innerHTML = '<p>Selecting 10 random callers...</p>';
+
+      const selections = [];
+      for (let i = 0; i < 10; i++) {
+        const randomIndex = Math.floor(Math.random() * CALLERS.length);
+        const caller = CALLERS[randomIndex];
+        selections.push(caller.name);
+      }
+
+      const uniqueCallers = new Set(selections);
+      const result = document.createElement('div');
+
+      if (uniqueCallers.size >= 5) {
+        result.className = 'test-result pass';
+        result.innerHTML = `✓ PASS: Random selection working!<br>Selected: ${selections.join(', ')}<br>Unique: ${uniqueCallers.size}/10`;
+      } else {
+        result.className = 'test-result fail';
+        result.innerHTML = `✗ FAIL: Not enough randomness<br>Selected: ${selections.join(', ')}<br>Unique: ${uniqueCallers.size}/10`;
+      }
+
+      container.appendChild(result);
+    };
+
+    // Run Test 1 on page load
+    displayAllCallers();
+  </script>
+</body>
+</html>

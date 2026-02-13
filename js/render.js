@@ -160,6 +160,8 @@ function renderSnakeEyes(ctx, headX, headY, direction) {
 /**
  * Render food with uniform square shape
  * Story 5-3: All food types render as squares for better visibility
+ * Story 8.1: Blinking food cycles through colors at 200ms per color
+ * Story 8.5: Reduced motion mode uses alpha pulsing instead of rapid cycling
  * Color-coding preserved for effect identification
  */
 function renderFood(ctx, food) {
@@ -171,21 +173,58 @@ function renderFood(ctx, food) {
   const y = food.position.y * CONFIG.UNIT_SIZE;
   const foodSize = CONFIG.FOOD_SIZE;
 
-  // Get food color from CONFIG
-  const colorMap = {
-    growing: CONFIG.COLORS.foodGrowing,
-    invincibility: CONFIG.COLORS.foodInvincibility,
-    wallPhase: CONFIG.COLORS.foodWallPhase,
-    speedBoost: CONFIG.COLORS.foodSpeedBoost,
-    speedDecrease: CONFIG.COLORS.foodSpeedDecrease,
-    reverseControls: CONFIG.COLORS.foodReverseControls
-  };
+  let color;
+  let alpha = 1.0;
 
-  ctx.fillStyle = colorMap[food.type] || CONFIG.COLORS.foodGrowing;
+  // Story 8.1 + 8.5: Blinking food with accessibility support
+  if (food.isBlinking) {
+    if (CONFIG.REDUCED_MOTION) {
+      // REDUCED MOTION: Alpha pulsing with hidden color (accessibility)
+      const colorMap = {
+        growing: CONFIG.COLORS.foodGrowing,
+        invincibility: CONFIG.COLORS.foodInvincibility,
+        wallPhase: CONFIG.COLORS.foodWallPhase,
+        speedBoost: CONFIG.COLORS.foodSpeedBoost,
+        speedDecrease: CONFIG.COLORS.foodSpeedDecrease,
+        reverseControls: CONFIG.COLORS.foodReverseControls
+      };
+      color = colorMap[food.hiddenType] || CONFIG.COLORS.foodGrowing;
+
+      // Calculate pulsing alpha (50% to 100%) using sine wave
+      const time = Date.now();
+      alpha = CONFIG.ALPHA_PULSE.min +
+              (CONFIG.ALPHA_PULSE.max - CONFIG.ALPHA_PULSE.min) *
+              (0.5 + 0.5 * Math.sin(time / CONFIG.ALPHA_PULSE.frequency));
+    } else {
+      // NORMAL MODE: Rapid color cycling
+      const now = Date.now();
+      const cycleIndex = Math.floor(now / CONFIG.BLINK_CYCLE_DURATION) % CONFIG.BLINK_SEQUENCE.length;
+      color = CONFIG.BLINK_SEQUENCE[cycleIndex];
+    }
+  } else {
+    // Normal food: use food.type to determine color
+    const colorMap = {
+      growing: CONFIG.COLORS.foodGrowing,
+      invincibility: CONFIG.COLORS.foodInvincibility,
+      wallPhase: CONFIG.COLORS.foodWallPhase,
+      speedBoost: CONFIG.COLORS.foodSpeedBoost,
+      speedDecrease: CONFIG.COLORS.foodSpeedDecrease,
+      reverseControls: CONFIG.COLORS.foodReverseControls
+    };
+    color = colorMap[food.type] || CONFIG.COLORS.foodGrowing;
+  }
+
+  // Apply alpha (for reduced motion pulsing)
+  ctx.globalAlpha = alpha;
+
+  ctx.fillStyle = color;
 
   // All food types render as filled squares (Story 5-3)
   const offset = (CONFIG.UNIT_SIZE - foodSize) / 2;
   ctx.fillRect(x + offset, y + offset, foodSize, foodSize);
+
+  // Reset global alpha
+  ctx.globalAlpha = 1.0;
 }
 
 // Story 5-3: Custom shape functions removed - all food now renders as squares for improved visibility

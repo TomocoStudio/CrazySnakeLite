@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story 9.2: Effect-Based Phone Bonuses Test</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body {
+      padding: 20px;
+      font-family: 'Jersey20', 'Courier New', monospace;
+      background: #1A1A2E;
+      color: #E8E8E8;
+    }
+    .test-container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .test-section {
+      margin: 30px 0;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+    }
+    .test-button {
+      padding: 12px 24px;
+      margin: 10px 5px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Jersey20', 'Courier New', monospace;
+      font-size: 16px;
+    }
+    .test-button:hover {
+      background: #218838;
+    }
+    .test-button.end {
+      background: #888;
+      color: #000;
+    }
+    .test-button.end:hover {
+      background: #666;
+    }
+    .test-result {
+      margin-top: 10px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .pass { color: #28a745; }
+    .fail { color: #dc3545; }
+    .info { color: #17a2b8; }
+    .warn { color: #ffc107; }
+    h1 { color: #9D4EDD; }
+    h2 { color: rgb(157, 178, 221); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    th {
+      background: rgba(157, 78, 221, 0.2);
+    }
+    tr:nth-child(even) {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    .effect-label {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .effect-invincibility { background: #FFFF00; color: #000; }
+    .effect-growing { background: #00FF00; color: #000; }
+    .effect-speedDecrease { background: #00CED1; color: #000; }
+    .effect-wallPhase { background: #800080; color: #fff; }
+    .effect-speedBoost { background: #FF0000; color: #fff; }
+    .effect-reverseControls { background: #FFA500; color: #000; }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>🎮 Story 9.2: Effect-Based Phone Bonus Test (Redesigned)</h1>
+
+    <div class="test-section">
+      <h2>📋 Bonus Table (Effect-Based Design)</h2>
+      <table>
+        <tr>
+          <th>Active Effect</th>
+          <th>Risk Level</th>
+          <th>End Bonus</th>
+          <th>Pick Up Bonus</th>
+          <th>Notes</th>
+        </tr>
+        <tr>
+          <td><span class="effect-label effect-invincibility">Invincibility</span></td>
+          <td>🟢 Zero</td>
+          <td>0</td>
+          <td>0</td>
+          <td>No bonus (prevents exploit)</td>
+        </tr>
+        <tr>
+          <td><span class="effect-label effect-growing">Growing</span></td>
+          <td>🟡 Baseline</td>
+          <td>+1</td>
+          <td>+2</td>
+          <td>Default/no active effect</td>
+        </tr>
+        <tr>
+          <td><span class="effect-label effect-speedDecrease">Speed Decrease</span></td>
+          <td>🟡 Low</td>
+          <td>+1</td>
+          <td>+1</td>
+          <td>Easier control = low reward</td>
+        </tr>
+        <tr>
+          <td><span class="effect-label effect-wallPhase">Wall Phase</span></td>
+          <td>🟠 Medium</td>
+          <td>+1</td>
+          <td>+2 / +3</td>
+          <td>+2 default, +3 if wall crossed</td>
+        </tr>
+        <tr>
+          <td><span class="effect-label effect-speedBoost">Speed Boost</span></td>
+          <td>🔴 High</td>
+          <td>+1</td>
+          <td>+5</td>
+          <td>Fast = dangerous</td>
+        </tr>
+        <tr>
+          <td><span class="effect-label effect-reverseControls">Reverse Controls</span></td>
+          <td>🔴🔴 Extreme</td>
+          <td>+1</td>
+          <td>+8</td>
+          <td>Hardest = highest reward</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="test-section">
+      <h2>Current Game State</h2>
+      <table>
+        <tr>
+          <th>Metric</th>
+          <th>Value</th>
+        </tr>
+        <tr>
+          <td>Score</td>
+          <td id="current-score">0</td>
+        </tr>
+        <tr>
+          <td>Active Effect</td>
+          <td id="active-effect">None (growing)</td>
+        </tr>
+        <tr>
+          <td>Wall Phase Used</td>
+          <td id="wall-phase-used">false</td>
+        </tr>
+        <tr>
+          <td>Expected End Bonus</td>
+          <td id="expected-end">+1</td>
+        </tr>
+        <tr>
+          <td>Expected Pick Up Bonus</td>
+          <td id="expected-pickup">+2</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 1: Invincibility Exploit Prevention</h2>
+      <p><strong>Critical:</strong> No bonus during invincibility (prevents risk-free points)</p>
+      <p><strong>Visual Bug Fix:</strong> Both End and Pick Up buttons should show "+0" when invincible</p>
+      <button class="test-button" id="set-invincibility">Set Invincibility Effect</button>
+      <button class="test-button end" id="end-invincibility">End Call (expect 0)</button>
+      <button class="test-button" id="pickup-invincibility">Pick Up (expect 0)</button>
+      <button class="test-button" id="reset-test1">Reset</button>
+      <div class="test-result" id="test1-result">Set invincibility, then test End and Pick Up<br><em>Verify button labels show "+0" when invincible</em></div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 2: All Effect Bonuses</h2>
+      <p>Verify each effect awards correct End and Pick Up bonuses</p>
+      <div>
+        <button class="test-button" id="test-growing">Growing (+1/+2)</button>
+        <button class="test-button" id="test-speedDecrease">Speed Decrease (+1/+1)</button>
+        <button class="test-button" id="test-wallPhase">Wall Phase (+1/+2)</button>
+        <button class="test-button" id="test-speedBoost">Speed Boost (+1/+5)</button>
+        <button class="test-button" id="test-reverseControls">Reverse Controls (+1/+8)</button>
+      </div>
+      <div class="test-result" id="test2-result">Click effect to test bonuses</div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 3: Wall Phase Special Case</h2>
+      <p>Wall Phase: +2 if wall NOT crossed, +3 if wall crossed</p>
+      <button class="test-button" id="wallphase-no-cross">Wall Phase (no cross) - Pick Up (+2)</button>
+      <button class="test-button" id="wallphase-crossed">Wall Phase (crossed) - Pick Up (+3)</button>
+      <button class="test-button" id="reset-test3">Reset</button>
+      <div class="test-result" id="test3-result">Test wall phase with and without crossing</div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 4: Dynamic Button Label</h2>
+      <p>Pick Up button should show correct bonus based on active effect</p>
+      <button class="test-button" id="cycle-effects">Cycle Through Effects</button>
+      <div class="test-result" id="test4-result">
+        Current effect: <span id="cycle-effect">None</span><br>
+        Pick Up button should show: <span id="cycle-bonus">+2</span>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { CONFIG } from '../js/config.js';
+    import { createInitialState } from '../js/state.js';
+
+    // Mock game state
+    let gameState = createInitialState();
+    gameState.phase = 'playing';
+
+    // Effect-based bonus calculation (matching phone.js)
+    function getEndBonus(gameState) {
+      const effectType = gameState.activeEffect?.type || 'growing';
+      const bonusConfig = CONFIG.PHONE_BONUSES[effectType];
+      return bonusConfig ? bonusConfig.end : CONFIG.PHONE_BONUSES.growing.end;
+    }
+
+    function getPickUpBonus(gameState) {
+      const effectType = gameState.activeEffect?.type || 'growing';
+      const bonusConfig = CONFIG.PHONE_BONUSES[effectType];
+
+      if (!bonusConfig) return CONFIG.PHONE_BONUSES.growing.pickup;
+
+      // Wall Phase special case
+      if (effectType === 'wallPhase' && gameState.effects?.wallPhaseUsed) {
+        return bonusConfig.pickupUsed;
+      }
+
+      return bonusConfig.pickup;
+    }
+
+    // Update UI
+    function updateDisplay() {
+      const effectType = gameState.activeEffect?.type || 'growing';
+      const wallPhaseUsed = gameState.effects?.wallPhaseUsed || false;
+
+      document.getElementById('current-score').textContent = gameState.score;
+      document.getElementById('active-effect').textContent = effectType;
+      document.getElementById('wall-phase-used').textContent = wallPhaseUsed;
+      document.getElementById('expected-end').textContent = '+' + getEndBonus(gameState);
+      document.getElementById('expected-pickup').textContent = '+' + getPickUpBonus(gameState);
+    }
+
+    // Simulate calls
+    function simulateEnd() {
+      const bonus = getEndBonus(gameState);
+      gameState.score += bonus;
+      updateDisplay();
+      return bonus;
+    }
+
+    function simulatePickUp() {
+      const bonus = getPickUpBonus(gameState);
+      gameState.score += bonus;
+      updateDisplay();
+      return bonus;
+    }
+
+    function setEffect(type) {
+      if (type === 'growing') {
+        gameState.activeEffect = null;
+      } else {
+        gameState.activeEffect = { type };
+      }
+      gameState.effects.wallPhaseUsed = false;
+      updateDisplay();
+    }
+
+    // Test 1: Invincibility
+    document.getElementById('set-invincibility').addEventListener('click', () => {
+      setEffect('invincibility');
+      document.getElementById('test1-result').innerHTML = '<div class="info">Invincibility set - both bonuses should be 0</div>';
+    });
+
+    document.getElementById('end-invincibility').addEventListener('click', () => {
+      const bonus = simulateEnd();
+      if (bonus === 0) {
+        document.getElementById('test1-result').innerHTML += '<div class="pass">✅ PASS: End bonus = 0 (correct!)</div>';
+      } else {
+        document.getElementById('test1-result').innerHTML += '<div class="fail">❌ FAIL: End bonus = +' + bonus + ' (expected 0)</div>';
+      }
+    });
+
+    document.getElementById('pickup-invincibility').addEventListener('click', () => {
+      const bonus = simulatePickUp();
+      if (bonus === 0) {
+        document.getElementById('test1-result').innerHTML += '<div class="pass">✅ PASS: Pick Up bonus = 0 (exploit prevented!)</div>';
+      } else {
+        document.getElementById('test1-result').innerHTML += '<div class="fail">❌ FAIL: Pick Up bonus = +' + bonus + ' (expected 0)</div>';
+      }
+    });
+
+    document.getElementById('reset-test1').addEventListener('click', () => {
+      gameState = createInitialState();
+      gameState.phase = 'playing';
+      document.getElementById('test1-result').textContent = 'Set invincibility, then test End and Pick Up';
+      updateDisplay();
+    });
+
+    // Test 2: All effects
+    const effectTests = [
+      { id: 'test-growing', type: 'growing', end: 1, pickup: 2 },
+      { id: 'test-speedDecrease', type: 'speedDecrease', end: 1, pickup: 1 },
+      { id: 'test-wallPhase', type: 'wallPhase', end: 1, pickup: 2 },
+      { id: 'test-speedBoost', type: 'speedBoost', end: 1, pickup: 5 },
+      { id: 'test-reverseControls', type: 'reverseControls', end: 1, pickup: 8 }
+    ];
+
+    effectTests.forEach(test => {
+      document.getElementById(test.id).addEventListener('click', () => {
+        gameState = createInitialState();
+        gameState.phase = 'playing';
+        setEffect(test.type);
+
+        const endBonus = simulateEnd();
+        const pickupBonus = simulatePickUp();
+
+        const endPass = endBonus === test.end;
+        const pickupPass = pickupBonus === test.pickup;
+
+        let html = `<div class="${endPass ? 'pass' : 'fail'}">End: +${endBonus} (expected +${test.end}) ${endPass ? '✓' : '✗'}</div>`;
+        html += `<div class="${pickupPass ? 'pass' : 'fail'}">Pick Up: +${pickupBonus} (expected +${test.pickup}) ${pickupPass ? '✓' : '✗'}</div>`;
+
+        if (endPass && pickupPass) {
+          html += `<div class="pass">✅ ${test.type} PASS</div>`;
+        }
+
+        document.getElementById('test2-result').innerHTML = html;
+      });
+    });
+
+    // Test 3: Wall Phase special case
+    document.getElementById('wallphase-no-cross').addEventListener('click', () => {
+      gameState = createInitialState();
+      gameState.phase = 'playing';
+      setEffect('wallPhase');
+      gameState.effects.wallPhaseUsed = false;
+
+      const bonus = simulatePickUp();
+      if (bonus === 2) {
+        document.getElementById('test3-result').innerHTML = '<div class="pass">✅ PASS: Wall Phase (no cross) = +2</div>';
+      } else {
+        document.getElementById('test3-result').innerHTML = '<div class="fail">❌ FAIL: Expected +2, got +' + bonus + '</div>';
+      }
+    });
+
+    document.getElementById('wallphase-crossed').addEventListener('click', () => {
+      gameState = createInitialState();
+      gameState.phase = 'playing';
+      setEffect('wallPhase');
+      gameState.effects.wallPhaseUsed = true;
+      updateDisplay();
+
+      const bonus = simulatePickUp();
+      if (bonus === 3) {
+        document.getElementById('test3-result').innerHTML = '<div class="pass">✅ PASS: Wall Phase (crossed) = +3</div>';
+      } else {
+        document.getElementById('test3-result').innerHTML = '<div class="fail">❌ FAIL: Expected +3, got +' + bonus + '</div>';
+      }
+    });
+
+    document.getElementById('reset-test3').addEventListener('click', () => {
+      gameState = createInitialState();
+      gameState.phase = 'playing';
+      document.getElementById('test3-result').textContent = 'Test wall phase with and without crossing';
+      updateDisplay();
+    });
+
+    // Test 4: Button label cycling
+    const effects = ['growing', 'speedDecrease', 'wallPhase', 'speedBoost', 'reverseControls', 'invincibility'];
+    let currentEffectIndex = 0;
+
+    document.getElementById('cycle-effects').addEventListener('click', () => {
+      setEffect(effects[currentEffectIndex]);
+      const bonus = getPickUpBonus(gameState);
+
+      document.getElementById('cycle-effect').textContent = effects[currentEffectIndex];
+      document.getElementById('cycle-bonus').textContent = '+' + bonus;
+
+      currentEffectIndex = (currentEffectIndex + 1) % effects.length;
+    });
+
+    // Initialize
+    updateDisplay();
+  </script>
+</body>
+</html>

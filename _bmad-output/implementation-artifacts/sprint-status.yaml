@@ -1,4 +1,4 @@
-# generated: 2026-02-08
+# generated: 2026-02-13
 # project: CrazySnakeLite
 # project_key: crazy-snake-lite
 # tracking_system: file-system
@@ -33,7 +33,7 @@
 # - SM typically creates next story after previous one is 'done' to incorporate learnings
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
-generated: 2026-02-08
+generated: 2026-02-13
 project: CrazySnakeLite
 project_key: crazy-snake-lite
 tracking_system: file-system
@@ -74,7 +74,7 @@ development_status:
   4-3-game-over-screen-enhancement: done
   4-4-menu-navigation-and-pause: done
   4-5-state-based-movement-sounds: done
-  4-6-game-over-melody: backlog
+  4-6-game-over-melody: backlog  # Deferred - waiting for melody composition
   epic-4-retrospective: done
 
   # Epic 5: Visual & Audio Polish v2.0
@@ -103,30 +103,30 @@ development_status:
   7-1-update-food-scoring-fibonacci: review
   7-2-score-popup-system-basic: review
   7-3-high-value-score-popups: done
-  7-4-fibonacci-musical-progression: ready-for-dev
+  7-4-fibonacci-musical-progression: blocked  # Waiting for MP3 sound files
   7-5-popup-queue-system: done
   7-6-reduced-motion-mode-popups: done
   epic-7-retrospective: optional
 
   # Epic 8: Progressive Blinking Food System
   epic-8: in-progress
-  8-1-color-cycling-animation: ready-for-dev
-  8-2-score-based-blinking-percentage: ready-for-dev
-  8-3-drop-shadow-spatial-anchoring: ready-for-dev
-  8-4-first-time-mystery-food-tooltip: ready-for-dev
-  8-5-reduced-motion-mode-blinking: ready-for-dev
-  8-6-track-blinking-food-stats: ready-for-dev
+  8-1-color-cycling-animation: review
+  8-2-score-based-blinking-percentage: review
+  8-3-drop-shadow-spatial-anchoring: backlog  # User rejected - aesthetic preference (reverted)
+  8-4-first-time-mystery-food-tooltip: backlog  # User rejected - no need for tooltip (reverted)
+  8-5-reduced-motion-mode-blinking: review
+  8-6-track-blinking-food-stats: review
   epic-8-retrospective: optional
 
   # Epic 9: Phone Calls v2 - Pick Up vs End
-  epic-9: in-progress
-  9-1-two-button-phone-overlay: ready-for-dev
-  9-2-fibonacci-pickup-bonus: ready-for-dev
-  9-3-variable-pickup-timer: ready-for-dev
-  9-4-caller-portraits-one-liners: ready-for-dev
-  9-5-grace-period-frequency-tiers: ready-for-dev
-  9-6-phone-bonus-popup-integration: ready-for-dev
-  9-7-phone-stats-analytics: ready-for-dev
+  epic-9: done
+  9-1-two-button-phone-overlay: done
+  9-2-fibonacci-pickup-bonus: done
+  9-3-variable-pickup-timer: done
+  9-4-caller-portraits-one-liners: done
+  9-5-grace-period-frequency-tiers: done
+  9-6-phone-bonus-popup-integration: done
+  9-7-phone-stats-analytics: done
   epic-9-retrospective: optional
 
   # Epic 10: Combo Mode System

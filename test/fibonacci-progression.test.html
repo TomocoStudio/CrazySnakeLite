@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story 9.2: Fibonacci Pick Up Bonus Test</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body {
+      padding: 20px;
+      font-family: 'Jersey20', 'Courier New', monospace;
+      background: #1A1A2E;
+      color: #E8E8E8;
+    }
+    .test-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .test-section {
+      margin: 30px 0;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+    }
+    .test-button {
+      padding: 12px 24px;
+      margin: 10px 5px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Jersey20', 'Courier New', monospace;
+      font-size: 16px;
+    }
+    .test-button:hover {
+      background: #218838;
+    }
+    .test-button.end {
+      background: #888;
+      color: #000;
+    }
+    .test-button.end:hover {
+      background: #666;
+    }
+    .test-result {
+      margin-top: 10px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .pass { color: #28a745; }
+    .fail { color: #dc3545; }
+    .info { color: #17a2b8; }
+    h1 { color: #9D4EDD; }
+    h2 { color: rgb(157, 178, 221); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    th {
+      background: rgba(157, 78, 221, 0.2);
+    }
+    tr:nth-child(even) {
+      background: rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>📊 Story 9.2: Fibonacci Pick Up Bonus Progression Test</h1>
+
+    <div class="test-section">
+      <h2>Current Game State</h2>
+      <table>
+        <tr>
+          <th>Metric</th>
+          <th>Value</th>
+        </tr>
+        <tr>
+          <td>Score</td>
+          <td id="current-score">0</td>
+        </tr>
+        <tr>
+          <td>Pick Up Count</td>
+          <td id="pickup-count">0</td>
+        </tr>
+        <tr>
+          <td>Next Pick Up Bonus</td>
+          <td id="next-bonus">+2</td>
+        </tr>
+        <tr>
+          <td>Calls Answered</td>
+          <td id="total-calls">0</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 1: Fibonacci Progression (8 Pick Ups)</h2>
+      <p>Expected bonuses: +2, +3, +5, +8, +13, +21, +34, +34 (cap)</p>
+      <button class="test-button" id="test-fibonacci">Trigger Call & Pick Up</button>
+      <button class="test-button" id="reset-test1">Reset</button>
+      <div class="test-result">
+        <strong>Progression Log:</strong>
+        <div id="fibonacci-log"></div>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 2: End Call Does NOT Reset pickUpCount</h2>
+      <p>Pick Up 3 times (+2, +3, +5), End 1 time (+1), Pick Up again (should be +8, not +2)</p>
+      <button class="test-button" id="pickup-3x">Pick Up × 3</button>
+      <button class="test-button end" id="end-call">End Call</button>
+      <button class="test-button" id="pickup-after-end">Pick Up (verify +8)</button>
+      <button class="test-button" id="reset-test2">Reset</button>
+      <div class="test-result" id="test2-result">Click buttons in order to test</div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 3: Cap at +34</h2>
+      <p>Pick Up 10 times, verify 8th, 9th, 10th all award +34</p>
+      <button class="test-button" id="pickup-10x">Pick Up × 10</button>
+      <button class="test-button" id="reset-test3">Reset</button>
+      <div class="test-result" id="test3-result">Click button to test cap</div>
+    </div>
+
+    <div class="test-section">
+      <h2>Test 4: New Game Resets pickUpCount</h2>
+      <p>Pick Up 5 times (count = 5), reset game, verify next bonus is +2 (count reset to 0)</p>
+      <button class="test-button" id="pickup-5x">Pick Up × 5</button>
+      <button class="test-button" id="new-game">New Game</button>
+      <button class="test-button" id="verify-reset">Verify Reset (+2)</button>
+      <div class="test-result" id="test4-result">Pick Up 5 times, then New Game, then verify</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { CONFIG } from '../js/config.js';
+    import { createInitialState, resetGame } from '../js/state.js';
+
+    // Mock game state
+    let gameState = createInitialState();
+    gameState.phase = 'playing';
+
+    // Fibonacci bonus calculation (matching phone.js)
+    function getPickUpBonus(pickUpCount) {
+      const fibonacci = CONFIG.PHONE_PICKUP_FIBONACCI;
+      if (pickUpCount < fibonacci.length) {
+        return fibonacci[pickUpCount];
+      }
+      return CONFIG.PHONE_PICKUP_MAX_BONUS;
+    }
+
+    // Update UI display
+    function updateDisplay() {
+      document.getElementById('current-score').textContent = gameState.score;
+      document.getElementById('pickup-count').textContent = gameState.phoneCall.pickUpCount;
+      document.getElementById('next-bonus').textContent = '+' + getPickUpBonus(gameState.phoneCall.pickUpCount);
+      const totalCalls = document.querySelectorAll('#fibonacci-log div').length;
+      document.getElementById('total-calls').textContent = totalCalls;
+    }
+
+    // Simulate Pick Up
+    function simulatePickUp() {
+      const bonus = getPickUpBonus(gameState.phoneCall.pickUpCount);
+      gameState.phoneCall.pickUpBonus = bonus;
+      gameState.score += bonus;
+      gameState.phoneCall.pickUpCount += 1;
+      updateDisplay();
+      return bonus;
+    }
+
+    // Simulate End Call
+    function simulateEnd() {
+      gameState.score += CONFIG.SCORING.PHONE_END;
+      // pickUpCount NOT incremented, NOT reset
+      updateDisplay();
+      return 1;
+    }
+
+    // Test 1: Fibonacci Progression
+    document.getElementById('test-fibonacci').addEventListener('click', () => {
+      const bonus = simulatePickUp();
+      const log = document.getElementById('fibonacci-log');
+      const count = gameState.phoneCall.pickUpCount;
+      const entry = document.createElement('div');
+      entry.textContent = `Call ${count}: +${bonus} points (pickUpCount: ${count - 1} → ${count})`;
+      entry.className = count <= 7 ? 'pass' : 'info';
+      log.appendChild(entry);
+    });
+
+    document.getElementById('reset-test1').addEventListener('click', () => {
+      gameState = createInitialState();
+      gameState.phase = 'playing';
+      document.getElementById('fibonacci-log').innerHTML = '';
+      updateDisplay();
+    });
+
+    // Test 2: End Call Preserves Streak
+    let test2State = 0;
+    document.getElementById('pickup-3x').addEventListener('click', () => {
+      document.getElementById('test2-result').innerHTML = '';
+      for (let i = 0; i < 3; i++) {
+        const bonus = simulatePickUp();
+        document.getElementById('test2-result').innerHTML += `<div class="pass">Pick Up ${i+1}: +${bonus}</div>`;
+      }
+      test2State = 1;
+    });
+
+    document.getElementById('end-call').addEventListener('click', () => {
+      if (test2State !== 1) {
+        document.getElementById('test2-result').innerHTML = '<div class="fail">❌ Must Pick Up 3 times first!</div>';
+        return;
+      }
+      const bonus = simulateEnd();
+      document.getElementById('test2-result').innerHTML += `<div class="info">End Call: +${bonus}</div>`;
+      document.getElementById('test2-result').innerHTML += `<div class="info">pickUpCount preserved: ${gameState.phoneCall.pickUpCount}</div>`;
+      test2State = 2;
+    });
+
+    document.getElementById('pickup-after-end').addEventListener('click', () => {
+      if (test2State !== 2) {
+        document.getElementById('test2-result').innerHTML = '<div class="fail">❌ Must complete previous steps first!</div>';
+        return;
+      }
+      const bonus = simulatePickUp();
+      if (bonus === 8) {
+        document.getElementById('test2-result').innerHTML += `<div class="pass">✅ PASS: Next Pick Up awarded +${bonus} (streak preserved!)</div>`;
+      } else {
+        document.getElementById('test2-result').innerHTML += `<div class="fail">❌ FAIL: Expected +8, got +${bonus}</div>`;
+      }
+      test2State = 0;
+    });
+
+    document.getElementById('reset-test2').addEventListener('click', () => {
+      gameState = createInitialState();
+      gameState.phase = 'playing';
+      test2State = 0;
+      document.getElementById('test2-result').textContent = 'Click buttons in order to test';
+      updateDisplay();
+    });
+
+    // Test 3: Cap at +34
+    document.getElementById('pickup-10x').addEventListener('click', () => {
+      gameState = createInitialState();
+      gameState.phase = 'playing';
+      let log = '';
+      for (let i = 0; i < 10; i++) {
+        const bonus = simulatePickUp();
+        const expected = i >= 7 ? 34 : [2, 3, 5, 8, 13, 21, 34][i];
+        const status = bonus === expected ? 'pass' : 'fail';
+        const symbol = bonus === expected ? '✓' : '✗';
+        log += `<div class="${status}">Call ${i+1}: +${bonus} (expected +${expected}) ${symbol}</div>`;
+      }
+      document.getElementById('test3-result').innerHTML = log;
+      if (gameState.phoneCall.pickUpCount === 10) {
+        document.getElementById('test3-result').innerHTML += '<div class="pass">✅ PASS: Cap at +34 verified!</div>';
+      }
+      updateDisplay();
+    });
+
+    document.getElementById('reset-test3').addEventListener('click', () => {
+      gameState = createInitialState();
+      gameState.phase = 'playing';
+      document.getElementById('test3-result').textContent = 'Click button to test cap';
+      updateDisplay();
+    });
+
+    // Test 4: New Game Reset
+    document.getElementById('pickup-5x').addEventListener('click', () => {
+      gameState = createInitialState();
+      gameState.phase = 'playing';
+      for (let i = 0; i < 5; i++) {
+        simulatePickUp();
+      }
+      document.getElementById('test4-result').innerHTML = `<div class="info">Pick Up Count: ${gameState.phoneCall.pickUpCount}</div>`;
+      document.getElementById('test4-result').innerHTML += `<div class="info">Next bonus would be: +${getPickUpBonus(gameState.phoneCall.pickUpCount)}</div>`;
+      updateDisplay();
+    });
+
+    document.getElementById('new-game').addEventListener('click', () => {
+      resetGame(gameState);
+      gameState.phase = 'playing';
+      document.getElementById('test4-result').innerHTML += '<div class="info">New game started - pickUpCount reset</div>';
+      document.getElementById('test4-result').innerHTML += `<div class="info">pickUpCount: ${gameState.phoneCall.pickUpCount}</div>`;
+      updateDisplay();
+    });
+
+    document.getElementById('verify-reset').addEventListener('click', () => {
+      const bonus = simulatePickUp();
+      if (bonus === 2 && gameState.phoneCall.pickUpCount === 1) {
+        document.getElementById('test4-result').innerHTML += '<div class="pass">✅ PASS: pickUpCount reset to 0, awarded +2!</div>';
+      } else {
+        document.getElementById('test4-result').innerHTML += `<div class="fail">❌ FAIL: Expected +2 with count 1, got +${bonus} with count ${gameState.phoneCall.pickUpCount}</div>`;
+      }
+      updateDisplay();
+    });
+
+    // Initialize display
+    updateDisplay();
+  </script>
+</body>
+</html>

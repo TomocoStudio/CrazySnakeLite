@@ -1,21 +1,23 @@
 ---
 stepsCompleted: [1, 2, 3, 4, 5, 6, 7, 8]
 status: 'complete'
-v2CompletedAt: '2026-02-07'
-status: 'in-progress'
+v2CompletedAt: '2026-02-08'
 v1CompletedAt: '2026-01-23'
 v2StartedAt: '2026-02-07'
+v2UpdatedAt: '2026-02-08'
+v2UpdateNotes: 'Added Decision 9 (Cognitive Feedback System), cognitiveStats in gameState, cognitive-feedback.js module, RC SURVIVED flash. Added Decision 10 (Two-Tier Cognitive Tracking & Analytics), analyticsState in gameState, analytics.js module using Plausible custom events API. Aligned thresholds with PRD v2.0 (phone grace score 3, blink start 15, blink cap 60%).'
 inputDocuments:
   - '_bmad-output/planning-artifacts/prd.md'
   - '_bmad-output/planning-artifacts/product-brief-CrazySnakeLite-2026-01-13.md'
   - '_bmad-output/planning-artifacts/ux-design-specification.md'
   - '_bmad-output/planning-artifacts/game-design-food-v2.md'
   - '_bmad-output/planning-artifacts/game-design-phone-calls-v2.md'
-  - '_bmad-output/planning-artifacts/ux-design-food-phone-v2.md'
+  - '_bmad-output/planning-artifacts/game-ux-principles.md'
+  - '_bmad-output/planning-artifacts/cognitive-analytics-requirements.md'
 workflowType: 'architecture'
 project_name: 'CrazySnakeLite'
 user_name: 'Tomoco'
-date: '2026-02-07'
+date: '2026-02-08'
 ---
 
 # Architecture Decision Document
@@ -115,7 +117,7 @@ Browser-based Canvas game (SPA) - Client-side only, static hosting
 - Deployment requirement is "simplest possible" (GitHub Pages)
 - Game mechanics are well-defined and don't require framework abstractions
 - Faster iteration: edit file → refresh browser → test
-- Zero external dependencies = zero supply chain concerns
+- Zero runtime dependencies (Plausible is the sole external script — async, non-blocking)
 - Matches the retro aesthetic philosophy of the game itself
 
 **Project Structure:**
@@ -917,6 +919,12 @@ CrazySnakeLite/
       <button id="menu-btn">Menu</button>
     </div>
   </div>
+  <!-- Privacy-friendly analytics by Plausible -->
+  <script async src="https://plausible.io/js/pa-5lDK3arREKbPzQ_2_Jhfm.js"></script>
+  <script>
+    window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+    plausible.init()
+  </script>
   <script type="module" src="js/main.js"></script>
 </body>
 </html>
@@ -1069,7 +1077,7 @@ Project structure directly supports all architectural decisions:
 **Confidence Level:** High
 
 **Key Strengths:**
-- Zero external dependencies = no supply chain risk, no version conflicts
+- Zero runtime dependencies (Plausible is async/non-blocking, game functions without it)
 - Simple, proven patterns = easy for any AI agent to implement consistently
 - Complete FR-to-module mapping = clear implementation path
 - Fixed timestep + RAF = guaranteed consistent gameplay
@@ -1184,7 +1192,7 @@ _V2 evolution started: 2026-02-07_
 
 Three new design documents drive this architecture evolution:
 
-1. **game-design-food-v2.md** — Fibonacci scoring (0 to +8 per food type), progressive blinking food (score 20+), combo mode with multiplicative scoring (score 40+)
+1. **game-design-food-v2.md** — Fibonacci scoring (0 to +8 per food type), progressive blinking food (score 15+), combo mode with multiplicative scoring (score 40+)
 2. **game-design-phone-calls-v2.md** — Two-button phone overlay (End vs Pick Up), Fibonacci Pick Up bonus escalation (+2 to +34), score-based call frequency tiers, caller portraits + one-liners, variable Pick Up timer (1-3s)
 3. **ux-design-food-phone-v2.md** — Pixel-perfect UX specifications for all v2 visual systems: score popups, blinking food, combo mode visuals, phone overlay redesign, cross-system interaction rules, accessibility/reduced motion
 
@@ -1193,10 +1201,10 @@ Three new design documents drive this architecture evolution:
 **Food v2 System:**
 - Fibonacci scoring: Invincibility=0, Growing=+1, SpeedDecrease=+2, WallPhase=+1/+3 (conditional), SpeedBoost=+5, ReverseControls=+8
 - Score popup system: 5 visual tiers with escalating salience (size, color, bounce, glow, particles, screen shake)
-- Progressive blinking food: 0% at score 0-19, escalating to 80% at score 120+
+- Progressive blinking food: 0% at score 0-14, escalating to 60% at score 80+
 - Color cycling animation: 200ms per color through all 6 food colors, effect locked at spawn but hidden
 - Food shadow system: 2px drop shadow for spatial anchoring during color cycling
-- First-time tooltip: "Mystery Food!" at score 20
+- First-time tooltip: "Mystery Food!" at score 15
 - Combo mode: Probability-based activation (10% at score 40, capping at 50% at score 120+)
 - Canvas background color transitions: 500ms fade to random dark color (4 options)
 - Striped snake rendering: Alternating segment colors for Effect A / Effect B
@@ -1207,8 +1215,8 @@ Three new design documents drive this architecture evolution:
 **Phone Calls v2 System:**
 - Two-button overlay: End (Space, +1 flat) and Pick Up (Enter, Fibonacci bonus)
 - Fibonacci Pick Up bonus: [+2, +3, +5, +8, +13, +21, +34] per consecutive pickup per game, capped at +34
-- Score-based grace period: No calls until score >= 5
-- Score-based call frequency: 5 tiers from relaxed (12-20s at score 5) to relentless (4-8s at score 100+)
+- Score-based grace period: No calls until score >= 3
+- Score-based call frequency: 5 tiers from relaxed (12-20s at score 3) to relentless (4-8s at score 100+)
 - Variable Pick Up timer: 1-3s random blur duration with countdown bar
 - Caller personality: 21 callers with name, portrait (64x64 pixel art), and one-liner (revealed only on Pick Up)
 - Pick Up irreversibility: Cannot End once committed to Pick Up
@@ -1343,7 +1351,7 @@ The v1 technology stack holds for v2. The three new design documents were explic
 | **Styling** | Plain CSS | **Confirmed** — all v2 animations use CSS @keyframes and transitions |
 | **Build** | None — direct file serving | **Confirmed** — zero-dependency deployment preserved |
 | **Modules** | ES6 modules (`type="module"`) | **Confirmed** — new modules follow same pattern |
-| **Dependencies** | Zero external | **Confirmed** — no runtime dependencies added |
+| **Dependencies** | Zero runtime | **Confirmed** — Plausible is the sole external script (async, non-blocking, graceful degradation if absent) |
 
 **Rationale:** The v2 UX specification was designed for CSS animations (popup keyframes, canvas transitions, particle effects). The combo state machine and progression engine are pure logic. The phone overlay redesign is DOM manipulation. Nothing in v2 requires or benefits from a framework. The zero-dependency deployment story is a feature.
 
@@ -1472,7 +1480,7 @@ V2's cross-system integration complexity (combo + phone + blinking food interact
 
 ### Decision Priority Analysis
 
-**All 8 Critical Decisions — Made:**
+**All 10 Critical Decisions — Made:**
 
 | # | Decision | Choice | Key Principle |
 |---|----------|--------|---------------|
@@ -1484,11 +1492,14 @@ V2's cross-system integration complexity (combo + phone + blinking food interact
 | 6 | Blinking Food Integration | `game.js` updates `food.blinkCycleIndex`, render reads state | State-driven rendering, consistent with v1 |
 | 7 | Cross-System Orchestration | Rules in `game.js` as orchestrator — guard clauses, not event bus | Rules live where they're enforced |
 | 8 | Progression Engine | Thresholds in `config.js`, resolution logic in `progression.js` | Tunable data separated from lookup logic |
+| 9 | Cognitive Feedback System | Stats tracked in `game.js` handlers, display in `cognitive-feedback.js`, RC SURVIVED flash via `score-popup.js` | Track at source, display as pure UI |
+| 10 | Two-Tier Cognitive Tracking | `cognitiveStats` (player-facing achievements) + `analyticsState` (internal denominators/timestamps) → `analytics.js` | Rates need numerators AND denominators |
 
 **Deferred Decisions:**
 - Test runner upgrade (deferred to Test Architect workflow)
 - Color-blind shape coding for food (post-launch enhancement)
 - Haptic feedback on mobile (post-launch enhancement)
+- ~~Analytics tool selection~~ — **Plausible** selected (privacy-first, cookie-free, GDPR-compliant by default)
 
 ### Decision 1: Scoring Pipeline Architecture
 
@@ -1700,16 +1711,53 @@ const gameState = {
     wallPhaseUsed: false
   },
 
+  cognitiveStats: {
+    rcSurvived: 0,            // Times player survived Reverse Controls (ate next food without dying)
+    phoneCallsManaged: 0,     // Total phone calls answered (End or Pick Up)
+    mysteryFoodsEaten: 0,     // Blinking food items consumed
+    comboMultipliers: 0,      // Combo multiplier scores earned
+    pickUpStreak: 0,          // Consecutive Pick Ups this game (resets on End)
+    peakComboScore: 0         // Highest single combo multiplier result
+  },
+
   ui: {
     mysteryFoodTooltipShown: false,
     lastPopupTime: 0
+  },
+
+  // === TIER 2: Internal analytics tracking (NOT player-facing) ===
+  // Provides denominators, timestamps, and distributions for
+  // Celia's 7 cognitive validation questions.
+  // Only consumed by analytics.js — never displayed to player.
+  analyticsState: {
+    // --- Denominators (for rate calculations) ---
+    totalPhoneCalls: 0,              // Q2: denominator for Pick Up rate
+    totalPickUps: 0,                 // Q2: numerator for Pick Up rate
+    totalEnds: 0,                    // Q2: numerator for End count
+    totalBlinkingFoodsSpawned: 0,    // Q3: denominator for blink eat rate
+    totalCombosTriggered: 0,         // Q4: denominator for combo completion rate
+    comboPhoneOverlaps: 0,           // Q4: times phone rang during active combo
+    comboPhoneOverlapSurvived: 0,    // Q4: survived phone during active combo
+    totalRCFoodsEaten: 0,            // Q5: denominator for RC survival rate
+
+    // --- Distributions (for histograms / analysis) ---
+    comboScores: [],                 // Q4: all combo multiplier results this game
+    milestonesReached: [],           // Q1: score milestones hit this game [3, 15, 40, 60, 100]
+
+    // --- Timestamps (for temporal calculations at event fire) ---
+    phoneCallShowTime: 0,            // Q2: when current call appeared (reaction time = dismiss - show)
+    pickUpCompletionTime: 0,         // Q7: when Pick Up countdown ended (dwell = dismiss - completion)
+    foodSpawnTime: 0,                // Q3: when current food spawned (time-to-eat = eat - spawn)
+    rcActivationTick: 0,             // Q5: game tick when RC food was eaten (ticks survived = current - activation)
+    cognitiveStatsShownTime: 0       // Q6: when "Your Brain Today" appeared (dwell = Play Again - shown)
   }
 };
 ```
 
 **Reset Rules (state.js):**
-- On new game: ALL v2 fields reset. `phoneCall.pickUpCount` → 0. `combo` → inactive. `ui.mysteryFoodTooltipShown` → false.
+- On new game: ALL v2 fields reset. `phoneCall.pickUpCount` → 0. `combo` → inactive. `ui.mysteryFoodTooltipShown` → false. `cognitiveStats` → all zeros. `analyticsState` → all zeros/empty arrays.
 - On Play Again: Same full reset.
+- **Important:** `analytics.js` fires `trackGameOver()` with the full `analyticsState` snapshot BEFORE reset occurs.
 
 ### Decision 5: Score Popup System Architecture
 
@@ -1878,7 +1926,9 @@ function onDeath(gameState) {
     deathBonuses.push({ value: phoneBonus, label: 'CALL BONUS' });
   }
   // Spawn stacked death reward popups
-  // ... game over flow
+  // ... game over screen (score, high score)
+  // Then: cognitive-feedback.showCognitiveStats(gameState.cognitiveStats)
+  // Listen for 'cognitive-feedback-done' → show Play Again button
 }
 ```
 
@@ -1899,17 +1949,15 @@ function onDeath(gameState) {
 **Config.js Threshold Tables:**
 
 ```javascript
-// Blinking food probability by score
+// Blinking food probability by score (PRD: starts at 15, caps at 60% at 80+)
 BLINK_THRESHOLDS: [
   { minScore: 0, probability: 0 },
-  { minScore: 20, probability: 0.1 },
-  { minScore: 25, probability: 0.2 },
+  { minScore: 15, probability: 0.1 },
+  { minScore: 20, probability: 0.2 },
   { minScore: 30, probability: 0.3 },
   { minScore: 40, probability: 0.4 },
   { minScore: 60, probability: 0.5 },
-  { minScore: 80, probability: 0.6 },
-  { minScore: 100, probability: 0.7 },
-  { minScore: 120, probability: 0.8 }
+  { minScore: 80, probability: 0.6 }
 ],
 
 // Combo probability by score
@@ -1924,14 +1972,14 @@ COMBO_THRESHOLDS: [
 
 // Phone call frequency tiers
 PHONE_CALL_TIERS: [
-  { minScore: 5, minDelay: 12000, maxDelay: 20000 },
-  { minScore: 20, minDelay: 8000, maxDelay: 15000 },
+  { minScore: 3, minDelay: 12000, maxDelay: 20000 },
+  { minScore: 15, minDelay: 8000, maxDelay: 15000 },
   { minScore: 40, minDelay: 6000, maxDelay: 12000 },
   { minScore: 60, minDelay: 5000, maxDelay: 10000 },
   { minScore: 100, minDelay: 4000, maxDelay: 8000 }
 ],
 
-PHONE_GRACE_SCORE: 5
+PHONE_GRACE_SCORE: 3
 ```
 
 **Progression.js API:**
@@ -1974,6 +2022,305 @@ function resolvePhoneTier(tiers, score) {
 - `phone.js` → `getState(score).phoneTier` when scheduling next call
 - `phone.js` → `getState(score).phoneGraceActive` before scheduling
 
+### Decision 9: Cognitive Feedback System
+
+**Decision:** Cognitive stat tracking distributed across `game.js` event handlers (increment at source). Post-game display owned by a new `cognitive-feedback.js` module — pure DOM/UI, no game logic. RC SURVIVED flash handled by `score-popup.js` (same ephemeral DOM lifecycle pattern).
+
+**Rationale:** "Your Brain Today" is the brain-gym identity made visible. It transforms the death screen from failure into cognitive achievement recognition — metacognitive feedback (Flavell, 1979). Architecturally, stat tracking is naturally co-located with the events that trigger it (game.js handlers), while the display is pure UI with its own animation timeline. The RC SURVIVED flash follows the same ephemeral DOM pattern as score popups — no new pattern needed.
+
+**Requirements Covered:** FR70-FR72 (RC SURVIVED), FR75-FR80 (Post-Game Cognitive Feedback)
+
+**cognitiveStats Tracking Points (in game.js handlers):**
+
+```javascript
+// onFoodEaten():
+//   - If activeEffect was reverseControls → gameState.cognitiveStats.rcSurvived++
+//   - If food.isBlinking → gameState.cognitiveStats.mysteryFoodsEaten++
+//   - If combo scored → gameState.cognitiveStats.comboMultipliers++
+//   - If combo scored → gameState.cognitiveStats.peakComboScore = Math.max(peakComboScore, comboValue)
+
+// onPhoneCallDismiss():
+//   - gameState.cognitiveStats.phoneCallsManaged++
+//   - If action === 'pickup' → gameState.cognitiveStats.pickUpStreak++
+//   - If action === 'end' → gameState.cognitiveStats.pickUpStreak = 0
+
+// onDeath():
+//   - Pass cognitiveStats to cognitive-feedback.js for display
+```
+
+**RC SURVIVED Flash:**
+
+```javascript
+// In onFoodEaten(), after scoring:
+if (previousEffect === 'reverseControls') {
+  gameState.cognitiveStats.rcSurvived++;
+  scorePopup.spawnFlash('RC SURVIVED', foodX, foodY + 20, 'rc-survived-flash');
+}
+```
+
+- Content: `"RC SURVIVED"`
+- CSS class: `.rc-survived-flash` (12px, white, 400ms fade-up, z-index: 200)
+- Positioning: 20px below the +8 score popup at same x coordinate
+- Appears 200ms after the +8 popup (popup stagger rule applies)
+- No bonus points — the +8 already compensates. This is cognitive acknowledgment.
+- Uses `score-popup.js` `spawnFlash()` — same ephemeral DOM lifecycle (`animationend` → `remove`)
+
+**`score-popup.js` Extended API:**
+
+```javascript
+// score-popup.js — new function for text flashes (RC SURVIVED)
+export function spawnFlash(text, gridX, gridY, cssClass) {
+  // Creates DOM element with specified CSS class
+  // Positions at grid coordinates (uses gridToPixel)
+  // Self-cleaning via animationend
+  // Respects 300ms stagger rule (checks lastPopupTime)
+}
+```
+
+**`cognitive-feedback.js` Module (NEW):**
+
+```javascript
+// cognitive-feedback.js — Pure UI module for post-game "Your Brain Today" display
+
+export function showCognitiveStats(cognitiveStats) {
+  // 1. Select top 2-3 non-zero stats by value (priority tiebreaker below)
+  // 2. Build DOM: header "Your Brain Today" + stat lines
+  // 3. Animate stat lines in with 300ms stagger per line
+  // 4. Hold for 2.5 seconds
+  // 5. Fade out (500ms)
+  // 6. Dispatch 'cognitive-feedback-done' event (game.js shows Play Again button)
+}
+
+export function hideCognitiveStats() {
+  // Cleanup DOM elements (called on new game reset)
+}
+```
+
+**Stat Selection Logic:**
+
+| Internal Key | Display Text | Show When |
+|---|---|---|
+| `rcSurvived` | "Reverse Controls survived: N" | N > 0 |
+| `phoneCallsManaged` | "Phone calls managed: N" | N > 0 |
+| `mysteryFoodsEaten` | "Mystery foods decoded: N" | N > 0 |
+| `comboMultipliers` | "Combo multipliers earned: N" | N > 0 |
+| `pickUpStreak` | "Pick Up streak: N" | N >= 2 |
+| `peakComboScore` | "Best combo: xN" | N >= 6 |
+
+**Selection rule:** Show top 2-3 stats with highest values. Never show zero-value stats. If only 1 stat qualifies, show only 1. If none qualify (very short game), skip cognitive feedback entirely and show Play Again immediately.
+
+**Priority (if tied):** rcSurvived > comboMultipliers > pickUpStreak > mysteryFoodsEaten > phoneCallsManaged > peakComboScore
+
+**Timing Sequence (game.js onDeath → game over flow):**
+
+```
+1. Death animation plays
+2. Game Over text + score appears
+3. 300ms delay → cognitive-feedback.showCognitiveStats(cognitiveStats)
+4. Stats stagger in (300ms per line, 2-3 lines = 600-900ms)
+5. Stats hold for 2.5 seconds
+6. Stats fade out (500ms)
+7. 'cognitive-feedback-done' event → Play Again button appears
+Total before Play Again: ~3.3 seconds (skipped if no qualifying stats)
+```
+
+**Reduced Motion:** If `CONFIG.REDUCED_MOTION`, stats appear instantly (no stagger, no fade-in), hold for 2.5s, then disappear instantly. Play Again button appears after hold.
+
+**Module Boundaries:**
+- `cognitive-feedback.js` is a **DOM-accessing module** (like phone.js and score-popup.js)
+- It reads `cognitiveStats` from passed data — never accesses `gameState` directly
+- It dispatches a DOM event when done — game.js listens and shows Play Again
+- It does NOT calculate or track stats — that's game.js event handlers' job
+
+### Decision 10: Two-Tier Cognitive Tracking & Analytics
+
+**Decision:** Two-tier tracking model. **Tier 1** (`cognitiveStats`) is player-facing — it drives the "Your Brain Today" display and counts achievements (e.g., "Reverse Controls survived: 4"). **Tier 2** (`analyticsState`) is internal — it provides denominators, timestamps, and distributions that `analytics.js` needs to answer Celia's 7 cognitive validation questions (e.g., RC survival *rate* = `rcSurvived / totalRCFoodsEaten`). `analytics.js` is promoted from deferred to decided.
+
+**Rationale:** Celia's cognitive analytics framework (see `cognitive-analytics-requirements.md`) requires *rates*, not just counts. A rate needs a numerator AND a denominator. `cognitiveStats` provides the numerators (achievements). `analyticsState` provides the denominators (total encounters) plus temporal data (reaction times, dwell times) and cross-system context (combo + phone overlap survival). Keeping these separate preserves the clean, celebratory design of "Your Brain Today" while giving analytics the depth it needs. The player never sees denominators — they'd make the brain gym feel clinical, not fun.
+
+**Requirements Covered:** FR95-FR99 (Analytics), cognitive-analytics-requirements.md (Celia's 7 validation questions)
+
+**The Two-Tier Model:**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    game.js handlers                       │
+│  onFoodEaten(), onPhoneCallDismiss(), onDeath(), etc.    │
+│                                                           │
+│  SAME handlers populate BOTH tiers:                       │
+│                                                           │
+│  ┌─────────────────────┐    ┌──────────────────────────┐ │
+│  │   cognitiveStats     │    │    analyticsState         │ │
+│  │   (Tier 1)           │    │    (Tier 2)               │ │
+│  │                      │    │                            │ │
+│  │  Player-facing       │    │  Internal only             │ │
+│  │  Counts achievements │    │  Denominators + timestamps │ │
+│  │  Drives "Your Brain  │    │  Drives analytics.js       │ │
+│  │   Today" display     │    │  Never shown to player     │ │
+│  └──────────┬───────────┘    └────────────┬──────────────┘ │
+│             │                              │                │
+│             ▼                              ▼                │
+│  cognitive-feedback.js          analytics.js                │
+│  (post-game UI)                 (event tracking)            │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Tracking Points (in game.js handlers):**
+
+```javascript
+// onFoodEaten():
+//   TIER 1 (cognitiveStats):
+//     if previousEffect === 'reverseControls' → cognitiveStats.rcSurvived++
+//     if food.isBlinking → cognitiveStats.mysteryFoodsEaten++
+//     if combo scored → cognitiveStats.comboMultipliers++
+//     if combo scored → cognitiveStats.peakComboScore = max(peak, value)
+//
+//   TIER 2 (analyticsState):
+//     if food.type === 'reverseControls' → analyticsState.totalRCFoodsEaten++
+//     if food.type === 'reverseControls' → analyticsState.rcActivationTick = currentTick
+//     Check milestones: if score crosses [3, 15, 40, 60, 100] → analyticsState.milestonesReached.push(milestone)
+//     if combo triggered → analyticsState.totalCombosTriggered++
+//     if combo completed → analyticsState.comboScores.push(comboValue)
+//     analytics.trackFoodEaten(gameState)  ← fire event with full context
+
+// food.spawnFood():
+//   TIER 2 (analyticsState):
+//     analyticsState.foodSpawnTime = Date.now()
+//     if food.isBlinking → analyticsState.totalBlinkingFoodsSpawned++
+
+// onPhoneCallShow():
+//   TIER 2 (analyticsState):
+//     analyticsState.totalPhoneCalls++
+//     analyticsState.phoneCallShowTime = Date.now()
+//     if combo.active → analyticsState.comboPhoneOverlaps++
+
+// onPhoneCallDismiss(action):
+//   TIER 1 (cognitiveStats):
+//     cognitiveStats.phoneCallsManaged++
+//     if action === 'pickup' → cognitiveStats.pickUpStreak++
+//     if action === 'end' → cognitiveStats.pickUpStreak = 0
+//
+//   TIER 2 (analyticsState):
+//     if action === 'pickup' → analyticsState.totalPickUps++
+//     if action === 'end' → analyticsState.totalEnds++
+//     if action === 'pickup' → analyticsState.pickUpCompletionTime = Date.now()
+//     if combo was paused and resumed → analyticsState.comboPhoneOverlapSurvived++
+//     analytics.trackPhoneCall(gameState, action)  ← fire event with reaction time
+
+// onDeath():
+//   TIER 2 (analyticsState):
+//     analytics.trackGameOver(gameState)  ← fire event with FULL snapshot
+//     (analytics.js reads combo.active, phoneCall.active, phoneCall.pickedUp,
+//      activeEffect, food.isBlinking, score, analyticsState — all at death time)
+
+// cognitive-feedback 'done' event:
+//   TIER 2 (analyticsState):
+//     analyticsState.cognitiveStatsShownTime = Date.now()
+//     (Play Again click → analytics computes dwell time)
+```
+
+**`analytics.js` Module Specification:**
+
+```javascript
+// analytics.js — Non-blocking event tracking
+// Consumes: gameState (including cognitiveStats + analyticsState)
+// Produces: fire-and-forget events to Plausible
+// Constraint: NEVER blocks game loop. NEVER affects 60 FPS.
+
+export function init() {
+  // window.plausible is always defined by inline queue snippet in <head>
+  // Calls before script load are buffered in plausible.q and sent when ready
+  // Generate session ID (sessionStorage)
+}
+
+// All tracking functions use Plausible custom events API:
+//   window.plausible('event_name', { props: { key: value } })
+// Queue pattern: calls never fail — they buffer if script hasn't loaded yet.
+// Plausible is cookie-free, privacy-first, GDPR-compliant by default.
+// Custom event props are limited to string/number values (no nested objects).
+
+export function trackGameStart(gameState) {
+  // Fires: game_start event
+  // Includes: session_id, is_first_game, previous_score
+}
+
+export function trackFoodEaten(gameState) {
+  // Fires: food_eaten event
+  // Includes: food_type, is_blinking, snake_length, score,
+  //           time_to_eat (Date.now() - analyticsState.foodSpawnTime),
+  //           rc_active (was reverse controls the previous effect?)
+}
+
+export function trackPhoneCall(gameState, action) {
+  // Fires: phone_call event
+  // Includes: action ('end'|'pickup'), caller_name,
+  //           reaction_time_ms (Date.now() - analyticsState.phoneCallShowTime),
+  //           pickup_bonus, call_sequence_number (analyticsState.totalPhoneCalls),
+  //           combo_active_during_call, score_at_call
+}
+
+export function trackScoreMilestone(milestone, gameState) {
+  // Fires: score_milestone event
+  // Includes: milestone (3|15|40|60|100), time_to_reach,
+  //           pick_up_count_at_milestone, foods_eaten
+}
+
+export function trackGameOver(gameState) {
+  // Fires: game_over event — THE comprehensive snapshot
+  // Includes all of John's original fields PLUS:
+  //   pick_up_count, end_count, pick_up_rate,
+  //   combo_count (triggered), combo_completion_rate,
+  //   combo_scores (array), combo_active_at_death,
+  //   blinking_foods_spawned, blinking_foods_eaten, blink_eat_rate,
+  //   rc_foods_eaten, rc_survived, rc_survival_rate, rc_active_at_death,
+  //   phone_active_at_death, picked_up_at_death,
+  //   milestones_reached, peak_combo_score,
+  //   cognitive_stats_viewed, food_is_blinking_at_death
+}
+
+export function trackSessionEnd(sessionData) {
+  // Fires: session_end event
+  // Aggregated across all games in visit
+  // Includes: total_games, highest_score, return indicator,
+  //           aggregate pick_up_rate, aggregate rc_survival_rate
+}
+```
+
+**Signal-to-Question Mapping:**
+
+| Celia's Question | Key analyticsState Fields | Derived Signal |
+|---|---|---|
+| Q1: Flow curve | `milestonesReached` | Milestone reach rates across all games |
+| Q2: Divided attention | `totalPhoneCalls`, `totalPickUps`, `totalEnds`, `phoneCallShowTime` | Pick Up rate, End reaction time |
+| Q3: Uncertainty tolerance | `totalBlinkingFoodsSpawned`, `foodSpawnTime` | Blink eat rate, time-to-eat delta |
+| Q4: Working memory | `totalCombosTriggered`, `comboScores`, `comboPhoneOverlaps`, `comboPhoneOverlapSurvived` | Combo completion rate, combo+phone survival |
+| Q5: Executive function | `totalRCFoodsEaten`, `rcActivationTick` | RC survival rate, ticks survived after RC |
+| Q6: Brain gym identity | `cognitiveStatsShownTime` | Stats dwell time, Play Again delay |
+| Q7: Comedy engagement | `pickUpCompletionTime`, `phoneCallShowTime` | One-liner dwell time, first vs. later Pick Up rate |
+
+**Cross-system context at death:** `analytics.js` reads existing gameState fields at death time — no duplication needed:
+
+| Signal | Read From |
+|---|---|
+| Combo active at death | `gameState.combo.active` |
+| Phone active at death | `gameState.phoneCall.active` |
+| Picked up at death | `gameState.phoneCall.pickedUp` |
+| RC active at death | `gameState.activeEffect === 'reverseControls'` |
+| Blinking food at death | `gameState.food.isBlinking` |
+| Score at death | `gameState.score` |
+
+**Module Boundaries:**
+- `analytics.js` is a **read-only consumer** of `gameState` — it never modifies state
+- It reads `cognitiveStats` + `analyticsState` + other gameState fields at event fire time
+- All calls are fire-and-forget — `if (typeof plausible !== 'undefined')` guard clause
+- Game is always playable with analytics disabled/blocked
+- `CONFIG.ANALYTICS_ENABLED` toggle for dev vs. production
+
+**Graceful Degradation:**
+- Tracking script fails to load → game plays normally, analytics silently skipped
+- Events fail to send → no retry, no error visible to player
+- `analyticsState` still populated even without analytics script (costs near-zero — just counter increments)
+
 ### Decision Dependency Chain
 
 ```
@@ -1995,9 +2342,11 @@ config.js (threshold tables + Fibonacci values)
 
 game.js (orchestrator)
   ├─→ scoring.js (calculate)
-  ├─→ score-popup.js (display)
+  ├─→ score-popup.js (display popups + RC SURVIVED flash)
   ├─→ combo.js (delegate when active)
   ├─→ phone.js (schedule, show, dismiss)
+  ├─→ cognitive-feedback.js (post-game "Your Brain Today" display)
+  ├─→ analytics.js (fire-and-forget event tracking — reads cognitiveStats + analyticsState)
   └─→ render.js (draw everything from state)
 ```
 
@@ -2194,6 +2543,9 @@ if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { ... }
 9. Wall Phase scoring reset sequence: read `wallPhaseUsed` → score → clear effect → reset boolean → apply new effect (strict order, never reorder)
 10. `score-popup.js` `gridToPixel()` MUST use `canvas.getBoundingClientRect()` at call time — never assume static canvas positioning
 11. Organize `game.js` orchestration into named handler functions (`onFoodEaten()`, `onPhoneCallShow()`, `onPhoneCallDismiss()`, `onDeath()`) — keep the game loop body thin
+12. Track `cognitiveStats` at source in `game.js` handlers — never in other modules
+13. `cognitive-feedback.js` receives stats as data, dispatches DOM event when done — never accesses `gameState` directly
+14. RC SURVIVED flash uses `score-popup.js` `spawnFlash()` — same ephemeral DOM lifecycle as score popups
 
 **V2 Anti-Patterns to Avoid:**
 
@@ -2239,7 +2591,9 @@ CrazySnakeLite/
 │   ├── scoring.js                # NEW: Pure calculation — calculateFoodScore(), calculateComboScore(), calculatePhoneBonus()
 │   ├── progression.js            # NEW: Score → tier resolution — getState(score) returns {blinkProbability, comboProbability, phoneTier, phoneGraceActive}
 │   ├── combo.js                  # NEW: Combo state machine — activate(), handleFoodEaten(), pause(), resume(), isActive()
-│   └── score-popup.js            # NEW: DOM popup lifecycle — spawnPopup(), spawnParticles(), triggerScreenShake()
+│   ├── score-popup.js            # NEW: DOM popup lifecycle — spawnPopup(), spawnParticles(), triggerScreenShake(), spawnFlash()
+│   ├── cognitive-feedback.js     # NEW: Post-game "Your Brain Today" — showCognitiveStats(), hideCognitiveStats()
+│   └── analytics.js              # NEW: Non-blocking cognitive analytics — trackGameStart/Over/FoodEaten/PhoneCall/Milestone/SessionEnd
 ├── assets/
 │   ├── sounds/                   # 27 MP3 files (14 v1 + 13 v2)
 │   │   ├── move-default-1.mp3 & move-default-2.mp3           (v1: neutral blips)
@@ -2288,7 +2642,7 @@ CrazySnakeLite/
 └── README.md                     # Setup instructions, local server commands
 ```
 
-**Total: 18 JS modules (14 v1 + 4 new) · 49 asset files (27 audio + 21 portraits + 1 fallback)**
+**Total: 20 JS modules (14 v1 + 6 new) · 49 asset files (27 audio + 21 portraits + 1 fallback)**
 
 ### V2 Module Responsibilities & FR Mapping
 
@@ -2311,7 +2665,9 @@ CrazySnakeLite/
 | **scoring.js** _(NEW)_ | Pure scoring calculation — no side effects, no DOM | `calculateFoodScore()`, `calculateComboScore()`, `calculatePhoneBonus()` |
 | **progression.js** _(NEW)_ | Score → tier resolution — pure function, no state | `getState(score)` → `{blinkProbability, comboProbability, phoneTier, phoneGraceActive}` |
 | **combo.js** _(NEW)_ | Combo state machine — activation, dual-effect lifecycle, canvas, pause/resume | `activate()`, `handleFoodEaten()`, `pause()`, `resume()`, `isActive()` |
-| **score-popup.js** _(NEW)_ | DOM popup lifecycle — create, animate, queue, cleanup | `spawnPopup()`, `spawnParticles()`, `triggerScreenShake()` |
+| **score-popup.js** _(NEW)_ | DOM popup lifecycle — create, animate, queue, cleanup | `spawnPopup()`, `spawnParticles()`, `triggerScreenShake()`, `spawnFlash()` (RC SURVIVED) |
+| **cognitive-feedback.js** _(NEW)_ | Post-game "Your Brain Today" cognitive stats display | `showCognitiveStats()`, `hideCognitiveStats()` — pure UI, stat selection, stagger animation |
+| **analytics.js** _(NEW — promoted from deferred)_ | Non-blocking event tracking for cognitive validation | `trackGameStart()`, `trackFoodEaten()`, `trackPhoneCall()`, `trackScoreMilestone()`, `trackGameOver()`, `trackSessionEnd()` — reads cognitiveStats + analyticsState, fire-and-forget |
 
 ### V2 Architectural Boundaries
 
@@ -2357,7 +2713,15 @@ CrazySnakeLite/
     ┌────────────────────────────────────────┐
     │       score-popup.js                    │  ← DOM overlay system
     │  Spawns popups, particles, screen shake │     (no game logic)
+    │  RC SURVIVED flash via spawnFlash()     │
     │  Self-cleaning via animationend         │
+    └────────────────────────────────────────┘
+
+    ┌────────────────────────────────────────┐
+    │    cognitive-feedback.js                │  ← Post-game display
+    │  "Your Brain Today" stats              │     (pure UI, no game logic)
+    │  Stat selection, stagger animation     │
+    │  Dispatches 'cognitive-feedback-done'  │
     └────────────────────────────────────────┘
 ```
 
@@ -2365,13 +2729,14 @@ CrazySnakeLite/
 
 | Boundary | Rule | V2 Additions |
 |----------|------|-------------|
-| **State Access** | Only through passed `gameState` parameter | All 4 new modules follow same pattern |
-| **DOM Access** | `main.js` (setup), `phone.js` (overlay), `score-popup.js` (popups) | score-popup.js is a new DOM-accessing module |
+| **State Access** | Only through passed `gameState` parameter | All 6 new modules follow same pattern |
+| **DOM Access** | `main.js` (setup), `phone.js` (overlay), `score-popup.js` (popups + RC flash), `cognitive-feedback.js` (post-game stats) | score-popup.js and cognitive-feedback.js are new DOM-accessing modules |
 | **Canvas Access** | Only `render.js` draws to canvas | render.js reads combo.canvasColor for background |
 | **Scoring Logic** | Only `scoring.js` calculates score values | No scoring math anywhere else |
 | **Threshold Data** | Only `config.js` holds threshold tables | progression.js reads, never owns thresholds |
 | **Tier Resolution** | Only `progression.js` resolves score → tier | Consumers call getState() once, destructure |
 | **Combo Logic** | Only `combo.js` manages combo state machine | game.js delegates, never manipulates combo fields directly |
+| **Analytics** | Only `analytics.js` fires tracking events | Read-only consumer of gameState — never modifies state |
 | **Audio** | Only `audio.js` | +Priority system prevents concurrent sound mud |
 | **localStorage** | Only `storage.js` | Unchanged |
 | **Configuration** | Only `config.js` (import CONFIG elsewhere) | Massively expanded for v2 |
@@ -2419,8 +2784,12 @@ CrazySnakeLite/
    ├── combo active + effectB exists? → scoring.calculateComboScore() → award + popup
    └── phone pickedUp? → scoring.calculatePhoneBonus('pickup', count) → award + popup
 3. Popups spawned with 300ms stagger
-4. Game over screen shows final score
-5. On restart: state.js resets ALL v2 fields (combo, phone.pickUpCount, ui)
+4. Game over screen shows final score + high score
+5. cognitive-feedback.showCognitiveStats(cognitiveStats) → "Your Brain Today"
+   ├── Top 2-3 non-zero stats displayed with 300ms stagger
+   ├── Hold 2.5s → fade out 500ms
+   └── Dispatch 'cognitive-feedback-done' → Play Again button appears
+6. On restart: state.js resets ALL v2 fields (combo, phone.pickUpCount, ui, cognitiveStats)
 ```
 
 ### V2 index.html Structure
@@ -2452,8 +2821,26 @@ CrazySnakeLite/
   <div id="mystery-tooltip" class="hidden">Mystery Food!</div>
 
   <div id="menu-screen"><!-- unchanged --></div>
-  <div id="gameover-screen" class="hidden"><!-- unchanged --></div>
+  <div id="gameover-screen" class="hidden">
+    <h2>GAME OVER</h2>
+    <p class="final-score"></p>
+    <p class="high-score"></p>
+    <!-- V2: Cognitive feedback section -->
+    <div class="cognitive-stats hidden">
+      <p class="cognitive-stats-header">Your Brain Today</p>
+      <!-- Stat lines injected dynamically by cognitive-feedback.js -->
+    </div>
+    <button id="play-again-btn" class="selected hidden">Play Again</button>
+    <button id="menu-btn" class="hidden">Menu</button>
+  </div>
 </div>
+
+<!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-5lDK3arREKbPzQ_2_Jhfm.js"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
+</script>
 ```
 
 ### V2 CSS Organization
@@ -2489,8 +2876,17 @@ CrazySnakeLite/
 /* .countdown-bar with width animation */
 /* .caller-portrait 64x64 sizing */
 
+/* === V2: RC SURVIVED Flash === */
+/* .rc-survived-flash: 12px white, 400ms fade-up, z-index 200 */
+/* @keyframes rc-flash */
+
 /* === V2: Mystery Tooltip === */
 /* #mystery-tooltip positioning and fade animation */
+
+/* === V2: Cognitive Feedback ("Your Brain Today") === */
+/* .cognitive-stats container, .cognitive-stats-header, .cognitive-stat-line */
+/* @keyframes stat-line-appear: 300ms stagger per line */
+/* Play Again button hidden until 'cognitive-feedback-done' event */
 
 /* === V2: Z-Index Hierarchy === */
 /* #game-canvas: 0 */
@@ -2519,6 +2915,10 @@ CrazySnakeLite/
 | `game.js` | score-popup.js | Score value, grid coordinates, label string |
 | `game.js` | combo.js | pause/resume calls, food eaten delegation |
 | `game.js` | phone.js | show/dismiss calls, scheduling triggers |
+| `game.js` | cognitive-feedback.js | `cognitiveStats` object on death |
+| `cognitive-feedback.js` | game.js (via DOM event) | `'cognitive-feedback-done'` event → show Play Again |
+| `game.js` | analytics.js | gameState snapshot (cognitiveStats + analyticsState + live state) at each event |
+| `analytics.js` | External (Plausible) | Fire-and-forget tracking events via `plausible()` custom events — non-blocking, graceful degradation |
 | `effects.js` | scoring.js (via gameState) | `wallPhaseUsed` boolean for conditional scoring |
 
 **External (unchanged from v1):**
@@ -2545,16 +2945,18 @@ python -m http.server 8000
 ### Coherence Validation ✅
 
 **Decision Compatibility:**
-All 8 v2 architectural decisions work together without conflicts:
+All 10 v2 architectural decisions work together without conflicts:
 - `scoring.js` (pure calculation) → `game.js` (orchestrator) → `score-popup.js` (pure UI) — clean unidirectional flow
 - `progression.js` (pure lookup) feeds thresholds to food.js, game.js, phone.js — single source of truth, no circular dependencies
 - `combo.js` (state machine) delegates scoring to `scoring.js`, canvas visuals to CSS classes — proper separation of concerns
 - `phone.js` (self-contained) queries `progression.js` for scheduling, `scoring.js` for bonuses — no ownership conflicts
 - Guard clause orchestration in `game.js` keeps cross-system rules explicit and co-located
+- `cognitive-feedback.js` (pure UI) receives stats from `game.js` (orchestrator) — same unidirectional pattern as score-popup.js
+- RC SURVIVED flash reuses `score-popup.js` ephemeral DOM lifecycle — no new pattern introduced
 
 **Pattern Consistency:**
 All v2 patterns extend v1 without contradiction:
-- 4 new modules follow named exports, camelCase, explicit gameState passing — identical to v1
+- 6 new modules follow named exports, camelCase, explicit gameState passing — identical to v1
 - `{ type, scoreValue }` effect data format is consistent across combo↔scoring↔game boundaries
 - DOM lifecycle pattern (`animationend` cleanup) is uniform for all ephemeral elements
 - CSS class-based state management applies uniformly (phone overlay states, combo canvas)
@@ -2562,8 +2964,8 @@ All v2 patterns extend v1 without contradiction:
 
 **Structure Alignment:**
 V2 project structure directly supports all architectural decisions:
-- 18 modules map to responsibilities with no overlaps
-- 4 new modules have single, well-defined purposes
+- 20 modules map to responsibilities with no overlaps
+- 6 new modules have single, well-defined purposes
 - Boundary rules are explicit and non-conflicting
 - Data flow diagrams show clean producer→consumer paths
 
@@ -2572,7 +2974,7 @@ V2 project structure directly supports all architectural decisions:
 **Food v2 System — All Requirements Covered:**
 - Fibonacci scoring values (0/+1/+2/+1|3/+5/+8) → `scoring.js` + `config.js`
 - Score popup system (5 visual tiers) → `score-popup.js` + CSS @keyframes
-- Progressive blinking food (score 20+, escalating probability) → `food.js` + `progression.js` + `render.js`
+- Progressive blinking food (score 15+, escalating to 60% cap) → `food.js` + `progression.js` + `render.js`
 - Food color cycling (200ms, 6 colors) → `game.js` updates `blinkCycleIndex`, `render.js` reads
 - Food drop shadow (spatial anchoring) → `render.js`
 - Mystery food tooltip (first encounter) → `game.js` + `gameState.ui.mysteryFoodTooltipShown`
@@ -2585,13 +2987,21 @@ V2 project structure directly supports all architectural decisions:
 **Phone Calls v2 System — All Requirements Covered:**
 - Two-button overlay (End + Pick Up) → `phone.js` DOM + CSS class states
 - Fibonacci Pick Up bonus (+2 to +34) → `scoring.js` + `config.js` PHONE_PICKUP_FIBONACCI
-- Score-based grace period (no calls until score >= 5) → `progression.js` + `config.js` PHONE_GRACE_SCORE
+- Score-based grace period (no calls until score >= 3) → `progression.js` + `config.js` PHONE_GRACE_SCORE
 - Score-based call frequency (5 tiers) → `progression.js` + `config.js` PHONE_CALL_TIERS
 - Variable Pick Up timer (1-3s) + countdown bar → `phone.js` internal
 - 21 callers with portraits + one-liners → `phone.js` CALLERS data + `assets/callers/`
 - Pick Up irreversibility → `phone.js` state machine (ringing → pickedUp, no back)
 - Consolation reward on death → `game.js` onDeath() checks `phoneCall.pickedUp`
 - Portrait fallback → `<img>` onerror → `assets/PhoneIcone01_256px.png`
+
+**Cognitive Feedback System — All Requirements Covered:**
+- RC SURVIVED flash (FR70-FR72) → `game.js` onFoodEaten() detects RC survival, `score-popup.js` spawnFlash()
+- Post-game cognitive stats (FR75-FR80) → `cognitiveStats` in gameState, `cognitive-feedback.js` display
+- 6 cognitive stats tracked (FR76) → incremented in `game.js` event handlers
+- Top 2-3 non-zero stats displayed (FR77) → `cognitive-feedback.js` stat selection logic
+- Stagger animation + Play Again delay (FR78-FR79) → `cognitive-feedback.js` timing sequence
+- Stats reset on new game (FR80) → `state.js` resetGame()
 
 **Cross-System Interaction Rules — All Covered:**
 - Combo pauses during phone → `game.js` orchestration: `combo.pause()` / `combo.resume()`
@@ -2609,18 +3019,18 @@ V2 project structure directly supports all architectural decisions:
 **Non-Functional Requirements — V2 Impact Assessed:**
 - Performance: Fixed timestep unchanged. DOM popups use CSS animations (GPU-composited). Audio priority prevents concurrent playback overload. Blink cycling is a single modulo per frame.
 - Browser compatibility: All v2 features use standard CSS (transitions, @keyframes, custom properties) and standard DOM APIs. No experimental features.
-- Maintainability: 4 new modules, each single-purpose. Scoring economy auditable in one file. Progression thresholds tunable in config.
+- Maintainability: 6 new modules, each single-purpose. Scoring economy auditable in one file. Progression thresholds tunable in config.
 
 ### Implementation Readiness Validation ✅
 
 **Decision Completeness:**
-- All 8 v2 decisions documented with rationale, code examples, and API surfaces
+- All 10 v2 decisions documented with rationale, code examples, and API surfaces
 - Decision dependency chain mapped (config → progression → consumers; config → scoring → game → popup)
 - Module boundaries explicit with producer/consumer table
 - Data flow diagrams for all 3 major scenarios (food eating, phone call, death)
 
 **Structure Completeness:**
-- 18 JS modules defined with responsibilities and FR mapping
+- 20 JS modules defined with responsibilities and FR mapping
 - Complete directory tree with 49 asset files enumerated
 - V2 index.html structure showing new DOM elements
 - CSS organization plan with section comments and z-index hierarchy
@@ -2636,7 +3046,7 @@ V2 project structure directly supports all architectural decisions:
 **Critical Gaps:** None
 
 **Minor Observations (implementation-time clarification, not blocking):**
-1. **`feedback.js` vs `score-popup.js` — No overlap, no consolidation needed.** `feedback.js` is the email feedback modal system (star ratings, character counter, mailto submission) — entirely unrelated to score popups. The naming may appear to suggest overlap, but the modules serve completely different purposes. `feedback.js` manages a persistent user-initiated modal; `score-popup.js` manages ephemeral game-triggered DOM popups. Both are valid DOM-accessing modules with distinct lifecycles. No deprecation or consolidation required.
+1. **`feedback.js` vs `score-popup.js` vs `cognitive-feedback.js` — No overlap, no consolidation needed.** `feedback.js` is the email feedback modal system (star ratings, character counter, mailto submission). `score-popup.js` manages ephemeral game-triggered DOM popups and RC SURVIVED flashes. `cognitive-feedback.js` manages the post-game "Your Brain Today" display. All three are valid DOM-accessing modules with distinct lifecycles and purposes. No deprecation or consolidation required.
 2. Phone ring audio looping strategy (Web Audio loop property vs re-trigger on interval) — implementation detail within `audio.js`
 3. Exact combo canvas color selection algorithm (random from 4 vs round-robin) — implementation detail within `combo.js`
 
@@ -2650,7 +3060,7 @@ V2 project structure directly supports all architectural decisions:
 - [x] New cross-cutting concerns identified (5 new)
 
 **✅ V2 Architectural Decisions**
-- [x] 8 critical v2 decisions documented with rationale and code examples
+- [x] 10 critical v2 decisions documented with rationale and code examples
 - [x] Decision dependency chain mapped
 - [x] Deferred decisions explicitly noted (test runner, color-blind shapes, haptics)
 - [x] All decisions compatible with v1 foundations
@@ -2662,7 +3072,7 @@ V2 project structure directly supports all architectural decisions:
 - [x] Enforcement guidelines updated for combined v1+v2
 
 **✅ V2 Project Structure**
-- [x] Complete v2 directory tree (18 modules, 49 assets)
+- [x] Complete v2 directory tree (20 modules, 49 assets)
 - [x] Module responsibility/FR mapping table
 - [x] V2 architectural boundaries and rules
 - [x] V2 data flow diagrams (food, phone, death)
@@ -2685,7 +3095,7 @@ V2 project structure directly supports all architectural decisions:
 - Score-based progression engine centralizes all threshold logic — single tuning point for Celia's game design
 - Pure scoring module makes the entire Fibonacci economy auditable in one file
 - Guard clause orchestration is explicit, testable, debuggable — appropriate for 5 coordination points
-- 4 new modules each have surgical, non-overlapping responsibilities
+- 6 new modules each have surgical, non-overlapping responsibilities
 - V1 patterns hold unchanged — implementation continuity preserved
 - Comedy-first design (tech pun callers, one-liners) has clear architectural support (CALLERS data, DOM reveal)
 
@@ -2702,22 +3112,23 @@ V2 project structure directly supports all architectural decisions:
 ### Workflow Completion
 
 **Architecture Decision Workflow V2:** COMPLETED ✅
-**Total Steps Completed:** 8 (v1) + 8 (v2 evolution)
+**Total Steps Completed:** 8 (v1) + 9 (v2 evolution)
 **V1 Completed:** 2026-01-23
 **V2 Completed:** 2026-02-07
+**V2 Updated:** 2026-02-08 (Decision 9 + threshold alignment with PRD v2.0)
 **Document Location:** `_bmad-output/planning-artifacts/architecture.md`
 
 ### V2 Final Architecture Deliverables
 
 **Complete V2 Architecture Document**
 - V1 architecture preserved in full (foundation)
-- V2 evolution appended: context analysis, stack confirmation, 8 decisions, 8 patterns, project structure, validation
+- V2 evolution appended: context analysis, stack confirmation, 10 decisions, 8 patterns, project structure, validation
 - 3 design documents fully incorporated (food-v2, phone-calls-v2, ux-design-food-phone-v2)
 
 **V2 Implementation Ready Foundation**
-- 8 v2 architectural decisions made with Tomoco
+- 10 v2 architectural decisions made with Tomoco
 - 8 v2 implementation patterns defined (extending v1 patterns)
-- 18 JavaScript modules specified (14 v1 + 4 new)
+- 20 JavaScript modules specified (14 v1 + 6 new)
 - 49 asset files enumerated (27 audio + 21 portraits + 1 fallback)
 - All v2 functional requirements architecturally supported
 
@@ -2735,20 +3146,21 @@ This architecture document is the complete guide for implementing CrazySnakeLite
 
 **V2 Implementation Sequence:**
 1. Extend `config.js` with all v2 parameters (Fibonacci values, thresholds, tiers, colors)
-2. Extend `state.js` with v2 gameState fields (combo, phone v2, effects, ui)
+2. Extend `state.js` with v2 gameState fields (combo, phone v2, effects, ui, cognitiveStats)
 3. Create `scoring.js` (pure calculation module — foundation for everything)
 4. Create `progression.js` (score → tier resolution — feeds food, game, phone)
-5. Create `score-popup.js` (DOM popup system — CSS animations, particles, shake)
+5. Create `score-popup.js` (DOM popup system — CSS animations, particles, shake, RC SURVIVED flash)
 6. Create `combo.js` (combo state machine — 3-phase lifecycle)
-7. Evolve `phone.js` (two-button UI, Pick Up timer, portraits, one-liners)
-8. Evolve `food.js` (blinking determination via progression.js)
-9. Evolve `effects.js` (wallPhaseUsed tracking)
-10. Evolve `render.js` (blink colors, striped snake, combo canvas, food shadows)
-11. Evolve `game.js` (cross-system orchestration, popup triggering, blink cycling)
-12. Evolve `audio.js` (v2 sounds, priority system)
-13. Evolve `input.js` (Enter key for Pick Up)
-14. Update `index.html` (popup container, phone v2 overlay, mystery tooltip)
-15. Update `style.css` (v2 sections: popups, particles, combo, phone v2, reduced motion)
+7. Create `cognitive-feedback.js` (post-game "Your Brain Today" display — stat selection, stagger animation)
+8. Evolve `phone.js` (two-button UI, Pick Up timer, portraits, one-liners)
+9. Evolve `food.js` (blinking determination via progression.js)
+10. Evolve `effects.js` (wallPhaseUsed tracking)
+11. Evolve `render.js` (blink colors, striped snake, combo canvas, food shadows)
+12. Evolve `game.js` (cross-system orchestration, popup triggering, blink cycling, cognitiveStats tracking, cognitive feedback integration on death)
+13. Evolve `audio.js` (v2 sounds, priority system)
+14. Evolve `input.js` (Enter key for Pick Up)
+15. Update `index.html` (popup container, phone v2 overlay, mystery tooltip, cognitive stats section in game over)
+16. Update `style.css` (v2 sections: popups, particles, combo, phone v2, RC flash, cognitive stats, reduced motion)
 
 ### V2 Quality Assurance Checklist
 
@@ -2767,7 +3179,7 @@ This architecture document is the complete guide for implementing CrazySnakeLite
 **✅ Implementation Readiness**
 - [x] Decisions are specific with code examples and API surfaces
 - [x] Patterns prevent agent conflicts across v2 systems
-- [x] Structure is complete with 18 modules and 49 assets
+- [x] Structure is complete with 20 modules and 49 assets
 - [x] Data flow diagrams guide implementation order
 
 ---
