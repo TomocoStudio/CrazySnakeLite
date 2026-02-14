@@ -91,7 +91,7 @@ This document provides the complete epic and story breakdown for CrazySnakeLite,
 - FR60: "New Game" starts a new game session
 - FR61: "Top Score" displays the player's best score stored in browser localStorage
 - FR62: Post-MVP: Player accounts with database storage for scores
-- FR63: Game over screen displays "GAME OVER!" title text
+- FR63: Game over screen displays "GAME OVER" title text
 - FR64: Game over screen displays "Your score: XX" with final snake length
 - FR65: Game over screen shows two options: "Play Again" and "Menu"
 - FR66: "Play Again" is selected by default on game over screen
@@ -600,7 +600,7 @@ Players can play a basic Snake game - moving the snake, eating food to grow, dyi
 
 **Given** the snake has died
 **When** the game over screen appears
-**Then** "GAME OVER!" text is displayed prominently
+**Then** "GAME OVER" text is displayed prominently
 **And** the final score (snake length) is displayed
 **And** "Play Again" button is visible and selected by default
 **And** the game over screen uses retro pixel art styling
@@ -1162,7 +1162,7 @@ Players enjoy the complete polished game with retro 8-bit sound effects, proper 
 
 **Given** the snake dies
 **When** the game over screen appears
-**Then** "GAME OVER!" title text is displayed prominently
+**Then** "GAME OVER" title text is displayed prominently
 **And** "Your score: XX" shows the final snake length
 **And** "Play Again" button is visible
 **And** "Menu" button is visible

@@ -198,7 +198,7 @@ Players can play a basic Snake game - moving the snake, eating food to grow, dyi
 
 **Given** the snake has died
 **When** the game over screen appears
-**Then** "GAME OVER!" text is displayed prominently
+**Then** "GAME OVER" text is displayed prominently
 **And** the final score (snake length) is displayed
 **And** "Play Again" button is visible and selected by default
 **And** the game over screen uses retro pixel art styling

@@ -18,7 +18,7 @@
 
 **Given** the snake dies
 **When** the game over screen appears
-**Then** "GAME OVER!" title text is displayed prominently
+**Then** "GAME OVER" title text is displayed prominently
 **And** "Your score: XX" shows the final snake length
 **And** "Play Again" button is visible
 **And** "Menu" button is visible
@@ -53,7 +53,7 @@
 ## Tasks / Subtasks
 
 - [x] Add game over screen DOM to index.html
-  - [x] "GAME OVER!" title
+  - [x] "GAME OVER" title
   - [x] "Your score: XX" display
   - [x] "Play Again" button (default selected)
   - [x] "Menu" button
@@ -84,7 +84,7 @@
 Enhance **Game Over Screen** with clear options and high score saving.
 
 **CRITICAL SUCCESS FACTORS:**
-- "GAME OVER!" title displays prominently
+- "GAME OVER" title displays prominently
 - Final score shown
 - Play Again responds within 100ms
 - High score saved automatically
@@ -102,7 +102,7 @@ Enhance **Game Over Screen** with clear options and high score saving.
 
 ```html
 <div id="gameover-screen" class="hidden">
-  <h2>GAME OVER!</h2>
+  <h2>GAME OVER</h2>
   <p class="final-score">Your score: <span id="score-value">0</span></p>
   <p id="new-high-score-indicator" class="new-high-score hidden">*** NEW HIGH SCORE! ***</p>
   <button id="play-again-btn" class="selected">Play Again</button>

@@ -120,7 +120,7 @@ Players enjoy the complete polished game with retro 8-bit sound effects, proper 
 
 **Given** the snake dies
 **When** the game over screen appears
-**Then** "GAME OVER!" title text is displayed prominently
+**Then** "GAME OVER" title text is displayed prominently
 **And** "Your score: XX" shows the final snake length
 **And** "Play Again" button is visible
 **And** "Menu" button is visible

@@ -913,7 +913,7 @@ CrazySnakeLite/
       <button id="high-score-btn">Top Score</button>
     </div>
     <div id="gameover-screen" class="hidden">
-      <h2>GAME OVER!</h2>
+      <h2>GAME OVER</h2>
       <p class="final-score"></p>
       <button id="play-again-btn" class="selected">Play Again</button>
       <button id="menu-btn">Menu</button>

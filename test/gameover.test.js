@@ -28,8 +28,8 @@ export function runGameOverTests() {
   try {
     const title = document.querySelector('#gameover-screen h2');
 
-    if (title && title.textContent === 'GAME OVER!') {
-      console.log('✅ Test 2 PASSED: "GAME OVER!" title exists');
+    if (title && title.textContent === 'GAME OVER') {
+      console.log('✅ Test 2 PASSED: "GAME OVER" title exists');
       passed++;
     } else {
       console.error('❌ Test 2 FAILED: Game over title incorrect or missing');

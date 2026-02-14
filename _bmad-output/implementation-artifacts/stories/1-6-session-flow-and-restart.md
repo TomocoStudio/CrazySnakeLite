@@ -17,7 +17,7 @@
 
 **Given** the snake has died
 **When** the game over screen appears
-**Then** "GAME OVER!" text is displayed prominently
+**Then** "GAME OVER" text is displayed prominently
 **And** the final score (snake length) is displayed
 **And** "Play Again" button is visible and selected by default
 **And** the game over screen uses retro pixel art styling
@@ -41,7 +41,7 @@
 
 - [x] Create game over screen HTML structure (AC: DOM elements exist)
   - [x] Add gameover-screen div to index.html
-  - [x] Add "GAME OVER!" title element
+  - [x] Add "GAME OVER" title element
   - [x] Add final-score display element
   - [x] Add "Play Again" button (default selected)
   - [x] Add "Menu" button (for future Story 4.3)
@@ -170,7 +170,7 @@ From architecture.md:
 
     <!-- NEW: Game Over Screen -->
     <div id="gameover-screen" class="hidden">
-      <h2>GAME OVER!</h2>
+      <h2>GAME OVER</h2>
       <p class="final-score">Your score: <span id="score-value">0</span></p>
       <button id="play-again-btn" class="selected">Play Again</button>
       <button id="menu-btn">Menu</button>
@@ -586,7 +586,7 @@ console.log('CrazySnakeLite started - eat food to grow!');
 - Z-index: 100 (appears above game canvas)
 
 **Text Elements:**
-- Title: "GAME OVER!" - 32px, purple (#9D4EDD) with text shadow glow
+- Title: "GAME OVER" - 32px, purple (#9D4EDD) with text shadow glow
 - Score: "Your score: XX" - 18px, light grey (#E8E8E8)
 - Letter spacing on title: 2px (retro aesthetic)
 
@@ -612,7 +612,7 @@ console.log('CrazySnakeLite started - eat food to grow!');
 1. **Game Over Screen Appearance:**
    - Die (crash into wall or self)
    - Game over screen appears immediately
-   - "GAME OVER!" title visible and styled correctly
+   - "GAME OVER" title visible and styled correctly
    - Final score displays correct value (snake length)
    - "Play Again" button visible with selected state
    - "Menu" button visible (non-functional for now)
@@ -769,7 +769,7 @@ FR35-FR40, FR63-FR67
 - FR38: Final score visible on death → scoreValueElement shows gameState.score
 - FR39: Restart immediately without navigation → Play Again button in same screen
 - FR40: Sessions are independent → resetGame() clears all state
-- FR63: "GAME OVER!" title displayed → h2 element with styled text
+- FR63: "GAME OVER" title displayed → h2 element with styled text
 - FR64: Final score with snake length → "Your score: XX" with actual value
 - FR65: Two options (Play Again, Menu) → Both buttons present
 - FR66: Play Again selected by default → class="selected" applied
@@ -794,7 +794,7 @@ FR35-FR40, FR63-FR67
 - [ ] js/input.js handles Enter key for game over
 - [ ] js/main.js wires up Play Again button click handler
 - [ ] Game over screen appears on death
-- [ ] Game over screen displays "GAME OVER!" title
+- [ ] Game over screen displays "GAME OVER" title
 - [ ] Final score displays correctly (snake length value)
 - [ ] "Play Again" button is selected by default
 - [ ] "Menu" button is present (placeholder)
