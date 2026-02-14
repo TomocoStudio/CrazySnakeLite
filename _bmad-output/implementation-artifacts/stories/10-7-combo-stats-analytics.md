@@ -2,8 +2,10 @@
 
 **Epic:** 10 - Combo Mode System
 **Story ID:** 10.7
-**Status:** 🔴 not started
+**Status:** ✅ review
 **Created:** 2026-02-08
+**Completed:** 2026-02-14
+**Reviewed:** 2026-02-14
 
 ---
 
@@ -418,19 +420,81 @@ Prepares for Epic 11 (Cognitive Feedback) and Epic 12 (Analytics System)
 
 ### Agent Model Used
 
-_To be filled by implementing agent_
+Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 
 ### Debug Log References
 
-_To be filled during implementation_
+No debug issues encountered during implementation.
 
 ### Completion Notes List
 
-_To be filled on completion_
+**Implementation Summary:**
+- Added analytics state fields to state.js (createInitialState):
+  - analyticsState.totalCombosTriggered (tracks combo activations / Effect A)
+  - analyticsState.comboPhoneOverlaps (phone calls during active combo)
+  - analyticsState.comboPhoneOverlapSurvived (survived phone calls during combo)
+  - analyticsState.combo_active (combo active at death for game_over event)
+- Note: cognitiveStats.comboMultipliers, peakComboScore, and analyticsState.comboScores already added in Story 10.4
+- Added tracking in combo.js activateCombo():
+  - totalCombosTriggered += 1 when combo activates
+- Added tracking in phone.js showPhoneCall():
+  - comboPhoneOverlaps += 1 if combo.active when call shows
+- Added tracking in phone.js endCall() and pickUpCall():
+  - comboPhoneOverlapSurvived += 1 if combo.active when call dismissed
+- Added tracking in game.js death logic:
+  - combo_active = combo.active before phase set to 'gameover'
+  - Logs combo state at death (Effect A, Effect B)
+- Created comprehensive test suite (combo-stats-analytics.test.js) with:
+  - State initialization tests (all counters start at 0)
+  - Combo activation tracking tests (totalCombosTriggered)
+  - Combo completion tracking tests (comboMultipliers)
+  - Peak combo score tests (highest score tracking)
+  - Combo scores array tests (all scores collected)
+  - Phone + combo overlap tests (overlaps and survival)
+  - combo_active at death tests (inside and outside combo)
+  - Activation without completion tests (opportunity vs engagement)
+  - Stats reset tests (new game clears all counters)
+  - Edge case tests (100 combos, phone at combo exit)
+
+**Technical Decisions:**
+- Separated activation (totalCombosTriggered) from completion (comboMultipliers) metrics
+  - Activation = opportunity metric (Effect A consumed)
+  - Completion = engagement metric (Effect B consumed)
+- Peak score uses Math.max() with proper null/undefined handling
+- Combo scores array uses Array.push() for reliability
+- Phone overlap survival tracked in both endCall() and pickUpCall()
+  - Both actions count as "survival" (player handled the interruption)
+- combo_active captured at death for analytics (not just boolean, but full state logged)
+
+**Analytics Design:**
+1. **Opportunity vs Engagement:**
+   - totalCombosTriggered: how often combo activates (system offers opportunity)
+   - comboMultipliers: how often player completes combo (player engages)
+   - Ratio reveals engagement rate with combo system
+
+2. **Quality Metrics:**
+   - peakComboScore: highlights player's best performance (achievement tracking)
+   - comboScores array: enables histogram analysis of combo quality distribution
+
+3. **Cognitive Load Metrics:**
+   - comboPhoneOverlaps: measures simultaneous task demands
+   - comboPhoneOverlapSurvived: measures player's dual-task handling ability
+   - Ratio reveals success rate under cognitive load
+
+4. **Death Context:**
+   - combo_active flag: enriches death events with combo context
+   - Enables analysis: "Do players die more often during combo mode?"
+
+**Prepares for Epic 11 & 12:**
+- Epic 11 (Cognitive Feedback): "Your Brain Today" display uses these stats
+- Epic 12 (Analytics System): Plausible events enriched with combo context
+- All stats reset per-game (fresh analytics for each session)
 
 ### File List
 
-- js/state.js (modified - add cognitiveStats and analyticsState combo counters)
+- js/state.js (modified - added totalCombosTriggered, comboPhoneOverlaps, comboPhoneOverlapSurvived, combo_active)
 - js/combo.js (modified - track totalCombosTriggered in activateCombo)
-- js/game.js (modified - track comboMultipliers, peakComboScore, comboScores, combo_active at death)
-- js/phone.js (modified - track comboPhoneOverlaps, comboPhoneOverlapSurvived)
+- js/game.js (modified - track combo_active at death, log combo state)
+- js/phone.js (modified - track comboPhoneOverlaps in showPhoneCall, comboPhoneOverlapSurvived in endCall/pickUpCall)
+- test/combo-stats-analytics.test.js (new - comprehensive combo analytics tests)
+- test/index.html (modified - added combo-stats-analytics.test.js import)

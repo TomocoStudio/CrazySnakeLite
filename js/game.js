@@ -7,9 +7,11 @@ import { spawnFood } from './food.js';
 import { applyEffect, clearEffect } from './effects.js';
 import { checkPhoneCallTiming, dismissPhoneCall, scheduleNextCall, hidePhoneOverlay } from './phone.js';
 import { trackPhoneCall } from './analytics.js';
-import { playMoveSound, playDeathSound } from './audio.js';
+import { playMoveSound, playDeathSound, playJackpot, playLegendary, playComboExit } from './audio.js';
 import { getFoodScore } from './scoring.js';
-import { spawnPopup, spawnPhoneBonusPopup, spawnParticles, triggerScreenShake, gridToPixel } from './score-popup.js';
+import { spawnPopup, spawnPhoneBonusPopup, spawnComboPopup, spawnParticles, triggerScreenShake, gridToPixel } from './score-popup.js';
+import { getComboProbability } from './progression.js';
+import { activateCombo, isComboActive, exitCombo } from './combo.js';
 
 const TICK_RATE = CONFIG.TICK_RATE;
 
@@ -102,6 +104,77 @@ function update(gameState) {
       gameState.cognitiveStats.mysteryFoodsEaten += 1;
     }
 
+    // Story 10.1: Check combo activation (only if combo not already active)
+    if (!isComboActive(gameState) && gameState.score >= 40) {
+      const comboProbability = getComboProbability(gameState.score);
+
+      if (Math.random() < comboProbability) {
+        // Activate combo with current food as Effect A
+        activateCombo({ type: effectType }, gameState);
+
+        // Story 10.7: Track combo activation (Review fix: moved from combo.js to game.js for proper module boundaries)
+        gameState.analyticsState.totalCombosTriggered += 1;
+      }
+    }
+
+    // Story 10.3 + 10.4 + 10.6: Handle combo food progression (if combo is active AND phone not active)
+    if (isComboActive(gameState)) {
+      // Story 10.6: Pause combo progression during phone calls
+      if (CONFIG.COMBO_PAUSE_ON_PHONE && gameState.phoneCall.active) {
+        console.log('[Combo] Paused during phone call. foodCount unchanged:', gameState.combo.foodCount);
+        // Combo state fully preserved (effectA, effectB, canvasColor, striped snake)
+        // Skip combo progression - player must dismiss phone before combo advances
+      } else {
+        // Phone not active - proceed with normal combo progression
+        if (gameState.combo.foodCount === 1) {
+          // Second food during combo → set Effect B + award multiplicative score
+          gameState.combo.effectB = {
+            type: effectType,
+            points: scoreIncrease
+          };
+          gameState.combo.foodCount = 2;
+
+          // Story 10.4: Calculate multiplicative score (A × B)
+          const comboScore = gameState.combo.effectA.points * gameState.combo.effectB.points;
+
+          // Award combo score (in addition to base food score already awarded)
+          gameState.score += comboScore;
+
+          // Spawn combo popup at snake head
+          const head = gameState.snake.segments[0];
+          spawnComboPopup(comboScore, head.x, head.y);
+
+          // Story 10.4: Play audio cues for high-value combos
+          if (comboScore >= CONFIG.COMBO_LEGENDARY_THRESHOLD) {
+            playLegendary();
+          } else if (comboScore >= CONFIG.COMBO_JACKPOT_THRESHOLD) {
+            playJackpot();
+          }
+
+          // Story 10.4: Track combo stats
+          gameState.cognitiveStats.comboMultipliers += 1;
+          gameState.cognitiveStats.peakComboScore = Math.max(
+            gameState.cognitiveStats.peakComboScore,
+            comboScore
+          );
+          gameState.analyticsState.comboScores.push(comboScore);
+
+          console.log(`[Combo] Effect B: ${effectType} (+${scoreIncrease}), Multiplier: ${gameState.combo.effectA.points} × ${gameState.combo.effectB.points} = ${comboScore}`);
+        } else if (gameState.combo.foodCount === 2) {
+          // Story 10.5: Third food → exit combo
+          gameState.combo.foodCount = 3; // Mark as exiting
+
+          // Exit combo mode (transition canvas, reset state)
+          exitCombo(gameState);
+
+          // Play exit audio (deflation tone)
+          playComboExit();
+
+          console.log('[Combo] Exited after third food.');
+        }
+      }
+    }
+
     // Story 7.2: Spawn score popup at food position (temporal contiguity <200ms)
     spawnPopup(scoreIncrease, foodPosition.x, foodPosition.y, '', effectType);
 
@@ -161,6 +234,15 @@ function update(gameState) {
     // Auto-dismiss phone if active (Story 3.3)
     if (gameState.phoneCall.active) {
       dismissPhoneCall(gameState);
+    }
+
+    // Story 10.7: Track combo state at death (for analytics)
+    gameState.analyticsState.combo_active = gameState.combo.active;
+
+    if (gameState.combo.active) {
+      const effectA = gameState.combo.effectA?.type || 'none';
+      const effectB = gameState.combo.effectB?.type || 'none';
+      console.log(`[Game] Died during combo (Effect A: ${effectA}, Effect B: ${effectB})`);
     }
 
     // Play death sound (Bug fix)
