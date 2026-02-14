@@ -203,8 +203,6 @@ function update(gameState) {
 
       // Track survival in cognitive stats
       gameState.cognitiveStats.rcSurvived += 1;
-
-      console.log(`[RC] Survived! Total: ${gameState.cognitiveStats.rcSurvived}`);
     }
 
     // Note: Wall Phase bonus (+2) is awarded immediately in snake.js when wall is crossed

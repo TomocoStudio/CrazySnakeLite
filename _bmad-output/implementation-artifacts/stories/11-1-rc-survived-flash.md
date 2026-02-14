@@ -23,16 +23,16 @@
 **Given** I am navigating with Reverse Controls active
 **When** I successfully eat the next food without dying
 **Then** a "RC SURVIVED" text flash appears:
-- Content: "RC SURVIVED" (uppercase, white text)
-- Font: Jersey20, 12px
+- Content: "RC SURVIVED" (uppercase, orange text — matches RC food color)
+- Font: Jersey20, 48px, extra bold (900 weight)
 - Position: 20px below the +8 score popup
-- Animation: 400ms fade-up and fade-out
+- Animation: 2500ms fade-up and fade-out (long enough to register during gameplay)
 - Appears 200ms after the +8 popup (stagger rule)
 
 **Given** the "RC SURVIVED" flash appears
 **When** the animation plays
 **Then** the flash does not obstruct gameplay
-**And** the flash auto-removes after 400ms
+**And** the flash auto-removes after 2500ms
 
 **Given** I eat Reverse Controls but die before eating the next food
 **When** death occurs
@@ -46,19 +46,19 @@
   - [x] Set to true when Reverse Controls activates
   - [x] Set to false when effect ends (next food eaten or death)
 - [x] Implement spawnFlash(text, x, y) in score-popup.js
-  - [x] Similar to spawnComboPopup but smaller, faster
+  - [x] Similar to spawnComboPopup but bold, high-visibility
   - [x] Create DOM element with text
   - [x] Position at x, y with 20px offset below popup
   - [x] Apply .rc-survived-flash CSS class
-  - [x] Auto-remove after 400ms (using animationend event)
+  - [x] Auto-remove after 2500ms (using animationend event)
 - [x] Check RC survival on food consumption
   - [x] In game.js food collision handler: if reverseControlsActive && !died
   - [x] Call spawnFlash("RC SURVIVED", x, y + 20)
   - [x] Increment cognitiveStats.rcSurvived
   - [x] Deactivate reverseControlsActive flag (via clearEffect/applyEffect)
 - [x] Add .rc-survived-flash CSS class
-  - [x] Font: Jersey20, 12px, white text
-  - [x] Animation: fade-up and fade-out over 400ms
+  - [x] Font: Jersey20, 48px, orange (#FFA500), 900 weight with orange glow
+  - [x] Animation: fade-up and fade-out over 2500ms
   - [x] No background (text only)
 - [x] Test RC survival (unit tests created)
   - [x] Unit test: reverseControlsActive flag tracking
@@ -80,7 +80,7 @@ Provide immediate metacognitive feedback when players successfully navigate Reve
 **CRITICAL SUCCESS FACTORS:**
 - Flash only appears on successful survival (not on death)
 - Flash positioned below +8 popup (200ms stagger)
-- Flash auto-removes after 400ms (non-intrusive)
+- Flash auto-removes after 2500ms (bold but non-blocking)
 - cognitiveStats.rcSurvived tracks successful survivals only
 
 ---
@@ -109,7 +109,7 @@ Provide immediate metacognitive feedback when players successfully navigate Reve
 6. game.js: spawnFlash("RC SURVIVED", x, y + 20)
 7. game.js: cognitiveStats.rcSurvived += 1
 8. effects.js: reverseControlsActive = false
-9. Flash animates for 400ms then auto-removes
+9. Flash animates for 2500ms then auto-removes
 ```
 
 ---
@@ -181,12 +181,10 @@ export function spawnFlash(text, x, y) {
   // Add to DOM
   document.body.appendChild(flash);
 
-  // Auto-remove after 400ms
-  setTimeout(() => {
-    if (flash.parentNode) {
-      flash.parentNode.removeChild(flash);
-    }
-  }, 400);
+  // Auto-remove after animation completes (using animationend event)
+  flash.addEventListener('animationend', () => {
+    flash.remove();
+  });
 }
 ```
 
@@ -231,15 +229,14 @@ function onFoodEaten(food, gameState) {
 .rc-survived-flash {
   position: fixed;
   font-family: 'Jersey20', sans-serif;
-  font-size: 12px;
-  color: white;
-  font-weight: bold;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+  font-size: 48px;
+  color: #FFA500;  /* Orange - matches RC food color */
+  font-weight: 900;
+  text-shadow: 0 0 12px rgba(255, 165, 0, 0.9),
+               2px 2px 4px rgba(0, 0, 0, 1);
   pointer-events: none;
   z-index: 1000;
-
-  /* Fade-up animation */
-  animation: rcFlashFadeUp 400ms ease-out;
+  animation: rcFlashFadeUp 2500ms ease-out forwards;
 }
 
 @keyframes rcFlashFadeUp {
@@ -269,7 +266,7 @@ function onFoodEaten(food, gameState) {
    - Eat next food successfully
    - Verify "RC SURVIVED" flash appears
    - Verify flash positioned 20px below +8 popup
-   - Verify flash displays for ~400ms then disappears
+   - Verify flash displays for ~2500ms then disappears
 
 2. **Flash Timing (200ms Stagger):**
    - Eat Reverse Controls food
@@ -295,8 +292,8 @@ function onFoodEaten(food, gameState) {
 
 6. **Flash Does Not Obstruct Gameplay:**
    - Spawn flash during active gameplay
-   - Verify flash is small (12px font)
-   - Verify flash does not block snake or food visibility
+   - Verify flash is bold (48px orange) but pointer-events: none
+   - Verify flash does not block snake or food input
 
 **Edge Cases:**
 - Eat Reverse Controls twice in a row (2 flashes, 2 survivals)
@@ -336,7 +333,7 @@ setTimeout(() => spawnFlash(), 0);    // WRONG (no stagger)
 **Key Design Principles:**
 - **Metacognitive feedback:** Make players aware of their cognitive accomplishments
 - **Immediate recognition:** Flash appears right when survival confirmed
-- **Non-intrusive:** 400ms duration, small font, auto-removes
+- **Non-intrusive:** 2500ms duration, bold but pointer-events: none, auto-removes
 - **Achievement framing:** Transforms hard moment into recognized accomplishment
 
 ---
@@ -348,7 +345,7 @@ FR70-FR72 (RC SURVIVED flash on successful navigation)
 **Detailed FR Mapping:**
 - FR70: Flash appears when player survives Reverse Controls → onFoodEaten() check
 - FR71: Flash positioned below +8 popup with 200ms stagger → setTimeout + y + 20
-- FR72: Flash auto-removes after 400ms → setTimeout cleanup
+- FR72: Flash auto-removes after 2500ms → animationend cleanup
 
 ---
 
@@ -363,13 +360,13 @@ FR70-FR72 (RC SURVIVED flash on successful navigation)
 - [ ] Flash DOM element created with text content
 - [ ] .rc-survived-flash CSS class applied
 - [ ] Flash positioned at x, y + 20 (20px below popup)
-- [ ] Flash auto-removes after 400ms
+- [ ] Flash auto-removes after 2500ms
 - [ ] onFoodEaten() checks if reverseControlsActive = true
 - [ ] If true: spawnFlash("RC SURVIVED", x, y + 20)
 - [ ] If true: cognitiveStats.rcSurvived += 1
 - [ ] Flash appears 200ms after +8 popup (stagger)
-- [ ] Flash font: Jersey20, 12px, white
-- [ ] Flash animation: fade-up and fade-out (400ms)
+- [ ] Flash font: Jersey20, 48px, orange (#FFA500), 900 weight
+- [ ] Flash animation: fade-up and fade-out (2500ms)
 - [ ] No flash appears on death before next food
 - [ ] cognitiveStats.rcSurvived does NOT increment on death
 - [ ] Manual testing checklist completed
@@ -409,7 +406,7 @@ Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 **Core Functionality:**
 - `effects.reverseControlsActive` flag tracks RC active state
 - Flag set to `true` when RC activates, `false` when cleared
-- `spawnFlash(text, x, y)` creates DOM flash element with 400ms fade-up animation
+- `spawnFlash(text, x, y)` creates DOM flash element with 2500ms fade-up animation
 - RC survival check in `game.js` food collision handler (before effect changes)
 - Flash spawned at food position + 20px vertical offset with 200ms stagger delay
 - `cognitiveStats.rcSurvived` increments on successful survival

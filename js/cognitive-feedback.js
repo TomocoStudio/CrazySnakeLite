@@ -73,7 +73,6 @@ export function showCognitiveStats(gameState) {
     const linesContainer = document.querySelector('.cognitive-stats-lines');
 
     if (!container || !linesContainer) {
-      console.warn('[Cognitive Feedback] Container elements not found');
       resolve();
       return;
     }
@@ -84,12 +83,9 @@ export function showCognitiveStats(gameState) {
     // Select top stats
     const topStats = selectTopStats(gameState.cognitiveStats);
 
-    console.log('[Cognitive Feedback] Top stats:', topStats);
-
     // If no stats, hide container and resolve immediately
     if (topStats.length === 0) {
       container.classList.add('hidden');
-      console.log('[Cognitive Feedback] No stats to display (all zeros)');
       resolve();
       return;
     }
@@ -107,12 +103,10 @@ export function showCognitiveStats(gameState) {
       if (!CONFIG.REDUCED_MOTION) {
         const delay = index * CONFIG.COGNITIVE_STATS_DISPLAY.staggerDelay;
         line.style.animationDelay = `${delay}ms`;
-        console.log(`[Cognitive Feedback] Added stat line ${index + 1}: ${line.textContent} (delay: ${delay}ms)`);
       } else {
         // Reduced motion: instant appearance (no delay, no animation)
         line.style.opacity = '1';
         line.style.animation = 'none';
-        console.log(`[Cognitive Feedback] Added stat line ${index + 1}: ${line.textContent} (reduced motion - instant)`);
       }
 
       linesContainer.appendChild(line);
@@ -123,17 +117,13 @@ export function showCognitiveStats(gameState) {
     const staggerTime = CONFIG.REDUCED_MOTION ? 0 : topStats.length * CONFIG.COGNITIVE_STATS_DISPLAY.staggerDelay;
     const totalDisplayTime = staggerTime + CONFIG.COGNITIVE_STATS_DISPLAY.holdDuration;
 
-    console.log(`[Cognitive Feedback] Timing: ${topStats.length} stats, stagger ${staggerTime}ms, hold ${CONFIG.COGNITIVE_STATS_DISPLAY.holdDuration}ms, total ${totalDisplayTime}ms (reduced motion: ${CONFIG.REDUCED_MOTION})`);
-
     // Hold visible, then fade out
     setTimeout(() => {
-      console.log('[Cognitive Feedback] Starting fade-out');
       hideCognitiveStats();
 
       // Story 11.6: Resolve after fade completes (instant if reduced motion)
       const fadeDuration = CONFIG.REDUCED_MOTION ? 0 : CONFIG.COGNITIVE_STATS_DISPLAY.fadeDuration;
       setTimeout(() => {
-        console.log('[Cognitive Feedback] Sequence complete');
         resolve();
       }, fadeDuration);
     }, totalDisplayTime);
@@ -150,7 +140,7 @@ export function hideCognitiveStats() {
   const header = document.querySelector('.cognitive-stats-header');
   const lines = document.querySelectorAll('.cognitive-stat-line');
 
-  if (!header || !lines) {
+  if (!container || !header) {
     return;
   }
 
@@ -158,7 +148,6 @@ export function hideCognitiveStats() {
   if (CONFIG.REDUCED_MOTION) {
     // Reduced motion: instant disappearance
     container.classList.add('hidden');
-    console.log('[Cognitive Feedback] Instant hide (reduced motion)');
   } else {
     // Normal: fade-out animation
     header.classList.add('fade-out');

@@ -46,8 +46,6 @@ export function gridToPixel(gridX, gridY) {
  * @param {number} y - Y position in viewport pixels
  */
 export function spawnFlash(text, x, y) {
-  console.log(`[spawnFlash] Creating flash: "${text}" at (${x}, ${y})`);
-
   const flash = document.createElement('div');
   flash.className = 'rc-survived-flash';
   flash.textContent = text;
@@ -56,15 +54,11 @@ export function spawnFlash(text, x, y) {
   flash.style.left = `${x}px`;
   flash.style.top = `${y}px`;
 
-  console.log(`[spawnFlash] Flash element:`, flash);
-
   // Add to DOM
   document.body.appendChild(flash);
-  console.log(`[spawnFlash] Flash added to DOM. Total .rc-survived-flash elements:`, document.querySelectorAll('.rc-survived-flash').length);
 
-  // Auto-remove after 400ms (using animationend for consistency)
+  // Auto-remove after animation completes (2500ms)
   flash.addEventListener('animationend', () => {
-    console.log(`[spawnFlash] Flash animation ended, removing element`);
     flash.remove();
   });
 }

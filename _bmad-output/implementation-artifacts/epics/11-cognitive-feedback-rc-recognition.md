@@ -1,8 +1,8 @@
 # Epic 11: Cognitive Feedback & RC Recognition
 
-**Status:** 🔴 NOT STARTED
+**Status:** ✅ COMPLETE
 **Created:** 2026-02-08
-**Completed:** —
+**Completed:** 2026-02-14
 
 ---
 
@@ -33,16 +33,16 @@ Transform the death screen from "I failed" into "look what my brain just did" by
 **Given** I am navigating with Reverse Controls active
 **When** I successfully eat the next food without dying
 **Then** a "RC SURVIVED" text flash appears:
-- Content: "RC SURVIVED" (uppercase, white text)
-- Font: Jersey20, 12px
+- Content: "RC SURVIVED" (uppercase, orange text — matches RC food color)
+- Font: Jersey20, 48px, extra bold (900 weight)
 - Position: 20px below the +8 score popup
-- Animation: 400ms fade-up and fade-out
+- Animation: 2500ms fade-up and fade-out (long enough to register during gameplay)
 - Appears 200ms after the +8 popup (stagger rule)
 
 **Given** the "RC SURVIVED" flash appears
 **When** the animation plays
 **Then** the flash does not obstruct gameplay
-**And** the flash auto-removes after 400ms
+**And** the flash auto-removes after 2500ms
 
 **Given** I eat Reverse Controls but die before eating the next food
 **When** death occurs
@@ -54,7 +54,7 @@ Transform the death screen from "I failed" into "look what my brain just did" by
 - On food consumption after RC: if reverseControlsActive && !died → survived
 - Call spawnFlash("RC SURVIVED", x, y) from score-popup.js
 - Position 20px below +8 popup using same x coordinate
-- Use .rc-survived-flash CSS class with fade animation
+- Use .rc-survived-flash CSS class with 2500ms fade animation
 - Increment cognitiveStats.rcSurvived ONLY on successful survival
 
 **FRs:** FR70-FR72
@@ -317,28 +317,28 @@ Transform the death screen from "I failed" into "look what my brain just did" by
 - `.cognitive-stats` container styling
 - `.cognitive-stats-header` purple theme
 - `.cognitive-stat-line` with fade-in animation
-- `.rc-survived-flash` with 400ms fade animation
+- `.rc-survived-flash` with 2500ms fade animation
 
 ---
 
 ## Definition of Done
 
-- [ ] All 6 stories complete with passing acceptance criteria
-- [ ] "RC SURVIVED" flash appears on successful RC survival
-- [ ] Flash positioned 20px below +8 popup with 200ms stagger
-- [ ] Flash duration 400ms with auto-cleanup
-- [ ] 6 cognitive stats tracked during gameplay
-- [ ] cognitiveStats resets on new game
-- [ ] "Your Brain Today" display implemented
-- [ ] Top 2-3 stats selected and displayed
-- [ ] Zero-value stats never shown
-- [ ] Stat lines stagger at 300ms intervals
-- [ ] Stats hold for 2.5 seconds before fade-out
-- [ ] Play Again button appears ~3.3s after death
-- [ ] Reduced motion mode functional (instant appearance, no stagger)
-- [ ] Stat display text matches exact format specified
-- [ ] Purple theme color used for "Your Brain Today" header
-- [ ] Code reviewed and merged
+- [x] All 6 stories complete with passing acceptance criteria
+- [x] "RC SURVIVED" flash appears on successful RC survival
+- [x] Flash positioned 20px below +8 popup with 200ms stagger
+- [x] Flash duration 2500ms with auto-cleanup
+- [x] 6 cognitive stats tracked during gameplay
+- [x] cognitiveStats resets on new game
+- [x] "Your Brain Today" display implemented
+- [x] Top 2-3 stats selected and displayed
+- [x] Zero-value stats never shown
+- [x] Stat lines stagger at 300ms intervals
+- [x] Stats hold for 2.5 seconds before fade-out
+- [x] Play Again button appears ~3.3s after death
+- [x] Reduced motion mode functional (instant appearance, no stagger)
+- [x] Stat display text matches exact format specified
+- [x] Purple theme color used for "Your Brain Today" header
+- [x] Code reviewed and merged
 
 ---
 
