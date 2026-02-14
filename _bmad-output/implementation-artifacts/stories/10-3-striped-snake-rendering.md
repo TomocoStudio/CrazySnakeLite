@@ -17,11 +17,12 @@
 
 ## Acceptance Criteria
 
-**Given** combo mode is active with Effect A
+**Given** combo mode is active with Effect A only (food #1 just eaten, foodCount = 1)
 **When** the snake is rendered
-**Then** all segments display Effect A's color (solid, pre-stripe)
+**Then** all segments display Effect A's color uniformly (solid, pre-stripe)
+**And** the snake appears as a single uniform color matching the food that activated combo
 
-**Given** I eat the second food during combo (Effect B)
+**Given** I eat the second food during combo (food #2, Effect B)
 **When** the food is consumed
 **Then** the snake rendering switches to striped pattern:
 - Head (segment 0): Effect B color
@@ -421,6 +422,11 @@ No debug issues encountered during implementation.
 
 
 ## Change Log
+
+**2026-02-14** - Spec Clarification: Uniform snake in Step 1
+- Clarified AC: when combo activates (foodCount = 1), snake displays uniform Effect A color
+- This is distinct from the striped pattern which only appears after food #2 (foodCount = 2)
+- Fixed by `wasComboActive` guard in game.js (see Story 10.1 change log) which ensures activation food stays at foodCount = 1
 
 **2026-02-14** - Story 10.3 Implementation Complete
 - Implemented alternating Effect A/B striped snake rendering (barber-pole pattern)

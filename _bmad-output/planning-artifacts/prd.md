@@ -711,8 +711,8 @@ Tone: Celebratory, not clinical. "My brain did that." — not a medical report.
 - FR40: At score 40+, combo mode can activate after eating food (probability-based)
 - FR41: Combo probability increases with score (10% at 40, caps at 40% at 120+)
 - FR42: On activation: canvas background transitions to random dark color (500ms fade)
-- FR43: Current food effect becomes Effect A; next food becomes Effect B
-- FR44: Score for food B = Effect A points × Effect B points (multiplicative)
+- FR43: Food #1 (activation food) becomes Effect A with regular points; the NEXT food eaten (food #2) becomes Effect B with multiplicative scoring. Activation and progression must not fire on the same food.
+- FR44: Score for food #2 = Effect A points × Effect B points (multiplicative, replaces base food score)
 - FR45: Snake renders with striped pattern (alternating Effect A / Effect B colors, head = Effect B)
 - FR46: Third food eaten exits combo mode; canvas returns to light grey (500ms fade)
 - FR47: Combo timer pauses during active phone call overlay

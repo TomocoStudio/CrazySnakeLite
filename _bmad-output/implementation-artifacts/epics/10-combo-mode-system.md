@@ -8,7 +8,15 @@
 
 ## Overview
 
-Introduce combo mode at score 40+ where two consecutive food effects combine for multiplicative scoring. The canvas background transforms to a dark color (purple, blue, red, or green), the snake renders with striped segments (alternating Effect A/Effect B colors), and consuming the second food awards A × B points. Eating a third food exits combo mode. Probability increases from 10% at score 40 to 40% (cap) at score 120+. Combo timer pauses during phone calls to respect cognitive budget at the combo learning phase. This trains working memory (holding 2 effects in mind), multiplicative thinking, and strategic planning under time pressure.
+Introduce combo mode at score 40+ where two consecutive food effects combine for multiplicative scoring. The combo follows a strict **3-step lifecycle** where each step is a separate food eat:
+
+1. **Activate (Food #1):** Player eats food A → combo activates, canvas inverts, snake becomes uniform in food A's color, regular points awarded
+2. **Payoff (Food #2):** Player eats food B → snake becomes striped (alternating A/B colors, head = B), score = A × B multiplicative, both effects stacked
+3. **Exit (Food #3):** Player eats food C → combo exits before food C is processed, canvas returns to normal, regular scoring resumes
+
+**Critical:** The food that activates combo (food #1) and the food that triggers the payoff (food #2) are always different food eats. Activation and progression must never fire on the same food.
+
+Probability increases from 10% at score 40 to 40% (cap) at score 120+. Combo progression pauses during phone calls to respect cognitive budget at the combo learning phase. This trains working memory (holding 2 effects in mind), multiplicative thinking, and strategic planning under time pressure.
 
 **FRs covered:** FR40-FR48 (Combo mode system)
 

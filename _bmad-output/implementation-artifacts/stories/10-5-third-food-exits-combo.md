@@ -435,6 +435,11 @@ No debug issues encountered during implementation.
 
 ## Change Log
 
+**2026-02-14** - Spec Clarification: 3-step lifecycle confirmed working
+- Confirmed full 3-step lifecycle works correctly after `wasComboActive` fix (Story 10.1)
+- Food #1 → activate (regular points), Food #2 → payoff (A × B), Food #3 → exit (regular points)
+- The `wasComboActive` guard ensures each step maps to a distinct food eat
+
 **2026-02-14** - Story 10.5 Implementation Complete
 - Implemented third food combo exit functionality (complete combo lifecycle)
 - Added playComboExit() audio placeholder (300ms deflation tone)

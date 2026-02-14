@@ -48,9 +48,11 @@
 
 **Given** combo mode activates
 **When** the trigger occurs
-**Then** the currently consumed food becomes Effect A
+**Then** the currently consumed food becomes Effect A (food #1 of the 3-step lifecycle)
 **And** combo.active = true
 **And** combo.effectA stores the food type and point value
+**And** combo progression does NOT run on this same food (activation and progression are mutually exclusive)
+**And** the NEXT food eaten will be food #2 (payoff: striped snake, A × B scoring)
 
 ## Tasks / Subtasks
 
@@ -275,8 +277,12 @@ function onFoodEaten(food, gameState) {
   // Apply food effect
   applyFoodEffect(food.type, gameState);
 
+  // CRITICAL: Capture combo state BEFORE activation check
+  // This prevents activation + progression from firing on the same food
+  const wasComboActive = isComboActive(gameState);
+
   // Check combo activation (only if combo not already active)
-  if (!isComboActive(gameState) && gameState.score >= 40) {
+  if (!wasComboActive && gameState.score >= 40) {
     const comboProbability = getComboProbability(gameState.score);
 
     if (Math.random() < comboProbability) {
@@ -285,8 +291,9 @@ function onFoodEaten(food, gameState) {
     }
   }
 
-  // If combo is active, handle combo food progression (Story 10.4, 10.5)
-  if (isComboActive(gameState)) {
+  // Handle combo food progression (only if combo was ALREADY active before this food)
+  // Uses wasComboActive to ensure activation food (#1) doesn't also trigger progression
+  if (wasComboActive) {
     handleComboFoodProgression(food, gameState);
   }
 
@@ -545,6 +552,13 @@ No debug issues encountered during implementation.
 - Enhanced test coverage: Added AC7 test for "already active" prevention, tightened probabilistic test tolerance to ±2%
 - Updated documentation: Clarified that canvas color transition was implemented in 10.1 (not deferred)
 - All ACs verified, all issues fixed, story approved for "done" status
+
+**2026-02-14** - Bug Fix: Combo activation and progression firing on same food
+- Fixed critical bug where activateCombo() and combo progression both ran on the same food eat
+- Added `wasComboActive` guard: captures combo state BEFORE activation check, uses it for progression guard
+- This ensures the 3-step lifecycle works correctly: Food #1 (activate) → Food #2 (payoff) → Food #3 (exit)
+- Without this fix, effectA and effectB were set from the same food, making striped snake invisible (both colors identical)
+- Updated implementation example code and ACs to document this requirement
 
 **2026-02-14** - Story 10.1 Implementation Complete
 - Implemented probability-based combo activation system (0% at score 0-39, scaling to 40% cap at score 120+)

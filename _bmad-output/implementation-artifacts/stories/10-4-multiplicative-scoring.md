@@ -17,9 +17,9 @@
 
 ## Acceptance Criteria
 
-**Given** combo mode is active with Effect A = Reverse Controls (+8)
-**When** I eat Effect B = Speed Boost (+5)
-**Then** I receive 8 × 5 = 40 points
+**Given** combo mode is active with Effect A = Reverse Controls (+8) (food #1 already eaten)
+**When** I eat the second food (food #2) Effect B = Speed Boost (+5)
+**Then** I receive 8 × 5 = 40 points (multiplicative, replaces base food score)
 **And** a large score popup displays "+40 COMBO"
 **And** the popup uses the high-value style (dramatic animation)
 
@@ -526,6 +526,11 @@ No debug issues encountered during implementation.
 
 
 ## Change Log
+
+**2026-02-14** - Spec Clarification: Multiplicative scoring is food #2 only
+- Clarified ACs: multiplicative scoring only happens on the second food eaten during combo (food #2)
+- Food #1 (activation) always awards regular points
+- A × B score replaces base food score for food #2 (subtract base, add multiplied)
 
 **2026-02-14** - Story 10.4 Implementation Complete
 - Implemented multiplicative scoring (A × B) for massive combo rewards
