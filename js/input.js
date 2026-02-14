@@ -81,24 +81,30 @@ export function initInput(gameState, onPlayAgain, onPause, onResume, menuActions
 function handleKeyboardInput(event, gameState) {
   // Phone call keyboard shortcuts - HIGHEST PRIORITY
   if (isPhoneCallActive()) {
-    // Story 9.3 fix: Block all phone shortcuts during Pick Up countdown (irreversible decision)
+    // During Pick Up countdown: block phone shortcuts only, allow direction keys
     if (gameState.phoneCall.pickedUp) {
-      event.preventDefault();
-      return;  // Cannot End or Pick Up again during countdown
-    }
+      // Block Space and Enter only (irreversible decision made)
+      if (event.key === ' ' || event.key === 'Spacebar' || event.key === 'Enter') {
+        event.preventDefault();
+        return;  // Cannot change phone decision during countdown
+      }
+      // Fall through to allow direction keys and other inputs (snake must stay controllable!)
+    } else {
+      // Phone is ringing (not picked up yet) - handle phone shortcuts
 
-    // Space bar = End button (Story 9.1)
-    if (event.key === ' ' || event.key === 'Spacebar') {
-      event.preventDefault();  // Prevent page scroll
-      handlePhoneDismiss('end', gameState, performance.now());
-      return;  // Stop processing other inputs
-    }
+      // Space bar = End button (Story 9.1)
+      if (event.key === ' ' || event.key === 'Spacebar') {
+        event.preventDefault();  // Prevent page scroll
+        handlePhoneDismiss('end', gameState, Date.now());
+        return;  // Stop processing other inputs
+      }
 
-    // Enter key = Pick Up button (Story 9.1)
-    if (event.key === 'Enter') {
-      event.preventDefault();  // Prevent default behavior
-      handlePhoneDismiss('pickup', gameState, performance.now());
-      return;  // Stop processing other inputs
+      // Enter key = Pick Up button (Story 9.1)
+      if (event.key === 'Enter') {
+        event.preventDefault();  // Prevent default behavior
+        handlePhoneDismiss('pickup', gameState, Date.now());
+        return;  // Stop processing other inputs
+      }
     }
   }
 

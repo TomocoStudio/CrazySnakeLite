@@ -94,7 +94,7 @@ const gameState = createInitialState();
 updateHighScoreDisplay(gameState.highScore);
 
 // Initialize phone system (Story 3.3)
-initPhoneSystem(gameState, () => performance.now());
+initPhoneSystem(gameState, () => Date.now());
 
 // Initialize audio on first user interaction (Story 4.5)
 // Web Audio API: AudioContext created in user gesture context avoids autoplay block
