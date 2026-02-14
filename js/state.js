@@ -51,9 +51,10 @@ export function createInitialState() {
 
     activeEffect: null,
 
-    // Effects tracking (Story 7.1)
+    // Effects tracking (Story 7.1, Story 11.1)
     effects: {
-      wallPhaseUsed: false  // Tracks if wall was crossed during Wall Phase (for +1/+3 scoring)
+      wallPhaseUsed: false,         // Tracks if wall was crossed during Wall Phase (for +1/+3 scoring)
+      reverseControlsActive: false  // Story 11.1: Tracks if Reverse Controls currently active
     },
 
     score: 0,
@@ -75,20 +76,37 @@ export function createInitialState() {
     sessionStart: Date.now(),  // Timestamp when page loaded
     gamesPlayed: 0,             // Increments on each new game
 
-    // Analytics State (Story 8.6 - Epic 8, Story 9.7 - Epic 9, prepares for Epic 12)
+    // Analytics State (Story 8.6 - Epic 8, Story 9.7 - Epic 9, Story 10.4/10.7 - Epic 10)
     analyticsState: {
       totalBlinkingFoodsSpawned: 0,  // Total mystery foods spawned (opportunity metric)
       totalPhoneCalls: 0,            // Story 9.7: Total calls shown (opportunity)
       totalPickUps: 0,               // Story 9.7: Total Pick Ups committed
       totalEnds: 0,                  // Story 9.7: Total End actions
-      phoneCallShowTime: null        // Story 9.7: Timestamp when current call showed
+      phoneCallShowTime: null,       // Story 9.7: Timestamp when current call showed
+      totalCombosTriggered: 0,       // Story 10.7: Total combo activations (Effect A)
+      comboScores: [],               // Story 10.4: Array of all combo scores (for analytics)
+      comboPhoneOverlaps: 0,         // Story 10.7: Phone calls during active combo
+      comboPhoneOverlapSurvived: 0,  // Story 10.7: Survived phone calls during combo
+      combo_active: false            // Story 10.7: Combo active at death (for game_over event)
     },
 
-    // Cognitive Stats (Story 8.6 - Epic 8, Story 9.7 - Epic 9)
+    // Cognitive Stats (Story 8.6 - Epic 8, Story 9.7 - Epic 9, Story 10.4 - Epic 10, Story 11.1 - Epic 11)
     cognitiveStats: {
+      rcSurvived: 0,                 // Story 11.1: Food eaten while Reverse Controls active
       mysteryFoodsEaten: 0,          // Total mystery foods consumed (engagement metric)
       phoneCallsManaged: 0,          // Story 9.7: Total calls dismissed (End + Pick Up)
-      pickUpStreak: 0                // Story 9.7: Consecutive Pick Ups (reset on End)
+      pickUpStreak: 0,               // Story 9.7: Consecutive Pick Ups (reset on End)
+      comboMultipliers: 0,           // Story 10.4: Total combo multipliers triggered
+      peakComboScore: 0              // Story 10.4: Highest single combo score this game
+    },
+
+    // Combo Mode (Epic 10, Story 10.1 - v2)
+    combo: {
+      active: false,            // Is combo mode currently active?
+      effectA: null,            // First food effect: {type, points}
+      effectB: null,            // Second food effect: {type, points}
+      canvasColor: null,        // Dark background color during combo
+      foodCount: 0              // Foods eaten during combo (1, 2, or 3)
     }
   };
 }

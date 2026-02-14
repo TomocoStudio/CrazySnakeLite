@@ -39,6 +39,37 @@ export function gridToPixel(gridX, gridY) {
 }
 
 /**
+ * Spawn a text flash (Story 11.1)
+ * Used for immediate feedback like "RC SURVIVED"
+ * @param {string} text - Flash text (e.g., "RC SURVIVED")
+ * @param {number} x - X position in viewport pixels
+ * @param {number} y - Y position in viewport pixels
+ */
+export function spawnFlash(text, x, y) {
+  console.log(`[spawnFlash] Creating flash: "${text}" at (${x}, ${y})`);
+
+  const flash = document.createElement('div');
+  flash.className = 'rc-survived-flash';
+  flash.textContent = text;
+
+  // Position flash at pixel coordinates
+  flash.style.left = `${x}px`;
+  flash.style.top = `${y}px`;
+
+  console.log(`[spawnFlash] Flash element:`, flash);
+
+  // Add to DOM
+  document.body.appendChild(flash);
+  console.log(`[spawnFlash] Flash added to DOM. Total .rc-survived-flash elements:`, document.querySelectorAll('.rc-survived-flash').length);
+
+  // Auto-remove after 400ms (using animationend for consistency)
+  flash.addEventListener('animationend', () => {
+    console.log(`[spawnFlash] Flash animation ended, removing element`);
+    flash.remove();
+  });
+}
+
+/**
  * Spawn a phone bonus popup (Story 9.6)
  * Convenience wrapper for phone call bonuses with gold styling
  * @param {number} value - Bonus points awarded
@@ -47,6 +78,17 @@ export function gridToPixel(gridX, gridY) {
  */
 export function spawnPhoneBonusPopup(value, gridX, gridY) {
   spawnPopup(value, gridX, gridY, 'CALL BONUS', 'phone');
+}
+
+/**
+ * Spawn a combo score popup (Story 10.4)
+ * Convenience wrapper for combo multiplier scoring with dramatic styling
+ * @param {number} value - Combo score (A × B)
+ * @param {number} gridX - Grid X coordinate (not pixels!)
+ * @param {number} gridY - Grid Y coordinate (not pixels!)
+ */
+export function spawnComboPopup(value, gridX, gridY) {
+  spawnPopup(value, gridX, gridY, 'COMBO', 'combo');
 }
 
 /**
@@ -99,6 +141,16 @@ function spawnPopupImmediate(value, gridX, gridY, label, foodType, verticalOffse
   // Use food type for styling if provided, otherwise fall back to value
   const styleClass = foodType ? `score-popup-${foodType}` : `score-popup-${value}`;
   popup.className = `score-popup ${styleClass}`;
+
+  // Story 10.4: Add jackpot/legendary classes for high-value combos
+  if (foodType === 'combo') {
+    if (value >= CONFIG.COMBO_LEGENDARY_THRESHOLD) {
+      popup.classList.add('legendary');
+    } else if (value >= CONFIG.COMBO_JACKPOT_THRESHOLD) {
+      popup.classList.add('jackpot');
+    }
+  }
+
   popup.textContent = label ? `+${value} ${label}` : `+${value}`;
 
   // Position at collision point + vertical offset for stacking

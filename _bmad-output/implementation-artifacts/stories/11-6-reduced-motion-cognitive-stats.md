@@ -2,8 +2,9 @@
 
 **Epic:** 11 - Cognitive Feedback & RC Recognition
 **Story ID:** 11.6
-**Status:** 🔴 not started
+**Status:** ✅ review
 **Created:** 2026-02-08
+**Completed:** 2026-02-14
 
 ---
 
@@ -338,18 +339,66 @@ Accessibility requirement (not numbered FR, but referenced in Epic 11)
 
 ### Agent Model Used
 
-_To be filled by implementing agent_
+Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 
 ### Debug Log References
 
-_To be filled during implementation_
+- js/config.js:5 - prefersReducedMotion detection via matchMedia
+- js/config.js:141 - CONFIG.REDUCED_MOTION flag exported
+- js/cognitive-feedback.js:73-87 - Conditional stagger delay based on REDUCED_MOTION
+- js/cognitive-feedback.js:91 - Stagger time = 0 if reduced motion
+- js/cognitive-feedback.js:100 - Fade duration = 0 if reduced motion
+- js/cognitive-feedback.js:111-129 - hideCognitiveStats() instant hide if reduced motion
+- css/style.css:315-337 - @media query disables all stat animations
 
 ### Completion Notes List
 
-_To be filled on completion_
+✅ **Implementation Complete (2026-02-14)**
+
+**Reduced Motion Support Added:**
+
+**JavaScript Changes:**
+1. **showCognitiveStats()** - Conditional animation:
+   - If REDUCED_MOTION: opacity = 1, animation = none (instant appearance)
+   - If normal: animationDelay applied (300ms stagger)
+   - Stagger time calculation: REDUCED_MOTION ? 0 : statCount × 300
+
+2. **Timing Calculation:**
+   - Stagger time: 0ms (reduced motion) vs statCount × 300ms (normal)
+   - Fade duration: 0ms (reduced motion) vs 500ms (normal)
+   - Hold duration: 2500ms (MAINTAINED in both modes for readability)
+
+3. **hideCognitiveStats()** - Conditional fade-out:
+   - If REDUCED_MOTION: instant hide (container.classList.add('hidden'))
+   - If normal: fade-out animation (500ms)
+
+**CSS Changes:**
+- Added @media (prefers-reduced-motion: reduce) block
+- Disables animations for .cognitive-stats-header
+- Disables animations for .cognitive-stat-line
+- Disables fade-out animation (.fade-out)
+- All elements set to opacity: 1 and animation: none
+
+**Accessibility Compliance:**
+- Respects user's browser-level prefers-reduced-motion setting
+- No manual configuration needed (automatic detection)
+- Content still displayed (stats visible for 2.5s)
+- Readability maintained (hold duration preserved)
+- WCAG 2.1 Guideline 2.3.3 compliant
+
+**Behavior Summary:**
+| Mode | Appearance | Hold | Disappearance | Total Time |
+|------|-----------|------|---------------|------------|
+| **Normal** | Stagger 300ms × N | 2.5s | Fade 500ms | ~3.6-4.2s |
+| **Reduced Motion** | Instant | 2.5s | Instant | ~2.5s |
+
+**Console Logging:**
+- Added "reduced motion: true/false" to timing log
+- Added "reduced motion - instant" to stat line creation
+- Added "Instant hide (reduced motion)" to hide function
 
 ### File List
 
-- js/config.js (verify - REDUCED_MOTION flag from Epic 8)
-- js/cognitive-feedback.js (modified - check REDUCED_MOTION in show/hide functions)
-- css/style.css (modified - add @media query for prefers-reduced-motion)
+- js/config.js (verified - CONFIG.REDUCED_MOTION exists from Epic 8, Story 8.5)
+- js/cognitive-feedback.js (modified - check REDUCED_MOTION in showCognitiveStats and hideCognitiveStats)
+- css/style.css (modified - add @media (prefers-reduced-motion: reduce) block)

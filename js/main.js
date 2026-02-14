@@ -9,6 +9,7 @@ import { scheduleNextCall, initPhoneSystem } from './phone.js';
 import { saveHighScore } from './storage.js';
 import { initAudio, resumeAudio, closeAudio, playMenuMusic, stopMenuMusic, isAudioReady } from './audio.js';
 import { initStarRatings, initCharCounter, openFeedbackModal, closeFeedbackModal, resetFeedbackForm, getFormData, captureMetadata, formatEmailBody, formatEmailSubject, submitFeedback, showThankYouScreen, closeThankYouScreen, initFeedbackModal } from './feedback.js';
+import { showCognitiveStats } from './cognitive-feedback.js';
 
 // Initialize canvas and context
 const canvas = document.getElementById('game-canvas');
@@ -220,6 +221,11 @@ function handleUIUpdate(state) {
       gameoverScreen.classList.remove('hidden');
       scoreDisplay.classList.add('hidden');  // Fix: Hide score on game over
       stopMenuMusic();  // Stop menu music on game over
+
+      // Story 11.4: Hide Play Again button initially (shown after stats complete)
+      playAgainBtn.classList.add('hidden');
+      menuBtn.classList.add('hidden');
+
       // Story 4.2/4.3: Save high score if new record and show indicator
       console.log('[Game] Game Over - Score:', state.score, 'High Score:', state.highScore);
       // Validate scores are valid numbers before comparison
@@ -243,8 +249,17 @@ function handleUIUpdate(state) {
         if (newHighScoreIndicator) {
           newHighScoreIndicator.classList.add('hidden');
         }
-        console.log('[Game] Not a new high score. Current:', state.score, 'Record:', state.highScore);
       }
+
+      // Story 11.3-11.4: Show cognitive stats, then Play Again button after sequence completes
+      setTimeout(async () => {
+        await showCognitiveStats(state);
+
+        // Show buttons after stats sequence completes
+        console.log('[Main] Cognitive stats complete - showing Play Again button');
+        playAgainBtn.classList.remove('hidden');
+        menuBtn.classList.remove('hidden');
+      }, CONFIG.COGNITIVE_STATS_DISPLAY.initialDelay);
     }
   }
 

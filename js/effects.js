@@ -49,6 +49,12 @@ export function applyEffect(gameState, effectType) {
 
   // Note: wallPhaseUsed reset is now handled in game.js after scoring (Story 7.1)
 
+  // Story 11.1: Set reverseControlsActive flag for RC survival tracking
+  if (effectType === EFFECT_TYPES.REVERSE_CONTROLS) {
+    gameState.effects.reverseControlsActive = true;
+    console.log('[Effects] reverseControlsActive = TRUE (RC activated)');
+  }
+
   // Update snake color based on effect
   updateSnakeColor(gameState);
 }
@@ -64,16 +70,31 @@ export function clearEffect(gameState) {
   // Note: wallPhaseUsed is NOT reset here - it must persist until next food is eaten
   // and bonus is awarded in game.js (Story 7.1)
 
+  // Story 11.1: Clear reverseControlsActive flag when effect ends
+  if (gameState.effects.reverseControlsActive) {
+    console.log('[Effects] reverseControlsActive = FALSE (effect cleared)');
+  }
+  gameState.effects.reverseControlsActive = false;
+
   // Reset snake color to default
   gameState.snake.color = CONFIG.COLORS.snakeDefault;
 }
 
 /**
  * Check if specific effect is active
+ * UPDATED: Also checks combo.effectB for dual effect mode
  */
 export function isEffectActive(gameState, effectType) {
-  return gameState.activeEffect !== null &&
-         gameState.activeEffect.type === effectType;
+  // Check Effect A (activeEffect)
+  const effectAActive = gameState.activeEffect !== null &&
+                        gameState.activeEffect.type === effectType;
+
+  // Check Effect B (combo dual effect mode)
+  const effectBActive = gameState.combo?.active &&
+                        gameState.combo?.foodCount === 2 &&
+                        gameState.combo?.effectB?.type === effectType;
+
+  return effectAActive || effectBActive;
 }
 
 /**

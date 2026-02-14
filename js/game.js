@@ -9,7 +9,7 @@ import { checkPhoneCallTiming, dismissPhoneCall, scheduleNextCall, hidePhoneOver
 import { trackPhoneCall } from './analytics.js';
 import { playMoveSound, playDeathSound, playJackpot, playLegendary, playComboExit } from './audio.js';
 import { getFoodScore } from './scoring.js';
-import { spawnPopup, spawnPhoneBonusPopup, spawnComboPopup, spawnParticles, triggerScreenShake, gridToPixel } from './score-popup.js';
+import { spawnPopup, spawnPhoneBonusPopup, spawnComboPopup, spawnParticles, triggerScreenShake, gridToPixel, spawnFlash } from './score-popup.js';
 import { getComboProbability } from './progression.js';
 import { activateCombo, isComboActive, exitCombo } from './combo.js';
 
@@ -188,6 +188,23 @@ function update(gameState) {
       const { x: pixelX, y: pixelY } = gridToPixel(foodPosition.x, foodPosition.y);
       spawnParticles(6, pixelX, pixelY);  // 6 particles
       triggerScreenShake();
+    }
+
+    // Story 11.1: Check if player survived Reverse Controls
+    // This check happens BEFORE effects are applied/cleared (which resets the flag)
+    if (gameState.effects.reverseControlsActive) {
+      // Player successfully navigated RC and ate next food
+      const { x: pixelX, y: pixelY } = gridToPixel(foodPosition.x, foodPosition.y);
+
+      // Spawn "RC SURVIVED" flash (20px below +8 popup, 200ms stagger)
+      setTimeout(() => {
+        spawnFlash('RC SURVIVED', pixelX, pixelY + 20);
+      }, 200);
+
+      // Track survival in cognitive stats
+      gameState.cognitiveStats.rcSurvived += 1;
+
+      console.log(`[RC] Survived! Total: ${gameState.cognitiveStats.rcSurvived}`);
     }
 
     // Note: Wall Phase bonus (+2) is awarded immediately in snake.js when wall is crossed

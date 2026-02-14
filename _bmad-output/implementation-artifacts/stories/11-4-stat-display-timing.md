@@ -2,8 +2,9 @@
 
 **Epic:** 11 - Cognitive Feedback & RC Recognition
 **Story ID:** 11.4
-**Status:** 🔴 not started
+**Status:** ✅ review
 **Created:** 2026-02-08
+**Completed:** 2026-02-14
 
 ---
 
@@ -384,19 +385,63 @@ FR79 (Stat display timing and Play Again delay)
 
 ### Agent Model Used
 
-_To be filled by implementing agent_
+Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 
 ### Debug Log References
 
-_To be filled during implementation_
+- js/config.js:178 - Added initialDelay: 300 to COGNITIVE_STATS_DISPLAY
+- js/cognitive-feedback.js:65-107 - showCognitiveStats() now returns Promise
+- js/cognitive-feedback.js:78-82 - Timing calculation based on stat count
+- js/cognitive-feedback.js:84-95 - setTimeout chain: hold → fade → resolve
+- js/cognitive-feedback.js:97-121 - hideCognitiveStats() with fade-out animation
+- css/style.css:299-313 - fadeOutStats animation (500ms, translateY up)
+- js/main.js:227-228 - Hide Play Again + Menu buttons initially on gameover
+- js/main.js:250-256 - Async await showCognitiveStats(), then show buttons
 
 ### Completion Notes List
 
-_To be filled on completion_
+✅ **Implementation Complete (2026-02-14)**
+
+**Timing Orchestration:**
+- showCognitiveStats() converted to return Promise
+- Promise resolves after complete sequence: stagger → hold → fade
+- Timing calculated dynamically based on stat count:
+  - staggerTime = statCount × 300ms
+  - totalDisplayTime = staggerTime + 2500ms
+  - Resolution after totalDisplayTime + 500ms fade
+
+**Sequence Flow:**
+1. Game over screen appears (0ms)
+2. Initial delay (300ms) - CONFIG.COGNITIVE_STATS_DISPLAY.initialDelay
+3. Stats stagger in (300ms intervals per stat)
+4. Hold visible (2500ms) - CONFIG.COGNITIVE_STATS_DISPLAY.holdDuration
+5. Fade out (500ms) - CONFIG.COGNITIVE_STATS_DISPLAY.fadeDuration
+6. Promise resolves
+7. Play Again + Menu buttons appear
+
+**Total Time Examples:**
+- 0 stats: 0ms (Play Again shows immediately)
+- 1 stat: ~3600ms (300 + 300 + 2500 + 500)
+- 3 stats: ~4200ms (300 + 900 + 2500 + 500)
+
+**hideCognitiveStats():**
+- Applies .fade-out class to header + all stat lines
+- CSS animation: 500ms opacity + translateY(-10px)
+- Cleanup: removes fade-out classes after animation
+
+**Button Hiding:**
+- Play Again + Menu buttons hidden initially (line 227-228)
+- Shown AFTER stats sequence completes (line 254-255)
+- Prevents premature clicking during stat display
+
+**Async/Await:**
+- main.js setTimeout callback made async
+- Awaits showCognitiveStats() Promise
+- Ensures buttons appear only after fade-out completes
 
 ### File List
 
-- js/cognitive-feedback.js (modified - add timing orchestration, hideCognitiveStats)
-- js/game.js (modified - await stats completion before showing Play Again)
-- css/style.css (modified - add .fade-out animation)
-- js/config.js (verify - COGNITIVE_STATS_DISPLAY timing config)
+- js/cognitive-feedback.js (modified - Promise return, timing orchestration, hideCognitiveStats)
+- js/main.js (modified - async/await stats, hide/show buttons with correct timing)
+- css/style.css (modified - fadeOutStats animation)
+- js/config.js (modified - added initialDelay to COGNITIVE_STATS_DISPLAY)

@@ -2,8 +2,9 @@
 
 **Epic:** 11 - Cognitive Feedback & RC Recognition
 **Story ID:** 11.3
-**Status:** 🔴 not started
+**Status:** ✅ review
 **Created:** 2026-02-08
+**Completed:** 2026-02-14
 
 ---
 
@@ -484,20 +485,71 @@ FR75-FR78 (Post-game cognitive feedback display)
 
 ### Agent Model Used
 
-_To be filled by implementing agent_
+Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 
 ### Debug Log References
 
-_To be filled during implementation_
+- js/config.js:178-189 - COGNITIVE_STATS_DISPLAY and THEME_COLOR_PURPLE constants
+- js/cognitive-feedback.js - New module created
+- js/cognitive-feedback.js:14-41 - selectTopStats() with priority-based sorting
+- js/cognitive-feedback.js:43-59 - formatStatLine() with exact text templates
+- js/cognitive-feedback.js:61-107 - showCognitiveStats() with DOM manipulation
+- index.html:40-47 - .cognitive-stats container added to gameover screen
+- css/style.css:251-298 - Cognitive stats styling with fadeInStats animation
+- js/main.js:12 - showCognitiveStats import added
+- js/main.js:249-252 - showCognitiveStats() called on gameover with 300ms delay
 
 ### Completion Notes List
 
-_To be filled on completion_
+✅ **Implementation Complete (2026-02-14)**
+
+**New Module Created:**
+- `js/cognitive-feedback.js` - Complete stat selection, formatting, and display logic
+
+**Core Functions:**
+1. **selectTopStats(cognitiveStats)**
+   - Filters out zero-value stats
+   - Sorts by value descending
+   - Priority tie-breaking: rcSurvived(6) > comboMultipliers(5) > pickUpStreak(4) > mysteryFoodsEaten(3) > phoneCallsManaged(2) > peakComboScore(1)
+   - Returns top 3 stats (or fewer if < 3 non-zero)
+
+2. **formatStatLine(key, value)**
+   - Maps stat keys to exact display text
+   - Special formatting for peakComboScore: "Best combo: ×N" (with × symbol)
+   - Templates for all 6 stat types
+
+3. **showCognitiveStats(gameState)**
+   - Selects top stats
+   - Hides container if all zeros
+   - Creates DOM elements dynamically
+   - Applies stagger animation (300ms intervals via inline style)
+
+**HTML Changes:**
+- Added `.cognitive-stats` container to gameover screen
+- Contains header "YOUR BRAIN TODAY" and dynamic stats lines
+- Initially hidden (shown/hidden by JS)
+
+**CSS Changes:**
+- Purple header (#9C27B0) with uppercase styling
+- White stat lines (16px) with subtle shadow
+- fadeInStats animation (300ms, translateY fade-up)
+- Stagger delays set via inline style
+
+**Integration:**
+- Called from main.js gameover phase transition
+- 300ms delay after gameover screen appears
+- Runs after high score check/save
+
+**Technical Decisions:**
+- Used priority array for tie-breaking (explicit ordering)
+- Console logging for debugging stat selection
+- Graceful handling of missing DOM elements
+- Inline animation delays for stagger (cleaner than nth-child)
 
 ### File List
 
-- js/cognitive-feedback.js (new - stat display logic)
-- index.html (modified - add .cognitive-stats container)
-- css/style.css (modified - add cognitive stats styling)
-- js/game.js (modified - call showCognitiveStats on death)
-- js/config.js (modified - add COGNITIVE_STATS_DISPLAY, THEME_COLOR_PURPLE)
+- js/cognitive-feedback.js (new - stat display logic with selectTopStats, formatStatLine, showCognitiveStats)
+- index.html (modified - add .cognitive-stats container to gameover screen)
+- css/style.css (modified - add cognitive stats styling with purple header and fade animation)
+- js/main.js (modified - import showCognitiveStats, call on gameover with 300ms delay)
+- js/config.js (modified - add COGNITIVE_STATS_DISPLAY config and THEME_COLOR_PURPLE constant)

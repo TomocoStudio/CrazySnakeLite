@@ -2,8 +2,9 @@
 
 **Epic:** 11 - Cognitive Feedback & RC Recognition
 **Story ID:** 11.5
-**Status:** 🔴 not started
+**Status:** ✅ review
 **Created:** 2026-02-08
+**Completed:** 2026-02-14
 
 ---
 
@@ -284,17 +285,51 @@ FR80 (Reset cognitive stats on new game)
 
 ### Agent Model Used
 
-_To be filled by implementing agent_
+Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 
 ### Debug Log References
 
-_To be filled during implementation_
+- js/state.js:94-101 - createInitialState() initializes all 6 cognitiveStats to 0
+- js/state.js:119-132 - resetGame() calls createInitialState() and uses Object.assign
+- js/main.js:73 - startNewGame() calls resetGame(gameState)
+- js/main.js:146 - handlePlayAgain() calls startNewGame()
+- js/main.js:281 - Play Again button wired to handlePlayAgain()
 
 ### Completion Notes List
 
-_To be filled on completion_
+✅ **Verification Complete (2026-02-14)**
+
+**Reset Chain Verified:**
+1. User clicks "Play Again" button
+2. handlePlayAgain() called (main.js:281)
+3. startNewGame() called (main.js:146)
+4. resetGame(gameState) called (main.js:73)
+5. createInitialState() called (state.js:120)
+6. Fresh state created with all cognitiveStats = 0
+7. Object.assign copies fresh state into gameState (state.js:132)
+
+**All 6 Stats Reset:**
+- rcSurvived = 0
+- phoneCallsManaged = 0
+- mysteryFoodsEaten = 0
+- comboMultipliers = 0
+- pickUpStreak = 0
+- peakComboScore = 0
+
+**Independence Verified:**
+- resetGame() creates completely new state via createInitialState()
+- Only highScore and session tracking preserved
+- All game-specific state (including cognitiveStats) reset to defaults
+- No carryover between games
+
+**No Code Changes Required:**
+- All reset logic already implemented correctly (Epic 8, Story 8.6)
+- createInitialState() initializes all stats to 0
+- resetGame() properly resets via createInitialState()
+- Play Again button properly wired to reset chain
+- Verification confirms correct behavior
 
 ### File List
 
-- js/state.js (verify - resetGameState and createInitialState reset cognitiveStats)
-- js/game.js (verify - Play Again button calls resetGameState)
+- js/state.js (verified - createInitialState and resetGame properly reset cognitiveStats)
+- js/main.js (verified - Play Again button calls startNewGame → resetGame)

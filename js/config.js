@@ -173,5 +173,17 @@ export const CONFIG = {
   COMBO_LEGENDARY_THRESHOLD: 30,  // 30+ points triggers legendary audio
 
   // Combo + Phone Interaction (Epic 10, Story 10.6 - v2)
-  COMBO_PAUSE_ON_PHONE: true      // Pause combo progression during phone calls
+  COMBO_PAUSE_ON_PHONE: true,     // Pause combo progression during phone calls
+
+  // Cognitive Feedback Display (Epic 11, Story 11.3-11.4 - v2)
+  COGNITIVE_STATS_DISPLAY: {
+    maxStats: 3,                  // Display top 3 stats
+    initialDelay: 300,            // Delay before header appears
+    staggerDelay: 300,            // 300ms between stat lines
+    holdDuration: 2500,           // Hold visible for 2.5s
+    fadeDuration: 500             // Fade out over 500ms
+  },
+
+  // Purple theme color for "Your Brain Today" header
+  THEME_COLOR_PURPLE: '#9C27B0'   // Material Design Purple 500
 };
