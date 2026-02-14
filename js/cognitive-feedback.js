@@ -61,11 +61,21 @@ export function formatStatLine(key, value) {
 }
 
 /**
- * Show cognitive stats on game over screen with timed sequence.
- * Story 11.4: Returns Promise that resolves when stats sequence completes.
- * Sequence: stagger in → hold 2.5s → fade out → resolve
+ * Show cognitive stats on game over screen with stagger animation.
+ * Returns Promise that resolves when stagger animation completes, allowing
+ * caller to show Play Again/Menu buttons after stats finish animating in.
+ *
+ * Stats remain visible indefinitely (no auto-close) - user can read as long
+ * as needed. Cleanup happens automatically when game resets on Play Again.
+ *
+ * Accessibility: Stats persist on screen for screen reader users. Consider
+ * ARIA live region announcements if adding future interactive elements.
+ *
+ * Sequence: stagger in → resolve → caller shows buttons → stats stay visible
+ *
  * @param {object} gameState - Full game state with cognitiveStats
- * @returns {Promise} Resolves when stats sequence completes (after fade-out)
+ * @returns {Promise} Resolves when stagger animation completes. Stats container
+ *                    remains visible with full opacity, ready for user interaction.
  */
 export function showCognitiveStats(gameState) {
   return new Promise((resolve) => {
@@ -112,21 +122,18 @@ export function showCognitiveStats(gameState) {
       linesContainer.appendChild(line);
     });
 
-    // Calculate total time before fade-out
-    // Story 11.6: Skip stagger time if reduced motion
-    const staggerTime = CONFIG.REDUCED_MOTION ? 0 : topStats.length * CONFIG.COGNITIVE_STATS_DISPLAY.staggerDelay;
-    const totalDisplayTime = staggerTime + CONFIG.COGNITIVE_STATS_DISPLAY.holdDuration;
-
-    // Hold visible, then fade out
-    setTimeout(() => {
-      hideCognitiveStats();
-
-      // Story 11.6: Resolve after fade completes (instant if reduced motion)
-      const fadeDuration = CONFIG.REDUCED_MOTION ? 0 : CONFIG.COGNITIVE_STATS_DISPLAY.fadeDuration;
+    // Resolve after stagger animation completes
+    // Stats remain visible (no auto-close) for user to read
+    if (CONFIG.REDUCED_MOTION) {
+      // Reduced motion: resolve immediately (no animation delay)
+      resolve();
+    } else {
+      // Normal: resolve after stagger animation completes
+      const staggerTime = topStats.length * CONFIG.COGNITIVE_STATS_DISPLAY.staggerDelay;
       setTimeout(() => {
         resolve();
-      }, fadeDuration);
-    }, totalDisplayTime);
+      }, staggerTime);
+    }
   });
 }
 
