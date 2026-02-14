@@ -105,7 +105,10 @@ function update(gameState) {
     }
 
     // Story 10.1: Check combo activation (only if combo not already active)
-    if (!isComboActive(gameState) && gameState.score >= 5) {  // TESTING: lowered from 40
+    // Capture state BEFORE activation check so progression doesn't run on the same food
+    const wasComboActive = isComboActive(gameState);
+
+    if (!wasComboActive && gameState.score >= 5) {  // TESTING: lowered from 40
       const comboProbability = getComboProbability(gameState.score);
 
       if (Math.random() < comboProbability) {
@@ -117,9 +120,10 @@ function update(gameState) {
       }
     }
 
-    // Story 10.3 + 10.4 + 10.6: Handle combo food progression (if combo is active AND phone not active)
-    if (isComboActive(gameState)) {
-      // Story 10.6: Pause combo progression during phone calls
+    // Combo Mode: Handle food progression (if combo was ALREADY active before this food)
+    // Uses wasComboActive to prevent activation + progression on the same food
+    if (wasComboActive) {
+      // Pause combo progression during phone calls
       if (CONFIG.COMBO_PAUSE_ON_PHONE && gameState.phoneCall.active) {
         console.log('[Combo] Paused during phone call. foodCount unchanged:', gameState.combo.foodCount);
         // Combo state fully preserved (effectA, effectB, canvasColor, striped snake)
@@ -127,31 +131,32 @@ function update(gameState) {
       } else {
         // Phone not active - proceed with normal combo progression
         if (gameState.combo.foodCount === 1) {
-          // Second food during combo → set Effect B + award multiplicative score
+          // FOOD #2: Second food during combo → set Effect B, apply BOTH effects, award multiplicative score
           gameState.combo.effectB = {
             type: effectType,
             points: scoreIncrease
           };
           gameState.combo.foodCount = 2;
 
-          // Story 10.4: Calculate multiplicative score (A × B)
+          // Calculate multiplicative score (A × B)
           const comboScore = gameState.combo.effectA.points * gameState.combo.effectB.points;
 
-          // Award combo score (in addition to base food score already awarded)
-          gameState.score += comboScore;
+          // Award combo score (replaces base food score)
+          gameState.score -= scoreIncrease; // Remove base score that was added earlier
+          gameState.score += comboScore;    // Add multiplied score instead
 
           // Spawn combo popup at snake head
           const head = gameState.snake.segments[0];
           spawnComboPopup(comboScore, head.x, head.y);
 
-          // Story 10.4: Play audio cues for high-value combos
+          // Play audio cues for high-value combos
           if (comboScore >= CONFIG.COMBO_LEGENDARY_THRESHOLD) {
             playLegendary();
           } else if (comboScore >= CONFIG.COMBO_JACKPOT_THRESHOLD) {
             playJackpot();
           }
 
-          // Story 10.4: Track combo stats
+          // Track combo stats
           gameState.cognitiveStats.comboMultipliers += 1;
           gameState.cognitiveStats.peakComboScore = Math.max(
             gameState.cognitiveStats.peakComboScore,
@@ -159,9 +164,9 @@ function update(gameState) {
           );
           gameState.analyticsState.comboScores.push(comboScore);
 
-          console.log(`[Combo] Effect B: ${effectType} (+${scoreIncrease}), Multiplier: ${gameState.combo.effectA.points} × ${gameState.combo.effectB.points} = ${comboScore}`);
+          console.log(`[Combo] Food #2: ${effectType} (+${scoreIncrease}), Score: ${gameState.combo.effectA.points} × ${gameState.combo.effectB.points} = ${comboScore}, Both effects active`);
         } else if (gameState.combo.foodCount === 2) {
-          // Story 10.5: Third food → exit combo
+          // FOOD #3: Third food → exit combo, regular points awarded (already added above)
           gameState.combo.foodCount = 3; // Mark as exiting
 
           // Exit combo mode (transition canvas, reset state)
@@ -170,7 +175,7 @@ function update(gameState) {
           // Play exit audio (deflation tone)
           playComboExit();
 
-          console.log('[Combo] Exited after third food.');
+          console.log(`[Combo] Food #3: ${effectType} (+${scoreIncrease}), Regular points, Combo exited`);
         }
       }
     }
@@ -187,8 +192,16 @@ function update(gameState) {
 
     // Note: Wall Phase bonus (+2) is awarded immediately in snake.js when wall is crossed
 
-    // Handle effects based on effect type
-    if (effectType === 'growing') {
+    // Handle effects based on effect type and combo state
+    if (isComboActive(gameState) && gameState.combo.foodCount === 2) {
+      // COMBO MODE - Food #2: Both Effect A (already active) and Effect B (current food) are active
+      // Don't clear Effect A, keep it active alongside Effect B
+      // Effect B is stored in combo.effectB, we'll check it in collision/speed calculations
+      console.log(`[Combo] Dual effects active: ${gameState.combo.effectA.type} + ${gameState.combo.effectB.type}`);
+
+      // Update snake color to show striped pattern (handled by render.js)
+      // activeEffect stays as Effect A, Effect B is in combo.effectB
+    } else if (effectType === 'growing') {
       // Growing food clears effect and sets snake to green
       clearEffect(gameState);
       gameState.snake.color = CONFIG.COLORS.snakeGrowing;
@@ -267,21 +280,36 @@ function updateUI(gameState) {
 
 /**
  * Get current tick rate based on active speed effect
- * NEW in Story 2.4
+ * UPDATED: Support dual effects in combo mode (Effect A + Effect B)
  * @returns {number} - Tick rate in milliseconds
  */
 function getCurrentTickRate(gameState) {
   const baseTickRate = TICK_RATE;  // 125ms (8 moves/sec)
 
-  if (!gameState.activeEffect) {
-    return baseTickRate;
+  let totalMultiplier = 1.0;
+
+  // Check Effect A (activeEffect)
+  if (gameState.activeEffect && gameState.activeEffect.speedMultiplier) {
+    totalMultiplier *= gameState.activeEffect.speedMultiplier;
   }
 
-  const speedMultiplier = gameState.activeEffect.speedMultiplier;
-  if (speedMultiplier && speedMultiplier !== 1.0) {
+  // Check Effect B (combo dual effect)
+  if (isComboActive(gameState) && gameState.combo.foodCount === 2 && gameState.combo.effectB) {
+    // Need to get speed multiplier for Effect B
+    const effectBType = gameState.combo.effectB.type;
+    if (effectBType === 'speedBoost') {
+      // Use average of range for consistency (1.75x)
+      totalMultiplier *= (CONFIG.SPEED_BOOST_MIN + CONFIG.SPEED_BOOST_MAX) / 2;
+    } else if (effectBType === 'speedDecrease') {
+      // Use average of range for consistency (0.4x)
+      totalMultiplier *= (CONFIG.SPEED_DECREASE_MIN + CONFIG.SPEED_DECREASE_MAX) / 2;
+    }
+  }
+
+  if (totalMultiplier !== 1.0) {
     // Faster speed = shorter tick rate (moves more frequently)
     // Slower speed = longer tick rate (moves less frequently)
-    return baseTickRate / speedMultiplier;
+    return baseTickRate / totalMultiplier;
   }
 
   return baseTickRate;
