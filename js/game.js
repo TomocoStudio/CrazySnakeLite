@@ -105,7 +105,7 @@ function update(gameState) {
     }
 
     // Story 10.1: Check combo activation (only if combo not already active)
-    if (!isComboActive(gameState) && gameState.score >= 40) {
+    if (!isComboActive(gameState) && gameState.score >= 5) {  // TESTING: lowered from 40
       const comboProbability = getComboProbability(gameState.score);
 
       if (Math.random() < comboProbability) {
@@ -243,6 +243,11 @@ function update(gameState) {
       const effectA = gameState.combo.effectA?.type || 'none';
       const effectB = gameState.combo.effectB?.type || 'none';
       console.log(`[Game] Died during combo (Effect A: ${effectA}, Effect B: ${effectB})`);
+    }
+
+    // Exit combo mode if active (reset canvas color and state)
+    if (gameState.combo.active) {
+      exitCombo(gameState);
     }
 
     // Play death sound (Bug fix)

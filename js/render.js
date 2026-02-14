@@ -1,13 +1,14 @@
 // CrazySnakeLite - Rendering Module
 import { CONFIG } from './config.js';
 import { isEffectActive } from './effects.js';
+import { isComboActive } from './combo.js';
 
 /**
  * Main render function - called every frame (60 FPS)
  */
 export function render(ctx, gameState) {
-  clearCanvas(ctx);
-  renderGrid(ctx);
+  clearCanvas(ctx, gameState);
+  renderGrid(ctx, gameState);
   renderFood(ctx, gameState.food);
   renderSnake(ctx, gameState);  // Pass full gameState for strobe effect
   // Epic 4: renderScore()
@@ -15,17 +16,27 @@ export function render(ctx, gameState) {
 
 /**
  * Clears the canvas
+ * Combo mode: Inverted background color (darker)
  */
-function clearCanvas(ctx) {
-  ctx.fillStyle = CONFIG.COLORS.background;
+function clearCanvas(ctx, gameState) {
+  // Combo mode: Use darker background (216, 216, 216)
+  // Normal mode: Use lighter background (232, 232, 232)
+  ctx.fillStyle = isComboActive(gameState)
+    ? CONFIG.COLORS.comboBackground
+    : CONFIG.COLORS.background;
   ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 }
 
 /**
  * Renders subtle grid lines
+ * Combo mode: Inverted grid color (lighter)
  */
-function renderGrid(ctx) {
-  ctx.strokeStyle = CONFIG.COLORS.gridLine;
+function renderGrid(ctx, gameState) {
+  // Combo mode: Use lighter grid (232, 232, 232)
+  // Normal mode: Use darker grid (216, 216, 216)
+  ctx.strokeStyle = isComboActive(gameState)
+    ? CONFIG.COLORS.comboGridLine
+    : CONFIG.COLORS.gridLine;
   ctx.lineWidth = CONFIG.GRID_LINE_WIDTH;
   ctx.globalAlpha = CONFIG.GRID_LINE_OPACITY;
 
@@ -54,42 +65,101 @@ function renderGrid(ctx) {
  * Renders the snake with head/body distinction
  * UPDATED in Story 2.2: Add invincibility strobe (yellow ↔ black)
  * UPDATED in Story 5-4: Add white eyes to head, subtle border color, directional eyes
+ * UPDATED in Story 10.3: Add striped pattern during combo mode (Effect A/B alternating)
  */
 function renderSnake(ctx, gameState) {
   const snake = gameState.snake;
-  let snakeColor = snake.color;
 
-  // INVINCIBILITY STROBE: Alternate yellow/black every 100ms
-  if (isEffectActive(gameState, 'invincibility')) {
-    const strobeInterval = CONFIG.STROBE_INTERVAL;  // 100ms
-    const strobePhase = Math.floor(performance.now() / strobeInterval) % 2;
+  // Story 10.3: Check if combo mode with striped pattern active
+  const isStriped = gameState.combo.active && gameState.combo.effectB !== null;
 
-    if (strobePhase === 0) {
-      snakeColor = CONFIG.COLORS.snakeInvincibility;  // Yellow
-    } else {
-      snakeColor = CONFIG.COLORS.snakeDefault;  // Black (base color)
-    }
-  }
+  if (isStriped) {
+    // Render striped snake (alternating Effect A/Effect B colors)
+    const colorA = getEffectColor(gameState.combo.effectA.type);
+    const colorB = getEffectColor(gameState.combo.effectB.type);
 
-  snake.segments.forEach((segment, index) => {
-    const x = segment.x * CONFIG.UNIT_SIZE;
-    const y = segment.y * CONFIG.UNIT_SIZE;
+    snake.segments.forEach((segment, index) => {
+      const x = segment.x * CONFIG.UNIT_SIZE;
+      const y = segment.y * CONFIG.UNIT_SIZE;
 
-    // Draw segment with snake color
-    ctx.fillStyle = snakeColor;
-    ctx.fillRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
+      // Determine color: head (0) = effectB, odd = effectA, even = effectB
+      let color;
+      if (index === 0) {
+        color = colorB; // Head is Effect B (most recent)
+      } else if (index % 2 === 1) {
+        color = colorA; // Odd segments
+      } else {
+        color = colorB; // Even segments
+      }
 
-    // Head distinction: border + eyes on first segment (head at index 0)
-    if (index === 0) {
-      // Subtle border (matches grid background)
-      ctx.strokeStyle = CONFIG.HEAD_BORDER_COLOR;
-      ctx.lineWidth = CONFIG.HEAD_BORDER_WIDTH;
+      // Draw segment
+      ctx.fillStyle = color;
+      ctx.fillRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
+
+      // Add 1px black border for visual separation (Story 10.3)
+      ctx.strokeStyle = '#000000';
+      ctx.lineWidth = 1;
       ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
 
-      // White eyes that rotate with direction (Story 5-4)
-      renderSnakeEyes(ctx, x, y, snake.direction);
+      // Head distinction: eyes on first segment
+      if (index === 0) {
+        renderSnakeEyes(ctx, x, y, snake.direction);
+      }
+    });
+  } else {
+    // Normal single-color rendering
+    let snakeColor = snake.color;
+
+    // INVINCIBILITY STROBE: Alternate yellow/black every 100ms
+    if (isEffectActive(gameState, 'invincibility')) {
+      const strobeInterval = CONFIG.STROBE_INTERVAL;  // 100ms
+      const strobePhase = Math.floor(performance.now() / strobeInterval) % 2;
+
+      if (strobePhase === 0) {
+        snakeColor = CONFIG.COLORS.snakeInvincibility;  // Yellow
+      } else {
+        snakeColor = CONFIG.COLORS.snakeDefault;  // Black (base color)
+      }
     }
-  });
+
+    snake.segments.forEach((segment, index) => {
+      const x = segment.x * CONFIG.UNIT_SIZE;
+      const y = segment.y * CONFIG.UNIT_SIZE;
+
+      // Draw segment with snake color
+      ctx.fillStyle = snakeColor;
+      ctx.fillRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
+
+      // Head distinction: border + eyes on first segment (head at index 0)
+      if (index === 0) {
+        // Subtle border (matches grid background)
+        ctx.strokeStyle = CONFIG.HEAD_BORDER_COLOR;
+        ctx.lineWidth = CONFIG.HEAD_BORDER_WIDTH;
+        ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
+
+        // White eyes that rotate with direction (Story 5-4)
+        renderSnakeEyes(ctx, x, y, snake.direction);
+      }
+    });
+  }
+}
+
+/**
+ * Get color for a food effect type (Story 10.3)
+ * Used for striped snake rendering during combo mode
+ * @param {string} effectType - Effect type (e.g., 'speedBoost')
+ * @returns {string} Hex color
+ */
+function getEffectColor(effectType) {
+  const colors = {
+    growing: CONFIG.COLORS.foodGrowing,           // Green
+    invincibility: CONFIG.COLORS.foodInvincibility, // Yellow
+    wallPhase: CONFIG.COLORS.foodWallPhase,       // Purple
+    speedBoost: CONFIG.COLORS.foodSpeedBoost,     // Red
+    speedDecrease: CONFIG.COLORS.foodSpeedDecrease, // Cyan
+    reverseControls: CONFIG.COLORS.foodReverseControls // Orange
+  };
+  return colors[effectType] || CONFIG.COLORS.foodGrowing;
 }
 
 /**

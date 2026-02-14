@@ -73,6 +73,12 @@ function startNewGame() {
   gameState.phase = 'playing';
   gameState.isPaused = false;  // Clear pause flag when starting new game
 
+  // Clear any residual canvas inline styles from previous combo mode
+  const canvas = document.getElementById('game-canvas');
+  if (canvas) {
+    canvas.style.backgroundColor = '';  // Clear inline style
+  }
+
   // Initialize score display and ensure it's visible
   updateScoreDisplay(gameState.score, gameState.highScore);
   scoreDisplay.classList.remove('hidden');

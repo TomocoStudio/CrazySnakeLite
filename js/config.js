@@ -46,8 +46,10 @@ export const CONFIG = {
 
   // Colors (hex strings)
   COLORS: {
-    background: '#E8E8E8',
-    gridLine: '#A0A0A0',
+    background: '#E6E6E6',          // RGB(230, 230, 230) - normal mode
+    gridLine: '#505050',            // RGB(80, 80, 80) - normal mode (inverted in combo)
+    comboBackground: '#505050',     // RGB(80, 80, 80) - combo mode
+    comboGridLine: '#E6E6E6',       // RGB(230, 230, 230) - combo mode
     border: '#800080',  // Story 5-8: Match wall phase food color for UX association
     snakeDefault: '#000000',
     snakeGrowing: '#00FF00',
@@ -143,5 +145,33 @@ export const CONFIG = {
     min: 0.5,           // Minimum opacity (50%)
     max: 1.0,           // Maximum opacity (100%)
     frequency: 500      // Oscillation period in ms (1 second cycle = 500ms * 2)
-  }
+  },
+
+  // Combo Mode System (Epic 10, Story 10.1 - v2)
+  COMBO_PROBABILITIES: [
+    { minScore: 0,   maxScore: 4,   probability: 0.0 },   // No combos (learning phase)
+    { minScore: 5,   maxScore: 59,  probability: 0.8 },   // 80% - TESTING MODE
+    { minScore: 60,  maxScore: 79,  probability: 0.2 },   // 20%
+    { minScore: 80,  maxScore: 99,  probability: 0.3 },   // 30%
+    { minScore: 100, maxScore: 119, probability: 0.35 },  // 35%
+    { minScore: 120, maxScore: Infinity, probability: 0.4 } // 40% (cap)
+  ],
+
+  // Combo Mode Canvas Colors (Epic 10, Story 10.2 - v2)
+  COMBO_CANVAS_COLORS: [
+    '#4A148C',  // Dark purple
+    '#0D47A1',  // Dark blue
+    '#B71C1C',  // Dark red
+    '#1B5E20'   // Dark green
+  ],
+
+  // Default canvas background color
+  DEFAULT_CANVAS_COLOR: '#E8E8E8',  // Light grey
+
+  // Combo Audio Thresholds (Epic 10, Story 10.4 - v2)
+  COMBO_JACKPOT_THRESHOLD: 15,    // 15+ points triggers jackpot audio
+  COMBO_LEGENDARY_THRESHOLD: 30,  // 30+ points triggers legendary audio
+
+  // Combo + Phone Interaction (Epic 10, Story 10.6 - v2)
+  COMBO_PAUSE_ON_PHONE: true      // Pause combo progression during phone calls
 };

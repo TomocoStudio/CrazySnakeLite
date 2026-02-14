@@ -41,17 +41,12 @@ export function activateCombo(food, gameState) {
   // Reset food count (this is food #1)
   gameState.combo.foodCount = 1;
 
-  // Story 10.2: Select random canvas color
+  // Story 10.2: Select random canvas color (stored but not applied - grid inversion used instead)
   const colors = CONFIG.COMBO_CANVAS_COLORS;
   gameState.combo.canvasColor = colors[Math.floor(Math.random() * colors.length)];
 
-  // Story 10.2: Apply canvas color transition (500ms smooth fade)
-  // Issue #4 fix: Add null check for canvas element
-  const canvas = getCanvas();
-  if (canvas) {
-    canvas.style.transition = 'background-color 500ms ease-in-out';
-    canvas.style.backgroundColor = gameState.combo.canvasColor;
-  }
+  // NOTE: Canvas background color handled by render.js clearCanvas() using grid inversion
+  // Combo mode uses subtle color inversion (232↔216) instead of dark colors
 }
 
 /**
@@ -70,13 +65,8 @@ export function isComboActive(gameState) {
  * @param {object} gameState - Game state
  */
 export function exitCombo(gameState) {
-  // Transition canvas back to default color
-  // Issue #4 fix: Add null check for canvas element
-  const canvas = getCanvas();
-  if (canvas) {
-    canvas.style.transition = 'background-color 500ms ease-in-out';
-    canvas.style.backgroundColor = CONFIG.DEFAULT_CANVAS_COLOR;
-  }
+  // NOTE: Canvas background color handled by render.js clearCanvas() using grid inversion
+  // No need to manually reset canvas.style.backgroundColor
 
   // Reset combo state
   gameState.combo.active = false;
