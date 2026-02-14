@@ -149,8 +149,8 @@ export const CONFIG = {
 
   // Combo Mode System (Epic 10, Story 10.1 - v2)
   COMBO_PROBABILITIES: [
-    { minScore: 0,   maxScore: 4,   probability: 0.0 },   // No combos (learning phase)
-    { minScore: 5,   maxScore: 59,  probability: 0.8 },   // 80% - TESTING MODE
+    { minScore: 0,   maxScore: 29,  probability: 0.0 },   // No combos (learning phase)
+    { minScore: 30,  maxScore: 59,  probability: 0.1 },   // 10%
     { minScore: 60,  maxScore: 79,  probability: 0.2 },   // 20%
     { minScore: 80,  maxScore: 99,  probability: 0.3 },   // 30%
     { minScore: 100, maxScore: 119, probability: 0.35 },  // 35%

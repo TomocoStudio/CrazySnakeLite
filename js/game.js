@@ -108,7 +108,7 @@ function update(gameState) {
     // Capture state BEFORE activation check so progression doesn't run on the same food
     const wasComboActive = isComboActive(gameState);
 
-    if (!wasComboActive && gameState.score >= 5) {  // TESTING: lowered from 40
+    if (!wasComboActive && gameState.score >= 30) {
       const comboProbability = getComboProbability(gameState.score);
 
       if (Math.random() < comboProbability) {
