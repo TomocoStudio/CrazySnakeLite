@@ -273,6 +273,7 @@ FR95 (game_start event)
 - ❌ Not incrementing total_games (session aggregation broken)
 - ❌ Calling trackGameStart() after game loop starts (event fires too late)
 - ❌ Using localStorage instead of sessionStorage (persists across browser closes)
+- ❌ **Variable shadowing**: Declaring `const previousScore` in function scope can shadow module-level `let previousScore`, causing "invalid assignment to const" errors later (see Bug Fix below)
 
 ---
 
@@ -340,3 +341,12 @@ N/A - Test via browser DevTools Network tab to verify 'game_start' events
 - Added session aggregation counters (total_games, session_start, highest_score)
 - Fires 'game_start' event with {session_id, is_first_game, previous_score}
 - Ready for testing in browser (DevTools → Network tab)
+
+**2026-02-16** - Bug Fix: Variable Shadowing Issue
+- **Problem**: Line 76 declared `const previousScore` for analytics tracking, which shadowed the module-level `let previousScore` (line 210). Line 105 attempted to reassign `previousScore = gameState.score`, but JavaScript resolved this to the local const, causing "Uncaught TypeError: invalid assignment to const 'previousScore'" error. This error stopped startNewGame() execution before spawnFood() was called, causing food to never appear on canvas.
+- **Root Cause**: Variable shadowing - local const previousScore at line 76 shadowed module-level let previousScore, preventing reassignment at line 105
+- **Fix**: Removed redundant line 105 (`previousScore = gameState.score`) as module-level previousScore is already managed by UI update loop (line 239 in main.js)
+- **Impact**: Critical bug - game unplayable (no food spawning) until fixed
+- **Prevention**: Avoid variable shadowing by using distinct names for local vs module-level variables, or use const for truly constant values only
+- **Files Modified**: js/main.js (removed line 105)
+- **Verified**: Food now spawns correctly, game playable, analytics tracking unaffected
