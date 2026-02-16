@@ -356,6 +356,9 @@ function update(gameState) {
     // Story 10.7: Track combo state at death (for analytics)
     gameState.analyticsState.combo_active = gameState.combo.active;
 
+    // Story 14.3: Track if death occurred during Reverse Controls
+    gameState.cognitiveStats.rcDeath = gameState.effects.reverseControlsActive || false;
+
     // Exit combo mode if active (reset canvas color and state)
     if (gameState.combo.active) {
       exitCombo(gameState);

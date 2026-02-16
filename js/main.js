@@ -11,6 +11,7 @@ import { initAudio, resumeAudio, closeAudio, playMenuMusic, stopMenuMusic, isAud
 import { initStarRatings, initCharCounter, openFeedbackModal, closeFeedbackModal, resetFeedbackForm, getFormData, captureMetadata, formatEmailBody, formatEmailSubject, submitFeedback, showThankYouScreen, closeThankYouScreen, initFeedbackModal } from './feedback.js';
 import { showCognitiveStats, showHighlights, selectHighlights } from './cognitive-feedback.js';
 import { trackSessionEnd, trackGameStart } from './analytics.js';
+import { selectCallerQuote } from './callers.js';
 
 // Initialize canvas and context
 const canvas = document.getElementById('game-canvas');
@@ -296,6 +297,7 @@ function handleUIUpdate(state) {
         ]);
 
         let highlights = [];
+        let callerQuote = null;
 
         // Story 14.1: Select highlights if metrics are available
         if (state.currentSessionMetrics && state.rollingAverages) {
@@ -311,13 +313,29 @@ function handleUIUpdate(state) {
           saveSessionPattern(highlights.map(h => h.type));
 
           console.log('[Epic 14] Highlights selected:', highlights);
+
+          // Story 14.3: Select caller quote based on performance context
+          const sessionContext = {
+            streakDays: 0, // Story 14.6 will implement streak calculation
+            calibrationState: 'complete', // Story 14.5 will implement calibration state
+            totalSessions: 1 // Placeholder - will be populated from profile
+          };
+
+          callerQuote = selectCallerQuote(
+            { score: state.score, metrics: state.currentSessionMetrics },
+            state.cognitiveStats,
+            highlights,
+            sessionContext
+          );
+
+          console.log('[Epic 14] Caller quote selected:', callerQuote);
         } else {
           console.warn('[Epic 14] Session metrics not available yet - skipping highlight selection');
         }
 
         // Story 14.2: Show highlights with staggered animation
-        // callerQuote and sessionContext will be provided by Stories 14.3, 14.5, 14.6
-        await showHighlights(highlights, null, null);
+        // sessionContext will be fully populated by Stories 14.5, 14.6
+        await showHighlights(highlights, callerQuote, null);
 
         // Show buttons after highlight animation completes (t=3.3s)
         console.log('[Main] Highlights animation complete - showing Play Again button');
