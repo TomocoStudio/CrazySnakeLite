@@ -1,4 +1,4 @@
-# generated: 2026-02-15
+# generated: 2026-02-16
 # project: CrazySnakeLite
 # project_key: crazy-snake-lite
 # tracking_system: file-system
@@ -33,7 +33,7 @@
 # - SM typically creates next story after previous one is 'done' to incorporate learnings
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
-generated: 2026-02-15
+generated: 2026-02-16
 project: CrazySnakeLite
 project_key: crazy-snake-lite
 tracking_system: file-system
@@ -238,3 +238,34 @@ development_status:
   18-8-test-quote-contextual-relevance: ready-for-dev
   18-9-create-comedy-quote-content-guidelines: ready-for-dev
   epic-18-retrospective: optional
+
+  # Epic 19: Visual Clarity Enhancement
+  epic-19: backlog
+  19-1-extend-progression-system-8-fields: backlog
+  19-2-create-food-shape-rendering-system: backlog
+  19-3-implement-crt-phosphor-glow-effect: backlog
+  19-4-implement-defensive-rendering-pattern: backlog
+  19-5-integrate-shapes-glow-food-rendering: backlog
+  19-6-test-visual-clarity-performance: backlog
+  epic-19-retrospective: optional
+
+  # Epic 20: Progressive Arcade Transformation
+  epic-20: backlog
+  20-1-define-css-tier-system: backlog
+  20-2-implement-css-canvas-hybrid-rendering: backlog
+  20-3-create-progressive-grid-opacity-system: backlog
+  20-4-implement-background-transition-logic: backlog
+  20-5-create-event-driven-border-foundation: backlog
+  20-6-test-visual-transformation-performance: backlog
+  epic-20-retrospective: optional
+
+  # Epic 21: Immersive Arcade Polish
+  epic-21: backlog
+  21-1-implement-snake-head-enhancements: backlog
+  21-2-create-typography-treatments: backlog
+  21-3-implement-crt-scanline-overlay: backlog
+  21-4-complete-reactive-border-7-states: backlog
+  21-5-implement-grid-intersection-dots-caching: backlog
+  21-6-integrate-border-orchestration-game-events: backlog
+  21-7-test-immersive-arcade-polish-performance: backlog
+  epic-21-retrospective: optional
