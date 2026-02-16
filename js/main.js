@@ -6,12 +6,13 @@ import { initInput } from './input.js';
 import { spawnFood } from './food.js';
 import { applyEffect, clearEffect, EFFECT_TYPES } from './effects.js';
 import { scheduleNextCall, initPhoneSystem } from './phone.js';
-import { saveHighScore, initStorage, getAllTimeHighs, getLastSessionPattern, saveSessionPattern } from './storage.js';
+import { saveHighScore, initStorage, getAllTimeHighs, getLastSessionPattern, saveSessionPattern, getTotalSessionCount } from './storage.js';
 import { initAudio, resumeAudio, closeAudio, playMenuMusic, stopMenuMusic, isAudioReady } from './audio.js';
 import { initStarRatings, initCharCounter, openFeedbackModal, closeFeedbackModal, resetFeedbackForm, getFormData, captureMetadata, formatEmailBody, formatEmailSubject, submitFeedback, showThankYouScreen, closeThankYouScreen, initFeedbackModal } from './feedback.js';
 import { showCognitiveStats, showHighlights, selectHighlights } from './cognitive-feedback.js';
 import { trackSessionEnd, trackGameStart } from './analytics.js';
 import { selectCallerQuote } from './callers.js';
+import { getCalibrationState, formatCalibrationCounter } from './calibration.js';
 
 // Initialize canvas and context
 const canvas = document.getElementById('game-canvas');
@@ -290,14 +291,19 @@ function handleUIUpdate(state) {
         // Add small delay to ensure async saveSessionMetrics completes
         await new Promise(resolve => setTimeout(resolve, 100));
 
-        // Story 14.1: Query all-time highs and last session pattern in parallel
-        const [allTimeHighs, lastPattern] = await Promise.all([
+        // Story 14.1: Query all-time highs, last pattern, and session count in parallel
+        const [allTimeHighs, lastPattern, totalSessions] = await Promise.all([
           getAllTimeHighs(),
-          Promise.resolve(getLastSessionPattern())
+          Promise.resolve(getLastSessionPattern()),
+          getTotalSessionCount()
         ]);
+
+        // Story 14.5: Get calibration state
+        const calibrationInfo = getCalibrationState(totalSessions);
 
         let highlights = [];
         let callerQuote = null;
+        let sessionContext = null;
 
         // Story 14.1: Select highlights if metrics are available
         if (state.currentSessionMetrics && state.rollingAverages) {
@@ -314,13 +320,15 @@ function handleUIUpdate(state) {
 
           console.log('[Epic 14] Highlights selected:', highlights);
 
-          // Story 14.3: Select caller quote based on performance context
-          const sessionContext = {
+          // Story 14.3/14.5: Build session context for caller quote and footer
+          sessionContext = {
             streakDays: 0, // Story 14.6 will implement streak calculation
-            calibrationState: 'complete', // Story 14.5 will implement calibration state
-            totalSessions: 1 // Placeholder - will be populated from profile
+            calibrationState: calibrationInfo.state, // Story 14.5: in_progress, complete, or unlocked
+            calibrationSessionCount: calibrationInfo.sessionCount,
+            totalSessions: totalSessions
           };
 
+          // Story 14.3: Select caller quote based on performance context
           callerQuote = selectCallerQuote(
             { score: state.score, metrics: state.currentSessionMetrics },
             state.cognitiveStats,
@@ -329,13 +337,14 @@ function handleUIUpdate(state) {
           );
 
           console.log('[Epic 14] Caller quote selected:', callerQuote);
+          console.log('[Epic 14] Calibration state:', calibrationInfo.state, `(${totalSessions} sessions)`);
         } else {
           console.warn('[Epic 14] Session metrics not available yet - skipping highlight selection');
         }
 
         // Story 14.2: Show highlights with staggered animation
-        // sessionContext will be fully populated by Stories 14.5, 14.6
-        await showHighlights(highlights, callerQuote, null);
+        // Story 14.5: sessionContext includes calibration state for footer rendering
+        await showHighlights(highlights, callerQuote, sessionContext);
 
         // Show buttons after highlight animation completes (t=3.3s)
         console.log('[Main] Highlights animation complete - showing Play Again button');

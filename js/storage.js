@@ -130,6 +130,38 @@ export async function getSessions(limit = 10) {
 }
 
 /**
+ * Get total session count from IndexedDB.
+ * Story 14.5: Used for calibration state determination.
+ *
+ * @returns {Promise<number>} Total completed sessions (0 if unavailable)
+ */
+export async function getTotalSessionCount() {
+  if (!dbInstance) {
+    await initStorage();
+  }
+
+  if (!dbInstance) {
+    console.warn('[Storage] Cannot get session count - IndexedDB unavailable');
+    return 0;
+  }
+
+  return new Promise((resolve) => {
+    const transaction = dbInstance.transaction([SESSIONS_STORE], 'readonly');
+    const store = transaction.objectStore(SESSIONS_STORE);
+    const countRequest = store.count();
+
+    countRequest.onsuccess = () => {
+      resolve(countRequest.result);
+    };
+
+    countRequest.onerror = () => {
+      console.error('[Storage] Failed to get session count:', countRequest.error);
+      resolve(0);
+    };
+  });
+}
+
+/**
  * Prune old sessions to maintain MAX_SESSIONS limit
  * @returns {Promise<void>}
  */

@@ -205,18 +205,91 @@ function renderCallerQuote(quote, container) {
 
 /**
  * Render footer content (calibration progress or streak).
- * Stories 14.5/14.6 will implement full logic.
+ * Story 14.5: Calibration counter implementation.
+ * Story 14.6: Streak display (TBD).
  *
- * @param {Object} context - {calibrationState, streakDays}
+ * @param {Object} context - {calibrationState, calibrationSessionCount, streakDays}
  * @param {HTMLElement} container - .post-game-footer element
  */
 function renderFooter(context, container) {
-  if (context.calibrationState && context.calibrationState !== 'complete') {
-    // Story 14.5: Calibration progress
-    container.textContent = `Session ${context.calibrationState.current}/5 — Warming up...`;
-  } else if (context.streakDays > 0) {
-    // Story 14.6: Streak display
-    container.textContent = `🔥 ${context.streakDays}-day streak`;
+  if (!context) {
+    container.classList.add('hidden');
+    return;
+  }
+
+  // Story 14.5: Calibration states
+  if (context.calibrationState === 'in_progress') {
+    // Sessions 1-4: Show progress counter with pulsing animation
+    container.textContent = `Session ${context.calibrationSessionCount}/5 — Warming up...`;
+    container.className = 'post-game-footer calibration-counter';
+    container.classList.remove('hidden');
+
+  } else if (context.calibrationState === 'complete') {
+    // Session 5: One-time celebration
+    container.textContent = 'Your Skill Map is ready! 🎉';
+    container.className = 'post-game-footer calibration-complete';
+    container.classList.remove('hidden');
+
+    // Trigger celebration animation (100ms flash + confetti)
+    if (!CONFIG.REDUCED_MOTION) {
+      triggerCalibrationCelebration(container);
+    }
+
+  } else if (context.calibrationState === 'unlocked') {
+    // Session 6+: Check for streak display (Story 14.6)
+    if (context.streakDays && context.streakDays > 0) {
+      // Story 14.6: Streak display
+      container.textContent = `🔥 ${context.streakDays}-day streak`;
+      container.className = 'post-game-footer';
+      container.classList.remove('hidden');
+    } else {
+      // No streak: hide footer
+      container.classList.add('hidden');
+    }
+  } else {
+    // Default: hide footer
+    container.classList.add('hidden');
+  }
+}
+
+/**
+ * Trigger calibration completion celebration animation.
+ * Story 14.5: Brief fanfare with flash and confetti particles.
+ *
+ * @param {HTMLElement} container - Footer container element
+ */
+function triggerCalibrationCelebration(container) {
+  // 1. Flash animation (handled by CSS .calibration-complete class)
+  // Already applied via className assignment in renderFooter
+
+  // 2. Confetti particles (simple emoji confetti)
+  createConfettiParticles(container);
+}
+
+/**
+ * Create confetti particle animation.
+ * Story 14.5: Simple emoji particles that fade out.
+ *
+ * @param {HTMLElement} container - Footer container element
+ */
+function createConfettiParticles(container) {
+  const emojis = ['🎉', '🎊', '✨'];
+  const particleCount = 8;
+
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement('span');
+    particle.className = 'confetti-particle';
+    particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    particle.style.left = `${20 + Math.random() * 60}%`; // Center area
+    particle.style.animationDelay = `${Math.random() * 100}ms`;
+    container.appendChild(particle);
+
+    // Remove after animation completes
+    setTimeout(() => {
+      if (particle.parentNode === container) {
+        particle.remove();
+      }
+    }, 600);
   }
 }
 

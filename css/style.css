@@ -371,14 +371,71 @@ body {
   color: rgb(200, 200, 200);
   opacity: 0;
   animation: fadeInStats 400ms ease-out forwards;
+  text-align: center;
+  position: relative; /* For confetti particles */
 }
 
 .post-game-footer.hidden {
   display: none;
 }
 
+/* Story 14.5: Calibration Counter */
+.calibration-counter {
+  font-size: 12px;
+  color: #aaa; /* Light grey */
+  animation: fadeInStats 400ms ease-out forwards, calibrationPulse 2s ease-in-out infinite;
+  animation-delay: 0s, 400ms; /* Fade in first, then start pulsing */
+}
+
+@keyframes calibrationPulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1.0; }
+}
+
+/* Story 14.5: Calibration Complete Celebration */
+.calibration-complete {
+  color: #FFD700; /* Gold */
+  font-size: 14px;
+  font-weight: bold;
+  animation: celebrationFlash 200ms ease-out forwards;
+}
+
+@keyframes celebrationFlash {
+  0% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Story 14.5: Confetti Particles */
+.confetti-particle {
+  position: absolute;
+  font-size: 20px;
+  pointer-events: none;
+  animation: confettiFall 600ms ease-out forwards;
+}
+
+@keyframes confettiFall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-30px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
 /* ========================================
-   Reduced Motion Mode - Story 11.6
+   Reduced Motion Mode - Story 11.6, 14.5
    Disable animations for accessibility
    ======================================== */
 
@@ -396,6 +453,22 @@ body {
   .fade-out {
     animation: none !important;
     opacity: 0 !important;
+  }
+
+  /* Story 14.5: Disable calibration animations */
+  .calibration-counter {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+
+  .calibration-complete {
+    opacity: 1 !important;
+    animation: none !important;
+    transform: scale(1) !important;
+  }
+
+  .confetti-particle {
+    display: none !important; /* Hide confetti entirely */
   }
 }
 
