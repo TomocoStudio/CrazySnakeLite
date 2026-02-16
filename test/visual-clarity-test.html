@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story 19.5: Visual Clarity Integration Test</title>
+  <style>
+    body {
+      font-family: 'Press Start 2P', monospace;
+      background: #1a1a1a;
+      color: #00ff00;
+      padding: 20px;
+      margin: 0;
+    }
+    h1 {
+      color: #9D4EDD;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    .controls {
+      background: #2a2a2a;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 2px solid #9D4EDD;
+    }
+    .control-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 10px;
+      color: #9D4EDD;
+    }
+    input[type="range"] {
+      width: 100%;
+      height: 30px;
+    }
+    .score-display {
+      font-size: 24px;
+      color: #00ff00;
+      text-align: center;
+      margin: 10px 0;
+    }
+    .tier-info {
+      font-size: 10px;
+      color: #FFFF00;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    #gameCanvas {
+      border: 4px solid #9D4EDD;
+      display: block;
+      margin: 0 auto;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+    .info-panel {
+      background: #2a2a2a;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      border: 2px solid #00ff00;
+      font-size: 10px;
+      line-height: 1.8;
+    }
+    .info-title {
+      color: #00ff00;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+    button {
+      background: #9D4EDD;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      cursor: pointer;
+      margin: 5px;
+      border-radius: 4px;
+    }
+    button:hover {
+      background: #C77DFF;
+    }
+    .food-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .food-type {
+      background: #2a2a2a;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #555;
+      text-align: center;
+      font-size: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎮 Story 19.5: Visual Clarity Integration Test</h1>
+
+  <div class="controls">
+    <div class="control-group">
+      <label for="scoreSlider">SCORE (0-150):</label>
+      <input type="range" id="scoreSlider" min="0" max="150" value="0" step="1">
+      <div class="score-display" id="scoreDisplay">0</div>
+      <div class="tier-info" id="tierInfo">Tier 1: Light BG + 3px Glow</div>
+    </div>
+
+    <div class="control-group">
+      <button onclick="setScore(0)">Score 0</button>
+      <button onclick="setScore(25)">Score 25</button>
+      <button onclick="setScore(50)">Score 50</button>
+      <button onclick="setScore(80)">Score 80</button>
+      <button onclick="setScore(100)">Score 100+</button>
+    </div>
+
+    <div class="control-group">
+      <label>
+        <input type="checkbox" id="blinkingToggle" onchange="toggleBlinking()">
+        Show Blinking Food (cycles shapes/colors)
+      </label>
+    </div>
+  </div>
+
+  <canvas id="gameCanvas" width="464" height="464"></canvas>
+
+  <div class="info-panel">
+    <div class="info-title">Current Visual State:</div>
+    <div id="visualState"></div>
+  </div>
+
+  <div class="food-grid" id="foodGrid"></div>
+
+  <script type="module">
+    import { CONFIG } from '../js/config.js';
+    import { getState } from '../js/progression.js';
+
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreSlider = document.getElementById('scoreSlider');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    const tierInfo = document.getElementById('tierInfo');
+    const visualState = document.getElementById('visualState');
+    const blinkingToggle = document.getElementById('blinkingToggle');
+
+    let currentScore = 0;
+    let isBlinking = false;
+    let animationId = null;
+
+    // Food types and their names
+    const foodTypes = [
+      { type: 'growing', name: 'Growing (Square)', color: CONFIG.COLORS.foodGrowing, outline: CONFIG.COLORS.foodGrowingOutline },
+      { type: 'invincibility', name: 'Invincibility (Star)', color: CONFIG.COLORS.foodInvincibility, outline: CONFIG.COLORS.foodInvincibilityOutline },
+      { type: 'wallPhase', name: 'WallPhase (Ring)', color: CONFIG.COLORS.foodWallPhase, outline: CONFIG.COLORS.foodWallPhaseOutline },
+      { type: 'speedBoost', name: 'SpeedBoost (Cross)', color: CONFIG.COLORS.foodSpeedBoost, outline: CONFIG.COLORS.foodSpeedBoostOutline },
+      { type: 'speedDecrease', name: 'SpeedDecrease (Hollow Square)', color: CONFIG.COLORS.foodSpeedDecrease, outline: CONFIG.COLORS.foodSpeedDecreaseOutline },
+      { type: 'reverseControls', name: 'ReverseControls (X)', color: CONFIG.COLORS.foodReverseControls, outline: CONFIG.COLORS.foodReverseControlsOutline }
+    ];
+
+    // Defensive rendering pattern from Story 19.4
+    function withShadow(ctx, shadowConfig, drawFn) {
+      const { color, blur } = shadowConfig;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = blur;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+      try {
+        drawFn(ctx);
+      } finally {
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+      }
+    }
+
+    // Food shape rendering from Story 19.2
+    function renderFoodShape(ctx, x, y, type, color, outlineColor) {
+      const cx = x + CONFIG.UNIT_SIZE / 2;
+      const cy = y + CONFIG.UNIT_SIZE / 2;
+
+      ctx.fillStyle = color;
+      ctx.strokeStyle = outlineColor;
+      ctx.lineWidth = 1;
+
+      switch (type) {
+        case 'growing':
+          ctx.fillRect(cx - 6, cy - 6, 12, 12);
+          ctx.strokeRect(cx - 6, cy - 6, 12, 12);
+          break;
+
+        case 'invincibility':
+          ctx.beginPath();
+          ctx.moveTo(cx, cy - 7);
+          ctx.lineTo(cx + 3, cy - 3);
+          ctx.lineTo(cx + 7, cy);
+          ctx.lineTo(cx + 3, cy + 3);
+          ctx.lineTo(cx, cy + 7);
+          ctx.lineTo(cx - 3, cy + 3);
+          ctx.lineTo(cx - 7, cy);
+          ctx.lineTo(cx - 3, cy - 3);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+          break;
+
+        case 'wallPhase':
+          ctx.beginPath();
+          ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+          ctx.lineWidth = 3;
+          ctx.strokeStyle = color;
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(cx, cy, 7.5, 0, Math.PI * 2);
+          ctx.lineWidth = 1;
+          ctx.strokeStyle = outlineColor;
+          ctx.stroke();
+          break;
+
+        case 'speedBoost':
+          ctx.fillRect(cx - 2, cy - 7, 4, 14);
+          ctx.fillRect(cx - 7, cy - 2, 14, 4);
+          ctx.strokeRect(cx - 2, cy - 7, 4, 14);
+          ctx.strokeRect(cx - 7, cy - 2, 14, 4);
+          break;
+
+        case 'speedDecrease':
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2;
+          ctx.strokeRect(cx - 7, cy - 7, 14, 14);
+          ctx.strokeStyle = outlineColor;
+          ctx.lineWidth = 1;
+          ctx.strokeRect(cx - 8, cy - 8, 16, 16);
+          break;
+
+        case 'reverseControls':
+          ctx.lineWidth = 3;
+          ctx.strokeStyle = color;
+          ctx.beginPath();
+          ctx.moveTo(cx - 6, cy - 6);
+          ctx.lineTo(cx + 6, cy + 6);
+          ctx.moveTo(cx + 6, cy - 6);
+          ctx.lineTo(cx - 6, cy + 6);
+          ctx.stroke();
+          ctx.lineWidth = 5;
+          ctx.strokeStyle = outlineColor;
+          ctx.globalCompositeOperation = 'destination-over';
+          ctx.beginPath();
+          ctx.moveTo(cx - 6, cy - 6);
+          ctx.lineTo(cx + 6, cy + 6);
+          ctx.moveTo(cx + 6, cy - 6);
+          ctx.lineTo(cx - 6, cy + 6);
+          ctx.stroke();
+          ctx.globalCompositeOperation = 'source-over';
+          break;
+      }
+    }
+
+    function render() {
+      const state = getState(currentScore);
+
+      // Clear canvas with background color
+      ctx.fillStyle = state.backgroundColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw grid
+      ctx.strokeStyle = state.gridLineColor;
+      ctx.lineWidth = CONFIG.GRID_LINE_WIDTH;
+      ctx.globalAlpha = state.gridOpacity;
+
+      for (let x = 0; x <= CONFIG.GRID_WIDTH; x++) {
+        const xPos = x * CONFIG.UNIT_SIZE;
+        ctx.beginPath();
+        ctx.moveTo(xPos, 0);
+        ctx.lineTo(xPos, canvas.height);
+        ctx.stroke();
+      }
+
+      for (let y = 0; y <= CONFIG.GRID_HEIGHT; y++) {
+        const yPos = y * CONFIG.UNIT_SIZE;
+        ctx.beginPath();
+        ctx.moveTo(0, yPos);
+        ctx.lineTo(canvas.width, yPos);
+        ctx.stroke();
+      }
+
+      ctx.globalAlpha = 1.0;
+
+      // Draw all 6 food types in a grid
+      const foodsToRender = isBlinking
+        ? [foodTypes[Math.floor(Date.now() / 200) % 6]]  // Cycle through types
+        : foodTypes;
+
+      foodsToRender.forEach((food, index) => {
+        const row = Math.floor(index / 3);
+        const col = index % 3;
+        const x = (col * 6 + 8) * CONFIG.UNIT_SIZE;
+        const y = (row * 6 + 8) * CONFIG.UNIT_SIZE;
+
+        const color = isBlinking
+          ? CONFIG.BLINK_SEQUENCE[Math.floor(Date.now() / 200) % CONFIG.BLINK_SEQUENCE.length]
+          : food.color;
+
+        withShadow(ctx, { color, blur: state.glowIntensity }, (ctx) => {
+          renderFoodShape(ctx, x, y, food.type, color, food.outline);
+        });
+      });
+
+      // Update info
+      updateVisualState(state);
+
+      if (isBlinking) {
+        animationId = requestAnimationFrame(render);
+      }
+    }
+
+    function updateVisualState(state) {
+      const tier = getTierName(currentScore);
+      tierInfo.textContent = tier;
+
+      visualState.innerHTML = `
+        <strong>Background:</strong> ${state.backgroundColor}<br>
+        <strong>Grid Line:</strong> ${state.gridLineColor}<br>
+        <strong>Grid Opacity:</strong> ${state.gridOpacity}<br>
+        <strong>Glow Intensity:</strong> ${state.glowIntensity}px<br>
+        <strong>Grid Dot Opacity:</strong> ${state.gridDotOpacity}
+      `;
+    }
+
+    function getTierName(score) {
+      if (score < 15) return 'Tier 1: Light BG + 3px Glow';
+      if (score < 30) return 'Tier 2: 3px Glow';
+      if (score < 50) return 'Tier 3: 3px Glow';
+      if (score < 80) return 'Tier 4: Medium BG + 5px Glow';
+      if (score < 100) return 'Tier 5: Dark BG + 8px Glow';
+      return 'Tier 6: Neon Noir (Darkest BG + 8px Glow)';
+    }
+
+    function setScore(score) {
+      currentScore = score;
+      scoreSlider.value = score;
+      scoreDisplay.textContent = score;
+      render();
+    }
+
+    function toggleBlinking() {
+      isBlinking = blinkingToggle.checked;
+      if (isBlinking) {
+        render();
+      } else {
+        if (animationId) {
+          cancelAnimationFrame(animationId);
+          animationId = null;
+        }
+        render();
+      }
+    }
+
+    scoreSlider.addEventListener('input', (e) => {
+      setScore(parseInt(e.target.value));
+    });
+
+    window.setScore = setScore;
+    window.toggleBlinking = toggleBlinking;
+
+    // Initial render
+    render();
+  </script>
+</body>
+</html>

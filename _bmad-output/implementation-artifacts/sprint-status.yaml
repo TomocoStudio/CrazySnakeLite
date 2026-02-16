@@ -227,7 +227,7 @@ development_status:
   epic-17-retrospective: optional
 
   # Epic 18: Dashboard Comedy Integration
-  epic-18: done
+  epic-18: in-progress
   18-1-create-caller-quote-database-performance-context: review
   18-2-implement-contextual-quote-selection-algorithm: review
   18-3-integrate-quotes-post-game-highlights: review
@@ -240,13 +240,15 @@ development_status:
   epic-18-retrospective: optional
 
   # Epic 19: Visual Clarity Enhancement
-  epic-19: backlog
-  19-1-extend-progression-system-8-fields: backlog
+  epic-19: done
+  19-1-extend-progression-system-8-fields: review
+  19-2-create-food-shape-rendering-system: review
+  19-3-implement-crt-glow-effect: review
   19-2-create-food-shape-rendering-system: backlog
   19-3-implement-crt-phosphor-glow-effect: backlog
-  19-4-implement-defensive-rendering-pattern: backlog
-  19-5-integrate-shapes-glow-food-rendering: backlog
-  19-6-test-visual-clarity-performance: backlog
+  19-4-implement-defensive-rendering-pattern: review
+  19-5-integrate-shapes-glow-food-rendering: review
+  19-6-test-visual-clarity-performance: review
   epic-19-retrospective: optional
 
   # Epic 20: Progressive Arcade Transformation

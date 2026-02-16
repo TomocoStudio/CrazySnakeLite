@@ -63,13 +63,22 @@ export const CONFIG = {
     foodWallPhase: '#800080',
     foodSpeedBoost: '#FF0000',
     foodSpeedDecrease: '#00CED1',
-    foodReverseControls: '#FFA500'
+    foodReverseControls: '#FFA500',
+
+    // Food outline colors (Story 19.2 - Enhancement 2: Food Shapes)
+    // Darker variants for 1px border - provides contrast on any background
+    foodGrowingOutline: '#009900',
+    foodInvincibilityOutline: '#B8B800',
+    foodWallPhaseOutline: '#550055',
+    foodSpeedBoostOutline: '#B30000',
+    foodSpeedDecreaseOutline: '#009199',
+    foodReverseControlsOutline: '#B37400'
   },
 
   // Visual settings
   GRID_LINE_WIDTH: 0.5,
   GRID_LINE_OPACITY: 0.9,
-  FOOD_SIZE: 11,  // pixels (food rendered as 11x11 pixel shapes) - Story 5-3 testing
+  FOOD_SIZE: 14,  // pixels (Story 19.2 - updated from 11 for shape clarity)
 
   // Strobe effect (Story 2.2)
   STROBE_INTERVAL: 100,  // milliseconds (10 Hz = 10 flashes per second)
@@ -354,5 +363,58 @@ export const CONFIG = {
     // Streak milestones (Story 17.5 - Epic 17)
     // Highlight these streaks in gold with pulsing animation
     STREAK_MILESTONES: [7, 14, 30, 60]
-  }
+  },
+
+  // ========================================================================
+  // V4 VISUAL PROGRESSION THRESHOLDS (Story 19.1 - Epic 19)
+  // Progressive visual transformation tied to score-based achievement
+  // ========================================================================
+
+  // Enhancement 3: CRT Phosphor Glow (Story 19.1)
+  // Blur intensity increases with score for retro CRT effect
+  GLOW_INTENSITY_THRESHOLDS: [
+    { minScore: 0,   maxScore: 49,  blur: 3 },
+    { minScore: 50,  maxScore: 79,  blur: 5 },
+    { minScore: 80,  maxScore: Infinity, blur: 8 }
+  ],
+
+  // Enhancement 1: Progressive Dark Playfield - Background Colors (Story 19.1)
+  // Canvas darkens progressively from light gray to near-black (Neon Noir aesthetic)
+  BACKGROUND_THRESHOLDS: [
+    { minScore: 0,   maxScore: 14,  background: '#E8E8E8' },  // Light gray (beginner)
+    { minScore: 15,  maxScore: 29,  background: '#D0D0D0' },  // Medium-light gray
+    { minScore: 30,  maxScore: 49,  background: '#B0B0B0' },  // Medium gray
+    { minScore: 50,  maxScore: 79,  background: '#808080' },  // Medium-dark gray
+    { minScore: 80,  maxScore: 99,  background: '#505050' },  // Dark gray
+    { minScore: 100, maxScore: Infinity, background: '#2A2A2A' }  // Near-black (Neon Noir)
+  ],
+
+  // Enhancement 1: Progressive Dark Playfield - Grid Line Colors (Story 19.1)
+  // Grid lines darken alongside background to maintain subtle contrast
+  GRID_LINE_THRESHOLDS: [
+    { minScore: 0,   maxScore: 14,  gridLine: '#A0A0A0' },  // Dark gray lines on light BG
+    { minScore: 15,  maxScore: 29,  gridLine: '#909090' },
+    { minScore: 30,  maxScore: 49,  gridLine: '#808080' },
+    { minScore: 50,  maxScore: 79,  gridLine: '#606060' },
+    { minScore: 80,  maxScore: 99,  gridLine: '#404040' },
+    { minScore: 100, maxScore: Infinity, gridLine: '#1A1A1A' }  // Very dark lines (subtle on black)
+  ],
+
+  // Enhancement 8: Grid Line Opacity (Story 19.1)
+  // Grid fades out as background darkens for cleaner "ghost grid" effect
+  GRID_OPACITY_THRESHOLDS: [
+    { minScore: 0,   maxScore: 49,  opacity: 1.0 },   // Fully visible
+    { minScore: 50,  maxScore: 79,  opacity: 0.7 },   // Slightly faded
+    { minScore: 80,  maxScore: 99,  opacity: 0.5 },   // Half opacity
+    { minScore: 100, maxScore: Infinity, opacity: 0.3 }  // Ghost grid (subtle)
+  ],
+
+  // Enhancement 8: Grid Dot Opacity (Story 19.1)
+  // Intersection dots appear and intensify as grid fades (visual anchor points)
+  GRID_DOT_OPACITY_THRESHOLDS: [
+    { minScore: 0,   maxScore: 49,  opacity: 0 },      // No dots at low scores
+    { minScore: 50,  maxScore: 79,  opacity: 0.15 },   // Faint dots emerge
+    { minScore: 80,  maxScore: 99,  opacity: 0.25 },   // Medium intensity
+    { minScore: 100, maxScore: Infinity, opacity: 0.35 }  // Full dot visibility
+  ]
 };
