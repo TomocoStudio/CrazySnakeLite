@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Epic 13 Live Gameplay Test</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      background: #0a0a0a;
+      color: #00ff00;
+      padding: 20px;
+      line-height: 1.8;
+    }
+    h1 {
+      color: #00ff00;
+      border-bottom: 2px solid #00ff00;
+      padding-bottom: 10px;
+    }
+    .section {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 5px;
+    }
+    .pass { color: #00ff00; }
+    .fail { color: #ff0000; }
+    .info { color: #00aaff; }
+    button {
+      background: #00ff00;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background: #00cc00;
+    }
+    pre {
+      background: #000;
+      padding: 10px;
+      border-left: 3px solid #00ff00;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    #log {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧠 Epic 13: Live Gameplay Metrics Test</h1>
+
+  <div class="section">
+    <h2>Test Actions</h2>
+    <button onclick="initializeStorage()">1. Initialize Storage</button>
+    <button onclick="simulateGameSession()">2. Simulate Game Session</button>
+    <button onclick="retrieveSessions()">3. Retrieve Sessions</button>
+    <button onclick="clearDatabase()">4. Clear Database</button>
+  </div>
+
+  <div class="section">
+    <h2>Test Results</h2>
+    <div id="results">
+      <p class="info">Click buttons above to run tests...</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Event Log</h2>
+    <pre id="log"></pre>
+  </div>
+
+  <script type="module">
+    import { initStorage, saveSession, getSessions } from '../js/storage.js';
+    import {
+      calculateReactionTime,
+      calculateSpatialAwareness,
+      calculateCognitiveFlexibility,
+      calculateDividedAttention,
+      calculateImpulseControl,
+      calculateWorkingMemory,
+      calculateRollingAverages
+    } from '../js/metrics.js';
+
+    const results = document.getElementById('results');
+    const log = document.getElementById('log');
+
+    function addLog(message) {
+      const timestamp = new Date().toLocaleTimeString();
+      log.textContent += `[${timestamp}] ${message}\n`;
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function showResult(html) {
+      results.innerHTML = html;
+    }
+
+    window.initializeStorage = async function() {
+      addLog('Initializing IndexedDB storage...');
+      try {
+        const db = await initStorage();
+        if (db) {
+          addLog('✅ IndexedDB initialized successfully');
+          addLog(`   Database: ${db.name}, Version: ${db.version}`);
+          showResult('<p class="pass">✅ Storage Initialized</p><p>IndexedDB ready for metrics storage</p>');
+        } else {
+          addLog('⚠️  IndexedDB unavailable (private browsing?)');
+          showResult('<p class="fail">⚠️  Storage Unavailable</p><p>Running in degraded mode</p>');
+        }
+      } catch (error) {
+        addLog(`❌ Storage initialization failed: ${error.message}`);
+        showResult(`<p class="fail">❌ Error: ${error.message}</p>`);
+      }
+    };
+
+    window.simulateGameSession = async function() {
+      addLog('Simulating complete game session...');
+
+      // Create realistic gameplay events
+      const baseTime = Date.now();
+      const rawEvents = [
+        // Early game - learning phase
+        { type: 'food_eaten', timestamp: baseTime + 1000, responseTime: 350, duringRC: false, duringPhone: false, duringCombo: false },
+        { type: 'food_eaten', timestamp: baseTime + 2500, responseTime: 320, duringRC: false, duringPhone: false, duringCombo: false },
+        { type: 'food_eaten', timestamp: baseTime + 4000, responseTime: 290, duringRC: false, duringPhone: false, duringCombo: false },
+
+        // First phone call - low stakes
+        {
+          type: 'phone_call',
+          timestamp: baseTime + 5000,
+          decision: 'end',
+          decisionTime: 1800,
+          survived: true,
+          context: { inComboMode: false, currentScore: 5, pickupBonus: 2, blinkingFoodActive: false, snakeLength: 10 }
+        },
+
+        // Mid game - getting faster
+        { type: 'food_eaten', timestamp: baseTime + 6000, responseTime: 280, duringRC: false, duringPhone: false, duringCombo: false },
+        { type: 'food_eaten', timestamp: baseTime + 7000, responseTime: 260, duringRC: false, duringPhone: false, duringCombo: false },
+
+        // Reverse Controls challenge
+        { type: 'rc_start', timestamp: baseTime + 8000 },
+        { type: 'food_eaten', timestamp: baseTime + 9000, responseTime: 450, duringRC: true, duringPhone: false, duringCombo: false },
+        { type: 'food_eaten', timestamp: baseTime + 10500, responseTime: 420, duringRC: true, duringPhone: false, duringCombo: false },
+        { type: 'rc_end', timestamp: baseTime + 12000 },
+
+        // Recovery after RC
+        { type: 'food_eaten', timestamp: baseTime + 13000, responseTime: 300, duringRC: false, duringPhone: false, duringCombo: false },
+
+        // Combo mode activated!
+        { type: 'combo_start', timestamp: baseTime + 14000 },
+        { type: 'food_eaten', timestamp: baseTime + 14800, responseTime: 220, duringRC: false, duringPhone: false, duringCombo: true },
+        { type: 'food_eaten', timestamp: baseTime + 15500, responseTime: 210, duringRC: false, duringPhone: false, duringCombo: true },
+        { type: 'food_eaten', timestamp: baseTime + 16200, responseTime: 200, duringRC: false, duringPhone: false, duringCombo: true },
+        { type: 'combo_end', timestamp: baseTime + 17000 },
+
+        // High stakes phone call during combo
+        {
+          type: 'phone_call',
+          timestamp: baseTime + 18000,
+          decision: 'pickup',
+          decisionTime: 950,
+          survived: true,
+          context: { inComboMode: true, currentScore: 78, pickupBonus: 8, blinkingFoodActive: true, snakeLength: 83 }
+        },
+
+        // Final stretch
+        { type: 'food_eaten', timestamp: baseTime + 19000, responseTime: 270, duringRC: false, duringPhone: false, duringCombo: false },
+        { type: 'food_eaten', timestamp: baseTime + 20000, responseTime: 285, duringRC: false, duringPhone: false, duringCombo: false }
+      ];
+
+      addLog(`Generated ${rawEvents.length} gameplay events`);
+
+      // Calculate metrics
+      addLog('Calculating cognitive metrics...');
+      const metrics = {
+        reactionTime: calculateReactionTime(rawEvents),
+        spatialAwareness: calculateSpatialAwareness(87, 250, 200, 10),
+        cognitiveFlexibility: calculateCognitiveFlexibility(rawEvents),
+        dividedAttention: calculateDividedAttention(rawEvents),
+        impulseControl: calculateImpulseControl(rawEvents),
+        workingMemory: calculateWorkingMemory(rawEvents)
+      };
+
+      addLog('Metrics calculated:');
+      Object.entries(metrics).forEach(([key, value]) => {
+        addLog(`  ${key}: ${value.toFixed(3)}`);
+      });
+
+      // Get previous sessions for rolling average
+      const previousSessions = await getSessions(9);
+      addLog(`Retrieved ${previousSessions.length} previous sessions`);
+
+      // Calculate rolling averages
+      const rollingAverages = calculateRollingAverages(metrics, previousSessions);
+      addLog('Rolling averages calculated');
+
+      // Build session object
+      const sessionData = {
+        sessionId: crypto.randomUUID(),
+        timestamp: Date.now(),
+        score: 82,
+        metrics: metrics,
+        rollingAverages: rollingAverages,
+        rawEvents: rawEvents
+      };
+
+      // Save to IndexedDB
+      addLog('Saving session to IndexedDB...');
+      const saved = await saveSession(sessionData);
+
+      if (saved) {
+        addLog(`✅ Session saved: ${sessionData.sessionId}`);
+
+        let html = '<p class="pass">✅ Game Session Simulated & Saved</p>';
+        html += '<h3>Calculated Metrics:</h3><ul>';
+        Object.entries(metrics).forEach(([key, value]) => {
+          html += `<li><strong>${key}:</strong> ${value.toFixed(3)}</li>`;
+        });
+        html += '</ul>';
+        html += '<h3>Session Data:</h3>';
+        html += `<p>Session ID: <code>${sessionData.sessionId}</code></p>`;
+        html += `<p>Score: ${sessionData.score}</p>`;
+        html += `<p>Events Tracked: ${rawEvents.length}</p>`;
+        html += `<p>Storage Size: ${(JSON.stringify(sessionData).length / 1024).toFixed(2)} KB</p>`;
+
+        showResult(html);
+      } else {
+        addLog('❌ Failed to save session');
+        showResult('<p class="fail">❌ Save Failed</p><p>Check console for errors</p>');
+      }
+    };
+
+    window.retrieveSessions = async function() {
+      addLog('Retrieving all sessions from IndexedDB...');
+      try {
+        const sessions = await getSessions(100);
+        addLog(`✅ Retrieved ${sessions.length} sessions`);
+
+        if (sessions.length === 0) {
+          showResult('<p class="info">No sessions found. Run "Simulate Game Session" first.</p>');
+          return;
+        }
+
+        let html = `<p class="pass">✅ Retrieved ${sessions.length} Session(s)</p>`;
+        html += '<h3>Recent Sessions:</h3>';
+
+        sessions.slice(0, 5).forEach((session, i) => {
+          html += `<div style="margin: 10px 0; padding: 10px; background: #000; border-left: 3px solid #00ff00;">`;
+          html += `<strong>Session ${i + 1}</strong><br>`;
+          html += `ID: ${session.sessionId}<br>`;
+          html += `Score: ${session.score}<br>`;
+          html += `Date: ${new Date(session.timestamp).toLocaleString()}<br>`;
+          html += `Metrics: reactionTime=${session.metrics.reactionTime.toFixed(3)}, `;
+          html += `spatialAwareness=${session.metrics.spatialAwareness.toFixed(3)}, `;
+          html += `cognitiveFlexibility=${session.metrics.cognitiveFlexibility.toFixed(3)}`;
+          html += `</div>`;
+        });
+
+        showResult(html);
+      } catch (error) {
+        addLog(`❌ Retrieval failed: ${error.message}`);
+        showResult(`<p class="fail">❌ Error: ${error.message}</p>`);
+      }
+    };
+
+    window.clearDatabase = async function() {
+      if (!confirm('Clear all cognitive metrics data?')) return;
+
+      addLog('Clearing IndexedDB...');
+      try {
+        await new Promise((resolve, reject) => {
+          const request = indexedDB.deleteDatabase('CrazySnakeMetrics');
+          request.onsuccess = () => {
+            addLog('✅ Database cleared');
+            showResult('<p class="pass">✅ Database Cleared</p><p>All metrics data deleted</p>');
+            resolve();
+          };
+          request.onerror = () => {
+            addLog('❌ Failed to clear database');
+            reject(request.error);
+          };
+        });
+      } catch (error) {
+        addLog(`❌ Clear failed: ${error.message}`);
+        showResult(`<p class="fail">❌ Error: ${error.message}</p>`);
+      }
+    };
+
+    // Auto-initialize on page load
+    addLog('=== Epic 13 Live Test Ready ===');
+    addLog('Click "1. Initialize Storage" to begin');
+  </script>
+</body>
+</html>
