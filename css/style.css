@@ -264,13 +264,14 @@ body {
 
 .cognitive-stats-header {
   font-family: 'Jersey20', sans-serif;
-  font-size: 28px;  /* Doubled from 14px */
-  color: #9C27B0; /* Purple theme */
+  font-size: 20px;
+  color: rgb(157, 178, 221); /* Story 14.2: Purple theme per FR165 */
   text-transform: uppercase;
   letter-spacing: 2px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   opacity: 0;
   animation: fadeInStats 300ms ease-out forwards;
+  /* Fade-in at t=0.3s */
 }
 
 .cognitive-stats-lines {
@@ -281,12 +282,13 @@ body {
 
 .cognitive-stat-line {
   font-family: 'Jersey20', sans-serif;
-  font-size: 16px;
+  font-size: 18px; /* Story 14.2: 18-20px per FR165 */
   color: white;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  margin: 8px 0;
   opacity: 0;
-  /* Stagger animation (delay set via inline style) */
-  animation: fadeInStats 300ms ease-out forwards;
+  /* Stagger animation: 300ms delay between lines */
+  animation: fadeInStats 400ms ease-out forwards;
 }
 
 @keyframes fadeInStats {
@@ -314,6 +316,65 @@ body {
     opacity: 0;
     transform: translateY(-10px);
   }
+}
+
+/* Story 14.2: Caller Quote Section (Story 14.3 implementation) */
+.caller-quote {
+  margin-top: 20px;
+  padding: 16px;
+  opacity: 0;
+  animation: fadeInStats 400ms ease-out forwards;
+  /* Fade-in at t=1.5s */
+}
+
+.caller-quote.hidden {
+  display: none;
+}
+
+.quote-text {
+  font-family: 'Jersey20', sans-serif;
+  font-size: 16px;
+  color: rgb(200, 200, 200);
+  font-style: italic;
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+
+.quote-attribution {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  font-family: 'Jersey20', sans-serif;
+  font-size: 14px;
+  color: rgb(157, 178, 221);
+}
+
+.caller-portrait {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  image-rendering: pixelated; /* Retro pixel-art style */
+}
+
+.caller-name {
+  font-weight: normal;
+}
+
+/* Story 14.2: Post-Game Footer (Stories 14.5, 14.6) */
+.post-game-footer {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  font-family: 'Jersey20', sans-serif;
+  font-size: 14px;
+  color: rgb(200, 200, 200);
+  opacity: 0;
+  animation: fadeInStats 400ms ease-out forwards;
+}
+
+.post-game-footer.hidden {
+  display: none;
 }
 
 /* ========================================

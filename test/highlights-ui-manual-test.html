@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story 14.2 - Highlights UI Manual Test</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body {
+      background: #1a1a1a;
+      padding: 20px;
+      font-family: 'Jersey20', monospace;
+    }
+    .test-container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: #2a2a2a;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    h1 {
+      color: rgb(157, 178, 221);
+      text-align: center;
+    }
+    .test-controls {
+      margin: 20px 0;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    button {
+      padding: 10px 20px;
+      background: rgb(157, 178, 221);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Jersey20', monospace;
+      font-size: 14px;
+    }
+    button:hover {
+      background: rgb(177, 198, 241);
+    }
+    .info {
+      color: #ccc;
+      font-size: 14px;
+      margin-top: 20px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>Story 14.2 - Highlights UI Test</h1>
+
+    <div class="test-controls">
+      <button id="test-personal-best">Test: Personal Best</button>
+      <button id="test-improvement">Test: Improvement</button>
+      <button id="test-notable">Test: Notable Event</button>
+      <button id="test-all">Test: All 3</button>
+      <button id="test-reset">Reset</button>
+    </div>
+
+    <div class="info">
+      <strong>Expected Behavior:</strong>
+      <ul>
+        <li>t=0.3s: "RECAP" header fades in (purple)</li>
+        <li>t=0.6s: First highlight fades in</li>
+        <li>t=0.9s: Second highlight fades in (if present)</li>
+        <li>t=1.2s: Third highlight fades in (if present)</li>
+        <li>Font: Jersey20, 18px, white text</li>
+        <li>Icons: 🎯 ⬆ 🔥 ↑ displayed inline</li>
+      </ul>
+    </div>
+
+    <!-- Highlights container (from index.html) -->
+    <div class="cognitive-stats hidden" role="region" aria-live="polite" aria-label="Game summary">
+      <div class="cognitive-stats-header">─── RECAP ───</div>
+      <div class="cognitive-stats-lines"></div>
+      <div class="caller-quote hidden">
+        <div class="quote-text"></div>
+        <div class="quote-attribution">
+          <img class="caller-portrait" src="" alt="">
+          <span class="caller-name"></span>
+        </div>
+      </div>
+      <div class="post-game-footer hidden"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { showHighlights, hideHighlights } from '../js/cognitive-feedback.js';
+
+    // Test data
+    const testHighlights = {
+      personalBest: [{
+        type: 'personal_best',
+        metric: 'reactionTime',
+        value: 0.95,
+        text: 'Reaction Time: NEW PERSONAL BEST!',
+        icon: '🎯',
+        priority: 1
+      }],
+      improvement: [{
+        type: 'improvement',
+        metric: 'spatialAwareness',
+        value: 0.92,
+        delta: 0.18,
+        text: 'Spatial Awareness up 18% this session',
+        icon: '⬆',
+        priority: 2
+      }],
+      notable: [{
+        type: 'notable',
+        subtype: 'rc_survived',
+        value: 3,
+        text: 'Survived 3 Reverse Controls — brain on fire',
+        icon: '🔥',
+        priority: 3
+      }],
+      all: [
+        {
+          type: 'personal_best',
+          metric: 'reactionTime',
+          value: 0.95,
+          text: 'Reaction Time: NEW PERSONAL BEST!',
+          icon: '🎯',
+          priority: 1
+        },
+        {
+          type: 'improvement',
+          metric: 'spatialAwareness',
+          value: 0.92,
+          delta: 0.18,
+          text: 'Spatial Awareness up 18% this session',
+          icon: '⬆',
+          priority: 2
+        },
+        {
+          type: 'notable',
+          subtype: 'rc_survived',
+          value: 3,
+          text: 'Survived 3 Reverse Controls — brain on fire',
+          icon: '🔥',
+          priority: 3
+        }
+      ]
+    };
+
+    // Test buttons
+    document.getElementById('test-personal-best').addEventListener('click', () => {
+      hideHighlights();
+      setTimeout(() => showHighlights(testHighlights.personalBest), 500);
+    });
+
+    document.getElementById('test-improvement').addEventListener('click', () => {
+      hideHighlights();
+      setTimeout(() => showHighlights(testHighlights.improvement), 500);
+    });
+
+    document.getElementById('test-notable').addEventListener('click', () => {
+      hideHighlights();
+      setTimeout(() => showHighlights(testHighlights.notable), 500);
+    });
+
+    document.getElementById('test-all').addEventListener('click', () => {
+      hideHighlights();
+      setTimeout(() => showHighlights(testHighlights.all), 500);
+    });
+
+    document.getElementById('test-reset').addEventListener('click', () => {
+      hideHighlights();
+    });
+
+    // Initial test
+    console.log('Story 14.2 Manual Test loaded');
+    console.log('Click buttons to test different highlight configurations');
+  </script>
+</body>
+</html>

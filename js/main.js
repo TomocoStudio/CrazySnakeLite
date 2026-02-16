@@ -9,7 +9,7 @@ import { scheduleNextCall, initPhoneSystem } from './phone.js';
 import { saveHighScore, initStorage, getAllTimeHighs, getLastSessionPattern, saveSessionPattern } from './storage.js';
 import { initAudio, resumeAudio, closeAudio, playMenuMusic, stopMenuMusic, isAudioReady } from './audio.js';
 import { initStarRatings, initCharCounter, openFeedbackModal, closeFeedbackModal, resetFeedbackForm, getFormData, captureMetadata, formatEmailBody, formatEmailSubject, submitFeedback, showThankYouScreen, closeThankYouScreen, initFeedbackModal } from './feedback.js';
-import { showCognitiveStats, selectHighlights } from './cognitive-feedback.js';
+import { showCognitiveStats, showHighlights, selectHighlights } from './cognitive-feedback.js';
 import { trackSessionEnd, trackGameStart } from './analytics.js';
 
 // Initialize canvas and context
@@ -283,8 +283,7 @@ function handleUIUpdate(state) {
         }
       }
 
-      // Story 11.3-11.4: Show cognitive stats, then Play Again button after sequence completes
-      // Story 14.1: Select highlights before displaying stats
+      // Story 14.2: Show highlights with staggered animation
       setTimeout(async () => {
         // Wait for metrics to be available (populated by saveSessionMetrics in game.js)
         // Add small delay to ensure async saveSessionMetrics completes
@@ -296,9 +295,11 @@ function handleUIUpdate(state) {
           Promise.resolve(getLastSessionPattern())
         ]);
 
+        let highlights = [];
+
         // Story 14.1: Select highlights if metrics are available
         if (state.currentSessionMetrics && state.rollingAverages) {
-          const highlights = selectHighlights(
+          highlights = selectHighlights(
             state.currentSessionMetrics,
             state.rollingAverages,
             allTimeHighs,
@@ -309,17 +310,17 @@ function handleUIUpdate(state) {
           // Save pattern for variety enforcement
           saveSessionPattern(highlights.map(h => h.type));
 
-          // Story 14.2 will render highlights here
-          // For now, log them for verification
-          console.log('[Epic 14] Highlights:', highlights);
+          console.log('[Epic 14] Highlights selected:', highlights);
         } else {
           console.warn('[Epic 14] Session metrics not available yet - skipping highlight selection');
         }
 
-        await showCognitiveStats(state);
+        // Story 14.2: Show highlights with staggered animation
+        // callerQuote and sessionContext will be provided by Stories 14.3, 14.5, 14.6
+        await showHighlights(highlights, null, null);
 
-        // Show buttons after stats sequence completes
-        console.log('[Main] Cognitive stats complete - showing Play Again button');
+        // Show buttons after highlight animation completes (t=3.3s)
+        console.log('[Main] Highlights animation complete - showing Play Again button');
         playAgainBtn.classList.remove('hidden');
         menuBtn.classList.remove('hidden');
       }, CONFIG.COGNITIVE_STATS_DISPLAY.initialDelay);

@@ -61,18 +61,169 @@ export function formatStatLine(key, value) {
 }
 
 /**
+ * Show cognitive highlights on game-over screen with staggered fade-in animation.
+ * Story 14.2: Replaces showCognitiveStats() with highlights-based approach.
+ *
+ * Timing sequence per FR168:
+ * - t=0.0s: Game over + score appear
+ * - t=0.3s: "RECAP" header fades in
+ * - t=0.6s: Highlight 1 fades in (300ms stagger)
+ * - t=0.9s: Highlight 2 fades in
+ * - t=1.2s: Highlight 3 fades in (if 3 highlights)
+ * - t=1.5s: Caller quote fades in (if present)
+ * - t=3.3s: Promise resolves (buttons can appear)
+ *
+ * @param {Array} highlights - Array of highlight objects from selectHighlights()
+ * @param {Object} callerQuote - Optional quote object {text, caller, portrait} from Story 14.3
+ * @param {Object} sessionContext - Optional {calibrationState, streakDays} for footer display
+ * @returns {Promise} Resolves at t=3.3s when animation sequence completes
+ */
+export function showHighlights(highlights = [], callerQuote = null, sessionContext = null) {
+  return new Promise((resolve) => {
+    const container = document.querySelector('.cognitive-stats');
+    const header = document.querySelector('.cognitive-stats-header');
+    const linesContainer = document.querySelector('.cognitive-stats-lines');
+    const quoteContainer = document.querySelector('.caller-quote');
+    const footerContainer = document.querySelector('.post-game-footer');
+
+    if (!container || !linesContainer) {
+      resolve();
+      return;
+    }
+
+    // Clear previous content
+    linesContainer.innerHTML = '';
+
+    // If no highlights, hide container and resolve immediately
+    if (highlights.length === 0) {
+      container.classList.add('hidden');
+      resolve();
+      return;
+    }
+
+    // Show container
+    container.classList.remove('hidden');
+
+    // Reduced motion mode: instant display, no stagger
+    if (CONFIG.REDUCED_MOTION) {
+      // Header
+      if (header) {
+        header.style.opacity = '1';
+        header.style.animation = 'none';
+      }
+
+      // Highlights
+      highlights.forEach((highlight) => {
+        const line = document.createElement('div');
+        line.className = 'cognitive-stat-line';
+        line.textContent = formatHighlightText(highlight);
+        line.style.opacity = '1';
+        line.style.animation = 'none';
+        linesContainer.appendChild(line);
+      });
+
+      // Caller quote (if present)
+      if (callerQuote && quoteContainer) {
+        renderCallerQuote(callerQuote, quoteContainer);
+        quoteContainer.classList.remove('hidden');
+        quoteContainer.style.opacity = '1';
+        quoteContainer.style.animation = 'none';
+      }
+
+      // Footer (if context present)
+      if (sessionContext && footerContainer) {
+        renderFooter(sessionContext, footerContainer);
+        footerContainer.classList.remove('hidden');
+        footerContainer.style.opacity = '1';
+        footerContainer.style.animation = 'none';
+      }
+
+      // Resolve immediately
+      resolve();
+      return;
+    }
+
+    // Normal mode: staggered animation per FR168
+    // t=0.3s: RECAP header
+    if (header) {
+      header.style.animationDelay = '300ms';
+    }
+
+    // t=0.6s, 0.9s, 1.2s: Highlights (300ms stagger)
+    highlights.forEach((highlight, index) => {
+      const line = document.createElement('div');
+      line.className = 'cognitive-stat-line';
+      line.textContent = formatHighlightText(highlight);
+
+      // Stagger delay: 600ms base + (index * 300ms)
+      const delay = 600 + (index * 300);
+      line.style.animationDelay = `${delay}ms`;
+
+      linesContainer.appendChild(line);
+    });
+
+    // t=1.5s: Caller quote (if present)
+    if (callerQuote && quoteContainer) {
+      renderCallerQuote(callerQuote, quoteContainer);
+      quoteContainer.classList.remove('hidden');
+      quoteContainer.style.animationDelay = '1500ms';
+    }
+
+    // Footer (Stories 14.5/14.6 will implement timing)
+    if (sessionContext && footerContainer) {
+      renderFooter(sessionContext, footerContainer);
+      footerContainer.classList.remove('hidden');
+      footerContainer.style.animationDelay = '1800ms';
+    }
+
+    // t=3.3s: Resolve (buttons can appear)
+    setTimeout(() => {
+      resolve();
+    }, 3300);
+  });
+}
+
+/**
+ * Render caller quote in the quote container.
+ * Story 14.3 will provide quote selection logic.
+ *
+ * @param {Object} quote - {text, caller, portrait}
+ * @param {HTMLElement} container - .caller-quote element
+ */
+function renderCallerQuote(quote, container) {
+  const textEl = container.querySelector('.quote-text');
+  const nameEl = container.querySelector('.caller-name');
+  const portraitEl = container.querySelector('.caller-portrait');
+
+  if (textEl) textEl.textContent = `"${quote.text}"`;
+  if (nameEl) nameEl.textContent = `— ${quote.caller}`;
+  if (portraitEl && quote.portrait) {
+    portraitEl.src = quote.portrait;
+    portraitEl.alt = quote.caller;
+  }
+}
+
+/**
+ * Render footer content (calibration progress or streak).
+ * Stories 14.5/14.6 will implement full logic.
+ *
+ * @param {Object} context - {calibrationState, streakDays}
+ * @param {HTMLElement} container - .post-game-footer element
+ */
+function renderFooter(context, container) {
+  if (context.calibrationState && context.calibrationState !== 'complete') {
+    // Story 14.5: Calibration progress
+    container.textContent = `Session ${context.calibrationState.current}/5 — Warming up...`;
+  } else if (context.streakDays > 0) {
+    // Story 14.6: Streak display
+    container.textContent = `🔥 ${context.streakDays}-day streak`;
+  }
+}
+
+/**
  * Show cognitive stats on game over screen with stagger animation.
- * Returns Promise that resolves when stagger animation completes, allowing
- * caller to show Play Again/Menu buttons after stats finish animating in.
- *
- * Design Decision (Code Review 2026-02-16): Stats remain visible indefinitely
- * (no auto-close, no fade-out). Original AC specified 2.5s hold + 500ms fade,
- * but this was intentionally changed for:
- * - Accessibility: screen reader users can read at their own pace
- * - UX: players aren't rushed to absorb cognitive feedback
- * - Cleanup: stats DOM cleared automatically on game reset (Play Again/Menu)
- *
- * Sequence: stagger in → resolve → caller shows buttons → stats stay visible
+ * DEPRECATED: Use showHighlights() instead (Story 14.2).
+ * Retained for backward compatibility during Epic 14 transition.
  *
  * @param {object} gameState - Full game state with cognitiveStats
  * @returns {Promise} Resolves when stagger animation completes (~300-900ms).
@@ -138,18 +289,17 @@ export function showCognitiveStats(gameState) {
 }
 
 /**
- * Hide cognitive stats with fade-out animation.
- * Currently unused in normal game flow (stats persist until game reset).
- * Retained for future use if timed fade-out is reintroduced.
- * Story 11.4: Applies .fade-out class for smooth 500ms transition.
- * Story 11.6: Instant disappearance if reduced motion mode active.
+ * Hide highlights with fade-out animation (on game restart).
+ * Story 14.2: Replaces hideCognitiveStats() with highlights-aware version.
  */
-export function hideCognitiveStats() {
+export function hideHighlights() {
   const container = document.querySelector('.cognitive-stats');
   const header = document.querySelector('.cognitive-stats-header');
   const lines = document.querySelectorAll('.cognitive-stat-line');
+  const quoteContainer = document.querySelector('.caller-quote');
+  const footerContainer = document.querySelector('.post-game-footer');
 
-  if (!container || !header) {
+  if (!container) {
     return;
   }
 
@@ -157,19 +307,37 @@ export function hideCognitiveStats() {
   if (CONFIG.REDUCED_MOTION) {
     // Reduced motion: instant disappearance
     container.classList.add('hidden');
+    if (quoteContainer) quoteContainer.classList.add('hidden');
+    if (footerContainer) footerContainer.classList.add('hidden');
   } else {
     // Normal: fade-out animation
-    header.classList.add('fade-out');
+    if (header) header.classList.add('fade-out');
     lines.forEach(line => line.classList.add('fade-out'));
+    if (quoteContainer) quoteContainer.classList.add('fade-out');
+    if (footerContainer) footerContainer.classList.add('fade-out');
 
     // Hide container after fade completes
     setTimeout(() => {
       container.classList.add('hidden');
+      if (quoteContainer) quoteContainer.classList.add('hidden');
+      if (footerContainer) footerContainer.classList.add('hidden');
+
       // Clean up fade-out classes for next time
-      header.classList.remove('fade-out');
+      if (header) header.classList.remove('fade-out');
       lines.forEach(line => line.classList.remove('fade-out'));
+      if (quoteContainer) quoteContainer.classList.remove('fade-out');
+      if (footerContainer) footerContainer.classList.remove('fade-out');
     }, CONFIG.COGNITIVE_STATS_DISPLAY.fadeDuration);
   }
+}
+
+/**
+ * Hide cognitive stats with fade-out animation.
+ * DEPRECATED: Use hideHighlights() instead (Story 14.2).
+ * Retained for backward compatibility.
+ */
+export function hideCognitiveStats() {
+  hideHighlights();
 }
 
 // ========================================

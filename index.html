@@ -47,11 +47,27 @@
       <p id="new-high-score-indicator" class="new-high-score hidden">*** NEW HIGH SCORE! ***</p>
 
       <!-- Cognitive Stats Container - Story 11.3 -->
-      <div class="cognitive-stats hidden">
-        <div class="cognitive-stats-header">YOUR BRAIN TODAY</div>
+      <!-- Story 14.2: Post-Game Highlights (RECAP) -->
+      <div class="cognitive-stats hidden" role="region" aria-live="polite" aria-label="Game summary">
+        <!-- RECAP header -->
+        <div class="cognitive-stats-header">─── RECAP ───</div>
+
+        <!-- Highlights container (2-3 lines) -->
         <div class="cognitive-stats-lines">
-          <!-- Stat lines injected dynamically -->
+          <!-- Dynamically generated highlight lines with icons -->
         </div>
+
+        <!-- Caller quote (Story 14.3) -->
+        <div class="caller-quote hidden">
+          <div class="quote-text"></div>
+          <div class="quote-attribution">
+            <img class="caller-portrait" src="" alt="">
+            <span class="caller-name"></span>
+          </div>
+        </div>
+
+        <!-- Post-game footer: Calibration or Streak (Stories 14.5, 14.6) -->
+        <div class="post-game-footer hidden"></div>
       </div>
 
       <button id="play-again-btn">Play Again</button>
