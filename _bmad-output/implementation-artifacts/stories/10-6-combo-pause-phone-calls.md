@@ -42,38 +42,38 @@
 
 ## Tasks / Subtasks
 
-- [ ] Add CONFIG.COMBO_PAUSE_ON_PHONE to config.js
-  - [ ] Boolean flag (true by default)
-- [ ] Prevent foodCount increment during phone call
-  - [ ] In handleComboFoodProgression(): check if phoneCall.active
-  - [ ] If phone active: skip combo progression logic
-  - [ ] Return early (do not increment foodCount)
-- [ ] Test combo pause during phone call
-  - [ ] Activate combo (Effect A)
-  - [ ] Trigger phone call
-  - [ ] Verify dark canvas visible under blur
-  - [ ] Verify striped snake (if Effect B) or solid (if Effect A only)
-  - [ ] Dismiss phone
-  - [ ] Eat food
-  - [ ] Verify foodCount increments normally
-- [ ] Test combo resume after phone dismissal
-  - [ ] Combo with Effect B (striped snake, foodCount = 2)
-  - [ ] Trigger phone call
-  - [ ] Dismiss call
-  - [ ] Verify striped snake still visible
-  - [ ] Verify dark canvas color persists
-  - [ ] Eat third food
-  - [ ] Verify combo exits normally
-- [ ] Test death during paused combo
-  - [ ] Activate combo (phone call arrives)
-  - [ ] Die during Pick Up countdown
-  - [ ] Verify combo.active = true (captured for analytics)
-- [ ] Test Pick Up timer during combo
-  - [ ] Combo active, phone arrives
-  - [ ] Press Pick Up (blur + countdown)
-  - [ ] Verify combo state preserved (effectA, effectB, canvasColor)
-  - [ ] Countdown expires, phone dismisses
-  - [ ] Verify combo resumes
+- [x] Add CONFIG.COMBO_PAUSE_ON_PHONE to config.js
+  - [x] Boolean flag (true by default)
+- [x] Prevent foodCount increment during phone call
+  - [x] In handleComboFoodProgression(): check if phoneCall.active
+  - [x] If phone active: skip combo progression logic
+  - [x] Return early (do not increment foodCount)
+- [x] Test combo pause during phone call
+  - [x] Activate combo (Effect A)
+  - [x] Trigger phone call
+  - [x] Verify dark canvas visible under blur
+  - [x] Verify striped snake (if Effect B) or solid (if Effect A only)
+  - [x] Dismiss phone
+  - [x] Eat food
+  - [x] Verify foodCount increments normally
+- [x] Test combo resume after phone dismissal
+  - [x] Combo with Effect B (striped snake, foodCount = 2)
+  - [x] Trigger phone call
+  - [x] Dismiss call
+  - [x] Verify striped snake still visible
+  - [x] Verify dark canvas color persists
+  - [x] Eat third food
+  - [x] Verify combo exits normally
+- [x] Test death during paused combo
+  - [x] Activate combo (phone call arrives)
+  - [x] Die during Pick Up countdown
+  - [x] Verify combo.active = true (captured for analytics)
+- [x] Test Pick Up timer during combo
+  - [x] Combo active, phone arrives
+  - [x] Press Pick Up (blur + countdown)
+  - [x] Verify combo state preserved (effectA, effectB, canvasColor)
+  - [x] Countdown expires, phone dismisses
+  - [x] Verify combo resumes
 
 ---
 

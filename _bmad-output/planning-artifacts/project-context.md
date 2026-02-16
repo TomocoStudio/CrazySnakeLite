@@ -166,10 +166,10 @@ setTimeout(() => el.remove(), 800);                     // WRONG
 overlay.classList.add('picked-up');                      // CORRECT
 endBtn.style.display = 'none';                          // WRONG
 
-// Canvas state: CSS class + custom property
-canvas.classList.add('combo-active');                    // CORRECT
-canvas.style.setProperty('--combo-color', '#4A148C');   // For dynamic value
-canvas.style.backgroundColor = '#4A148C';               // WRONG
+// Canvas combo state: grid inversion via render.js clearCanvas()
+// render.js checks isComboActive() and uses CONFIG.COLORS.comboBackground
+ctx.fillStyle = isComboActive(gameState) ? CONFIG.COLORS.comboBackground : CONFIG.COLORS.background; // CORRECT
+canvas.style.backgroundColor = '#4A148C';               // WRONG — use canvas fillRect in render.js
 
 // Reduced motion: read CONFIG flag (detected once in main.js)
 if (CONFIG.REDUCED_MOTION) { /* ... */ }                // CORRECT
@@ -190,10 +190,17 @@ const b = progression.getState(score).comboProbability;   // WRONG
 ### V2 Behavioral Invariants (MUST follow exactly)
 
 ```javascript
-// combo.isActive() MUST check paused state — paused combo is NOT active for food eating
-export function isActive(gameState) {
-  return gameState.combo.active && !gameState.combo.paused; // CORRECT
-  // return gameState.combo.active;                         // WRONG — ignores pause
+// combo.isComboActive() returns raw active state — pause is handled by guard clause in game.js
+export function isComboActive(gameState) {
+  return gameState.combo.active; // CORRECT — pause enforced by phoneCall.active check in game.js
+}
+
+// game.js combo progression guard — this is where pause is enforced:
+if (wasComboActive) {
+  if (CONFIG.COMBO_PAUSE_ON_PHONE && gameState.phoneCall.active) {
+    return; // PAUSED — skip combo progression, foodCount unchanged
+  }
+  // ... normal combo progression
 }
 
 // Wall Phase scoring reset sequence — STRICT ORDER, never reorder:
@@ -495,7 +502,7 @@ All paths relative to project root. All filenames kebab-case.
 | Manipulate DOM in game logic | Keep DOM access in designated modules |
 | `{ type: 'speedBoost' }` crossing modules without scoreValue | `{ type: 'speedBoost', scoreValue: 5 }` |
 | `setTimeout(() => popup.remove(), 800)` | `popup.addEventListener('animationend', () => popup.remove())` |
-| `canvas.style.backgroundColor = color` | `canvas.classList.add('combo-active')` + CSS custom property |
+| `canvas.style.backgroundColor = color` for combo | Grid inversion via `ctx.fillRect` in `render.js clearCanvas()` using `CONFIG.COLORS.comboBackground` |
 | `endBtn.style.display = 'none'` for phone states | `overlay.classList.add('picked-up')` with CSS rules |
 | `progression.getState(score)` called multiple times in one function | Call once, destructure: `const { a, b } = getState(score)` |
 | `window.matchMedia(...)` in individual modules | Read `CONFIG.REDUCED_MOTION` (detected once in main.js) |
@@ -580,12 +587,11 @@ const gameState = {
 
   // V2 NEW
   combo: {
-    active: false,
-    phase: 'inactive',       // 'inactive' | 'waitingForB' | 'waitingForExit'
-    effectA: null,           // { type, scoreValue }
-    effectB: null,           // { type, scoreValue }
-    canvasColor: null,       // '#4A148C', '#0D47A1', '#B71C1C', or '#1B5E20'
-    paused: false            // true when phone overlay active
+    active: false,           // Is combo mode currently active?
+    effectA: null,           // { type, points } — first food effect
+    effectB: null,           // { type, points } — second food effect
+    canvasColor: null,       // Stored but unused for rendering (grid inversion used instead)
+    foodCount: 0             // Foods eaten during combo (1=activated, 2=effectB, 3=exit)
   },
 
   effects: {
@@ -649,14 +655,14 @@ scoring.js (pure calc) → game.js (orchestrate) → score-popup.js (display)
 ### V2 Combo State Machine
 
 ```
-inactive → waitingForB → waitingForExit → inactive
+foodCount: 0 (inactive) → 1 (activated/effectA) → 2 (effectB/striped) → 3 (exit) → 0
 ```
 
-- Probability-based activation (10% at score 40, up to 40% at score 120+)
-- Canvas transitions to random dark color (500ms fade)
-- Snake renders with alternating stripe pattern (Effect A / Effect B colors)
+- Probability-based activation (10% at score 30, up to 40% at score 120+)
+- Canvas uses grid inversion: background #E6E6E6→#505050, gridLine #505050→#E6E6E6 (instant, per-frame)
+- Snake renders with alternating stripe pattern (Effect A / Effect B colors) when foodCount=2
 - 3-food lifecycle: activate → eat food B (stripe + multiply) → eat food C (exit)
-- Pauses when phone overlay active, resumes when dismissed
+- Pauses when phone overlay active (guard clause in game.js checks `phoneCall.active`), resumes when dismissed
 
 ### V2 Phone Call Mechanic
 
@@ -678,8 +684,8 @@ inactive → waitingForB → waitingForExit → inactive
 
 | Rule | Implementation |
 |------|---------------|
-| Combo pauses during phone | `combo.pause()` on phone show, `combo.resume()` on dismiss |
-| Combo transition delays 200ms when phone active | Guard clause in combo.js |
+| Combo pauses during phone | Guard clause in game.js: `if (CONFIG.COMBO_PAUSE_ON_PHONE && phoneCall.active)` skips combo progression |
+| Combo grid inversion instant | render.js `clearCanvas()` checks `isComboActive()` per frame |
 | Popup stagger 300ms | score-popup.js checks `lastPopupTime` |
 | Phone bonus labeled "CALL BONUS" | Label param passed to spawnPopup() |
 | Death awards both combo + phone | game.js onDeath() checks both states |

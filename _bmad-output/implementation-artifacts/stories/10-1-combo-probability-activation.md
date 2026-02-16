@@ -17,11 +17,11 @@
 
 ## Acceptance Criteria
 
-**Given** my score is between 0-39
+**Given** my score is between 0-29
 **When** I eat food
 **Then** combo mode never activates (0% probability)
 
-**Given** my score is between 40-59
+**Given** my score is between 30-59
 **When** I eat food
 **Then** combo mode has a 10% chance to activate
 
@@ -58,7 +58,7 @@
 
 - [x] Add getComboProbability(score) to progression.js
   - [x] Return probability based on score thresholds
-  - [x] 6 tiers: 0% (0-39), 10% (40-59), 20% (60-79), 30% (80-99), 35% (100-119), 40% (120+)
+  - [x] 6 tiers: 0% (0-29), 10% (30-59), 20% (60-79), 30% (80-99), 35% (100-119), 40% (120+)
 - [x] Add COMBO_PROBABILITIES to config.js
   - [x] Array of tier objects: {minScore, maxScore, probability}
 - [x] Add combo state object to state.js
@@ -94,7 +94,7 @@
 Implement progressive combo activation probability that scales with score. Combos create peak emotional moments (multiplicative scoring) but must not overwhelm gameplay. No combos until score 40 (mastery phase), then probability increases from 10% to 40% cap. This creates surprise and delight without constant interruption.
 
 **CRITICAL SUCCESS FACTORS:**
-- No combos until score 40 (grace period for combo learning)
+- No combos until score 30 (grace period for combo learning)
 - Probability scales with score (10% → 40% cap)
 - Combo activation check skipped if combo already active
 - Current food becomes Effect A when combo activates
@@ -543,6 +543,12 @@ No debug issues encountered during implementation.
 ---
 
 ## Change Log
+
+**2026-02-16** - Adversarial Code Review: AC Threshold Alignment
+- Updated ACs and task descriptions to match actual implementation: combo starts at score 30 (not 40)
+- Config was intentionally changed from 40 to 30 in commit 8bdf110 but story docs were never updated
+- Fixed combo.test.js: score 29→0%, score 30→10% (was testing score 39→0% which would FAIL against current config)
+- Added test for score 39→10% (mid-tier verification)
 
 **2026-02-14** - Code Review Complete & Issues Resolved
 - Conducted adversarial code review (found 10 issues: 3 critical, 4 medium, 3 low)

@@ -44,8 +44,10 @@ console.log('\n=== Testing getComboProbability() - All 6 Tiers ===\n');
 
 assertEqual(getComboProbability(0), 0.0, 'Score 0 = 0% combo probability');
 assertEqual(getComboProbability(20), 0.0, 'Score 20 = 0% combo probability');
-assertEqual(getComboProbability(39), 0.0, 'Score 39 = 0% combo probability (last in tier 1)');
-assertEqual(getComboProbability(40), 0.1, 'Score 40 = 10% combo probability (first in tier 2)');
+assertEqual(getComboProbability(29), 0.0, 'Score 29 = 0% combo probability (last in tier 1)');
+assertEqual(getComboProbability(30), 0.1, 'Score 30 = 10% combo probability (first in tier 2)');
+assertEqual(getComboProbability(39), 0.1, 'Score 39 = 10% combo probability (mid tier 2)');
+assertEqual(getComboProbability(40), 0.1, 'Score 40 = 10% combo probability');
 assertEqual(getComboProbability(50), 0.1, 'Score 50 = 10% combo probability');
 assertEqual(getComboProbability(59), 0.1, 'Score 59 = 10% combo probability (last in tier 2)');
 assertEqual(getComboProbability(60), 0.2, 'Score 60 = 20% combo probability (first in tier 3)');

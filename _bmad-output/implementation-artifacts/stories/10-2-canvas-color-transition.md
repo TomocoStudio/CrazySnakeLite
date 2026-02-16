@@ -19,18 +19,14 @@
 
 **Given** combo mode activates
 **When** the trigger occurs
-**Then** the canvas background color transitions from light grey (#E8E8E8) to a dark color
-**And** the transition is a smooth 500ms fade
-**And** the dark color is randomly selected from:
-  - Dark purple: #4A148C
-  - Dark blue: #0D47A1
-  - Dark red: #B71C1C
-  - Dark green: #1B5E20
+**Then** the canvas background color switches from normal (#E6E6E6) to combo mode (#505050) via grid inversion
+**And** the grid line color inverts from dark (#505050) to light (#E6E6E6)
+**And** the color change is instant (per-frame canvas fill, not CSS transition)
 
 **Given** combo mode exits (third food eaten)
 **When** the exit triggers
-**Then** the canvas background transitions back to light grey (#E8E8E8)
-**And** the transition is a smooth 500ms fade
+**Then** the canvas background returns to normal (#E6E6E6) via grid inversion
+**And** the grid lines return to normal (#505050)
 
 **Given** a phone call arrives during active combo
 **When** the phone overlay shows
@@ -435,6 +431,14 @@ No debug issues encountered during implementation.
 ---
 
 ## Change Log
+
+**2026-02-16** - Adversarial Code Review: AC Alignment to Grid Inversion Implementation
+- Updated ACs to reflect actual grid inversion approach (instant ctx.fillRect per frame)
+- Original spec: random dark colors (#4A148C, #0D47A1, #B71C1C, #1B5E20) + 500ms CSS fade
+- Actual implementation: fixed grid inversion (#E6E6E6 ↔ #505050) + instant per-frame fill
+- COMBO_CANVAS_COLORS in config.js and combo.canvasColor in state remain as stored-but-unused data
+- render.js clearCanvas() and renderGrid() use CONFIG.COLORS.comboBackground/comboGridLine (not random selection)
+- Implementation change was made in commit f83d8b9 (grid inversion approach)
 
 **2026-02-14** - Code Review Complete & Issues Resolved
 - Conducted adversarial code review (found 3 issues: 1 medium, 2 low)

@@ -479,7 +479,7 @@ No debug issues encountered during implementation.
 
 **Technical Decisions:**
 - Multiplication uses effectA.points × effectB.points (not type strings)
-- Combo score awarded IN ADDITION to base food score (double reward)
+- Combo score REPLACES base food score (subtract base, add multiplied)
 - Audio thresholds: 30+ legendary takes precedence over 15+ jackpot (if-else ladder)
 - peakComboScore uses Math.max to preserve highest score
 - Popup positioned at snake head (gridX, gridY from segments[0])
@@ -526,6 +526,11 @@ No debug issues encountered during implementation.
 
 
 ## Change Log
+
+**2026-02-16** - Adversarial Code Review: Fix Dev Record factual error
+- Dev Record stated combo score is "IN ADDITION to base food score (double reward)"
+- Code actually REPLACES base score: `score -= scoreIncrease; score += comboScore` (game.js:173-174)
+- Updated Dev Record to say "REPLACES base food score"
 
 **2026-02-14** - Spec Clarification: Multiplicative scoring is food #2 only
 - Clarified ACs: multiplicative scoring only happens on the second food eaten during combo (food #2)

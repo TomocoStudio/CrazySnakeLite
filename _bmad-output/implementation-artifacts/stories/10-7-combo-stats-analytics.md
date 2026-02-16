@@ -44,37 +44,37 @@
 
 ## Tasks / Subtasks
 
-- [ ] Add cognitiveStats.comboMultipliers to state.js
-  - [ ] Counter: total combos completed (Effect B consumed)
-  - [ ] Reset to 0 on new game
-- [ ] Add cognitiveStats.peakComboScore to state.js
-  - [ ] Tracker: highest combo score this game
-  - [ ] Reset to 0 on new game
-- [ ] Add analyticsState.totalCombosTriggered to state.js
-  - [ ] Counter: total combo activations (Effect A consumed)
-  - [ ] Reset to 0 on new game
-- [ ] Add analyticsState.comboScores to state.js
-  - [ ] Array: all combo scores for distribution analysis
-  - [ ] Reset to [] on new game
-- [ ] Add analyticsState.comboPhoneOverlaps to state.js
-  - [ ] Counter: phone calls during active combo
-  - [ ] Reset to 0 on new game
-- [ ] Add analyticsState.comboPhoneOverlapSurvived to state.js
-  - [ ] Counter: survived phone calls during combo
-  - [ ] Reset to 0 on new game
-- [ ] Track combo activation in activateCombo()
-  - [ ] analyticsState.totalCombosTriggered += 1
-- [ ] Track combo completion in handleComboFoodProgression()
-  - [ ] When Effect B consumed:
+- [x] Add cognitiveStats.comboMultipliers to state.js
+  - [x] Counter: total combos completed (Effect B consumed)
+  - [x] Reset to 0 on new game
+- [x] Add cognitiveStats.peakComboScore to state.js
+  - [x] Tracker: highest combo score this game
+  - [x] Reset to 0 on new game
+- [x] Add analyticsState.totalCombosTriggered to state.js
+  - [x] Counter: total combo activations (Effect A consumed)
+  - [x] Reset to 0 on new game
+- [x] Add analyticsState.comboScores to state.js
+  - [x] Array: all combo scores for distribution analysis
+  - [x] Reset to [] on new game
+- [x] Add analyticsState.comboPhoneOverlaps to state.js
+  - [x] Counter: phone calls during active combo
+  - [x] Reset to 0 on new game
+- [x] Add analyticsState.comboPhoneOverlapSurvived to state.js
+  - [x] Counter: survived phone calls during combo
+  - [x] Reset to 0 on new game
+- [x] Track combo activation in activateCombo()
+  - [x] analyticsState.totalCombosTriggered += 1
+- [x] Track combo completion in handleComboFoodProgression()
+  - [x] When Effect B consumed:
     - cognitiveStats.comboMultipliers += 1
     - Update cognitiveStats.peakComboScore
     - Push score to analyticsState.comboScores
-- [ ] Track phone overlap in showPhoneCall()
-  - [ ] If combo.active: analyticsState.comboPhoneOverlaps += 1
-- [ ] Track phone overlap survival in dismissPhoneCall()
-  - [ ] If combo.active: analyticsState.comboPhoneOverlapSurvived += 1
-- [ ] Track combo_active at death
-  - [ ] In onDeath(): set analyticsState.combo_active = combo.active
+- [x] Track phone overlap in showPhoneCall()
+  - [x] If combo.active: analyticsState.comboPhoneOverlaps += 1
+- [x] Track phone overlap survival in dismissPhoneCall()
+  - [x] If combo.active: analyticsState.comboPhoneOverlapSurvived += 1
+- [x] Track combo_active at death
+  - [x] In onDeath(): set analyticsState.combo_active = combo.active
 
 ---
 

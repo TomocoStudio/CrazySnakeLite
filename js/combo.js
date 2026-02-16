@@ -4,16 +4,6 @@
 import { CONFIG } from './config.js';
 import { getFoodScore } from './scoring.js';
 
-// Cache canvas element for performance (Issue #8 fix)
-let cachedCanvas = null;
-
-function getCanvas() {
-  if (!cachedCanvas) {
-    cachedCanvas = document.getElementById('game-canvas');
-  }
-  return cachedCanvas;
-}
-
 /**
  * Activate combo mode with the given food as Effect A
  * Story 10.1: Set combo state, store Effect A, initialize food count

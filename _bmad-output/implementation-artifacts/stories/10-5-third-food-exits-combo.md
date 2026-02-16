@@ -32,8 +32,9 @@
 
 **Given** I die during combo mode (before third food)
 **When** death triggers
-**Then** combo mode does NOT naturally exit
-**And** the game over screen shows the combo state (for analytics)
+**Then** combo analytics state is captured (analyticsState.combo_active = true) before cleanup
+**And** exitCombo() resets visual state (canvas, effectA, effectB) after analytics capture
+**And** the game over screen has access to captured combo analytics data
 
 **Given** combo exits and I'm at score 50
 **When** I eat the next food after combo
@@ -434,6 +435,12 @@ No debug issues encountered during implementation.
 
 
 ## Change Log
+
+**2026-02-16** - Adversarial Code Review: Updated death AC to match implementation
+- Original AC: "combo mode does NOT naturally exit" on death
+- Actual: exitCombo() IS called on death (game.js:323-325), but analytics captured first (game.js:314)
+- Updated AC to accurately describe: analytics captured → then exitCombo() cleans up visual state
+- Key: analyticsState.combo_active preserves the combo-at-death signal for analytics consumers
 
 **2026-02-14** - Spec Clarification: 3-step lifecycle confirmed working
 - Confirmed full 3-step lifecycle works correctly after `wasComboActive` fix (Story 10.1)
