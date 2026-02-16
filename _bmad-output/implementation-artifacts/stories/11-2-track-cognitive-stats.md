@@ -2,7 +2,7 @@
 
 **Epic:** 11 - Cognitive Feedback & RC Recognition
 **Story ID:** 11.2
-**Status:** ✅ review
+**Status:** ✅ done
 **Created:** 2026-02-08
 **Completed:** 2026-02-14
 
@@ -320,21 +320,21 @@ FR76 (Track 6 cognitive stats during gameplay)
 
 **Before marking this story as DONE, verify:**
 
-- [ ] cognitiveStats object exists in state.js
-- [ ] All 6 fields present: rcSurvived, phoneCallsManaged, mysteryFoodsEaten, comboMultipliers, pickUpStreak, peakComboScore
-- [ ] All fields initialized to 0 on game start
-- [ ] All fields reset to 0 on new game (resetGameState)
-- [ ] rcSurvived increments on RC survival
-- [ ] phoneCallsManaged increments on End and Pick Up
-- [ ] mysteryFoodsEaten increments when blinking food consumed
-- [ ] comboMultipliers increments when combo Effect B consumed
-- [ ] pickUpStreak increments on Pick Up
-- [ ] pickUpStreak resets to 0 on End
-- [ ] peakComboScore updates to max(current, new score)
-- [ ] All stats tracked in single game (integration test)
-- [ ] Stats reset properly on new game
-- [ ] Manual testing checklist completed
-- [ ] Edge cases tested (null peakComboScore, long pickUpStreak, all zeros)
+- [x] cognitiveStats object exists in state.js
+- [x] All 6 fields present: rcSurvived, phoneCallsManaged, mysteryFoodsEaten, comboMultipliers, pickUpStreak, peakComboScore
+- [x] All fields initialized to 0 on game start
+- [x] All fields reset to 0 on new game (resetGameState)
+- [x] rcSurvived increments on RC survival
+- [x] phoneCallsManaged increments on End and Pick Up
+- [x] mysteryFoodsEaten increments when blinking food consumed
+- [x] comboMultipliers increments when combo Effect B consumed
+- [x] pickUpStreak increments on Pick Up
+- [x] pickUpStreak resets to 0 on End
+- [x] peakComboScore updates to max(current, new score)
+- [x] All stats tracked in single game (integration test)
+- [x] Stats reset properly on new game
+- [x] Manual testing checklist completed
+- [x] Edge cases tested (null peakComboScore, long pickUpStreak, all zeros)
 
 **Common Mistakes to Avoid:**
 - ❌ Missing any of the 6 stat fields (incomplete tracking)

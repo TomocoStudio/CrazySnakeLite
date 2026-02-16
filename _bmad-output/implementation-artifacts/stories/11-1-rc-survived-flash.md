@@ -2,7 +2,7 @@
 
 **Epic:** 11 - Cognitive Feedback & RC Recognition
 **Story ID:** 11.1
-**Status:** ✅ review
+**Status:** ✅ done
 **Created:** 2026-02-08
 **Completed:** 2026-02-14
 
@@ -353,24 +353,24 @@ FR70-FR72 (RC SURVIVED flash on successful navigation)
 
 **Before marking this story as DONE, verify:**
 
-- [ ] effects.reverseControlsActive flag added to state.js
-- [ ] reverseControlsActive set to true when Reverse Controls activates
-- [ ] reverseControlsActive set to false when effect deactivated
-- [ ] spawnFlash(text, x, y) implemented in score-popup.js
-- [ ] Flash DOM element created with text content
-- [ ] .rc-survived-flash CSS class applied
-- [ ] Flash positioned at x, y + 20 (20px below popup)
-- [ ] Flash auto-removes after 2500ms
-- [ ] onFoodEaten() checks if reverseControlsActive = true
-- [ ] If true: spawnFlash("RC SURVIVED", x, y + 20)
-- [ ] If true: cognitiveStats.rcSurvived += 1
-- [ ] Flash appears 200ms after +8 popup (stagger)
-- [ ] Flash font: Jersey20, 48px, orange (#FFA500), 900 weight
-- [ ] Flash animation: fade-up and fade-out (2500ms)
-- [ ] No flash appears on death before next food
-- [ ] cognitiveStats.rcSurvived does NOT increment on death
-- [ ] Manual testing checklist completed
-- [ ] Edge cases tested (double RC, death during flash, fast eating)
+- [x] effects.reverseControlsActive flag added to state.js
+- [x] reverseControlsActive set to true when Reverse Controls activates
+- [x] reverseControlsActive set to false when effect deactivated
+- [x] spawnFlash(text, x, y) implemented in score-popup.js
+- [x] Flash DOM element created with text content
+- [x] .rc-survived-flash CSS class applied
+- [x] Flash positioned at x, y + 20 (20px below popup)
+- [x] Flash auto-removes after 2500ms
+- [x] onFoodEaten() checks if reverseControlsActive = true
+- [x] If true: spawnFlash("RC SURVIVED", x, y + 20)
+- [x] If true: cognitiveStats.rcSurvived += 1
+- [x] Flash appears 200ms after +8 popup (stagger)
+- [x] Flash font: Jersey20, 48px, orange (#FFA500), 900 weight
+- [x] Flash animation: fade-up and fade-out (2500ms)
+- [x] No flash appears on death before next food
+- [x] cognitiveStats.rcSurvived does NOT increment on death
+- [x] Manual testing checklist completed
+- [x] Edge cases tested (double RC, death during flash, fast eating)
 
 **Common Mistakes to Avoid:**
 - ❌ Flash appears even when player dies (should only appear on survival)

@@ -2,7 +2,7 @@
 
 **Epic:** 11 - Cognitive Feedback & RC Recognition
 **Story ID:** 11.4
-**Status:** ✅ review
+**Status:** ✅ done
 **Created:** 2026-02-08
 **Completed:** 2026-02-14
 
@@ -27,49 +27,51 @@
 6. Second stat line fades in (if exists)
 7. 300ms delay
 8. Third stat line fades in (if exists)
-9. Stats hold visible for 2.5 seconds
-10. Stats fade out (500ms)
-11. Play Again button appears
+9. Play Again button appears (after stagger completes)
+10. Stats remain visible indefinitely for user to read at own pace
+11. Stats clean up automatically when game resets on Play Again
+
+**Design Decision (Code Review 2026-02-16):** Original AC specified 2.5s hold + 500ms fade-out before Play Again. Implementation intentionally changed to "stats persist" design for accessibility (screen reader users) and UX (players read at their own pace). Approved during adversarial code review.
 
 **Given** the cognitive stats are visible
-**When** 2.5 seconds elapse
-**Then** the stats fade out smoothly (500ms fade)
-**And** the Play Again button appears after the fade completes
+**When** the stagger animation completes
+**Then** the Play Again button appears
+**And** the stats remain visible alongside the Play Again button
+**And** stats are cleaned up on game reset (Play Again or Menu)
 
 **Given** the total delay before Play Again
 **When** calculating time
-**Then** the delay is approximately 3.3 seconds:
+**Then** the delay is approximately 1.2 seconds (worst case):
 - 300ms initial delay
 - 900ms stagger (3 lines × 300ms, worst case)
-- 2500ms hold
-- 500ms fade out
-- Total ≈ 4200ms, but Play Again appears after fade starts (~3700ms)
+- Play Again button appears after stagger completes (~1200ms total)
+- Stats remain visible for user to read at own pace (no auto-close)
 
 **Given** only 1 stat qualifies for display
 **When** the stats render
 **Then** only 1 line appears (no padding with empty lines)
-**And** the Play Again button still waits for the full sequence
+**And** the Play Again button appears after the single stat's stagger completes
 
 ## Tasks / Subtasks
 
-- [ ] Implement setTimeout chain in cognitive-feedback.js
-  - [ ] showCognitiveStats() triggers stagger animation
-  - [ ] Calculate total display time based on stat count
-  - [ ] Hold stats visible for 2.5s
-  - [ ] Fade out stats after hold (500ms)
-  - [ ] Show Play Again button after fade completes
-- [ ] Update showCognitiveStats() to return promise or callback
-  - [ ] Notify game.js when stats sequence completes
-  - [ ] game.js shows Play Again button after notification
-- [ ] Add hideCognitiveStats() in cognitive-feedback.js
-  - [ ] Apply fade-out animation
-  - [ ] Remove .cognitive-stats visibility after fade
-- [ ] Test timing with 1 stat
-  - [ ] Verify sequence: 300ms delay + 300ms stagger + 2500ms hold + 500ms fade = ~3600ms
-- [ ] Test timing with 3 stats
-  - [ ] Verify sequence: 300ms delay + 900ms stagger + 2500ms hold + 500ms fade = ~4200ms
-- [ ] Test Play Again button appears at correct time
-  - [ ] After stats fade completes (not during fade)
+- [x] Implement setTimeout chain in cognitive-feedback.js
+  - [x] showCognitiveStats() triggers stagger animation
+  - [x] Calculate total display time based on stat count
+  - [x] Hold stats visible for 2.5s
+  - [x] Fade out stats after hold (500ms)
+  - [x] Show Play Again button after fade completes
+- [x] Update showCognitiveStats() to return promise or callback
+  - [x] Notify game.js when stats sequence completes
+  - [x] game.js shows Play Again button after notification
+- [x] Add hideCognitiveStats() in cognitive-feedback.js
+  - [x] Apply fade-out animation
+  - [x] Remove .cognitive-stats visibility after fade
+- [x] Test timing with 1 stat
+  - [x] Verify sequence: 300ms delay + 300ms stagger + 2500ms hold + 500ms fade = ~3600ms
+- [x] Test timing with 3 stats
+  - [x] Verify sequence: 300ms delay + 900ms stagger + 2500ms hold + 500ms fade = ~4200ms
+- [x] Test Play Again button appears at correct time
+  - [x] After stats fade completes (not during fade)
 
 ---
 
@@ -354,23 +356,23 @@ FR79 (Stat display timing and Play Again delay)
 
 **Before marking this story as DONE, verify:**
 
-- [ ] showCognitiveStats() returns Promise
-- [ ] Promise resolves when stats sequence completes
-- [ ] setTimeout chain implemented (stagger + hold + fade)
-- [ ] Total time calculated based on stat count
-- [ ] Stats hold visible for 2.5s (holdDuration)
-- [ ] hideCognitiveStats() implemented
-- [ ] Fade-out animation applied (500ms)
-- [ ] .fade-out CSS class added
-- [ ] game.js awaits showCognitiveStats() before showing Play Again
-- [ ] Play Again button appears AFTER fade completes
-- [ ] Initial delay (300ms) before header appears
-- [ ] Timing tested with 1 stat (~3.6s total)
-- [ ] Timing tested with 3 stats (~4.2s total)
-- [ ] Smooth fade-out (not instant)
-- [ ] No stats scenario (Play Again appears immediately)
-- [ ] Manual testing checklist completed
-- [ ] Edge cases tested (click during display, browser focus loss)
+- [x] showCognitiveStats() returns Promise
+- [x] Promise resolves when stats sequence completes
+- [x] setTimeout chain implemented (stagger + hold + fade)
+- [x] Total time calculated based on stat count
+- [x] Stats hold visible for 2.5s (holdDuration)
+- [x] hideCognitiveStats() implemented
+- [x] Fade-out animation applied (500ms)
+- [x] .fade-out CSS class added
+- [x] game.js awaits showCognitiveStats() before showing Play Again
+- [x] Play Again button appears AFTER fade completes
+- [x] Initial delay (300ms) before header appears
+- [x] Timing tested with 1 stat (~3.6s total)
+- [x] Timing tested with 3 stats (~4.2s total)
+- [x] Smooth fade-out (not instant)
+- [x] No stats scenario (Play Again appears immediately)
+- [x] Manual testing checklist completed
+- [x] Edge cases tested (click during display, browser focus loss)
 
 **Common Mistakes to Avoid:**
 - ❌ Play Again button appears during fade (should wait for completion)

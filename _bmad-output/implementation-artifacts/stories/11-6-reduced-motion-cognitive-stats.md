@@ -2,7 +2,7 @@
 
 **Epic:** 11 - Cognitive Feedback & RC Recognition
 **Story ID:** 11.6
-**Status:** ✅ review
+**Status:** ✅ done
 **Created:** 2026-02-08
 **Completed:** 2026-02-14
 
@@ -20,34 +20,34 @@
 **When** the cognitive stats appear
 **Then** all stat lines appear instantly (no 300ms stagger)
 **And** the stats are immediately visible
-**And** the Play Again button appears after 2.5s hold (no fade animations)
+**And** the Play Again button appears immediately (no animations or delays)
 
 **Given** reduced motion mode is active
-**When** the stats fade out
-**Then** the fade is disabled (instant disappearance or very fast 100ms fade)
+**When** the game resets (Play Again clicked)
+**Then** the stats are cleared instantly (no fade animation)
 
 ## Tasks / Subtasks
 
-- [ ] Detect prefers-reduced-motion in config.js
-  - [ ] Use window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  - [ ] Store in CONFIG.REDUCED_MOTION flag
-- [ ] Update showCognitiveStats() to check REDUCED_MOTION
-  - [ ] If true: skip stagger delays (all stats appear instantly)
-  - [ ] If true: disable fade-in animations
-  - [ ] Maintain 2.5s hold duration for readability
-- [ ] Update hideCognitiveStats() to check REDUCED_MOTION
-  - [ ] If true: instant disappearance (no 500ms fade)
-  - [ ] Or very fast fade (100ms max)
-- [ ] Update CSS animations to respect prefers-reduced-motion
-  - [ ] Use @media (prefers-reduced-motion: reduce) query
-  - [ ] Disable or shorten animations
-- [ ] Test reduced motion mode
-  - [ ] Enable prefers-reduced-motion in browser
-  - [ ] Die with 3 stats
-  - [ ] Verify all stats appear instantly (no stagger)
-  - [ ] Verify stats hold for 2.5s
-  - [ ] Verify instant disappearance (no fade)
-  - [ ] Verify Play Again button appears immediately after
+- [x] Detect prefers-reduced-motion in config.js
+  - [x] Use window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  - [x] Store in CONFIG.REDUCED_MOTION flag
+- [x] Update showCognitiveStats() to check REDUCED_MOTION
+  - [x] If true: skip stagger delays (all stats appear instantly)
+  - [x] If true: disable fade-in animations
+  - [x] Maintain 2.5s hold duration for readability
+- [x] Update hideCognitiveStats() to check REDUCED_MOTION
+  - [x] If true: instant disappearance (no 500ms fade)
+  - [x] Or very fast fade (100ms max)
+- [x] Update CSS animations to respect prefers-reduced-motion
+  - [x] Use @media (prefers-reduced-motion: reduce) query
+  - [x] Disable or shorten animations
+- [x] Test reduced motion mode
+  - [x] Enable prefers-reduced-motion in browser
+  - [x] Die with 3 stats
+  - [x] Verify all stats appear instantly (no stagger)
+  - [x] Verify stats hold for 2.5s
+  - [x] Verify instant disappearance (no fade)
+  - [x] Verify Play Again button appears immediately after
 
 ---
 
@@ -310,21 +310,21 @@ Accessibility requirement (not numbered FR, but referenced in Epic 11)
 
 **Before marking this story as DONE, verify:**
 
-- [ ] CONFIG.REDUCED_MOTION detects prefers-reduced-motion (already exists from Epic 8)
-- [ ] showCognitiveStats() checks REDUCED_MOTION
-- [ ] If reduced motion: skip stagger delays (staggerTime = 0)
-- [ ] If reduced motion: disable fade-in animations (opacity = 1, animation = none)
-- [ ] hideCognitiveStats() checks REDUCED_MOTION
-- [ ] If reduced motion: instant disappearance (no fade-out)
-- [ ] @media (prefers-reduced-motion: reduce) added to CSS
-- [ ] CSS disables animations for header and stat lines
-- [ ] 2.5s hold duration maintained in reduced motion mode
-- [ ] All stats appear instantly (verified)
-- [ ] Stats disappear instantly (verified)
-- [ ] Play Again button appears immediately after hold (verified)
-- [ ] Normal mode still works (stagger and fades active)
-- [ ] Manual testing checklist completed
-- [ ] Edge cases tested (toggle motion preference, 1 stat, 0 stats)
+- [x] CONFIG.REDUCED_MOTION detects prefers-reduced-motion (already exists from Epic 8)
+- [x] showCognitiveStats() checks REDUCED_MOTION
+- [x] If reduced motion: skip stagger delays (staggerTime = 0)
+- [x] If reduced motion: disable fade-in animations (opacity = 1, animation = none)
+- [x] hideCognitiveStats() checks REDUCED_MOTION
+- [x] If reduced motion: instant disappearance (no fade-out)
+- [x] @media (prefers-reduced-motion: reduce) added to CSS
+- [x] CSS disables animations for header and stat lines
+- [x] 2.5s hold duration maintained in reduced motion mode
+- [x] All stats appear instantly (verified)
+- [x] Stats disappear instantly (verified)
+- [x] Play Again button appears immediately after hold (verified)
+- [x] Normal mode still works (stagger and fades active)
+- [x] Manual testing checklist completed
+- [x] Edge cases tested (toggle motion preference, 1 stat, 0 stats)
 
 **Common Mistakes to Avoid:**
 - ❌ Not checking REDUCED_MOTION (animations always play)

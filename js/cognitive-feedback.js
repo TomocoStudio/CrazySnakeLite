@@ -65,17 +65,17 @@ export function formatStatLine(key, value) {
  * Returns Promise that resolves when stagger animation completes, allowing
  * caller to show Play Again/Menu buttons after stats finish animating in.
  *
- * Stats remain visible indefinitely (no auto-close) - user can read as long
- * as needed. Cleanup happens automatically when game resets on Play Again.
- *
- * Accessibility: Stats persist on screen for screen reader users. Consider
- * ARIA live region announcements if adding future interactive elements.
+ * Design Decision (Code Review 2026-02-16): Stats remain visible indefinitely
+ * (no auto-close, no fade-out). Original AC specified 2.5s hold + 500ms fade,
+ * but this was intentionally changed for:
+ * - Accessibility: screen reader users can read at their own pace
+ * - UX: players aren't rushed to absorb cognitive feedback
+ * - Cleanup: stats DOM cleared automatically on game reset (Play Again/Menu)
  *
  * Sequence: stagger in → resolve → caller shows buttons → stats stay visible
  *
  * @param {object} gameState - Full game state with cognitiveStats
- * @returns {Promise} Resolves when stagger animation completes. Stats container
- *                    remains visible with full opacity, ready for user interaction.
+ * @returns {Promise} Resolves when stagger animation completes (~300-900ms).
  */
 export function showCognitiveStats(gameState) {
   return new Promise((resolve) => {
@@ -139,6 +139,8 @@ export function showCognitiveStats(gameState) {
 
 /**
  * Hide cognitive stats with fade-out animation.
+ * Currently unused in normal game flow (stats persist until game reset).
+ * Retained for future use if timed fade-out is reintroduced.
  * Story 11.4: Applies .fade-out class for smooth 500ms transition.
  * Story 11.6: Instant disappearance if reduced motion mode active.
  */

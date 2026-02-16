@@ -141,13 +141,13 @@ development_status:
   epic-10-retrospective: optional
 
   # Epic 11: Cognitive Feedback & RC Recognition
-  epic-11: in-progress
-  11-1-rc-survived-flash: review
-  11-2-track-cognitive-stats: review
-  11-3-your-brain-today-display: review
-  11-4-stat-display-timing: review
-  11-5-reset-cognitive-stats: review
-  11-6-reduced-motion-cognitive-stats: review
+  epic-11: done
+  11-1-rc-survived-flash: done
+  11-2-track-cognitive-stats: done
+  11-3-your-brain-today-display: done
+  11-4-stat-display-timing: done
+  11-5-reset-cognitive-stats: done
+  11-6-reduced-motion-cognitive-stats: done
   epic-11-retrospective: optional
 
   # Epic 12: Cognitive Analytics System

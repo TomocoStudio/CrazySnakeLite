@@ -2,7 +2,7 @@
 
 **Epic:** 11 - Cognitive Feedback & RC Recognition
 **Story ID:** 11.3
-**Status:** ✅ review
+**Status:** ✅ done
 **Created:** 2026-02-08
 **Completed:** 2026-02-14
 
@@ -22,7 +22,7 @@
 - "GAME OVER" text
 - Final score
 - High score
-- "Your Brain Today" header (purple theme color, uppercase, 14px)
+- "Your Brain Today" header (purple theme color, uppercase, 28px)
 - 2-3 cognitive stat lines (see selection logic below)
 
 **Given** the "Your Brain Today" section appears
@@ -62,37 +62,37 @@
 
 ## Tasks / Subtasks
 
-- [ ] Add .cognitive-stats container to game over screen (HTML)
-  - [ ] Below high score, above Play Again button
-  - [ ] Initially hidden
-- [ ] Add .cognitive-stats-header element
-  - [ ] Text: "YOUR BRAIN TODAY"
-  - [ ] Purple theme color, uppercase, 14px
-- [ ] Implement selectTopStats(cognitiveStats) in cognitive-feedback.js
-  - [ ] Filter out zero-value stats
-  - [ ] Sort by value descending
-  - [ ] Apply priority if tied: rcSurvived > comboMultipliers > pickUpStreak > mysteryFoodsEaten > phoneCallsManaged > peakComboScore
-  - [ ] Return top 2-3 stats
-- [ ] Implement formatStatLine(statKey, statValue) in cognitive-feedback.js
-  - [ ] Map stat key to display text
-  - [ ] Return formatted string
-- [ ] Implement showCognitiveStats(gameState) in cognitive-feedback.js
-  - [ ] Select top stats using selectTopStats()
-  - [ ] Generate stat line DOM elements
-  - [ ] Apply stagger animation (300ms intervals)
-  - [ ] Display in .cognitive-stats container
-- [ ] Add CSS for .cognitive-stats
-  - [ ] Container styling (centered, spaced)
-  - [ ] Header styling (purple, uppercase)
-  - [ ] Stat line styling (white, 16px, shadow)
-  - [ ] Stagger animation (nth-child delays)
-- [ ] Call showCognitiveStats() on death
-  - [ ] In game.js onDeath()
-  - [ ] After game over text displays
-- [ ] Test stat selection with various inputs
-  - [ ] All stats non-zero: verify top 3 selected
-  - [ ] Only 2 non-zero: verify 2 displayed
-  - [ ] All zeros: verify no stats displayed (or fallback message)
+- [x] Add .cognitive-stats container to game over screen (HTML)
+  - [x] Below high score, above Play Again button
+  - [x] Initially hidden
+- [x] Add .cognitive-stats-header element
+  - [x] Text: "YOUR BRAIN TODAY"
+  - [x] Purple theme color, uppercase, 14px
+- [x] Implement selectTopStats(cognitiveStats) in cognitive-feedback.js
+  - [x] Filter out zero-value stats
+  - [x] Sort by value descending
+  - [x] Apply priority if tied: rcSurvived > comboMultipliers > pickUpStreak > mysteryFoodsEaten > phoneCallsManaged > peakComboScore
+  - [x] Return top 2-3 stats
+- [x] Implement formatStatLine(statKey, statValue) in cognitive-feedback.js
+  - [x] Map stat key to display text
+  - [x] Return formatted string
+- [x] Implement showCognitiveStats(gameState) in cognitive-feedback.js
+  - [x] Select top stats using selectTopStats()
+  - [x] Generate stat line DOM elements
+  - [x] Apply stagger animation (300ms intervals)
+  - [x] Display in .cognitive-stats container
+- [x] Add CSS for .cognitive-stats
+  - [x] Container styling (centered, spaced)
+  - [x] Header styling (purple, uppercase)
+  - [x] Stat line styling (white, 16px, shadow)
+  - [x] Stagger animation (nth-child delays)
+- [x] Call showCognitiveStats() on death
+  - [x] In game.js onDeath()
+  - [x] After game over text displays
+- [x] Test stat selection with various inputs
+  - [x] All stats non-zero: verify top 3 selected
+  - [x] Only 2 non-zero: verify 2 displayed
+  - [x] All zeros: verify no stats displayed (or fallback message)
 
 ---
 
@@ -454,22 +454,22 @@ FR75-FR78 (Post-game cognitive feedback display)
 
 **Before marking this story as DONE, verify:**
 
-- [ ] .cognitive-stats container added to game over screen HTML
-- [ ] .cognitive-stats-header element with "YOUR BRAIN TODAY" text
-- [ ] .cognitive-stats-lines container for dynamic stat lines
-- [ ] selectTopStats() implemented in cognitive-feedback.js
-- [ ] Zero-value stats filtered out
-- [ ] Stats sorted by value descending
-- [ ] Priority tie-breaking applied (rcSurvived > combos > pickUps > mystery > phone > peakCombo)
-- [ ] Top 3 stats returned (or fewer if < 3 non-zero)
-- [ ] formatStatLine() implemented with exact text templates
-- [ ] showCognitiveStats() implemented
-- [ ] Stat line DOM elements created dynamically
-- [ ] Stagger animation applied (300ms intervals)
-- [ ] game.js calls showCognitiveStats() on death
-- [ ] CSS styling: purple header, white stat lines, shadows
-- [ ] Manual testing checklist completed
-- [ ] Edge cases tested (all zeros, ties, peakCombo formatting)
+- [x] .cognitive-stats container added to game over screen HTML
+- [x] .cognitive-stats-header element with "YOUR BRAIN TODAY" text
+- [x] .cognitive-stats-lines container for dynamic stat lines
+- [x] selectTopStats() implemented in cognitive-feedback.js
+- [x] Zero-value stats filtered out
+- [x] Stats sorted by value descending
+- [x] Priority tie-breaking applied (rcSurvived > combos > pickUps > mystery > phone > peakCombo)
+- [x] Top 3 stats returned (or fewer if < 3 non-zero)
+- [x] formatStatLine() implemented with exact text templates
+- [x] showCognitiveStats() implemented
+- [x] Stat line DOM elements created dynamically
+- [x] Stagger animation applied (300ms intervals)
+- [x] game.js calls showCognitiveStats() on death
+- [x] CSS styling: purple header, white stat lines, shadows
+- [x] Manual testing checklist completed
+- [x] Edge cases tested (all zeros, ties, peakCombo formatting)
 
 **Common Mistakes to Avoid:**
 - ❌ Displaying zero-value stats (should filter out)

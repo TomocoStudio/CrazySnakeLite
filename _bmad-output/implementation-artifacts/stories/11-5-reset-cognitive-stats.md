@@ -2,7 +2,7 @@
 
 **Epic:** 11 - Cognitive Feedback & RC Recognition
 **Story ID:** 11.5
-**Status:** ✅ review
+**Status:** ✅ done
 **Created:** 2026-02-08
 **Completed:** 2026-02-14
 
@@ -37,28 +37,28 @@
 
 ## Tasks / Subtasks
 
-- [ ] Verify resetGameState() in state.js resets all cognitiveStats
-  - [ ] Set all 6 fields to 0
-  - [ ] Called on Play Again button click
-- [ ] Verify createInitialState() in state.js initializes all cognitiveStats to 0
-  - [ ] rcSurvived = 0
-  - [ ] phoneCallsManaged = 0
-  - [ ] mysteryFoodsEaten = 0
-  - [ ] comboMultipliers = 0
-  - [ ] pickUpStreak = 0
-  - [ ] peakComboScore = 0
-- [ ] Test stats reset on Play Again
-  - [ ] Game 1: achieve stats, die
-  - [ ] Click Play Again
-  - [ ] Verify all cognitiveStats = 0
-  - [ ] Play game 2, achieve new stats
-  - [ ] Verify only game 2 stats displayed on death
-- [ ] Test stats independence across games
-  - [ ] Game 1: rcSurvived = 5
-  - [ ] Die, Play Again
-  - [ ] Game 2: rcSurvived = 2
-  - [ ] Die
-  - [ ] Verify display shows "Reverse Controls survived: 2" (not 5, not 7)
+- [x] Verify resetGameState() in state.js resets all cognitiveStats
+  - [x] Set all 6 fields to 0
+  - [x] Called on Play Again button click
+- [x] Verify createInitialState() in state.js initializes all cognitiveStats to 0
+  - [x] rcSurvived = 0
+  - [x] phoneCallsManaged = 0
+  - [x] mysteryFoodsEaten = 0
+  - [x] comboMultipliers = 0
+  - [x] pickUpStreak = 0
+  - [x] peakComboScore = 0
+- [x] Test stats reset on Play Again
+  - [x] Game 1: achieve stats, die
+  - [x] Click Play Again
+  - [x] Verify all cognitiveStats = 0
+  - [x] Play game 2, achieve new stats
+  - [x] Verify only game 2 stats displayed on death
+- [x] Test stats independence across games
+  - [x] Game 1: rcSurvived = 5
+  - [x] Die, Play Again
+  - [x] Game 2: rcSurvived = 2
+  - [x] Die
+  - [x] Verify display shows "Reverse Controls survived: 2" (not 5, not 7)
 
 ---
 
@@ -260,17 +260,17 @@ FR80 (Reset cognitive stats on new game)
 
 **Before marking this story as DONE, verify:**
 
-- [ ] resetGameState() in state.js resets all 6 cognitiveStats fields
-- [ ] All fields set to 0 explicitly
-- [ ] createInitialState() initializes all cognitiveStats to 0
-- [ ] game.js Play Again button calls resetGameState()
-- [ ] Stats reset verified with console inspection
-- [ ] Stats independence tested (game 1 vs game 2)
-- [ ] All 6 stats reset (not just some)
-- [ ] Multiple games in a row tested
-- [ ] Initial game state verified (all zeros)
-- [ ] Manual testing checklist completed
-- [ ] Edge cases tested (immediate death game 2, same values, 10 games)
+- [x] resetGameState() in state.js resets all 6 cognitiveStats fields
+- [x] All fields set to 0 explicitly
+- [x] createInitialState() initializes all cognitiveStats to 0
+- [x] game.js Play Again button calls resetGameState()
+- [x] Stats reset verified with console inspection
+- [x] Stats independence tested (game 1 vs game 2)
+- [x] All 6 stats reset (not just some)
+- [x] Multiple games in a row tested
+- [x] Initial game state verified (all zeros)
+- [x] Manual testing checklist completed
+- [x] Edge cases tested (immediate death game 2, same values, 10 games)
 
 **Common Mistakes to Avoid:**
 - ❌ Not resetting all 6 fields (some carry over)
