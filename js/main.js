@@ -10,6 +10,7 @@ import { saveHighScore } from './storage.js';
 import { initAudio, resumeAudio, closeAudio, playMenuMusic, stopMenuMusic, isAudioReady } from './audio.js';
 import { initStarRatings, initCharCounter, openFeedbackModal, closeFeedbackModal, resetFeedbackForm, getFormData, captureMetadata, formatEmailBody, formatEmailSubject, submitFeedback, showThankYouScreen, closeThankYouScreen, initFeedbackModal } from './feedback.js';
 import { showCognitiveStats } from './cognitive-feedback.js';
+import { trackSessionEnd, trackGameStart } from './analytics.js';
 
 // Initialize canvas and context
 const canvas = document.getElementById('game-canvas');
@@ -69,6 +70,24 @@ function updateHighScoreDisplay(highScore) {
  * Story 4.2
  */
 function startNewGame() {
+  // Story 12.4: Track isFirstGame and previousScore
+  const hasPlayed = sessionStorage.getItem('crazysnake_has_played');
+  const isFirstGame = !hasPlayed;
+  const previousScore = parseInt(sessionStorage.getItem('crazysnake_previous_score')) || null;
+
+  // Story 12.4: Track game start event
+  trackGameStart(isFirstGame, previousScore);
+
+  // Story 12.4: Mark that player has played
+  if (isFirstGame) {
+    sessionStorage.setItem('crazysnake_has_played', 'true');
+    sessionStorage.setItem('crazysnake_session_start', Date.now().toString());
+  }
+
+  // Story 12.4: Increment total games counter
+  const totalGames = parseInt(sessionStorage.getItem('crazysnake_total_games') || '0');
+  sessionStorage.setItem('crazysnake_total_games', (totalGames + 1).toString());
+
   // Reset game state
   resetGame(gameState);
   gameState.phase = 'playing';
@@ -83,7 +102,6 @@ function startNewGame() {
   // Initialize score display and ensure it's visible
   updateScoreDisplay(gameState.score, gameState.highScore);
   scoreDisplay.classList.remove('hidden');
-  previousScore = gameState.score;  // Track initial score
 
   // Spawn first food
   spawnFood(gameState);
@@ -132,6 +150,11 @@ document.addEventListener('keydown', async () => {
     console.log('[Main] Not on menu, skipping menu music');
   }
 }, { once: true });
+
+// Story 12.3: Track session end when browser tab closes
+window.addEventListener('beforeunload', () => {
+  trackSessionEnd();
+});
 
 // Cleanup audio resources on page unload (Story 4.5 review fix)
 window.addEventListener('beforeunload', () => {

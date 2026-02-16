@@ -185,5 +185,10 @@ export const CONFIG = {
   },
 
   // Purple theme color for "Your Brain Today" header
-  THEME_COLOR_PURPLE: '#9C27B0'   // Material Design Purple 500
+  THEME_COLOR_PURPLE: '#9C27B0',   // Material Design Purple 500
+
+  // Analytics Configuration (Story 12.1 - Epic 12)
+  // Set to false in development to disable all tracking
+  // Set to true in production to enable Plausible events
+  ANALYTICS_ENABLED: true
 };

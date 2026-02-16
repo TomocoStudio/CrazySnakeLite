@@ -2,7 +2,7 @@
 
 **Epic:** 12 - Cognitive Analytics System
 **Story ID:** 12.8
-**Status:** 🔴 not started
+**Status:** 🟢 review
 **Created:** 2026-02-08
 
 ---
@@ -389,17 +389,88 @@ FR99 (session_end event with aggregated data)
 
 ### Agent Model Used
 
-_To be filled by implementing agent_
+Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 
 ### Debug Log References
 
-_To be filled during implementation_
+N/A - Test via browser DevTools Network tab and sessionStorage inspection
 
 ### Completion Notes List
 
-_To be filled on completion_
+**Implementation Summary:**
+- Implemented updateSessionAggregation() function in game.js
+- Called updateSessionAggregation() in death handler (after trackGameOver)
+- beforeunload listener already in place from Story 12.3 (main.js)
+- trackSessionEnd() already implemented in analytics.js (Story 12.3)
+- Session aggregation updates on EVERY game over
+
+**Technical Implementation:**
+- game.js: Added updateSessionAggregation() function (lines ~433-497)
+  - Aggregates total_foods_eaten (sum of scores)
+  - Aggregates food_breakdown (foodTypesEaten across games)
+  - Aggregates total_phone_calls (sum across games)
+  - Tracks reaction_times array for avg_dismissal_speed_ms
+  - Computes avg_dismissal_speed from reaction times
+  - Note: highest_score already updated earlier in death handler (Story 12.4)
+- game.js: Call updateSessionAggregation(gameState) after trackGameOver (line ~377)
+- main.js: beforeunload listener already present (Story 12.3, line ~156)
+- analytics.js: trackSessionEnd() already implemented (Story 12.3, lines 185-222)
+
+**sessionStorage Keys Updated:**
+- 'crazysnake_total_foods' - Sum of scores across all games
+- 'crazysnake_food_breakdown' - JSON object with aggregated food types
+- 'crazysnake_total_phone_calls' - Sum of phone calls across all games
+- 'crazysnake_reaction_times' - JSON array of avg reaction times per game
+- 'crazysnake_avg_dismissal_speed' - Computed average dismissal speed
+- 'crazysnake_highest_score' - Already tracked (Story 12.4)
+- 'crazysnake_total_games' - Already tracked (Story 12.4)
+- 'crazysnake_session_start' - Already tracked (Story 12.4)
+
+**Event Props Sent (trackSessionEnd on beforeunload):**
+- session_id (from getSessionId helper)
+- total_games_played (from sessionStorage)
+- total_time_seconds (Date.now() - session_start)
+- highest_score (max score across all games)
+- total_foods_eaten (sum of all scores)
+- Flattened food breakdown: food_growing, food_invincibility, food_wall_phase, food_speed_boost, food_speed_decrease, food_reverse_controls
+- total_phone_calls (sum across all games)
+- avg_dismissal_speed_ms (computed from reaction times)
+
+**Call Flow:**
+1. Player dies → Death handler in game.js
+2. trackGameOver(gameState) fires (Story 12.7)
+3. updateSessionAggregation(gameState) updates sessionStorage
+4. Player closes tab → beforeunload event (main.js)
+5. trackSessionEnd() reads sessionStorage and fires 'session_end' event
+
+**Testing:**
+- Play multiple games, verify sessionStorage aggregates correctly
+- Close tab, verify 'session_end' event fires (may need persistent DevTools)
+- total_foods_eaten = sum of all scores
+- highest_score = max score across games
+- food_breakdown aggregates correctly
+- total_phone_calls = sum across games
 
 ### File List
 
-- js/game.js or js/main.js (modified - add beforeunload listener, updateSessionAggregation())
-- js/game.js (modified - call updateSessionAggregation() in onDeath())
+- js/game.js (modified - added updateSessionAggregation(), call in death handler)
+- js/main.js (already has beforeunload listener from Story 12.3)
+- js/analytics.js (already has trackSessionEnd from Story 12.3)
+
+---
+
+## Change Log
+
+**2026-02-16** - Story 12.8 implementation complete
+- Implemented updateSessionAggregation() function in game.js
+- Called updateSessionAggregation() after trackGameOver() in death handler
+- Session aggregation updates on every game over:
+  - total_foods_eaten: Sum of scores across all games
+  - food_breakdown: Aggregated foodTypesEaten (growing, invincibility, wallPhase, speedBoost, speedDecrease, reverseControls)
+  - total_phone_calls: Sum of phone calls across all games
+  - reaction_times: Array of avg reaction times per game
+  - avg_dismissal_speed: Computed average dismissal speed
+- Leverages existing beforeunload listener from Story 12.3 (main.js)
+- Leverages existing trackSessionEnd() from Story 12.3 (analytics.js)
+- Fires 'session_end' event on browser tab close with {session_id, total_games_played, total_time_seconds, highest_score, total_foods_eaten, flattened food breakdown, total_phone_calls, avg_dismissal_speed_ms}
+- Ready for testing in browser (sessionStorage inspection + DevTools → Network tab)

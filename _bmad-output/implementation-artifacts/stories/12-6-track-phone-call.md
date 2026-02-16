@@ -2,7 +2,7 @@
 
 **Epic:** 12 - Cognitive Analytics System
 **Story ID:** 12.6
-**Status:** 🔴 not started
+**Status:** 🟢 review
 **Created:** 2026-02-08
 
 ---
@@ -328,16 +328,65 @@ FR98 (phone_call event)
 
 ### Agent Model Used
 
-_To be filled by implementing agent_
+Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 
 ### Debug Log References
 
-_To be filled during implementation_
+N/A - Test via browser DevTools Network tab to verify 'phone_call' events
 
 ### Completion Notes List
 
-_To be filled on completion_
+**Implementation Summary:**
+- Added trackPhoneCallEvent() call in phone.js endCall() function (End button action)
+- Added trackPhoneCallEvent() call in game.js checkPickUpTimerExpiration() function (Pick Up timer expiry)
+- Imported trackPhoneCallEvent from analytics.js in both files
+- Positioned calls after legacy trackPhoneCall() calls (Story 9.7) for backward compatibility
+- Leverages analyticsState.phoneCallShowTime from Story 12.2 for reaction_time_ms calculation
+
+**Technical Implementation:**
+- phone.js: Import trackPhoneCallEvent from analytics.js (line 11)
+- phone.js: Call trackPhoneCallEvent(gameState, 'end') after legacy trackPhoneCall (line ~216)
+- game.js: Import trackPhoneCallEvent from analytics.js (line 9)
+- game.js: Call trackPhoneCallEvent(gameState, 'pickup') after legacy trackPhoneCall (line ~479)
+- analytics.js: Already implemented in Story 12.3 with all required props
+
+**Event Props Captured:**
+- session_id (from getSessionId helper)
+- action ('end' or 'pickup')
+- caller_name (from gameState.phoneCall.currentCaller.name)
+- reaction_time_ms (Date.now() - analyticsState.phoneCallShowTime)
+- pickup_bonus (gameState.phoneCall.pickUpBonus if Pick Up, 0 if End)
+- call_sequence_number (analyticsState.totalPhoneCalls)
+- combo_active_during_call (gameState.combo.active)
+- score_at_call (gameState.score)
+
+**Call Placement Rationale:**
+- End: Fires immediately when End button pressed (phone.js endCall())
+- Pick Up: Fires when countdown timer expires and bonus awarded (game.js checkPickUpTimerExpiration())
+- Both placements after legacy trackPhoneCall() maintain backward compatibility with Story 9.7 internal stats
+- reaction_time_ms computed from phoneCallShowTime set in Story 12.2
+
+**Testing:**
+- End button press fires 'phone_call' event with action='end', pickup_bonus=0
+- Pick Up timer expiry fires 'phone_call' event with action='pickup', pickup_bonus=[Fibonacci value]
+- reaction_time_ms reflects time from call show to dismissal
+- combo_active_during_call=true when call occurs during combo mode
+- call_sequence_number increments correctly (1, 2, 3, ...)
+- caller_name captured from currentCaller object
 
 ### File List
 
-- js/game.js or js/phone.js (modified - call trackPhoneCall() in onPhoneDismiss() handler)
+- js/phone.js (modified - import trackPhoneCallEvent, call in endCall())
+- js/game.js (modified - import trackPhoneCallEvent, call in checkPickUpTimerExpiration())
+
+---
+
+## Change Log
+
+**2026-02-16** - Story 12.6 implementation complete
+- Wired up trackPhoneCallEvent() to fire on phone call dismissal (both End and Pick Up)
+- End: Fires immediately when End button pressed (phone.js endCall())
+- Pick Up: Fires when countdown timer expires (game.js checkPickUpTimerExpiration())
+- Fires 'phone_call' event with {session_id, action, caller_name, reaction_time_ms, pickup_bonus, call_sequence_number, combo_active_during_call, score_at_call}
+- Leverages Story 12.2 analyticsState tracking (phoneCallShowTime, totalPhoneCalls)
+- Ready for testing in browser (DevTools → Network tab)

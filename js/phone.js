@@ -8,7 +8,7 @@
 
 import { CONFIG } from './config.js';
 import { spawnPhoneBonusPopup } from './score-popup.js';
-import { trackPhoneCall } from './analytics.js';
+import { trackPhoneCall, trackPhoneCallEvent } from './analytics.js';
 
 // Debug logging flag - set to false for production
 const DEBUG = false;
@@ -195,6 +195,7 @@ function endCall(gameState) {
   gameState.cognitiveStats.phoneCallsManaged += 1;
   gameState.cognitiveStats.pickUpStreak = 0; // Reset streak on End
   gameState.analyticsState.totalEnds += 1;
+  gameState.analyticsState.pickUpCompletionTime = Date.now(); // Story 12.2
 
   // Story 10.7: Track phone + combo overlap survival
   if (gameState.combo.active) {
@@ -202,7 +203,7 @@ function endCall(gameState) {
     if (DEBUG) console.log('[Phone] Call during combo survived (End action)');
   }
 
-  // Story 9.7: Track event
+  // Story 9.7: Track event (legacy format for internal stats)
   trackPhoneCall({
     action: 'end',
     reactionTime,
@@ -210,6 +211,9 @@ function endCall(gameState) {
     bonus,
     timestamp: Date.now()
   });
+
+  // Story 12.6: Track phone call event to Plausible
+  trackPhoneCallEvent(gameState, 'end');
 
   // Story 13.5: Track phone call event for divided attention metric
   // Story 13.6: Include context for impulse control metric

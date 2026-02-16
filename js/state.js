@@ -34,6 +34,7 @@ export function createInitialState() {
   return {
     phase: 'menu',  // 'menu' | 'playing' | 'gameover'
     isPaused: false,  // Story 4.4: Track if game is paused
+    currentTick: 0,  // Story 12.2: Game tick counter (for rcActivationTick tracking)
 
     snake: {
       segments: createInitialSnake(),
@@ -77,18 +78,38 @@ export function createInitialState() {
     sessionStart: Date.now(),  // Timestamp when page loaded
     gamesPlayed: 0,             // Increments on each new game
 
-    // Analytics State (Story 8.6 - Epic 8, Story 9.7 - Epic 9, Story 10.4/10.7 - Epic 10)
+    // Analytics State (Story 8.6 - Epic 8, Story 9.7 - Epic 9, Story 10.4/10.7 - Epic 10, Story 12.2 - Epic 12)
+    // Tier 2 analytics: Internal tracking for Plausible events (denominators, timestamps, distributions)
     analyticsState: {
-      totalBlinkingFoodsSpawned: 0,  // Total mystery foods spawned (opportunity metric)
+      // Denominators (for rate calculations)
       totalPhoneCalls: 0,            // Story 9.7: Total calls shown (opportunity)
       totalPickUps: 0,               // Story 9.7: Total Pick Ups committed
       totalEnds: 0,                  // Story 9.7: Total End actions
-      phoneCallShowTime: null,       // Story 9.7: Timestamp when current call showed
+      totalBlinkingFoodsSpawned: 0,  // Total mystery foods spawned (opportunity metric)
+      totalRCFoodsEaten: 0,          // Story 12.2: Reverse Controls foods consumed
       totalCombosTriggered: 0,       // Story 10.7: Total combo activations (Effect A)
-      comboScores: [],               // Story 10.4: Array of all combo scores (for analytics)
+
+      // Timestamps (for duration/reaction time calculations)
+      gameStartTime: Date.now(),     // Story 12.2: When game started
+      foodSpawnTime: 0,              // Story 12.2: When current food spawned (for time_to_eat)
+      phoneCallShowTime: 0,          // Story 9.7: When current call showed (for reaction_time_ms)
+      pickUpCompletionTime: 0,       // Story 12.2: When Pick Up/End completed
+      rcActivationTick: 0,           // Story 12.2: Game tick when RC activated
+      cognitiveStatsShownTime: 0,    // Story 12.2: When cognitive stats displayed
+
+      // Distributions & counts (for behavioral analysis)
+      foodTypesEaten: {              // Story 12.2: Food type distribution
+        growing: 0,
+        invincibility: 0,
+        wallPhase: 0,
+        speedBoost: 0,
+        speedDecrease: 0,
+        reverseControls: 0
+      },
+      comboScores: [],               // Story 10.4: Array of all combo scores (A × B values)
+      milestonesReached: [],         // Story 12.2: Scores when crossing [3, 15, 40, 60, 100]
       comboPhoneOverlaps: 0,         // Story 10.7: Phone calls during active combo
-      comboPhoneOverlapSurvived: 0,  // Story 10.7: Survived phone calls during combo
-      combo_active: false            // Story 10.7: Combo active at death (for game_over event)
+      comboPhoneOverlapSurvived: 0   // Story 10.7: Survived phone calls during combo
     },
 
     // Cognitive Stats (Story 8.6 - Epic 8, Story 9.7 - Epic 9, Story 10.4 - Epic 10, Story 11.1 - Epic 11)

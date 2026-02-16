@@ -2,7 +2,7 @@
 
 **Epic:** 12 - Cognitive Analytics System
 **Story ID:** 12.5
-**Status:** 🔴 not started
+**Status:** 🟢 review
 **Created:** 2026-02-08
 
 ---
@@ -302,16 +302,60 @@ FR97 (food_eaten event)
 
 ### Agent Model Used
 
-_To be filled by implementing agent_
+Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 
 ### Debug Log References
 
-_To be filled during implementation_
+N/A - Test via browser DevTools Network tab to verify 'food_eaten' events
 
 ### Completion Notes List
 
-_To be filled on completion_
+**Implementation Summary:**
+- Added trackFoodEaten() call in game.js food consumption handler
+- Imported trackFoodEaten from analytics.js
+- Call positioned AFTER score incremented and analyticsState updated
+- Call positioned BEFORE applying new food effect (to capture previous RC state)
+- Leverages analyticsState.foodSpawnTime from Story 12.2 for time_to_eat calculation
+
+**Technical Implementation:**
+- game.js: Import trackFoodEaten from analytics.js
+- game.js: Call trackFoodEaten(gameState) after milestone tracking (line ~156)
+- analytics.js: Already implemented in Story 12.3 with all required props
+
+**Event Props Captured:**
+- session_id (from getSessionId helper)
+- food_type (from gameState.food.type)
+- is_blinking (from gameState.food.isBlinking)
+- snake_length (from gameState.snake.segments.length)
+- score (from gameState.score - already incremented)
+- time_to_eat (Date.now() - analyticsState.foodSpawnTime)
+- rc_active (from gameState.effects.reverseControlsActive)
+
+**Call Placement Rationale:**
+- AFTER score increment (line 106) - captures new score
+- AFTER analyticsState updates (lines 139-153) - foodTypesEaten, milestones tracked
+- BEFORE combo activation (line 159) - preserves state before combo logic
+- BEFORE effect application (later in handler) - captures previous RC state
+
+**Testing:**
+- First food eaten fires 'food_eaten' event
+- Each food type tracked correctly
+- is_blinking = true for mystery foods
+- time_to_eat reflects spawn-to-consumption duration
+- rc_active = true when RC was active before eating
+- All 6 food types fire events (growing, invincibility, wallPhase, speedBoost, speedDecrease, reverseControls)
 
 ### File List
 
-- js/game.js (modified - call trackFoodEaten() in onFoodEaten() handler)
+- js/game.js (modified - import trackFoodEaten, call in food consumption handler)
+
+---
+
+## Change Log
+
+**2026-02-16** - Story 12.5 implementation complete
+- Wired up trackFoodEaten() to fire on every food consumption
+- Positioned call after score/analytics updates, before effect application
+- Fires 'food_eaten' event with {session_id, food_type, is_blinking, snake_length, score, time_to_eat, rc_active}
+- Leverages Story 12.2 analyticsState tracking (foodSpawnTime, reverseControlsActive)
+- Ready for testing in browser (DevTools → Network tab)

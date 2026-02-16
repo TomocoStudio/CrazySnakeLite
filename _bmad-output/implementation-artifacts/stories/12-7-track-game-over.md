@@ -2,7 +2,7 @@
 
 **Epic:** 12 - Cognitive Analytics System
 **Story ID:** 12.7
-**Status:** 🔴 not started
+**Status:** 🟢 review
 **Created:** 2026-02-08
 
 ---
@@ -411,16 +411,83 @@ FR96 (game_over event with full snapshot)
 
 ### Agent Model Used
 
-_To be filled by implementing agent_
+Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 
 ### Debug Log References
 
-_To be filled during implementation_
+N/A - Test via browser DevTools Network tab to verify 'game_over' events
 
 ### Completion Notes List
 
-_To be filled on completion_
+**Implementation Summary:**
+- Added trackGameOver() call in game.js death condition handler (before phase = 'gameover')
+- Captured death context BEFORE calling trackGameOver():
+  - deathCause: Determined separately by checking checkWallCollision() and checkSelfCollision()
+  - activeEffect: Determined from effects flags (invincibility, wallPhase, speedBoost, speedDecrease, reverseControls)
+- Updated analytics.js trackGameOver() to read captured death context from gameState
+- Imported trackGameOver from analytics.js in game.js
+- Snapshot captured BEFORE any state reset or phase transition
+
+**Technical Implementation:**
+- game.js: Import trackGameOver from analytics.js (line 9)
+- game.js: Separate collision checks to determine death cause (lines ~285-287)
+  - hitWall = checkWallCollision(gameState)
+  - hitSelf = checkSelfCollision(gameState)
+  - deathCause = hitWall ? 'wall' : 'self'
+- game.js: Capture active effect on death (lines ~290-302)
+  - Check all effect flags (invincibility, wallPhase, speedBoost, speedDecrease, reverseControls)
+  - Set gameState.activeEffect = { type: '<effect>' } or null
+- game.js: Call trackGameOver(gameState) before phase = 'gameover' (line ~371)
+- analytics.js: Updated trackGameOver() to read gameState.deathCause and gameState.activeEffect (lines 138-145)
+
+**Event Props Captured:**
+- session_id (from getSessionId helper)
+- score (final score)
+- duration_seconds (game duration, rounded to 1 decimal)
+- death_cause ('wall' or 'self')
+- foods_eaten (same as score)
+- phone_calls_received (totalPhoneCalls)
+- last_food_eaten (food type on screen when died)
+- active_effect_on_death (effect type or null)
+- combo_active_on_death (boolean)
+- phone_active_on_death (boolean)
+- phone_picked_up_on_death (boolean)
+- Flattened food distribution: food_growing, food_invincibility, food_wall_phase, food_speed_boost, food_speed_decrease, food_reverse_controls
+- Cognitive stats: rc_survived, phone_calls_managed, mystery_foods_eaten, combo_multipliers, pick_up_streak, peak_combo_score
+
+**Call Placement Rationale:**
+- BEFORE phase = 'gameover' transition to capture live state
+- AFTER consolation bonus awarded (if Pick Up active during death)
+- AFTER combo state tracked and exited
+- AFTER previous score and highest score stored
+- Ensures complete snapshot before any cleanup or state reset
+
+**Testing:**
+- Die by hitting wall → death_cause = 'wall'
+- Die by hitting self → death_cause = 'self'
+- Die during combo → combo_active_on_death = true
+- Die during Pick Up → phone_active_on_death = true, phone_picked_up_on_death = true
+- Die with active effect (e.g., speedBoost) → active_effect_on_death = 'speedBoost'
+- All analyticsState and cognitiveStats fields captured
+- Food distribution flattened to individual props
 
 ### File List
 
-- js/game.js (modified - call trackGameOver() in onDeath() handler, capture death context)
+- js/game.js (modified - import trackGameOver, capture death context, call trackGameOver before phase change)
+- js/analytics.js (modified - updated trackGameOver to read captured death context)
+
+---
+
+## Change Log
+
+**2026-02-16** - Story 12.7 implementation complete
+- Wired up trackGameOver() to fire on player death (before phase transition)
+- Captured death context BEFORE calling trackGameOver:
+  - deathCause: 'wall' or 'self' (determined from separate collision checks)
+  - activeEffect: Determined from effects flags (invincibility, wallPhase, speedBoost, speedDecrease, reverseControls, or null)
+  - lastFoodType: From gameState.food.type (food on screen when died)
+- Updated analytics.js trackGameOver() to read captured death context
+- Fires 'game_over' event with complete snapshot: {session_id, score, duration_seconds, death_cause, foods_eaten, phone_calls_received, last_food_eaten, active_effect_on_death, combo_active_on_death, phone_active_on_death, phone_picked_up_on_death, flattened food distribution, cognitive stats}
+- Leverages Story 12.2 analyticsState tracking (gameStartTime, foodTypesEaten, totalPhoneCalls)
+- Leverages Epic 11 cognitiveStats (rcSurvived, phoneCallsManaged, mysteryFoodsEaten, comboMultipliers, pickUpStreak, peakComboScore)
+- Ready for testing in browser (DevTools → Network tab)

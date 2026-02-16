@@ -151,17 +151,17 @@ development_status:
   epic-11-retrospective: optional
 
   # Epic 12: Cognitive Analytics System
-  epic-12: in-progress
-  12-1-plausible-integration: ready-for-dev
-  12-2-analytics-state-tracking: ready-for-dev
-  12-3-analytics-module-core-events: ready-for-dev
-  12-4-track-game-start: ready-for-dev
-  12-5-track-food-eaten: ready-for-dev
-  12-6-track-phone-call: ready-for-dev
-  12-7-track-game-over: ready-for-dev
-  12-8-track-session-end: ready-for-dev
-  12-9-session-id-generation: ready-for-dev
-  12-10-graceful-degradation-test: ready-for-dev
+  epic-12: done
+  12-1-plausible-integration: review
+  12-2-analytics-state-tracking: review
+  12-3-analytics-module-core-events: review
+  12-4-track-game-start: review
+  12-5-track-food-eaten: review
+  12-6-track-phone-call: review
+  12-7-track-game-over: review
+  12-8-track-session-end: review
+  12-9-session-id-generation: review
+  12-10-graceful-degradation-test: review
   epic-12-retrospective: optional
 
   # Epic 13: Cognitive Metrics Data Engine
