@@ -286,3 +286,39 @@ async function showHighlights(highlights, callerQuote, sessionContext) {
    ```javascript
    streakDays: 1, isBroken: false → "🔥 1-day streak — keep it going!"
    ```
+
+---
+
+## Implementation Status
+
+**Status:** ✅ **COMPLETED**
+**Date:** 2026-02-16
+
+### Summary
+Implemented consecutive day tracking with ethical guardrails. Created new streaks.js module with streak calculation logic, integrated streak counter into post-game footer with milestone highlighting, and ensured gentle messaging for streak breaks.
+
+### Files Modified/Created
+- **`js/streaks.js`** (NEW) - `getStreakData()`, `formatStreakCounter()`, `isStreakMilestone()`
+- **`js/storage.js`** - Added `getRecentSessions(days)` for streak calculation (30-day window)
+- **`js/cognitive-feedback.js`** - Updated `renderFooter()` with streak display logic, priority handling (calibration > streak)
+- **`css/style.css`** - Added `.streak-counter` styles with milestone highlighting (gold #FFD700)
+- **`js/main.js`** - Integrated streak calculation in game-over handler
+
+### Streak Logic
+- **Active streak:** Consecutive days with sessions (🔥 X-day streak)
+- **First session:** Shows "🔥 1-day streak — keep it going!"
+- **Streak broken:** Gentle message "Rest day logged. Ready for another round?" (no guilt/red colors per ethical guardrails FR195)
+- **Milestones:** 7-day and 30-day streaks use gold color (#FFD700)
+
+### Footer Priority
+1. **Calibration counter** (sessions 1-5) - takes priority
+2. **Streak counter** (session 6+) - displays after calibration complete
+
+### Test Results
+✅ Streak calculation validated across multiple session patterns
+✅ Ethical messaging verified (no guilt-inducing language or red colors)
+✅ Performance optimized: getRecentSessions() uses 30-day window (not all sessions)
+✅ Milestone highlighting works correctly (7-day, 30-day)
+
+### Acceptance Criteria
+✅ All acceptance criteria met - streak counter displays with flame emoji in 12px Jersey20, gentle break messaging without guilt colors, first session celebration, milestone highlighting with gold color and contextual caller quotes

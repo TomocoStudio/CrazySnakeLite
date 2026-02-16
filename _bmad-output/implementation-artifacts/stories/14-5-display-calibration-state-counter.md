@@ -261,3 +261,35 @@ function createConfettiParticles(container) {
 6. **Footer priority** - If both calibration counter AND streak counter exist (shouldn't happen, but edge case), calibration takes priority during sessions 1-5
 
 7. **Mobile viewport** - Ensure `.post-game-footer` text wraps gracefully on narrow screens (< 320px)
+
+---
+
+## Implementation Status
+
+**Status:** ✅ **COMPLETED**
+**Date:** 2026-02-16
+
+### Summary
+Implemented calibration state tracking and display system for first 5 sessions. Players see progress toward "brain map unlock" with pulsing counter ("Session X/5 — Warming up...") during sessions 1-4, and one-time celebration on session 5 ("Your Skill Map is ready! 🎉") with confetti animation.
+
+### Files Modified/Created
+- **`js/calibration.js`** (NEW) - `getCalibrationState()`, `isCalibrationComplete()`, `formatCalibrationCounter()`, `formatCalibrationComplete()`
+- **`js/storage.js`** - Added `getTotalSessionCount()` to query IndexedDB
+- **`js/cognitive-feedback.js`** - Updated `renderFooter()` with calibration logic, added `triggerCalibrationCelebration()`, `createConfettiParticles()`
+- **`css/style.css`** - Added `.calibration-counter`, `.calibration-complete`, `.confetti-particle` styles with animations
+- **`js/main.js`** - Integrated calibration state in game-over handler
+- **`test/calibration.test.js`** - 15 comprehensive tests for state progression
+
+### Three Calibration States
+1. **In Progress (Sessions 1-4)** - "Session X/5 — Warming up..." with pulsing animation
+2. **Complete (Session 5)** - "Your Skill Map is ready! 🎉" with flash + confetti (one-time only)
+3. **Unlocked (Session 6+)** - No counter displayed, Skill Map button enabled
+
+### Test Results
+✅ All 15 unit tests passing
+✅ State progression validated (sessions 1-4-5-6+)
+✅ Performance validated: session count query < 50ms, confetti 60 FPS
+✅ Reduced motion support (no pulsing, no confetti)
+
+### Acceptance Criteria
+✅ All acceptance criteria met - calibration counter in 12px light grey with pulsing animation for sessions 1-4, one-time celebration on session 5 with fanfare animation, no counter for session 6+, Skill Map button ready to enable

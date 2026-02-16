@@ -331,3 +331,47 @@ async function waitForStaggerComplete(highlightCount) {
    ```
 
 8. **Animation cleanup** - When game restarts (`handlePlayAgain()`), call `hideCognitiveStats()` to clean up post-game UI and reset for next death screen
+
+---
+
+## Implementation Status
+
+**Status:** ✅ **COMPLETED**
+**Date:** 2026-02-16
+
+### Summary
+Replaced single "Menu" button with two-button layout. Side-by-side on desktop (>768px), stacked on mobile (<768px). "Play Again" is default selected, "Skill Map" is disabled during calibration (sessions 1-4) and enabled after session 5.
+
+### Files Modified/Created
+- **`js/cognitive-feedback.js`** - Removed old button rendering, buttons now in HTML structure
+- **`index.html`** - Added `.post-game-buttons` container with two button elements
+- **`css/style.css`** - Added button styles with responsive layout (side-by-side desktop, stacked mobile)
+- **`js/main.js`** - Updated button click handlers for "Play Again" (immediate restart) and "Skill Map" (navigation to Epic 16 dashboard)
+
+### Button Behavior
+- **Play Again:** Always enabled, immediately starts new game (calls `startNewGame()`)
+- **Skill Map:** Disabled/greyed during calibration (sessions 1-4), enabled after session 5, navigates to dashboard (Epic 16)
+- **Default focus:** "Play Again" button has default focus for keyboard navigation
+
+### Responsive Layout
+- **Desktop (>768px):** Buttons side-by-side, equal width
+- **Mobile (<768px):** Buttons stacked vertically, "Play Again" on top, minimum 44px touch targets
+
+### Calibration Gating
+```javascript
+// Skill Map button disabled during calibration
+if (sessionContext.calibrationState !== 'unlocked') {
+  btnSkillMap.disabled = true;
+  btnSkillMap.classList.add('btn-disabled');
+}
+```
+
+### Test Results
+✅ Button layout responsive across desktop/mobile breakpoints
+✅ Calibration gating works correctly (Skill Map disabled sessions 1-4)
+✅ "Play Again" immediate restart functional
+✅ Keyboard navigation works (Tab, Enter)
+✅ Touch targets meet 44px minimum on mobile
+
+### Acceptance Criteria
+✅ All acceptance criteria met - two buttons side-by-side on desktop, stacked on mobile, Play Again default selected, 8px rounded corners with purple border and Jersey20 font, Skill Map greyed during calibration, both active after session 5, mobile vertical stack with 44px touch targets
