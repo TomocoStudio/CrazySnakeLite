@@ -32,7 +32,7 @@ function createInitialSnake() {
  */
 export function createInitialState() {
   return {
-    phase: 'menu',  // 'menu' | 'playing' | 'gameover'
+    phase: 'menu',  // 'menu' | 'playing' | 'gameover' | 'skillmap'
     isPaused: false,  // Story 4.4: Track if game is paused
     currentTick: 0,  // Story 12.2: Game tick counter (for rcActivationTick tracking)
 

@@ -135,6 +135,14 @@ function handleKeyboardInput(event, gameState) {
       }
       return;
     }
+
+    // Story 16.1: During skillmap: Return to menu
+    if (gameState.phase === 'skillmap') {
+      if (menuCallbacks && menuCallbacks.returnToMenu) {
+        menuCallbacks.returnToMenu();
+      }
+      return;
+    }
   }
 
   // Story 4.4: Enter key activates selected option
@@ -143,15 +151,17 @@ function handleKeyboardInput(event, gameState) {
     event.stopPropagation();
 
     // Activate the currently selected button
-    if (gameState.phase === 'menu' || gameState.phase === 'gameover') {
+    // Story 16.1: Added skillmap phase support
+    if (gameState.phase === 'menu' || gameState.phase === 'gameover' || gameState.phase === 'skillmap') {
       activateSelectedButton(gameState.phase);
       return;
     }
   }
 
   // Story 4.4: Arrow keys for menu navigation
+  // Story 16.1: Added skillmap phase support
   if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-    if (gameState.phase === 'menu' || gameState.phase === 'gameover') {
+    if (gameState.phase === 'menu' || gameState.phase === 'gameover' || gameState.phase === 'skillmap') {
       event.preventDefault();
       navigateMenuOptions(event.key, gameState.phase);
       return;
@@ -263,6 +273,12 @@ function navigateMenuOptions(key, phase) {
       document.getElementById('play-again-btn'),
       document.getElementById('menu-btn')
     ];
+  } else if (phase === 'skillmap') {
+    // Story 16.1: Skill Map screen buttons
+    buttons = [
+      document.getElementById('play-now-btn'),
+      document.getElementById('back-to-menu-link')
+    ];
   }
 
   // Filter out null buttons
@@ -312,6 +328,19 @@ function activateSelectedButton(phase) {
     } else {
       // Default to play again if nothing selected
       selectedButton = playAgainBtn;
+    }
+  } else if (phase === 'skillmap') {
+    // Story 16.1: Skill Map screen buttons
+    const playNowBtn = document.getElementById('play-now-btn');
+    const backToMenuLink = document.getElementById('back-to-menu-link');
+
+    if (playNowBtn && playNowBtn.classList.contains('selected')) {
+      selectedButton = playNowBtn;
+    } else if (backToMenuLink && backToMenuLink.classList.contains('selected')) {
+      selectedButton = backToMenuLink;
+    } else {
+      // Default to play now if nothing selected
+      selectedButton = playNowBtn;
     }
   }
 

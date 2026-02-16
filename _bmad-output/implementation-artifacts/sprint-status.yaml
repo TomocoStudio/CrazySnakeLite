@@ -204,26 +204,27 @@ development_status:
 
   # Epic 16: Skill Map Dashboard
   epic-16: in-progress
-  16-1-create-skill-map-screen-navigation: ready-for-dev
-  16-2-implement-pixel-block-bar-visualization: ready-for-dev
-  16-3-add-strongest-domain-growth-area-callouts: ready-for-dev
-  16-4-display-session-count-streak: ready-for-dev
-  16-5-add-rotating-caller-quotes: ready-for-dev
-  16-6-implement-play-now-button: ready-for-dev
-  16-7-add-back-to-menu-navigation: ready-for-dev
-  16-8-apply-consistent-dashboard-styling: ready-for-dev
-  16-9-test-skill-map-performance-responsiveness: ready-for-dev
+  16-1-create-skill-map-screen-navigation: review
+  16-2-implement-pixel-block-bar-visualization: review
+  16-3-add-strongest-domain-growth-area-callouts: review
+  16-4-display-session-count-streak: review
+  16-5-add-rotating-caller-quotes: review
+  16-6-implement-play-now-button: review
+  16-7-add-back-to-menu-navigation: review
+  16-8-apply-consistent-dashboard-styling: review
+  16-9-test-skill-map-performance-responsiveness: review
   epic-16-retrospective: optional
 
   # Epic 17: Streak System
-  epic-17: in-progress
-  17-1-implement-daily-streak-tracking-logic: ready-for-dev
-  17-2-add-calendar-day-detection-local-timezone: ready-for-dev
-  17-3-create-streak-persistence-storage: ready-for-dev
-  17-4-implement-gentle-break-messaging: ready-for-dev
-  17-5-display-streak-post-game-skill-map: ready-for-dev
-  17-6-implement-streak-reset-new-streak-start: ready-for-dev
-  17-7-test-streak-edge-cases-timezone-handling: ready-for-dev
+  epic-17: done
+  17-1-implement-daily-streak-tracking-logic: review
+  17-2-add-calendar-day-detection-local-timezone: review
+  17-3-create-streak-persistence-storage: review
+  17-4-implement-gentle-break-messaging: review
+  17-5-display-streak-post-game-skill-map: review
+  17-6-implement-streak-reset-new-streak-start: review
+  17-7-test-streak-edge-cases-timezone-handling: review
+  epic-17-retrospective: optional
   epic-17-retrospective: optional
 
   # Epic 18: Dashboard Comedy Integration

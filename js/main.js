@@ -9,11 +9,13 @@ import { scheduleNextCall, initPhoneSystem } from './phone.js';
 import { saveHighScore, initStorage, getAllTimeHighs, getLastSessionPattern, saveSessionPattern, getTotalSessionCount, getRecentSessions, getCalibrationStatus } from './storage.js';
 import { initAudio, resumeAudio, closeAudio, playMenuMusic, stopMenuMusic, isAudioReady } from './audio.js';
 import { initStarRatings, initCharCounter, openFeedbackModal, closeFeedbackModal, resetFeedbackForm, getFormData, captureMetadata, formatEmailBody, formatEmailSubject, submitFeedback, showThankYouScreen, closeThankYouScreen, initFeedbackModal } from './feedback.js';
-import { showCognitiveStats, showHighlights, selectHighlights } from './cognitive-feedback.js';
+import { showCognitiveStats, showHighlights, selectHighlights, renderStreakCounter } from './cognitive-feedback.js';
 import { trackSessionEnd, trackGameStart } from './analytics.js';
 import { selectCallerQuote } from './callers.js';
 import { getCalibrationState, formatCalibrationCounter } from './calibration.js';
 import { getStreakData, formatStreakCounter, isStreakMilestone } from './streaks.js';
+import { checkAndUpdateStreak } from './streak.js';
+import * as dashboard from './dashboard.js';
 
 // Initialize canvas and context
 const canvas = document.getElementById('game-canvas');
@@ -33,6 +35,15 @@ const newHighScoreIndicator = document.getElementById('new-high-score-indicator'
 const scoreDisplay = document.getElementById('score-display');
 const playAgainBtn = document.getElementById('play-again-btn');
 const skillMapBtn = document.getElementById('skill-map-btn');
+
+// Story 16.1: Skill Map screen and navigation elements
+const skillMapScreen = document.getElementById('skill-map-screen');
+const skillMapMenuBtn = document.getElementById('skill-map-menu-btn');
+const playNowBtn = document.getElementById('play-now-btn');
+const backToMenuLink = document.getElementById('back-to-menu-link');
+
+// Story 16.9: Initialize dashboard DOM cache for performance
+dashboard.initDashboard();
 
 /**
  * Update score display DOM element
@@ -141,20 +152,11 @@ function navigateToSkillMap(state) {
     menuScreen.classList.add('hidden');
   }
 
-  // Update phase
+  // Update phase - handleUIUpdate will show Skill Map screen and call dashboard.renderSkillMap()
   state.phase = 'skillmap';
 
-  // TODO Epic 16: Import and call dashboard.js showSkillMap()
-  // import('./dashboard.js').then(module => {
-  //   module.showSkillMap(state);
-  // });
-
-  // Placeholder: Show menu for now (Epic 16 will replace this)
-  console.warn('[Story 15.3] Skill Map not yet implemented - returning to menu');
-  setTimeout(() => {
-    state.phase = 'menu';
-    menuScreen.classList.remove('hidden');
-  }, 500);
+  // Story 16.1: Phase transition handled by handleUIUpdate
+  console.log('[Story 16.1] Phase set to skillmap - handleUIUpdate will render dashboard');
 }
 
 /**
@@ -354,6 +356,12 @@ function handleUIUpdate(state) {
   const phaseChanged = state.phase !== previousPhase;
   const scoreChanged = state.score !== previousScore;
 
+  // Story 16.9: Cleanup dashboard when transitioning away from skillmap
+  if (phaseChanged && previousPhase === 'skillmap' && state.phase !== 'skillmap') {
+    dashboard.cleanupDashboard();
+    console.log('[Story 16.9] Dashboard cleanup - transitioning from skillmap to', state.phase);
+  }
+
   // Story 4.2: Handle menu, playing, and gameover phases
   if (state.phase === 'menu') {
     if (phaseChanged) {
@@ -435,8 +443,12 @@ function handleUIUpdate(state) {
         // Story 15.4: Get celebration flag from storage
         const calibrationStatus = getCalibrationStatus();
 
-        // Story 14.6: Get streak data
+        // Story 14.6: Get streak data (retrospective, for backwards compatibility)
         const streakInfo = getStreakData(recentSessions);
+
+        // Story 17.1/17.5: Check and update persistent streak
+        const streakResult = checkAndUpdateStreak();
+        console.log('[Story 17.1] Streak result:', streakResult);
 
         let highlights = [];
         let callerQuote = null;
@@ -496,6 +508,10 @@ function handleUIUpdate(state) {
         playAgainBtn.classList.remove('hidden');
         skillMapBtn.classList.remove('hidden');
 
+        // Story 17.5: Render streak counter below buttons
+        renderStreakCounter(streakResult);
+        console.log('[Story 17.5] Post-game streak counter rendered');
+
         // Story 14.7: Set Skill Map button state based on calibration
         if (sessionContext && sessionContext.calibrationState === 'in_progress') {
           // Calibration period (sessions 1-4): Grey out Skill Map button
@@ -507,6 +523,19 @@ function handleUIUpdate(state) {
           console.log('[Story 14.7] Skill Map button enabled - calibration complete');
         }
       }, CONFIG.COGNITIVE_STATS_DISPLAY.initialDelay);
+    }
+  } else if (state.phase === 'skillmap') {
+    // Story 16.1: Skill Map screen phase
+    if (phaseChanged) {
+      menuScreen.classList.add('hidden');
+      gameoverScreen.classList.add('hidden');
+      scoreDisplay.classList.add('hidden');
+      skillMapScreen.classList.remove('hidden');
+      stopMenuMusic();  // Stop menu music when entering Skill Map
+
+      // Story 16.1: Render Skill Map content
+      dashboard.renderSkillMap();
+      console.log('[Story 16.1] Skill Map screen displayed');
     }
   }
 
@@ -527,7 +556,7 @@ newGameBtn.addEventListener('click', startNewGame);
 // Wire up Play Again button
 playAgainBtn.addEventListener('click', handlePlayAgain);
 
-// Story 14.7 + 15.2 + 15.3: Skill Map button - Opens full dashboard (Epic 16)
+// Story 14.7 + 15.2 + 15.3: Skill Map button (Game Over) - Opens full dashboard (Epic 16)
 skillMapBtn.addEventListener('click', () => {
   // Story 15.2: Check calibration status and show tooltip if locked
   const calibrationStatus = getCalibrationStatus();
@@ -542,6 +571,27 @@ skillMapBtn.addEventListener('click', () => {
   // Story 15.3: Navigate to Skill Map (unlocked)
   console.log('[Story 15.3] Skill Map button clicked - navigation enabled');
   navigateToSkillMap(gameState);
+});
+
+// Story 16.1: Skill Map button (Main Menu) - Opens full dashboard
+skillMapMenuBtn.addEventListener('click', () => {
+  console.log('[Story 16.1] Skill Map menu button clicked');
+  navigateToSkillMap(gameState);
+});
+
+// Story 16.1: Play Now button (Skill Map → New Game)
+playNowBtn.addEventListener('click', () => {
+  console.log('[Story 16.1] Play Now clicked - starting new game');
+  resetGame(gameState);
+  gameState.phase = 'playing';
+  spawnFood(gameState);
+});
+
+// Story 16.1: Back to Menu link (Skill Map → Menu)
+backToMenuLink.addEventListener('click', (e) => {
+  e.preventDefault();
+  console.log('[Story 16.1] Back to Menu clicked');
+  gameState.phase = 'menu';
 });
 
 // Note: Enter key handling moved to input.js (Story 4.4)

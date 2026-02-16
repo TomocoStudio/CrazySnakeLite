@@ -646,6 +646,110 @@ button:disabled {
   font-style: italic;
 }
 
+/* Story 17.5: Post-Game Streak Counter (below buttons) */
+#post-game-streak {
+  text-align: center;
+  margin-top: 16px;
+  font-family: 'Jersey20', monospace;
+  min-height: 20px; /* Prevent layout shift */
+}
+
+#post-game-streak .streak-counter {
+  font-size: 12px;
+  color: #AAAAAA; /* Light grey */
+  font-family: 'Jersey20', monospace;
+}
+
+#post-game-streak .streak-counter.fresh-start {
+  color: #AAAAAA;
+  font-size: 12px;
+}
+
+#post-game-streak .streak-counter.milestone {
+  color: #FFD700; /* Gold */
+  animation: streak-pulse 2s ease-in-out infinite;
+}
+
+/* Story 17.5: Milestone Pulsing Animation (subtler than glow) */
+@keyframes streak-pulse {
+  0%, 100% {
+    transform: scale(1.0);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Story 17.5: Confetti Burst for New Records */
+.confetti-burst {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  animation: confetti-fall 2s ease-out forwards;
+}
+
+.confetti-burst::before,
+.confetti-burst::after {
+  content: '🎉';
+  position: absolute;
+  font-size: 24px;
+  animation: confetti-spin 2s ease-out forwards;
+}
+
+.confetti-burst::before {
+  left: 20%;
+  animation-delay: 0s;
+}
+
+.confetti-burst::after {
+  right: 20%;
+  animation-delay: 0.3s;
+}
+
+@keyframes confetti-fall {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+}
+
+@keyframes confetti-spin {
+  0% {
+    transform: rotate(0deg) translateY(0);
+  }
+  100% {
+    transform: rotate(720deg) translateY(100px);
+  }
+}
+
+/* Story 17.5: Skill Map Metadata Section */
+#skill-map-metadata {
+  text-align: center;
+  margin-top: 12px;
+  font-family: 'Jersey20', monospace;
+  font-size: 12px;
+}
+
+#skill-map-metadata .session-count,
+#skill-map-metadata .streak-count {
+  color: #AAAAAA;
+  font-size: 12px;
+}
+
+#skill-map-metadata .longest-streak {
+  color: #FFD700; /* Gold - celebrate peak */
+  font-size: 10px;
+  margin-left: 8px;
+}
+
 /* ========================================
    Reduced Motion Mode - Story 11.6, 14.5
    Disable animations for accessibility
@@ -694,6 +798,16 @@ button:disabled {
     opacity: 1 !important;
     animation: none !important;
     text-shadow: none !important;
+  }
+
+  /* Story 17.5: Disable new streak animations */
+  #post-game-streak .streak-counter.milestone {
+    animation: none !important;
+    transform: scale(1.0) !important;
+  }
+
+  .confetti-burst {
+    display: none !important;
   }
 }
 
@@ -1709,3 +1823,513 @@ button:disabled {
 .reduced-motion .shake {
   animation: none !important;
 }
+
+/* ========================================
+   SKILL MAP DASHBOARD (V3 COGNITIVE MIRROR)
+   Stories 16.1-16.8: Complete dashboard implementation
+   Design system: Purple theme, Jersey20 font, retro pixel aesthetic
+   ======================================== */
+
+/* Skill Map Screen Base */
+#skill-map-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 350;  /* Between phone (400) and tooltips (300) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 300ms ease-in-out;  /* Story 16.6: Smooth fade-out */
+}
+
+/* Hidden state - fade out when transitioning to game */
+#skill-map-screen.hidden {
+  opacity: 0;
+  pointer-events: none;  /* Prevent interaction during fade-out */
+}
+
+/* Disable screen fade if user prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  #skill-map-screen {
+    transition: none;
+  }
+}
+
+/* Skill Map Container */
+.skill-map-container {
+  max-width: 600px;
+  width: 90%;
+  padding: 40px;
+  border: 8px solid rgb(157, 178, 221);  /* Purple theme */
+  box-shadow: 0 0 0 8px #1A1A2E;  /* Dark border layer */
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.85);
+}
+
+/* Skill Map Title */
+.skill-map-title {
+  font-family: 'Jersey20', sans-serif;
+  font-size: 28px;
+  color: #FFFFFF;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Action buttons container */
+.skill-map-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+/* ========================================
+   Skill Map Block Bars - Story 16.2
+   Pixel block visualization for 6 cognitive domains
+   ======================================== */
+
+/* Block bar row container */
+.block-bar-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+/* Domain label (left side) */
+.domain-label {
+  font-family: 'Jersey20', sans-serif;
+  font-size: 14px;
+  color: #FFFFFF;
+  min-width: 120px;
+  text-align: left;
+}
+
+/* Blocks container (5 blocks) */
+.blocks-container {
+  display: flex;
+  gap: 2px;
+}
+
+/* Block base styles (16x16px squares) */
+.block {
+  width: 16px;
+  height: 16px;
+  border-radius: 0;  /* Perfect squares, no rounded corners */
+}
+
+/* Filled block (purple theme) */
+.block.filled {
+  background-color: rgb(157, 178, 221);  /* Purple theme */
+  border: none;
+}
+
+/* Empty block (dark grey with subtle border) */
+.block.empty {
+  background-color: #3A3A3A;  /* Dark grey */
+  border: 1px solid #555555;  /* Subtle border */
+}
+
+/* Rating text (right side, "4/5" format) */
+.rating-text {
+  font-family: 'Jersey20', sans-serif;
+  font-size: 12px;
+  color: #B0B0B0;  /* Light grey */
+  margin-left: 8px;
+  min-width: 30px;
+}
+
+/* Calibration placeholder message */
+.calibration-message {
+  font-family: 'Jersey20', sans-serif;
+  font-size: 16px;
+  color: #B0B0B0;
+  text-align: center;
+  margin-top: 30px;
+  line-height: 1.6;
+}
+
+/* Mobile responsive (optional for this story, formalized in 16.8) */
+@media (max-width: 768px) {
+  .block-bar-row {
+    gap: 8px;
+  }
+
+  .domain-label {
+    min-width: 90px;
+    font-size: 12px;
+  }
+
+  .block {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* ========================================
+   Skill Map Indicators - Story 16.3
+   Visual indicators for strongest/growth/improved domains
+   ======================================== */
+
+/* Indicators container (right of rating text) */
+.indicators {
+  display: inline-flex;
+  gap: 6px;
+  margin-left: 8px;
+}
+
+/* Base indicator styles */
+.indicator {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Star indicator (strongest domain) */
+.indicator.star {
+  color: #FFC107;  /* Gold */
+}
+
+/* Growth arrow indicator (lowest domain) */
+.indicator.growth-arrow {
+  color: #81C784;  /* Light green */
+}
+
+/* Improved arrow indicator (domain improved >=1 block) */
+.indicator.improved-arrow {
+  color: #81C784;  /* Green */
+}
+
+/* ========================================
+   Callout Cards - Story 16.3
+   Top Skill and Level Up cards below block bars
+   ======================================== */
+
+/* Callouts container */
+#skill-map-callouts {
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+/* Callout card base styles */
+.callout-card {
+  background: rgba(26, 26, 46, 0.6);
+  border: 2px solid rgb(157, 178, 221);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+/* Callout header (icon + title) */
+.callout-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+/* Callout icon */
+.callout-icon {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Star icon (Top Skill card) */
+.callout-icon.star {
+  color: #FFC107;
+}
+
+/* Growth icon (Level Up card) */
+.callout-icon.growth {
+  color: #81C784;
+}
+
+/* Callout title */
+.callout-title {
+  font-family: 'Jersey20', sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  color: #FFFFFF;
+}
+
+/* Callout quote (domain-specific one-liner) */
+.callout-quote {
+  font-family: 'Jersey20', sans-serif;
+  font-size: 14px;
+  font-style: italic;
+  color: #B0B0B0;
+  padding-left: 26px;  /* Indent quote */
+  line-height: 1.4;
+}
+
+/* ========================================
+   Session & Streak Stats - Story 16.4
+   Display session count and current streak below callouts
+   ======================================== */
+
+/* Session stats container */
+.session-stats-row {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/* Session count and streak base styles */
+.session-count,
+.streak-count {
+  font-family: 'Jersey20', sans-serif;
+  font-size: 14px;
+  color: #B0B0B0;  /* Light grey */
+}
+
+/* Streak styling (bold) */
+.streak-count {
+  font-weight: bold;
+}
+
+/* Milestone styling (7-day, 14-day, 30-day, 60-day) */
+.streak-count.milestone {
+  color: #FFD700;  /* Gold */
+  animation: pulse-milestone 2s ease-in-out infinite;
+}
+
+/* Milestone pulsing animation */
+@keyframes pulse-milestone {
+  0%, 100% {
+    transform: scale(1.0);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Streak broken state (gentle tone, no guilt) */
+.streak-count.streak-broken {
+  color: #B0B0B0;  /* Same light grey, no red */
+  font-style: italic;
+}
+
+/* Disable milestone animation if user prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .streak-count.milestone {
+    animation: none;
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .session-stats-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .session-count,
+  .streak-count {
+    font-size: 12px;
+  }
+}
+
+/* ========================================
+   Dashboard Quote - Story 16.5
+   Rotating caller quotes below session stats
+   ======================================== */
+
+/* Quote container */
+#skill-map-quote {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/* Quote card container */
+.quote-card {
+  background: rgba(26, 26, 46, 0.4);
+  border: 1px solid rgba(157, 178, 221, 0.3);
+  border-radius: 8px;
+  padding: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Quote text styling */
+.quote-text {
+  font-family: 'Jersey20', sans-serif;
+  font-size: 14px;
+  font-style: italic;
+  color: #B0B0B0;  /* Light grey */
+  line-height: 1.4;
+  margin: 0 0 12px 0;
+}
+
+/* Caller attribution container (portrait + name) */
+.caller-attribution {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* Caller portrait thumbnail */
+.caller-portrait-small {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  border: 1px solid rgba(157, 178, 221, 0.5);
+  object-fit: cover;
+}
+
+/* Caller name styling */
+.caller-name {
+  font-family: 'Jersey20', sans-serif;
+  font-size: 12px;
+  color: #B0B0B0;  /* Light grey */
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .quote-card {
+    padding: 12px;
+  }
+
+  .quote-text {
+    font-size: 12px;
+  }
+
+  .caller-name {
+    font-size: 10px;
+  }
+
+  .caller-portrait-small {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* ========================================
+   Play Now Button - Story 16.6
+   Primary CTA on Skill Map dashboard
+   ======================================== */
+
+/* Play Now button base styles */
+#play-now-btn {
+  display: block;
+  margin: 20px auto;
+  padding: 12px 40px;
+  font-family: 'Jersey20', sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  color: #FFFFFF;
+  background: transparent;
+  border: 3px solid rgb(157, 178, 221);  /* Purple theme */
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 200ms ease-in-out;
+}
+
+/* Hover state - solid purple fill with glow */
+#play-now-btn:hover {
+  background: rgb(157, 178, 221);  /* Solid purple fill */
+  color: #1A1A2E;  /* Dark text on purple background */
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(157, 178, 221, 0.6);  /* Glow effect */
+}
+
+/* Active state - press down effect */
+#play-now-btn:active {
+  transform: scale(0.98);  /* Press down effect */
+  box-shadow: 0 0 8px rgba(157, 178, 221, 0.8);
+}
+
+/* Focus state - accessibility outline */
+#play-now-btn:focus {
+  outline: 2px solid rgb(157, 178, 221);
+  outline-offset: 4px;
+}
+
+/* Mobile responsive - full-width, larger touch target */
+@media (max-width: 768px) {
+  #play-now-btn {
+    width: 100%;
+    max-width: 300px;
+    min-height: 44px;  /* WCAG touch target minimum */
+    font-size: 18px;
+    padding: 14px 20px;
+  }
+}
+
+/* Disable animations if user prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  #play-now-btn {
+    transition: none;
+  }
+
+  #play-now-btn:hover {
+    transform: none;
+  }
+
+  #play-now-btn:active {
+    transform: none;
+  }
+}
+
+/* ========================================
+   Back to Menu Link - Story 16.7
+   Secondary navigation from Skill Map to menu
+   ======================================== */
+
+/* Back to Menu link base styles */
+#back-to-menu-link {
+  display: block;
+  text-align: center;
+  margin-top: 16px;
+  font-family: 'Jersey20', sans-serif;
+  font-size: 14px;
+  color: #B0B0B0;  /* Light grey — secondary action */
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 150ms ease-in-out;
+}
+
+/* Hover state - purple theme with underline */
+#back-to-menu-link:hover {
+  color: rgb(157, 178, 221);  /* Purple theme */
+  text-decoration: underline;
+}
+
+/* Active state - brighten on click */
+#back-to-menu-link:active {
+  color: #FFFFFF;  /* White for click feedback */
+}
+
+/* Focus state - accessibility outline */
+#back-to-menu-link:focus {
+  outline: 2px solid rgb(157, 178, 221);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  #back-to-menu-link {
+    font-size: 12px;
+    margin-top: 12px;
+  }
+}
+
+/* Disable transitions if user prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  #back-to-menu-link {
+    transition: none;
+  }
+}
+
+/* ========================================
+   END SKILL MAP DASHBOARD
+   Story 16.8: Dashboard styling complete
+   ======================================== */

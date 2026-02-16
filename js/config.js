@@ -190,5 +190,169 @@ export const CONFIG = {
   // Analytics Configuration (Story 12.1 - Epic 12)
   // Set to false in development to disable all tracking
   // Set to true in production to enable Plausible events
-  ANALYTICS_ENABLED: true
+  ANALYTICS_ENABLED: true,
+
+  // Skill Map Dashboard Configuration (Story 16.3 - Epic 16)
+  DASHBOARD: {
+    // Domain-specific comedy quotes for callout cards
+    DOMAIN_QUOTES: {
+      topSkill: {
+        reactionTime: "Your reflexes have their own zip code — they arrive that fast.",
+        spatialAwareness: "Your snake navigates like it has GPS. No, wait — better than GPS.",
+        cognitiveFlexibility: "Reverse Controls? Please. Your brain treats that like a warm-up.",
+        dividedAttention: "Phone calls during gameplay? You multitask like you've got two brains.",
+        impulseControl: "You weigh risk like a Wall Street quant with nothing to lose.",
+        workingMemory: "Combo mode? Your working memory eats those for breakfast."
+      },
+      levelUp: {
+        reactionTime: "Reaction Time is your next frontier — speed runs, here you come.",
+        spatialAwareness: "Spatial Awareness wants some love. Let that snake grow long and proud.",
+        cognitiveFlexibility: "Reverse Controls is your gym. Get in there and flip some neurons.",
+        dividedAttention: "Phone calls are your next level. Pick up more — you can handle it.",
+        impulseControl: "Impulse Control is cooking. A few more strategic Pick Ups and you'll level up.",
+        workingMemory: "Working Memory is next on the list. Combo mode is calling your name."
+      }
+    },
+
+    // Rotating caller quotes for Skill Map dashboard
+    // Story 16.5: Comedy quote pools with milestone and domain-specific context
+    QUOTES: {
+      // General achievement quotes (shown when no milestone/domain context)
+      general: [
+        {
+          text: "Your neurons are doing the Electric Slide. Keep it up!",
+          caller: "DJ Algorithm",
+          portrait: "assets/callers/dj-algorithm.png"
+        },
+        {
+          text: "This brain gym has better attendance than most actual gyms.",
+          caller: "Cache Money",
+          portrait: "assets/callers/cache-money.png"
+        },
+        {
+          text: "Neural pathways strengthening detected. Status: impressive.",
+          caller: "Mona Tor",
+          portrait: "assets/callers/mona-tor.png"
+        },
+        {
+          text: "Your cognitive flexibility is looser than a rubber band factory.",
+          caller: "Al Gorithm",
+          portrait: "assets/callers/al-gorithm.png"
+        },
+        {
+          text: "Snake wrangling builds character. And synapses. Mostly synapses.",
+          caller: "Kernel Sanders",
+          portrait: "assets/callers/kernel-sanders.png"
+        },
+        {
+          text: "Your brain is leveling up faster than my download speeds.",
+          caller: "Floppy Phil",
+          portrait: "assets/callers/floppy-phil.png"
+        },
+        {
+          text: "Pattern recognition on point. You're seeing the matrix now.",
+          caller: "Ray Tracer",
+          portrait: "assets/callers/ray-tracer.png"
+        },
+        {
+          text: "Cognitive gains detected. This is your prefrontal cortex calling.",
+          caller: "Ada Loopback",
+          portrait: "assets/callers/ada-loopback.png"
+        }
+      ],
+
+      // Milestone-specific quotes (7-day, 30-day streaks; 50, 100 sessions)
+      milestone: [
+        {
+          text: "7-day streak! Your brain has better habits than most people.",
+          caller: "Cache Money",
+          portrait: "assets/callers/cache-money.png"
+        },
+        {
+          text: "30 days? That's not a streak, that's a neural revolution.",
+          caller: "Floppy Phil",
+          portrait: "assets/callers/floppy-phil.png"
+        },
+        {
+          text: "50 sessions in? Your prefrontal cortex is officially jacked.",
+          caller: "Ray Tracer",
+          portrait: "assets/callers/ray-tracer.png"
+        },
+        {
+          text: "100 sessions! You've unlocked: Permanent Brain Gains.",
+          caller: "Ada Loopback",
+          portrait: "assets/callers/ada-loopback.png"
+        },
+        {
+          text: "A week straight? Your consistency game is next level.",
+          caller: "DJ Algorithm",
+          portrait: "assets/callers/dj-algorithm.png"
+        },
+        {
+          text: "Milestone unlocked. Your neuroplasticity is showing.",
+          caller: "Mona Tor",
+          portrait: "assets/callers/mona-tor.png"
+        }
+      ],
+
+      // Domain-specific quotes (shown when strongest domain matches)
+      domainSpecific: {
+        reactionTime: [
+          {
+            text: "Your reaction time is clocking in faster than my compiler.",
+            caller: "Kernel Sanders",
+            portrait: "assets/callers/kernel-sanders.png"
+          }
+        ],
+        spatialAwareness: [
+          {
+            text: "Spatial awareness off the charts. Snake GPS confirmed installed.",
+            caller: "Ray Tracer",
+            portrait: "assets/callers/ray-tracer.png"
+          }
+        ],
+        cognitiveFlexibility: [
+          {
+            text: "Reverse Controls is your warm-up. Your brain flips like a pancake.",
+            caller: "Floppy Phil",
+            portrait: "assets/callers/floppy-phil.png"
+          }
+        ],
+        dividedAttention: [
+          {
+            text: "Phone calls during gameplay? Multitasking level: legendary.",
+            caller: "Mona Tor",
+            portrait: "assets/callers/mona-tor.png"
+          }
+        ],
+        impulseControl: [
+          {
+            text: "Risk assessment on point. Your impulse control is dialed in.",
+            caller: "Cache Money",
+            portrait: "assets/callers/cache-money.png"
+          }
+        ],
+        workingMemory: [
+          {
+            text: "Working memory firing on all cylinders. Combo mode is your playground.",
+            caller: "DJ Algorithm",
+            portrait: "assets/callers/dj-algorithm.png"
+          }
+        ]
+      }
+    },
+
+    // Streak messaging (Story 17.4 - Epic 17)
+    // Ethical design: gentle, encouraging, no guilt
+    STREAK_MESSAGES: {
+      break: "Rest day logged. Ready for another round?",
+      freshStart: "🔥 Fresh start — let's build a new streak!",
+      achievementBeforeBreak: (days) => `${days}-day streak complete! Ready for round 2?`,
+      newRecord: "NEW RECORD! 🎉"
+    },
+
+    // Streak milestones (Story 17.5 - Epic 17)
+    // Highlight these streaks in gold with pulsing animation
+    STREAK_MILESTONES: [7, 14, 30, 60]
+  }
 };

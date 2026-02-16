@@ -708,3 +708,83 @@ export function formatHighlightText(highlight) {
   // Icon + text format
   return `${highlight.icon} ${highlight.text}`;
 }
+
+/**
+ * Render streak counter on post-game screen (Story 17.5).
+ * Displays below Play Again / Skill Map buttons.
+ *
+ * @param {Object} streakResult - From checkAndUpdateStreak() {currentStreak, longestStreak, isNewRecord, message}
+ */
+export function renderStreakCounter(streakResult) {
+  const container = document.getElementById('post-game-streak');
+  if (!container) {
+    console.warn('[Story 17.5] post-game-streak container not found');
+    return;
+  }
+
+  container.innerHTML = '';
+
+  // No active streak or fresh start
+  if (!streakResult || streakResult.currentStreak === 0) {
+    const message = document.createElement('div');
+    message.className = 'streak-counter fresh-start';
+    message.textContent = CONFIG.DASHBOARD.STREAK_MESSAGES.freshStart;
+    message.style.color = '#AAAAAA';
+    message.style.fontSize = '12px';
+    message.style.fontFamily = 'Jersey20';
+    message.style.textAlign = 'center';
+    message.style.marginTop = '16px';
+    container.appendChild(message);
+    return;
+  }
+
+  const { currentStreak, isNewRecord } = streakResult;
+
+  // Streak counter element
+  const counter = document.createElement('div');
+  counter.className = 'streak-counter';
+
+  // Text content
+  let text = `🔥 ${currentStreak}-day streak`;
+  if (isNewRecord) {
+    text += ` — ${CONFIG.DASHBOARD.STREAK_MESSAGES.newRecord}`;
+  }
+  counter.textContent = text;
+
+  // Styling: milestone detection
+  const isMilestone = CONFIG.DASHBOARD.STREAK_MILESTONES.includes(currentStreak);
+  if (isNewRecord || isMilestone) {
+    counter.style.color = '#FFD700'; // Gold
+    counter.classList.add('milestone'); // Pulsing animation
+  } else {
+    counter.style.color = '#AAAAAA'; // Light grey
+  }
+
+  counter.style.fontSize = '12px';
+  counter.style.fontFamily = 'Jersey20';
+  counter.style.textAlign = 'center';
+  counter.style.marginTop = '16px';
+
+  container.appendChild(counter);
+
+  // Confetti on new record
+  if (isNewRecord && !CONFIG.REDUCED_MOTION) {
+    triggerStreakConfetti(container);
+  }
+}
+
+/**
+ * Trigger confetti animation for new streak records (Story 17.5).
+ * Simple CSS particle effect with emoji.
+ *
+ * @param {HTMLElement} container - Streak container element
+ */
+function triggerStreakConfetti(container) {
+  const confetti = document.createElement('div');
+  confetti.className = 'confetti-burst';
+  container.style.position = 'relative'; // Ensure container is positioned
+  container.appendChild(confetti);
+
+  // Auto-remove after animation (2s)
+  setTimeout(() => confetti.remove(), 2000);
+}
