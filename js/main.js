@@ -6,7 +6,7 @@ import { initInput } from './input.js';
 import { spawnFood } from './food.js';
 import { applyEffect, clearEffect, EFFECT_TYPES } from './effects.js';
 import { scheduleNextCall, initPhoneSystem } from './phone.js';
-import { saveHighScore } from './storage.js';
+import { saveHighScore, initStorage } from './storage.js';
 import { initAudio, resumeAudio, closeAudio, playMenuMusic, stopMenuMusic, isAudioReady } from './audio.js';
 import { initStarRatings, initCharCounter, openFeedbackModal, closeFeedbackModal, resetFeedbackForm, getFormData, captureMetadata, formatEmailBody, formatEmailSubject, submitFeedback, showThankYouScreen, closeThankYouScreen, initFeedbackModal } from './feedback.js';
 import { showCognitiveStats } from './cognitive-feedback.js';
@@ -120,6 +120,15 @@ updateHighScoreDisplay(gameState.highScore);
 
 // Initialize phone system (Story 3.3)
 initPhoneSystem(gameState, () => Date.now());
+
+// Initialize IndexedDB storage for cognitive metrics (Story 13.1)
+initStorage().then((db) => {
+  if (db) {
+    console.log('[Main] Cognitive metrics storage initialized');
+  } else {
+    console.warn('[Main] Cognitive metrics storage unavailable - graceful degradation active');
+  }
+});
 
 // Initialize audio on first user interaction (Story 4.5)
 // Web Audio API: AudioContext created in user gesture context avoids autoplay block

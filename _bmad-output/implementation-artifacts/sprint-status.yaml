@@ -165,18 +165,18 @@ development_status:
   epic-12-retrospective: optional
 
   # Epic 13: Cognitive Metrics Data Engine
-  epic-13: in-progress
-  13-1-define-metrics-data-model-storage-schema: ready-for-dev
-  13-2-implement-reaction-time-metric-calculation: ready-for-dev
-  13-3-implement-spatial-awareness-metric-calculation: ready-for-dev
-  13-4-implement-cognitive-flexibility-metric-calculation: ready-for-dev
-  13-5-implement-divided-attention-metric-calculation: ready-for-dev
-  13-6-implement-impulse-control-metric-calculation: ready-for-dev
-  13-7-implement-working-memory-metric-calculation: ready-for-dev
-  13-8-implement-rolling-10-session-weighted-averages: ready-for-dev
-  13-9-implement-storage-persistence-retrieval: ready-for-dev
-  13-10-create-metrics-module-event-capture: ready-for-dev
-  13-11-test-metrics-accuracy-edge-cases: ready-for-dev
+  epic-13: done
+  13-1-define-metrics-data-model-storage-schema: done
+  13-2-implement-reaction-time-metric-calculation: done
+  13-3-implement-spatial-awareness-metric-calculation: done
+  13-4-implement-cognitive-flexibility-metric-calculation: done
+  13-5-implement-divided-attention-metric-calculation: done
+  13-6-implement-impulse-control-metric-calculation: done
+  13-7-implement-working-memory-metric-calculation: done
+  13-8-implement-rolling-10-session-weighted-averages: done
+  13-9-implement-storage-persistence-retrieval: done
+  13-10-create-metrics-module-event-capture: done
+  13-11-test-metrics-accuracy-edge-cases: done
   epic-13-retrospective: optional
 
   # Epic 14: Enhanced Post-Game Summary

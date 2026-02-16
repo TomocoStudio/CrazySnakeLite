@@ -138,3 +138,44 @@ export async function getSessions(limit: number = 10): Promise<Array<Object>>
 5. **Module boundaries** - Only storage.js touches IndexedDB directly
 6. **Session ID generation** - Use `crypto.randomUUID()` for sessionId
 7. **Null metrics** - Use `null` for absent metrics, NOT 0 (per architecture Pattern 7)
+
+---
+
+## Implementation Status
+
+**✅ COMPLETED** - 2026-02-16 (Epic 13)
+
+### What Was Built
+
+**File:** `js/storage.js` (lines 1-314)
+- IndexedDB initialization with `CrazySnakeMetrics` database v1
+- `sessions` object store with `sessionId` keyPath
+- Indexes: `timestamp` (chronological), `score` (performance)
+- `initStorage()` - Async initialization with graceful degradation
+- `saveSession()` - Persist session with auto-pruning beyond 100 sessions
+- `getSessions(limit)` - Retrieve recent sessions, newest first
+- `pruneOldSessions()` - Automatic cleanup at MAX_SESSIONS limit
+- `isStorageAvailable()` - Feature detection for IndexedDB/localStorage
+- Profile/streak localStorage methods for dashboard features
+
+**Tests:** `test/storage.test.js`
+- IndexedDB/localStorage availability checks
+- Database schema validation
+- Session save/retrieve operations
+- Pruning logic verification
+- Private browsing graceful degradation
+
+### Acceptance Criteria Status
+
+✅ Database "CrazySnakeMetrics" created with version 1
+✅ Object store "sessions" with keyPath "sessionId"
+✅ Indexes "timestamp" and "score" exist
+✅ Session object structure matches spec
+✅ Storage footprint < 50KB per session
+✅ Graceful degradation when IndexedDB unavailable
+
+### Integration Status
+
+⚠️ **NOT YET INTEGRATED** - Module complete but not wired into game loop (main.js). Requires:
+1. Call `initStorage()` on app initialization
+2. Call `saveSession(sessionData)` after `metrics.endSession()` in game over flow
