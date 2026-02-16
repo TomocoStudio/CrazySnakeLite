@@ -308,14 +308,31 @@ export function saveSessionPattern(pattern) {
 
 /**
  * Get player profile data (calibration state, session count)
+ * Story 15.1: Extended with calibrationStartDate and celebrationShown
  * @returns {Object} Profile object
  */
 export function getProfile() {
   const stored = localStorage.getItem('crazysnakeLite_profile');
-  return stored ? JSON.parse(stored) : {
+
+  if (stored) {
+    const profile = JSON.parse(stored);
+    // Ensure new fields exist for existing profiles (backward compatibility)
+    if (!profile.calibrationStartDate) {
+      profile.calibrationStartDate = Date.now();
+    }
+    if (profile.celebrationShown === undefined) {
+      profile.celebrationShown = false;
+    }
+    return profile;
+  }
+
+  // First-ever player: initialize with all calibration fields
+  return {
     calibrationComplete: false,
     sessionsCompleted: 0,
-    lastPlayedDate: null
+    lastPlayedDate: null,
+    calibrationStartDate: Date.now(),  // Story 15.1: Set once on first init
+    celebrationShown: false            // Story 15.1: Defaults to false
   };
 }
 
@@ -327,6 +344,28 @@ export function updateProfile(profileData) {
   const current = getProfile();
   const updated = { ...current, ...profileData };
   localStorage.setItem('crazysnakeLite_profile', JSON.stringify(updated));
+}
+
+/**
+ * Get calibration status (Story 15.1)
+ * Used by dashboard and cognitive feedback to check calibration state
+ * @returns {Object} { isComplete, sessionsCompleted, shouldShowCelebration }
+ */
+export function getCalibrationStatus() {
+  const profile = getProfile();
+  return {
+    isComplete: profile.calibrationComplete === true,
+    sessionsCompleted: profile.sessionsCompleted || 0,
+    shouldShowCelebration: profile.calibrationComplete && !profile.celebrationShown
+  };
+}
+
+/**
+ * Mark calibration celebration as shown (Story 15.4)
+ * Called from post-game screen after celebration displays
+ */
+export function setCelebrationShown() {
+  updateProfile({ celebrationShown: true });
 }
 
 /**

@@ -6,7 +6,7 @@ import { initInput } from './input.js';
 import { spawnFood } from './food.js';
 import { applyEffect, clearEffect, EFFECT_TYPES } from './effects.js';
 import { scheduleNextCall, initPhoneSystem } from './phone.js';
-import { saveHighScore, initStorage, getAllTimeHighs, getLastSessionPattern, saveSessionPattern, getTotalSessionCount, getRecentSessions } from './storage.js';
+import { saveHighScore, initStorage, getAllTimeHighs, getLastSessionPattern, saveSessionPattern, getTotalSessionCount, getRecentSessions, getCalibrationStatus } from './storage.js';
 import { initAudio, resumeAudio, closeAudio, playMenuMusic, stopMenuMusic, isAudioReady } from './audio.js';
 import { initStarRatings, initCharCounter, openFeedbackModal, closeFeedbackModal, resetFeedbackForm, getFormData, captureMetadata, formatEmailBody, formatEmailSubject, submitFeedback, showThankYouScreen, closeThankYouScreen, initFeedbackModal } from './feedback.js';
 import { showCognitiveStats, showHighlights, selectHighlights } from './cognitive-feedback.js';
@@ -113,6 +113,135 @@ function startNewGame() {
   scheduleNextCall(gameState, performance.now());
 
   console.log('[Game] New game started from menu');
+}
+
+/**
+ * Navigate to Skill Map dashboard
+ * Story 15.3: Navigation function for unlocked Skill Map access
+ * Story 15.5: Added defensive calibration gate check
+ * Placeholder until Epic 16 implements dashboard.js
+ * @param {Object} state - Game state
+ */
+function navigateToSkillMap(state) {
+  // Story 15.5 Task 3: Defensive gate check (prevents programmatic navigation during calibration)
+  const calibrationStatus = getCalibrationStatus();
+
+  if (!calibrationStatus.isComplete) {
+    console.log('[Story 15.5] Skill Map access blocked - calibration in progress');
+    showCalibrationGateModal(calibrationStatus.sessionsCompleted);
+    return;
+  }
+
+  console.log('[Story 15.3] Navigating to Skill Map - calibration unlocked');
+
+  // Hide current screen
+  if (state.phase === 'gameover') {
+    gameoverScreen.classList.add('hidden');
+  } else if (state.phase === 'menu') {
+    menuScreen.classList.add('hidden');
+  }
+
+  // Update phase
+  state.phase = 'skillmap';
+
+  // TODO Epic 16: Import and call dashboard.js showSkillMap()
+  // import('./dashboard.js').then(module => {
+  //   module.showSkillMap(state);
+  // });
+
+  // Placeholder: Show menu for now (Epic 16 will replace this)
+  console.warn('[Story 15.3] Skill Map not yet implemented - returning to menu');
+  setTimeout(() => {
+    state.phase = 'menu';
+    menuScreen.classList.remove('hidden');
+  }, 500);
+}
+
+/**
+ * Show calibration tooltip on locked Skill Map button
+ * Story 15.2: Tooltip displays when button is clicked during calibration
+ * @param {HTMLElement} buttonEl - The button element to attach tooltip to
+ * @param {number} sessionsCompleted - Current session count
+ */
+function showCalibrationTooltip(buttonEl, sessionsCompleted) {
+  // Remove any existing tooltip first
+  const existingTooltip = buttonEl.querySelector('.calibration-tooltip');
+  if (existingTooltip) {
+    existingTooltip.remove();
+  }
+
+  // Create tooltip element
+  const tooltip = document.createElement('div');
+  tooltip.className = 'calibration-tooltip';
+  tooltip.innerHTML = `
+    Complete 5 sessions to unlock your Skill Map<br>
+    Currently: Session ${sessionsCompleted}/5
+  `;
+
+  // Position tooltip relative to button
+  buttonEl.style.position = 'relative';
+  buttonEl.appendChild(tooltip);
+
+  // Auto-dismiss after 3 seconds
+  setTimeout(() => {
+    if (tooltip.parentNode === buttonEl) {
+      tooltip.remove();
+    }
+  }, 3000);
+}
+
+/**
+ * Show calibration gate modal (full-screen blocker)
+ * Story 15.5 Task 3: Defensive gate for direct navigation attempts
+ * @param {number} sessionsCompleted - Current session count
+ */
+function showCalibrationGateModal(sessionsCompleted) {
+  // Check if modal already exists
+  let modal = document.getElementById('calibration-gate-modal');
+
+  if (!modal) {
+    // Create modal structure
+    modal = document.createElement('div');
+    modal.id = 'calibration-gate-modal';
+    modal.className = 'calibration-gate-modal';
+    modal.innerHTML = `
+      <div class="calibration-gate-content">
+        <h2>Your brain map is building...</h2>
+        <p>Complete 5 sessions to see your cognitive profile.</p>
+        <p class="progress-text">Progress: Session ${sessionsCompleted}/5 — Warming up...</p>
+        <button class="gate-close-btn">Back to Menu</button>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    // Close button handler
+    const closeBtn = modal.querySelector('.gate-close-btn');
+    closeBtn.addEventListener('click', () => {
+      modal.classList.remove('show');
+      gameState.phase = 'menu';
+      menuScreen.classList.remove('hidden');
+    });
+
+    // ESC key handler
+    const escHandler = (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('show')) {
+        modal.classList.remove('show');
+        gameState.phase = 'menu';
+        menuScreen.classList.remove('hidden');
+        document.removeEventListener('keydown', escHandler);
+      }
+    };
+    document.addEventListener('keydown', escHandler);
+  }
+
+  // Update progress text if modal already exists
+  const progressText = modal.querySelector('.progress-text');
+  if (progressText) {
+    progressText.textContent = `Progress: Session ${sessionsCompleted}/5 — Warming up...`;
+  }
+
+  // Show modal
+  modal.classList.add('show');
 }
 
 // Create initial game state
@@ -303,6 +432,9 @@ function handleUIUpdate(state) {
         // Story 14.5: Get calibration state
         const calibrationInfo = getCalibrationState(totalSessions);
 
+        // Story 15.4: Get celebration flag from storage
+        const calibrationStatus = getCalibrationStatus();
+
         // Story 14.6: Get streak data
         const streakInfo = getStreakData(recentSessions);
 
@@ -325,7 +457,7 @@ function handleUIUpdate(state) {
 
           console.log('[Epic 14] Highlights selected:', highlights);
 
-          // Story 14.3/14.5/14.6: Build session context for caller quote and footer
+          // Story 14.3/14.5/14.6/15.4: Build session context for caller quote and footer
           sessionContext = {
             // Story 14.6: Streak data
             streakDays: streakInfo.streakDays,
@@ -335,6 +467,8 @@ function handleUIUpdate(state) {
             // Story 14.5: Calibration data
             calibrationState: calibrationInfo.state, // in_progress, complete, or unlocked
             calibrationSessionCount: calibrationInfo.sessionCount,
+            // Story 15.4: Celebration flag for one-time celebration display
+            shouldShowCelebration: calibrationStatus.shouldShowCelebration,
             totalSessions: totalSessions
           };
 
@@ -393,15 +527,21 @@ newGameBtn.addEventListener('click', startNewGame);
 // Wire up Play Again button
 playAgainBtn.addEventListener('click', handlePlayAgain);
 
-// Story 14.7: Skill Map button - Opens full dashboard (Epic 16)
+// Story 14.7 + 15.2 + 15.3: Skill Map button - Opens full dashboard (Epic 16)
 skillMapBtn.addEventListener('click', () => {
-  // TODO Epic 16: Open Skill Map / Dashboard
-  console.log('[Story 14.7] Skill Map button clicked - Epic 16 not yet implemented');
+  // Story 15.2: Check calibration status and show tooltip if locked
+  const calibrationStatus = getCalibrationStatus();
 
-  // Placeholder: Return to menu for now
-  gameState.phase = 'menu';
-  gameState.isPaused = false;
-  updateHighScoreDisplay(gameState.highScore);
+  if (!calibrationStatus.isComplete) {
+    // Calibration in progress - show tooltip and prevent navigation
+    showCalibrationTooltip(skillMapBtn, calibrationStatus.sessionsCompleted);
+    console.log('[Story 15.2] Skill Map locked - calibration in progress');
+    return;
+  }
+
+  // Story 15.3: Navigate to Skill Map (unlocked)
+  console.log('[Story 15.3] Skill Map button clicked - navigation enabled');
+  navigateToSkillMap(gameState);
 });
 
 // Note: Enter key handling moved to input.js (Story 4.4)

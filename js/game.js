@@ -19,9 +19,10 @@ import {
   calculateDividedAttention,
   calculateImpulseControl,
   calculateWorkingMemory,
-  calculateRollingAverages
+  calculateRollingAverages,
+  calculateBaselineMetrics
 } from './metrics.js';
-import { saveSession, getSessions } from './storage.js';
+import { saveSession, getSessions, getProfile, updateProfile } from './storage.js';
 
 const TICK_RATE = CONFIG.TICK_RATE;
 
@@ -385,10 +386,45 @@ function update(gameState) {
 
     // Story 13.9: Save session metrics to IndexedDB
     // Story 14.1: Store metrics for highlight selection
-    saveSessionMetrics(gameState).then(result => {
+    // Story 15.6: Calculate baseline after session 5
+    saveSessionMetrics(gameState).then(async (result) => {
       gameState.currentSessionMetrics = result.metrics;
       gameState.rollingAverages = result.rollingAverages;
+
+      // Story 15.6 Task 4: Calculate and store baseline after session 5
+      const profile = getProfile();
+      if (profile.sessionsCompleted === 5 && !profile.baselineMetrics) {
+        try {
+          // Fetch first 5 sessions for baseline calculation
+          const sessions = await getSessions(5);
+
+          // Calculate baseline metrics
+          const baseline = calculateBaselineMetrics(sessions);
+
+          // Store baseline in profile
+          updateProfile({ baselineMetrics: baseline });
+
+          console.log('[Story 15.6] Baseline established after session 5:', baseline);
+        } catch (error) {
+          console.error('[Story 15.6] Failed to calculate baseline:', error);
+        }
+      }
     });
+
+    // Story 15.1: Increment session counter and check calibration
+    const profile = getProfile();
+    const newSessionCount = profile.sessionsCompleted + 1;
+
+    // Update session count
+    updateProfile({
+      sessionsCompleted: newSessionCount
+    });
+
+    // Check calibration threshold (5 sessions)
+    if (newSessionCount === 5 && !profile.calibrationComplete) {
+      updateProfile({ calibrationComplete: true });
+      console.log('[Game] Calibration complete - 5 sessions reached');
+    }
   }
 }
 

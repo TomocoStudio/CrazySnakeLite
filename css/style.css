@@ -417,10 +417,13 @@ body {
   display: none;
 }
 
-/* Story 14.5: Calibration Counter */
+/* Story 14.5 + 15.2: Calibration Counter */
 .calibration-counter {
+  font-family: 'Jersey20', monospace;
   font-size: 12px;
-  color: #aaa; /* Light grey */
+  color: #B0B0B0; /* Light grey per Story 15.2 AC */
+  text-align: center;
+  margin-top: 16px;
   animation: fadeInStats 400ms ease-out forwards, calibrationPulse 2s ease-in-out infinite;
   animation-delay: 0s, 400ms; /* Fade in first, then start pulsing */
 }
@@ -430,10 +433,124 @@ body {
   50% { opacity: 1.0; }
 }
 
-/* Story 14.5: Calibration Complete Celebration */
+/* Story 15.2: Disabled Skill Map Button */
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Story 15.2: Calibration Tooltip */
+.calibration-tooltip {
+  position: absolute;
+  background: #2A2A2A;
+  color: #E0E0E0;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: 'Jersey20', monospace;
+  white-space: nowrap;
+  z-index: 1000;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  opacity: 0;
+  animation: tooltipFadeIn 200ms ease-out forwards;
+}
+
+.calibration-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #2A2A2A;
+}
+
+@keyframes tooltipFadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* Story 15.5: Calibration Gate Modal */
+.calibration-gate-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 360; /* Above Skill Map (350), below phone overlay (1000) */
+}
+
+.calibration-gate-modal.show {
+  display: flex;
+}
+
+.calibration-gate-content {
+  background-color: rgba(0, 0, 0, 0.9);
+  border: 8px solid rgb(157, 178, 221);
+  border-radius: 12px;
+  padding: 40px;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 0 0 8px #1A1A2E;
+  animation: fadeInScale 0.3s ease;
+}
+
+.calibration-gate-content h2 {
+  font-family: 'Jersey20', monospace;
+  font-size: 28px;
+  color: rgb(157, 178, 221);
+  margin: 0 0 20px 0;
+  letter-spacing: 1px;
+}
+
+.calibration-gate-content p {
+  font-family: 'Jersey20', monospace;
+  font-size: 18px;
+  color: #E8E8E8;
+  margin: 0 0 15px 0;
+  line-height: 1.6;
+}
+
+.calibration-gate-content .progress-text {
+  font-size: 16px;
+  color: #B0B0B0; /* Light grey, matches calibration counter */
+  margin-bottom: 30px;
+}
+
+.gate-close-btn {
+  width: 100%;
+  padding: 12px 20px;
+  font-family: 'Jersey20', monospace;
+  font-size: 18px;
+  background-color: #000000;
+  color: #FFFFFF;
+  border: 2px solid rgb(157, 178, 221);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gate-close-btn:hover {
+  background-color: rgb(157, 178, 221);
+  color: #FFFFFF;
+  transform: scale(1.05);
+}
+
+.gate-close-btn:active {
+  transform: scale(0.98);
+}
+
+/* Story 14.5 + 15.4: Calibration Complete Celebration */
 .calibration-complete {
   color: #FFD700; /* Gold */
-  font-size: 14px;
+  font-size: 18px; /* Story 15.4 Task 2: Increased from 14px */
   font-weight: bold;
   animation: celebrationFlash 200ms ease-out forwards;
 }
@@ -453,12 +570,13 @@ body {
   }
 }
 
-/* Story 14.5: Confetti Particles */
+/* Story 14.5 + 15.4: Confetti Particles */
 .confetti-particle {
   position: absolute;
   font-size: 20px;
   pointer-events: none;
-  animation: confettiFall 600ms ease-out forwards;
+  /* Story 15.4 Task 5: 1.5s animation (increased from 600ms) */
+  animation: confettiFall 1500ms ease-out forwards;
 }
 
 @keyframes confettiFall {
@@ -467,8 +585,35 @@ body {
     opacity: 1;
   }
   100% {
-    transform: translateY(-30px) rotate(360deg);
+    /* Story 15.4: Longer fall distance for 1.5s animation */
+    transform: translateY(-60px) rotate(360deg);
     opacity: 0;
+  }
+}
+
+/* Story 15.4 Task 3: Canvas Flash Animation */
+@keyframes flashFade {
+  0% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Story 15.4 Task 7: Button Pulse Animation */
+.button-pulse {
+  animation: buttonPulse 1s ease-in-out 3; /* 3 pulses over 3 seconds */
+}
+
+@keyframes buttonPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(157, 178, 221, 0.7);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(157, 178, 221, 0);
   }
 }
 

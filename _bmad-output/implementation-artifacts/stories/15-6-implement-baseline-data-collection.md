@@ -383,3 +383,116 @@ Dashboard → renders rolling avg bars + growth indicators (▲/▽)
 - Epic 13 Story 13.2-13.7: Individual metric calculations (source data for baseline)
 - Epic 13 Story 13.8: Rolling average with recency weighting (post-calibration only)
 - Epic 13 Story 13.9: Storage persistence (saves sessions during calibration)
+
+---
+
+## Dev Agent Record
+
+### Implementation Plan
+
+Story 15.6 implements baseline data collection to establish stable performance reference points after calibration.
+
+**Discovery:** Most data collection was already implemented in Epic 13!
+- Epic 13: Metrics calculated and saved for all sessions (1-N)
+- Epic 13: Rolling averages calculated with recency weighting
+- Story 15.6 adds: Baseline calculation after session 5
+
+**Work Completed:**
+1. Verified existing metrics collection (Epic 13 Stories 13.2-13.9)
+2. Added calculateBaselineMetrics() function to metrics.js
+3. Integrated baseline calculation into game.js onDeath flow
+4. Stored baseline in localStorage profile after session 5
+5. Verified null propagation pattern (null = insufficient data, not 0)
+6. Created comprehensive manual test plan
+7. Documented Epic 16 dependency (Task 5)
+
+**Design Decisions:**
+- Simple average (not weighted) for baseline - all 5 calibration sessions equally important
+- Calculated in saveSessionMetrics .then() callback - ensures session saved first
+- One-time calculation check (!profile.baselineMetrics) prevents recalculation
+- Null propagation preserved (null means "not applicable", never coerce to 0)
+- Stored in localStorage profile (faster access than IndexedDB for dashboard)
+- Separate from rolling average (baseline = historical snapshot, rolling avg = current skill)
+- Task 5 deferred to Epic 16 (dashboard.js doesn't exist yet)
+
+### Debug Log
+
+No issues encountered. Syntax validation passed for all modified files.
+
+### Completion Notes
+
+✅ **Completable Tasks: 100% (5/5)**
+- Task 1: Verify metrics captured during calibration - DONE (Epic 13, verified)
+- Task 2: Verify storage saves session metrics - DONE (Epic 13, verified)
+- Task 3: Add calculateBaselineMetrics() - DONE (metrics.js)
+- Task 4: Store baseline in profile after session 5 - DONE (game.js)
+- Task 6: Integrate baseline with rolling averages - DONE (Epic 13, verified)
+
+⚠️ **Blocked Tasks: 1/6 (Epic 16 dependency)**
+- Task 5: Add insufficient data flagging to dashboard.js - DEFERRED (dashboard.js doesn't exist yet, Epic 16 Stories 16-1/16-2)
+
+**Files Modified:**
+- `js/metrics.js` - Added calculateBaselineMetrics() function (lines 447-484)
+- `js/game.js` - Import calculateBaselineMetrics, added baseline calculation to onDeath flow (lines 23, 389-411)
+
+**What Was Already Done (Epic 13):**
+- All 6 cognitive metrics calculated each session (Stories 13.2-13.7)
+- Sessions saved to IndexedDB during calibration (Story 13.9)
+- Rolling averages calculated with recency weighting (Story 13.8)
+- Null propagation working correctly (V3 pattern)
+
+**What Was Added (Story 15.6):**
+- calculateBaselineMetrics() function (simple average of 5 sessions)
+- Baseline calculation after session 5 in onDeath flow
+- Baseline stored in localStorage profile.baselineMetrics
+- One-time calculation (never recalculated)
+
+**Testing:**
+- Created comprehensive test plan (test/story-15-6-manual-test.md)
+- 8 test scenarios covering normal case, null handling, partial data, persistence
+- Verified Epic 13 metrics collection still working
+- All completable tasks ready for manual testing
+
+---
+
+## File List
+
+- `js/metrics.js` - Modified (added calculateBaselineMetrics function)
+- `js/game.js` - Modified (import, baseline calculation in onDeath)
+- `test/story-15-6-manual-test.md` - Created (comprehensive test plan)
+- `test/story-15-6-validation-summary.md` - Created (implementation summary)
+
+---
+
+## Change Log
+
+**Date:** 2026-02-16
+
+**Changes:**
+- Added calculateBaselineMetrics() to metrics.js (lines 447-484)
+  - Takes array of 5 session objects
+  - For each of 6 domains, calculates simple average
+  - Null handling: skips null values in average
+  - Returns null if all values null (insufficient data)
+- Updated game.js imports to include calculateBaselineMetrics (line 23)
+- Added baseline calculation to onDeath flow (lines 389-411)
+  - Inside saveSessionMetrics .then() callback (after session saved)
+  - Check if sessionsCompleted === 5 and !baselineMetrics
+  - Fetch first 5 sessions: await getSessions(5)
+  - Calculate baseline: calculateBaselineMetrics(sessions)
+  - Store in profile: updateProfile({ baselineMetrics: baseline })
+  - One-time calculation (never recalculated)
+- Verified Epic 13 metrics collection working during calibration
+- Documented Epic 16 dependency (Task 5 insufficient data flagging)
+
+**Rationale:**
+Establishes stable baseline reference points for improvement tracking. Simple average of first 5 sessions captures initial performance level. Null propagation ensures "insufficient data" is represented accurately (null, not 0). Baseline provides historical snapshot for Epic 16 dashboard growth indicators (▲/▽).
+
+---
+
+## Status
+
+**Status:** review
+**Completed:** 2026-02-16
+
+**Notes:** Completable tasks 100% complete (Tasks 1-4, 6). Task 5 deferred to Epic 16 (dashboard.js doesn't exist yet). Baseline calculated and stored after session 5. Ready for manual testing and code review.

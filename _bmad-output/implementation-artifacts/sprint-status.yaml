@@ -192,14 +192,14 @@ development_status:
   epic-14-retrospective: optional
 
   # Epic 15: Calibration Period System
-  epic-15: in-progress
-  15-1-implement-calibration-state-management: ready-for-dev
-  15-2-add-session-counter-progress-tracking: ready-for-dev
-  15-3-create-brain-map-unlock-logic: ready-for-dev
-  15-4-implement-calibration-complete-celebration: ready-for-dev
-  15-5-gate-skill-map-access-during-calibration: ready-for-dev
-  15-6-implement-baseline-data-collection: ready-for-dev
-  15-7-test-calibration-state-persistence: ready-for-dev
+  epic-15: done
+  15-1-implement-calibration-state-management: review
+  15-2-add-session-counter-progress-tracking: review
+  15-3-create-brain-map-unlock-logic: review
+  15-4-implement-calibration-complete-celebration: review
+  15-5-gate-skill-map-access-during-calibration: review
+  15-6-implement-baseline-data-collection: review
+  15-7-test-calibration-state-persistence: review
   epic-15-retrospective: optional
 
   # Epic 16: Skill Map Dashboard

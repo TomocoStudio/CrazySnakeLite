@@ -1,6 +1,7 @@
 // CrazySnakeLite - Cognitive Feedback Module
 // Story 11.3: Display top cognitive stats on death screen
 import { CONFIG } from './config.js';
+import { setCelebrationShown } from './storage.js';
 
 /**
  * Select top 2-3 cognitive stats to display.
@@ -207,8 +208,9 @@ function renderCallerQuote(quote, container) {
  * Render footer content (calibration progress or streak).
  * Story 14.5: Calibration counter implementation.
  * Story 14.6: Streak counter implementation.
+ * Story 15.4: Enhanced calibration celebration with canvas flash, confetti, and button pulse.
  *
- * @param {Object} context - {calibrationState, calibrationSessionCount, streakDays, streakBroken, streakMilestone, streakText}
+ * @param {Object} context - {calibrationState, calibrationSessionCount, shouldShowCelebration, streakDays, streakBroken, streakMilestone, streakText}
  * @param {HTMLElement} container - .post-game-footer element
  */
 function renderFooter(context, container) {
@@ -226,16 +228,22 @@ function renderFooter(context, container) {
     container.className = 'post-game-footer calibration-counter';
     container.classList.remove('hidden');
 
-  } else if (context.calibrationState === 'complete') {
-    // Session 5: One-time celebration
-    container.textContent = 'Your Skill Map is ready! 🎉';
+  } else if (context.shouldShowCelebration === true) {
+    // Story 15.4: Session 5 ONE-TIME celebration (only when shouldShowCelebration flag is true)
+    container.textContent = '🎉 Your Skill Map is ready! 🎉';
     container.className = 'post-game-footer calibration-complete';
     container.classList.remove('hidden');
 
-    // Trigger celebration animation (100ms flash + confetti)
+    // Trigger enhanced celebration animation (100ms canvas flash + confetti + button pulse)
     if (!CONFIG.REDUCED_MOTION) {
       triggerCalibrationCelebration(container);
     }
+
+    // Story 15.4 Task 8: Set celebrationShown flag to prevent repeat displays
+    setTimeout(() => {
+      setCelebrationShown();
+      console.log('[Story 15.4] Celebration shown - flag set to prevent repeat display');
+    }, 2000); // Set flag after celebration animation completes
 
   } else if (context.calibrationState === 'unlocked') {
     // Story 14.6: Session 6+ - Show streak counter
@@ -267,42 +275,112 @@ function renderFooter(context, container) {
 /**
  * Trigger calibration completion celebration animation.
  * Story 14.5: Brief fanfare with flash and confetti particles.
+ * Story 15.4: Enhanced with canvas flash (100ms), gold/purple confetti (1.5s), and button pulse.
  *
  * @param {HTMLElement} container - Footer container element
  */
 function triggerCalibrationCelebration(container) {
-  // 1. Flash animation (handled by CSS .calibration-complete class)
-  // Already applied via className assignment in renderFooter
+  // 1. Canvas flash animation (Story 15.4 Task 3)
+  createCanvasFlash();
 
-  // 2. Confetti particles (simple emoji confetti)
+  // 2. Enhanced confetti particles (Story 15.4 Tasks 4-5)
   createConfettiParticles(container);
+
+  // 3. Button pulse animation (Story 15.4 Task 7)
+  pulseSkillMapButton();
+}
+
+/**
+ * Create canvas flash animation overlay.
+ * Story 15.4 Task 3: Full-screen white flash at 30% opacity for 100ms.
+ */
+function createCanvasFlash() {
+  const canvas = document.getElementById('game-canvas');
+  if (!canvas) return;
+
+  const flashOverlay = document.createElement('div');
+  flashOverlay.className = 'calibration-flash-overlay';
+  flashOverlay.style.cssText = `
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.3);
+    pointer-events: none;
+    z-index: 100;
+    animation: flashFade 100ms ease-out forwards;
+  `;
+
+  // Insert overlay over canvas
+  canvas.parentElement.insertBefore(flashOverlay, canvas.nextSibling);
+
+  // Remove after animation completes
+  setTimeout(() => {
+    if (flashOverlay.parentNode) {
+      flashOverlay.remove();
+    }
+  }, 100);
 }
 
 /**
  * Create confetti particle animation.
  * Story 14.5: Simple emoji particles that fade out.
+ * Story 15.4 Tasks 4-5: Enhanced with gold/purple colored divs, 1.5s fall animation.
  *
  * @param {HTMLElement} container - Footer container element
  */
 function createConfettiParticles(container) {
-  const emojis = ['🎉', '🎊', '✨'];
-  const particleCount = 8;
+  // Story 15.4: Gold (#FFD700) and purple (#9D4EDD) particles
+  const colors = ['#FFD700', '#9D4EDD'];
+  const particleCount = 6; // 5-7 particles per spec
 
   for (let i = 0; i < particleCount; i++) {
-    const particle = document.createElement('span');
+    const particle = document.createElement('div');
     particle.className = 'confetti-particle';
-    particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-    particle.style.left = `${20 + Math.random() * 60}%`; // Center area
-    particle.style.animationDelay = `${Math.random() * 100}ms`;
+
+    // Random color from gold/purple palette
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
+    // Story 15.4: Colored square particles (not emojis)
+    particle.style.cssText = `
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: ${color};
+      left: ${20 + Math.random() * 60}%;
+      bottom: 100%;
+      pointer-events: none;
+      animation: confettiFall 1500ms ease-out forwards;
+      animation-delay: ${Math.random() * 200}ms;
+    `;
+
     container.appendChild(particle);
 
-    // Remove after animation completes
+    // Remove after animation completes (1.5s + max 200ms delay)
     setTimeout(() => {
       if (particle.parentNode === container) {
         particle.remove();
       }
-    }, 600);
+    }, 1700);
   }
+}
+
+/**
+ * Add pulse animation to Skill Map button.
+ * Story 15.4 Task 7: Makes button pulse to draw attention after calibration unlocks.
+ */
+function pulseSkillMapButton() {
+  const skillMapBtn = document.getElementById('skill-map-btn');
+  if (!skillMapBtn) return;
+
+  // Add pulse class
+  skillMapBtn.classList.add('button-pulse');
+
+  // Remove after 3 pulses (~3 seconds)
+  setTimeout(() => {
+    skillMapBtn.classList.remove('button-pulse');
+  }, 3000);
 }
 
 /**

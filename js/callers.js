@@ -11,6 +11,10 @@ const CALLERS = [
     portrait: "/assets/portraits/kernel-sanders.png",
     quotes: [
       {
+        text: "Calibration complete! Your baseline is locked in. Now let's see what you can really do.",
+        context: "calibration_celebration"
+      },
+      {
         text: "Orange food got you? That's executive function boot camp. You'll get it.",
         context: "death_during_rc"
       },
@@ -46,6 +50,10 @@ const CALLERS = [
     name: "Cache Money",
     portrait: "/assets/portraits/cache-money.png",
     quotes: [
+      {
+        text: "Five sessions paid off! Your Skill Map is ready to cash in those cognitive gains.",
+        context: "calibration_celebration"
+      },
       {
         text: "12 days straight? Your brain is now officially a gym rat.",
         context: "streak_milestone"
@@ -118,6 +126,10 @@ const CALLERS = [
     name: "Git Committer",
     portrait: "/assets/portraits/git-committer.png",
     quotes: [
+      {
+        text: "Baseline commit merged! Your Skill Map branch is ready to deploy.",
+        context: "calibration_celebration"
+      },
       {
         text: "Five sessions in and your prefrontal cortex is filing pull requests like a boss.",
         context: "calibration_progress"
@@ -409,8 +421,12 @@ export function selectCallerQuote(sessionData, cognitiveStats, highlights, sessi
   // 1. Determine performance context (priority order)
   let context = 'generic';
 
+  // Priority 0: Calibration celebration (Story 15.4 Task 6: highest priority, one-time event)
+  if (sessionContext.shouldShowCelebration === true) {
+    context = 'calibration_celebration';
+  }
   // Priority 1: Streak milestones (rarest, highest priority)
-  if (sessionContext.streakDays >= 30) {
+  else if (sessionContext.streakDays >= 30) {
     context = 'streak_milestone';
   } else if (sessionContext.streakDays >= 7) {
     context = 'streak_milestone';

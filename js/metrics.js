@@ -443,6 +443,49 @@ export function calculateRollingAverages(currentSessionMetrics, previousSessions
   return rollingAverages;
 }
 
+/**
+ * Calculate baseline metrics from calibration sessions (first 5 sessions).
+ * Story 15.6: Establishes stable baseline for improvement tracking.
+ *
+ * Simple average of first 5 sessions (no recency weighting for baseline).
+ * Null propagation: null means "not applicable" (e.g., never encountered RC food).
+ * If all sessions have null for a metric, baseline is null (insufficient data).
+ *
+ * @param {Array<Object>} sessions - Array of session objects (first 5 sessions)
+ * @returns {Object} Baseline metrics for all 6 domains
+ */
+export function calculateBaselineMetrics(sessions) {
+  const domains = [
+    'reactionTime',
+    'spatialAwareness',
+    'cognitiveFlexibility',
+    'dividedAttention',
+    'impulseControl',
+    'workingMemory'
+  ];
+
+  const baseline = {};
+
+  for (const domain of domains) {
+    const values = [];
+
+    for (const session of sessions) {
+      const val = session.metrics?.[domain];
+      // V3 null propagation: null means "not applicable", skip in average
+      if (val !== null && val !== undefined) {
+        values.push(val);
+      }
+    }
+
+    // If no valid values, baseline is null (insufficient data)
+    baseline[domain] = values.length > 0
+      ? values.reduce((sum, v) => sum + v, 0) / values.length
+      : null;
+  }
+
+  return baseline;
+}
+
 // ========================================
 // HELPER FUNCTIONS (Statistical)
 // ========================================
