@@ -206,9 +206,9 @@ function renderCallerQuote(quote, container) {
 /**
  * Render footer content (calibration progress or streak).
  * Story 14.5: Calibration counter implementation.
- * Story 14.6: Streak display (TBD).
+ * Story 14.6: Streak counter implementation.
  *
- * @param {Object} context - {calibrationState, calibrationSessionCount, streakDays}
+ * @param {Object} context - {calibrationState, calibrationSessionCount, streakDays, streakBroken, streakMilestone, streakText}
  * @param {HTMLElement} container - .post-game-footer element
  */
 function renderFooter(context, container) {
@@ -216,6 +216,8 @@ function renderFooter(context, container) {
     container.classList.add('hidden');
     return;
   }
+
+  // Priority: Calibration (sessions 1-5) > Streak (session 6+)
 
   // Story 14.5: Calibration states
   if (context.calibrationState === 'in_progress') {
@@ -236,14 +238,24 @@ function renderFooter(context, container) {
     }
 
   } else if (context.calibrationState === 'unlocked') {
-    // Session 6+: Check for streak display (Story 14.6)
-    if (context.streakDays && context.streakDays > 0) {
-      // Story 14.6: Streak display
-      container.textContent = `🔥 ${context.streakDays}-day streak`;
-      container.className = 'post-game-footer';
+    // Story 14.6: Session 6+ - Show streak counter
+    if (context.streakText) {
+      container.textContent = context.streakText;
+      container.className = 'post-game-footer streak-counter';
+
+      // Add milestone styling for 7-day or 30-day streaks
+      if (context.streakMilestone) {
+        container.classList.add('streak-milestone');
+      }
+
+      // Add broken styling if streak was just broken
+      if (context.streakBroken) {
+        container.classList.add('broken');
+      }
+
       container.classList.remove('hidden');
     } else {
-      // No streak: hide footer
+      // No streak data: hide footer
       container.classList.add('hidden');
     }
   } else {

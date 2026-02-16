@@ -434,6 +434,35 @@ body {
   }
 }
 
+/* Story 14.6: Streak Counter */
+.streak-counter {
+  font-size: 12px;
+  color: #aaa; /* Light grey */
+}
+
+.streak-milestone {
+  color: #FFD700; /* Gold for 7-day and 30-day milestones */
+  font-size: 14px;
+  font-weight: bold;
+  animation: milestoneGlow 1s ease-in-out;
+}
+
+@keyframes milestoneGlow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+    text-shadow: 0 0 8px #FFD700;
+  }
+}
+
+/* Story 14.6: Broken Streak (Gentle, No Red per FR195) */
+.streak-counter.broken {
+  color: #888; /* Neutral grey - factual, not guilt-inducing */
+  font-style: italic;
+}
+
 /* ========================================
    Reduced Motion Mode - Story 11.6, 14.5
    Disable animations for accessibility
@@ -469,6 +498,13 @@ body {
 
   .confetti-particle {
     display: none !important; /* Hide confetti entirely */
+  }
+
+  /* Story 14.6: Disable streak milestone animation */
+  .streak-milestone {
+    opacity: 1 !important;
+    animation: none !important;
+    text-shadow: none !important;
   }
 }
 

@@ -162,6 +162,30 @@ export async function getTotalSessionCount() {
 }
 
 /**
+ * Get recent sessions for streak calculation.
+ * Story 14.6: Limits query to last N days for performance.
+ *
+ * @param {number} days - Number of days to look back (default 30)
+ * @returns {Promise<Array>} Array of session objects within date range, newest first
+ */
+export async function getRecentSessions(days = 30) {
+  // Calculate cutoff timestamp (N days ago)
+  const cutoffDate = new Date();
+  cutoffDate.setDate(cutoffDate.getDate() - days);
+  const cutoffTimestamp = cutoffDate.getTime();
+
+  // Get all recent sessions (up to MAX_SESSIONS)
+  const allSessions = await getSessions(MAX_SESSIONS);
+
+  // Filter to sessions within date range
+  const recentSessions = allSessions.filter(session =>
+    session.timestamp >= cutoffTimestamp
+  );
+
+  return recentSessions;
+}
+
+/**
  * Prune old sessions to maintain MAX_SESSIONS limit
  * @returns {Promise<void>}
  */

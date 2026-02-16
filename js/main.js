@@ -6,13 +6,14 @@ import { initInput } from './input.js';
 import { spawnFood } from './food.js';
 import { applyEffect, clearEffect, EFFECT_TYPES } from './effects.js';
 import { scheduleNextCall, initPhoneSystem } from './phone.js';
-import { saveHighScore, initStorage, getAllTimeHighs, getLastSessionPattern, saveSessionPattern, getTotalSessionCount } from './storage.js';
+import { saveHighScore, initStorage, getAllTimeHighs, getLastSessionPattern, saveSessionPattern, getTotalSessionCount, getRecentSessions } from './storage.js';
 import { initAudio, resumeAudio, closeAudio, playMenuMusic, stopMenuMusic, isAudioReady } from './audio.js';
 import { initStarRatings, initCharCounter, openFeedbackModal, closeFeedbackModal, resetFeedbackForm, getFormData, captureMetadata, formatEmailBody, formatEmailSubject, submitFeedback, showThankYouScreen, closeThankYouScreen, initFeedbackModal } from './feedback.js';
 import { showCognitiveStats, showHighlights, selectHighlights } from './cognitive-feedback.js';
 import { trackSessionEnd, trackGameStart } from './analytics.js';
 import { selectCallerQuote } from './callers.js';
 import { getCalibrationState, formatCalibrationCounter } from './calibration.js';
+import { getStreakData, formatStreakCounter, isStreakMilestone } from './streaks.js';
 
 // Initialize canvas and context
 const canvas = document.getElementById('game-canvas');
@@ -291,15 +292,19 @@ function handleUIUpdate(state) {
         // Add small delay to ensure async saveSessionMetrics completes
         await new Promise(resolve => setTimeout(resolve, 100));
 
-        // Story 14.1: Query all-time highs, last pattern, and session count in parallel
-        const [allTimeHighs, lastPattern, totalSessions] = await Promise.all([
+        // Story 14.1/14.5/14.6: Query all data in parallel
+        const [allTimeHighs, lastPattern, totalSessions, recentSessions] = await Promise.all([
           getAllTimeHighs(),
           Promise.resolve(getLastSessionPattern()),
-          getTotalSessionCount()
+          getTotalSessionCount(),
+          getRecentSessions(30) // Story 14.6: Last 30 days for streak calculation
         ]);
 
         // Story 14.5: Get calibration state
         const calibrationInfo = getCalibrationState(totalSessions);
+
+        // Story 14.6: Get streak data
+        const streakInfo = getStreakData(recentSessions);
 
         let highlights = [];
         let callerQuote = null;
@@ -320,10 +325,15 @@ function handleUIUpdate(state) {
 
           console.log('[Epic 14] Highlights selected:', highlights);
 
-          // Story 14.3/14.5: Build session context for caller quote and footer
+          // Story 14.3/14.5/14.6: Build session context for caller quote and footer
           sessionContext = {
-            streakDays: 0, // Story 14.6 will implement streak calculation
-            calibrationState: calibrationInfo.state, // Story 14.5: in_progress, complete, or unlocked
+            // Story 14.6: Streak data
+            streakDays: streakInfo.streakDays,
+            streakBroken: streakInfo.isBroken,
+            streakMilestone: streakInfo.milestoneReached,
+            streakText: formatStreakCounter(streakInfo.streakDays, streakInfo.isBroken),
+            // Story 14.5: Calibration data
+            calibrationState: calibrationInfo.state, // in_progress, complete, or unlocked
             calibrationSessionCount: calibrationInfo.sessionCount,
             totalSessions: totalSessions
           };
@@ -338,6 +348,7 @@ function handleUIUpdate(state) {
 
           console.log('[Epic 14] Caller quote selected:', callerQuote);
           console.log('[Epic 14] Calibration state:', calibrationInfo.state, `(${totalSessions} sessions)`);
+          console.log('[Epic 14] Streak data:', `${streakInfo.streakDays} days`, streakInfo.isBroken ? '(broken)' : '', streakInfo.milestoneReached ? '(MILESTONE)' : '');
         } else {
           console.warn('[Epic 14] Session metrics not available yet - skipping highlight selection');
         }
