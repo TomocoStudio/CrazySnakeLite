@@ -153,7 +153,6 @@ function update(gameState) {
     if (wasComboActive) {
       // Pause combo progression during phone calls
       if (CONFIG.COMBO_PAUSE_ON_PHONE && gameState.phoneCall.active) {
-        console.log('[Combo] Paused during phone call. foodCount unchanged:', gameState.combo.foodCount);
         // Combo state fully preserved (effectA, effectB, canvasColor, striped snake)
         // Skip combo progression - player must dismiss phone before combo advances
       } else {
@@ -192,7 +191,6 @@ function update(gameState) {
           );
           gameState.analyticsState.comboScores.push(comboScore);
 
-          console.log(`[Combo] Food #2: ${effectType} (+${scoreIncrease}), Score: ${gameState.combo.effectA.points} × ${gameState.combo.effectB.points} = ${comboScore}, Both effects active`);
         } else if (gameState.combo.foodCount === 2) {
           // FOOD #3: Third food → exit combo, regular points awarded (already added above)
           gameState.combo.foodCount = 3; // Mark as exiting
@@ -202,8 +200,6 @@ function update(gameState) {
 
           // Play exit audio (deflation tone)
           playComboExit();
-
-          console.log(`[Combo] Food #3: ${effectType} (+${scoreIncrease}), Regular points, Combo exited`);
         }
       }
     }
@@ -239,11 +235,7 @@ function update(gameState) {
     if (isComboActive(gameState) && gameState.combo.foodCount === 2) {
       // COMBO MODE - Food #2: Both Effect A (already active) and Effect B (current food) are active
       // Don't clear Effect A, keep it active alongside Effect B
-      // Effect B is stored in combo.effectB, we'll check it in collision/speed calculations
-      console.log(`[Combo] Dual effects active: ${gameState.combo.effectA.type} + ${gameState.combo.effectB.type}`);
-
-      // Update snake color to show striped pattern (handled by render.js)
-      // activeEffect stays as Effect A, Effect B is in combo.effectB
+      // Striped snake rendering handled by render.js (reads combo.effectA/effectB)
     } else if (effectType === 'growing') {
       // Growing food clears effect and sets snake to green
       clearEffect(gameState);
@@ -312,12 +304,6 @@ function update(gameState) {
 
     // Story 10.7: Track combo state at death (for analytics)
     gameState.analyticsState.combo_active = gameState.combo.active;
-
-    if (gameState.combo.active) {
-      const effectA = gameState.combo.effectA?.type || 'none';
-      const effectB = gameState.combo.effectB?.type || 'none';
-      console.log(`[Game] Died during combo (Effect A: ${effectA}, Effect B: ${effectB})`);
-    }
 
     // Exit combo mode if active (reset canvas color and state)
     if (gameState.combo.active) {

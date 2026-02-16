@@ -1,8 +1,8 @@
 # Epic 10: Combo Mode System
 
-**Status:** 🔴 NOT STARTED
+**Status:** 🟢 COMPLETED
 **Created:** 2026-02-08
-**Completed:** —
+**Completed:** 2026-02-14
 
 ---
 
@@ -16,7 +16,7 @@ Introduce combo mode at score 40+ where two consecutive food effects combine for
 
 **Critical:** The food that activates combo (food #1) and the food that triggers the payoff (food #2) are always different food eats. Activation and progression must never fire on the same food.
 
-Probability increases from 10% at score 40 to 40% (cap) at score 120+. Combo progression pauses during phone calls to respect cognitive budget at the combo learning phase. This trains working memory (holding 2 effects in mind), multiplicative thinking, and strategic planning under time pressure.
+Probability increases from 10% at score 30 to 40% (cap) at score 120+. Combo progression pauses during phone calls to respect cognitive budget at the combo learning phase. This trains working memory (holding 2 effects in mind), multiplicative thinking, and strategic planning under time pressure.
 
 **FRs covered:** FR40-FR48 (Combo mode system)
 
@@ -34,11 +34,11 @@ Probability increases from 10% at score 40 to 40% (cap) at score 120+. Combo pro
 
 **Acceptance Criteria:**
 
-**Given** my score is between 0-39
+**Given** my score is between 0-29
 **When** I eat food
 **Then** combo mode never activates (0% probability)
 
-**Given** my score is between 40-59
+**Given** my score is between 30-59
 **When** I eat food
 **Then** combo mode has a 10% chance to activate
 
@@ -366,7 +366,7 @@ Probability increases from 10% at score 40 to 40% (cap) at score 120+. Combo pro
 ## Definition of Done
 
 - [ ] All 7 stories complete with passing acceptance criteria
-- [ ] Combo activation probability matches spec (10% at 40, 40% cap at 120+)
+- [ ] Combo activation probability matches spec (10% at 30, 40% cap at 120+)
 - [ ] Canvas color transition functional (4 dark colors, random selection, 500ms fade)
 - [ ] Striped snake rendering implemented (alternating Effect A/Effect B)
 - [ ] 1px black borders on segments during combo for visual clarity
