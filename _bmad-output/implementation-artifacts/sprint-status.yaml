@@ -1,4 +1,4 @@
-# generated: 2026-02-16
+# generated: 2026-02-16 (reconciled)
 # project: CrazySnakeLite
 # project_key: crazy-snake-lite
 # tracking_system: file-system
@@ -90,18 +90,18 @@ development_status:
   epic-5-retrospective: optional
 
   # Epic 6: User Feedback Collection System
-  epic-6: in-progress
-  6-1-feedback-modal-ui-component: review
-  6-2-feedback-button-integration: review
-  6-3-auto-capture-data-collection: review
-  6-4-email-submission-thank-you-flow: review
-  6-5-multi-feedback-support: review
+  epic-6: done
+  6-1-feedback-modal-ui-component: done
+  6-2-feedback-button-integration: done
+  6-3-auto-capture-data-collection: done
+  6-4-email-submission-thank-you-flow: done
+  6-5-multi-feedback-support: done
   epic-6-retrospective: optional
 
   # Epic 7: Fibonacci Scoring & Visual Feedback System
   epic-7: in-progress
-  7-1-update-food-scoring-fibonacci: review
-  7-2-score-popup-system-basic: review
+  7-1-update-food-scoring-fibonacci: done
+  7-2-score-popup-system-basic: done
   7-3-high-value-score-popups: done
   7-4-fibonacci-musical-progression: blocked
   7-5-popup-queue-system: done
@@ -110,12 +110,12 @@ development_status:
 
   # Epic 8: Progressive Blinking Food System
   epic-8: in-progress
-  8-1-color-cycling-animation: review
-  8-2-score-based-blinking-percentage: review
+  8-1-color-cycling-animation: done
+  8-2-score-based-blinking-percentage: done
   8-3-drop-shadow-spatial-anchoring: backlog
   8-4-first-time-mystery-food-tooltip: backlog
-  8-5-reduced-motion-mode-blinking: review
-  8-6-track-blinking-food-stats: review
+  8-5-reduced-motion-mode-blinking: done
+  8-6-track-blinking-food-stats: done
   epic-8-retrospective: optional
 
   # Epic 9: Phone Calls v2 - Pick Up vs End
@@ -152,16 +152,16 @@ development_status:
 
   # Epic 12: Cognitive Analytics System
   epic-12: done
-  12-1-plausible-integration: review
-  12-2-analytics-state-tracking: review
-  12-3-analytics-module-core-events: review
-  12-4-track-game-start: review
-  12-5-track-food-eaten: review
-  12-6-track-phone-call: review
-  12-7-track-game-over: review
-  12-8-track-session-end: review
-  12-9-session-id-generation: review
-  12-10-graceful-degradation-test: review
+  12-1-plausible-integration: done
+  12-2-analytics-state-tracking: done
+  12-3-analytics-module-core-events: done
+  12-4-track-game-start: done
+  12-5-track-food-eaten: done
+  12-6-track-phone-call: done
+  12-7-track-game-over: done
+  12-8-track-session-end: done
+  12-9-session-id-generation: done
+  12-10-graceful-degradation-test: done
   epic-12-retrospective: optional
 
   # Epic 13: Cognitive Metrics Data Engine
