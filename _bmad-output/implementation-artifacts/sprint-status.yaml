@@ -1,4 +1,4 @@
-# generated: 2026-02-16 (reconciled)
+# generated: 2026-02-16 (updated by SM)
 # project: CrazySnakeLite
 # project_key: crazy-snake-lite
 # tracking_system: file-system
@@ -224,7 +224,6 @@ development_status:
   17-5-display-streak-post-game-skill-map: review
   17-6-implement-streak-reset-new-streak-start: review
   17-7-test-streak-edge-cases-timezone-handling: review
-  epic-17-retrospective: optional
   epic-17-retrospective: optional
 
   # Epic 18: Dashboard Comedy Integration
