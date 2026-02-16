@@ -49,6 +49,14 @@ workflow_status:
         completed: "2026-01-13"
         note: "Recommended for greenfield Method projects"
 
+      - id: "product-brief-cognitive-dashboard"
+        name: "Product Brief - Cognitive Dashboard"
+        agent: "analyst"
+        command: "/bmad:bmm:workflows:create-product-brief"
+        status: "_bmad-output/planning-artifacts/product-brief-CrazySnakeLite-2026-02-15.md"
+        completed: "2026-02-15"
+        note: "Cognitive Dashboard feature product brief with market research and party mode input"
+
   # Phase 2: Planning
   - phase: 2
     name: "Planning"
@@ -80,8 +88,9 @@ workflow_status:
         status: "_bmad-output/planning-artifacts/architecture.md"
         completed: "2026-01-25"
         v2_completed: "2026-02-07"
-        output: "System architecture document (v1 + v2 evolution)"
-        note: "V2 evolution: Food v2 + Phone Calls v2 + UX design integrated"
+        v3_completed: "2026-02-15"
+        output: "System architecture document (v1 + v2 + v3 evolution)"
+        note: "V3 evolution: Cognitive Dashboard MVP — metrics engine, enhanced highlights, Skill Map dashboard, calibration, streak system, comedy integration. 4 new modules, async storage layer (IndexedDB), skillmap phase."
 
       - id: "create-epics-and-stories"
         name: "Epics & Stories"

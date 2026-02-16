@@ -1,8 +1,9 @@
 ---
-stepsCompleted: ['step-01-init', 'step-02-discovery', 'step-03-success', 'step-04-journeys', 'step-05-domain', 'step-06-innovation', 'step-07-project-type', 'step-08-scoping', 'step-09-functional', 'step-10-nonfunctional', 'step-11-polish']
-inputDocuments: ['_bmad-output/planning-artifacts/product-brief-CrazySnakeLite-2026-01-13.md', '_bmad-output/planning-artifacts/game-ux-principles.md', '_bmad-output/planning-artifacts/game-design-food-v2.md', '_bmad-output/planning-artifacts/game-design-phone-calls-v2.md', '_bmad-output/planning-artifacts/ux-design-food-phone-v2.md']
+stepsCompleted: ['step-01-init', 'step-02-discovery', 'step-03-success', 'step-04-journeys', 'step-05-domain', 'step-06-innovation', 'step-07-project-type', 'step-08-scoping', 'step-09-functional', 'step-10-nonfunctional', 'step-11-polish', 'step-e-01-discovery', 'step-e-02-review', 'step-e-03-edit']
+inputDocuments: ['_bmad-output/planning-artifacts/product-brief-CrazySnakeLite-2026-01-13.md', '_bmad-output/planning-artifacts/product-brief-CrazySnakeLite-2026-02-15.md', '_bmad-output/planning-artifacts/game-ux-principles.md', '_bmad-output/planning-artifacts/game-design-food-v2.md', '_bmad-output/planning-artifacts/game-design-phone-calls-v2.md', '_bmad-output/planning-artifacts/ux-design-food-phone-v2.md']
 workflowType: 'prd'
-briefCount: 1
+workflow: 'edit'
+briefCount: 2
 researchCount: 0
 brainstormingCount: 0
 projectDocsCount: 4
@@ -13,13 +14,19 @@ classification:
   projectContext: 'greenfield'
 v2_rewrite: true
 repositioning: 'Brain Gym for the Age of AI'
+lastEdited: '2026-02-16'
+editHistory:
+  - date: '2026-02-16'
+    changes: 'Integrated V3 Retro Visual Upgrade - added 8 visual enhancements (Progressive Dark Playfield, Distinctive Food Shapes, CRT Glow, Snake Personality, Typography, Scanlines, Reactive Border, Grid Enhancement) implementing authentic 80s arcade aesthetic. Added 23 new FRs (FR206-228) and 19 new NFRs (NFR68-86). Based on UX design spec (ux-design-retro-graphic-upgrade.md) and Architecture V4 decisions. Covers Epics 19-21.'
+  - date: '2026-02-15'
+    changes: 'Integrated Cognitive Dashboard MVP into V2 scope - added 6 core dashboard features (metrics engine, post-game highlights, brain map, calibration, streaks, comedy integration) across all PRD sections. Added 56 new FRs (FR150-205) and 23 new NFRs (NFR43-67). Updated Success Criteria, User Journeys, Innovation, Scoping, Technical Requirements.'
 ---
 
 # Product Requirements Document — CrazySnakeLite
 
 **Author:** Mary (Analyst) with Celia (Neuro-Game Design Expert)
-**Date:** 2026-02-08
-**Version:** 2.0 — Brain Gym Repositioning
+**Date:** 2026-02-08 | **Last Updated:** 2026-02-16
+**Version:** 3.0 — Brain Gym with Cognitive Dashboard & Neon Noir Aesthetic
 
 ---
 
@@ -27,12 +34,16 @@ repositioning: 'Brain Gym for the Age of AI'
 
 CrazySnakeLite is a **cognitive fitness tool disguised as an arcade game** — a brain gym built for the age of AI. It transforms the universally known Snake into a progressively demanding cognitive training system that targets the faculties most threatened by AI dependency: executive function, working memory, divided attention, decision-making under uncertainty, impulse control, and cognitive flexibility.
 
+The **Cognitive Dashboard** completes the brain gym experience by providing players with a personal "cognitive mirror" — letting them see, understand, and track their cognitive growth over time. Without visible progress, a gym isn't a gym — it's just exercise. The dashboard transforms CrazySnake from "that fun snake game" into "my daily brain workout with receipts."
+
 **Core Design Axioms:**
 - Score-based, never time-based — reward what the player achieves
 - Difficulty is the product — the cognitive challenge is what the player came for
 - Comedy is a system — humor makes the brain workout enjoyable
 - Teach by encounter — every mechanic is learned through play
 - Targeted challenge over raw chaos — a brain gym rotates cognitive demands
+- Progress tracking is free — democratizing cognitive insights that competitors paywall ($14.99/mo Lumosity)
+- Privacy by default — local-first storage, no accounts, no server tracking
 
 **Mandatory Foundation:** All design decisions must reference `game-ux-principles.md` — the cognitive science baseline derived from Hodent (2018), Schell (2008), and Sylvester (2013).
 
@@ -58,14 +69,19 @@ CrazySnakeLite is a **cognitive fitness tool disguised as an arcade game** — a
 
 **Success at 1 Month:**
 - V2 shipped and playable with all five cognitive challenge systems functional
+- Cognitive Dashboard MVP deployed with all 6 core features (metrics engine, post-game highlights, brain map, calibration, streaks, comedy)
 - Prototype testing with knowledge workers validates the "brain gym" positioning
-- Core cognitive loop working: Fibonacci scoring → phone calls → blinking food → combo mode → reverse controls
+- Core cognitive loop working: Fibonacci scoring → phone calls → blinking food → combo mode → reverse controls → dashboard tracking
 - Players report feeling cognitively engaged, not just entertained
+- Dashboard engagement validated: 60%+ of sessions include brain map view, 70%+ complete calibration period
 
 **Success at 3 Months:**
 - Return rate validates lasting engagement (players come back for the cognitive workout)
-- Post-game cognitive feedback ("Your Brain Today") resonates with players
-- Decision point clear: expand cognitive training features or broaden distribution
+- Dashboard drives measurable retention lift: Day-7 retention +15% vs. pre-dashboard baseline, Day-30 retention +25%
+- Post-game highlights ("Your Brain Today" Layer 1) resonate: 80%+ see highlights before Play Again
+- Streak mechanic takes hold: 50%+ of weekly players maintain 3+ day streak
+- Players actively check cognitive progress: Brain map becomes part of pre-game ritual for 40%+ of returning players
+- Decision point clear: proceed to V2 dashboard expansion (sharing, trends, milestones) or focus on distribution
 
 ### Technical Success
 
@@ -94,7 +110,12 @@ CrazySnakeLite is a **cognitive fitness tool disguised as an arcade game** — a
 | Score 40+ reach rate | 50%+ of sessions | Players engage beyond comfort zone |
 | Pick Up usage | 40%+ of phone calls | Risk/reward decision is appealing |
 | Return rate (next day) | 30%+ | Lasting engagement, not one-time novelty |
-| Post-game stats viewed | 80%+ see stats before Play Again | Cognitive feedback resonates |
+| Post-game highlights engagement | 80%+ see highlights before Play Again | Dashboard Layer 1 (hot moment) resonates |
+| Brain map view rate | 60%+ of sessions | Dashboard Layer 2 (cool moment) is compelling |
+| Calibration completion rate | 70%+ reach session 5 | Calibration creates anticipation, not churn |
+| Streak adoption | 50%+ of weekly players maintain 3+ day streak | Daily habit mechanic works |
+| Day-7 retention lift | +15% vs. pre-dashboard baseline | Dashboard drives return visits |
+| Day-30 retention lift | +25% vs. pre-dashboard baseline | Dashboard sustains long-term engagement |
 | Average session length | 5-10 minutes | Fits break-time cognitive workout use case |
 
 ---
@@ -137,18 +158,38 @@ Play Again. This time Alex knows the systems. By score 40, the canvas turns dark
 
 Alex survives. Score 67. Dies to self-collision during reverse controls.
 
-**Your Brain Today** appears:
-- Reverse Controls survived: 3
-- Phone calls managed: 6
-- Mystery foods decoded: 9
+**Your Brain Today** appears with dynamic highlights:
+- "Personal Best: Reverse Controls survived - 3 times! 🎯"
+- "Phone Mastery: Managed 6 calls without panic"
+- Caller quote: "Your prefrontal cortex just bench-pressed a truck. Impressive." — Kernel Sanders
 
-Alex stares at the stats. They didn't just play a game. Their brain did real cognitive work — divided attention, executive function override, decisions under uncertainty. And it was *fun*.
+Below the highlights: "Session 1/5 — Calibrating your brain..." and "12-day streak 🔥"
+
+Alex stares at the stats. They didn't just play a game. Their brain did real cognitive work — divided attention, executive function override, decisions under uncertainty. And it was *fun*. And now there's... a calibration counter? "What unlocks at session 5?"
 
 **Resolution — The Habit:**
 
-Alex plays 2 more games. Shares the link with a coworker: "Try this — it's like a gym for your brain."
+Alex plays 2 more games. Session 3/5... Session 4/5...
 
-Next day during morning break, Alex opens CrazySnakeLite without prompting. Not for entertainment. For the cognitive workout.
+**Day 5** — After the fifth game, a message appears: "**Your brain map is ready! Check the dashboard.**" with pixel art fanfare.
+
+Alex clicks "Dashboard." A radar chart blooms on screen — six domains with dot-based ratings:
+- **Reaction Time:** 3/5 dots
+- **Spatial Awareness:** 4/5 dots
+- **Cognitive Flexibility:** 2/5 dots ⬆ (growth area)
+- **Divided Attention:** 3/5 dots
+- **Impulse Control:** 3/5 dots
+- **Working Memory:** 2/5 dots
+
+Callout: "**Your strongest domain:** Spatial Awareness. **Growth opportunity:** Cognitive Flexibility — Reverse Controls are your gym."
+
+Rotating caller quote: "Five sessions in and your neurons are doing the Electric Slide. Keep it up!" — DJ Algorithm
+
+Alex screenshots it. Shares with the same coworker: "Try this — it's like a gym for your brain. Here's my brain map after 5 days."
+
+Next day during morning break, Alex opens CrazySnakeLite, checks their brain map (Cognitive Flexibility jumped to 3 dots!), then hits Play. The streak counter reads: 6 days 🔥
+
+Not for entertainment. For the cognitive workout. With receipts.
 
 #### Journey 2: Edge Case — Frustration to Mastery Motivation
 
@@ -174,7 +215,11 @@ Alex dies at score 78. New personal best. **Your Brain Today:** Reverse Controls
 
 Alex realizes: this isn't about avoiding difficulty. Difficulty is the product. Every system is training a different part of the brain. Reverse Controls = executive function. Phone calls = divided attention. Blinking food = uncertainty tolerance. Combo mode = working memory.
 
-They play every break. Not because it's fun (though it is). Because it makes their brain *work*.
+**Week 2** — Alex checks the brain map before playing. Cognitive Flexibility has climbed from 2 to 4 dots. Working Memory is still at 2. "That's my target today."
+
+They deliberately seek combo mode. Survive two combos in one game. Post-game highlight: "Working Memory Performance: +22% this session ⬆"
+
+Alex plays every break. Not because it's fun (though it is). Because it makes their brain *work*. And now they can see the work paying off in dots, streaks, and improvement arrows.
 
 ### Journey Requirements Summary
 
@@ -255,6 +300,21 @@ Each game mechanic targets a specific cognitive faculty, introduced through scor
 "Your Brain Today" transforms the death screen from failure into cognitive achievement recognition. This is **metacognitive feedback** (Flavell, 1979) — awareness of one's own cognitive processes improves learning and motivation. No other casual game tells the player what their brain just accomplished.
 
 **Innovation Type:** Experience innovation — game-over as cognitive reflection, not just retry prompt
+
+**5. Cognitive Dashboard — Free Progress Tracking with Comedy**
+
+The Cognitive Dashboard is **the first free, fun, transparent cognitive progress tracking system** in casual gaming. While competitors paywall progress insights (Lumosity $14.99/mo, Peak's Brain Maps behind premium), CrazySnake democratizes cognitive tracking with:
+
+- **Six gameplay-derived metrics** (not abstract puzzles) — Reaction Time, Spatial Awareness, Cognitive Flexibility, Divided Attention, Impulse Control, Working Memory
+- **Dual-moment architecture** — hot moment celebration (post-game highlights with caller comedy) + cool moment analysis (brain map radar chart with growth insights)
+- **Local-first, privacy by default** — localStorage/IndexedDB, no account required, no server tracking, player controls their data
+- **Comedy-integrated, never clinical** — tech pun callers comment on performance, humor makes progress tracking feel like CrazySnake, not a medical report
+- **Calibration period as anticipation event** — sessions 1-5 build baseline, brain map unlock becomes motivational moment
+- **Ethical streak system** — gentle messaging, no guilt, no anxiety, no push notifications (dashboard pulls, not pushes)
+
+No product in the $9.76B brain training market (19% CAGR) combines free access + fun presentation + transparent metrics + genuine cognitive substance. Lumosity charges for opaque LPI scores. Peak gates Brain Maps. BrainHQ feels medical. Duolingo has streaks but no cognitive training. CrazySnake uniquely positions as the **"Duolingo of casual brain training"** — borrowing proven gamification mechanics and applying them to genuine cognitive exercise through arcade gameplay.
+
+**Innovation Type:** Business model innovation + engagement innovation — free cognitive mirror that competitors paywall, comedy as systemic driver of progress awareness, local-first privacy as competitive advantage
 
 ### Market Context & Competitive Landscape
 
@@ -425,7 +485,18 @@ CrazySnakeLite is a Single Page Application (SPA) delivered via web browser. Pur
 - Game state: snake position, food positions, active effects, score, cognitiveStats
 - Phone state: active, caller, pickedUp, pickUpCount, pickUpEndTime
 - Combo state: active, effectA, effectB, canvasColor
+- Dashboard state: sessionHistory (array of session objects), currentStreak, calibrationComplete, lastPlayedDate
+- Metrics state: reaction time buffer, spatial awareness history, cognitive flexibility ratios, divided attention scores, impulse control decisions, working memory performance
 - Config state: all tunable parameters in config.js
+
+**Storage Architecture:**
+- localStorage for high score and simple preferences (< 10KB)
+- IndexedDB for cognitive metrics session history (structured data, 100+ sessions, < 5MB total)
+- Session data structure: { sessionId, timestamp, score, metrics: { reactionTime, spatialAwareness, cognitiveFlexibility, dividedAttention, impulseControl, workingMemory }, events: [...] }
+- Streak tracking via localStorage (lastPlayedDate, currentStreak)
+- Calibration state via localStorage (sessionsCompleted, calibrationComplete)
+- No external database, no server-side persistence for core functionality
+- Privacy by default: all data local to browser, no transmission
 
 **Deployment:**
 - Static site hosting (Netlify, Vercel, GitHub Pages)
@@ -439,16 +510,19 @@ CrazySnakeLite is a Single Page Application (SPA) delivered via web browser. Pur
 
 ### V2 Strategy & Philosophy
 
-**V2 Approach:** Cognitive Fitness MVP — Validate Brain Gym Positioning
+**V2 Approach:** Cognitive Fitness MVP with Progress Tracking — Validate Brain Gym Positioning & Retention
 
-CrazySnakeLite V2 ships all five cognitive challenge systems. Success is defined by whether knowledge workers perceive the game as a cognitive workout — not just entertainment.
+CrazySnakeLite V2 ships all five cognitive challenge systems PLUS the Cognitive Dashboard MVP. Success is defined by whether knowledge workers perceive the game as a cognitive workout — not just entertainment — AND whether the dashboard drives measurable retention lift.
 
 **Core Philosophy:**
 - Ship ALL five cognitive training layers in V2 (no partial implementation)
+- Ship Cognitive Dashboard MVP (6 core features: metrics engine, post-game highlights, brain map, calibration, streaks, comedy integration)
 - Validate the "Brain Gym for the AI Age" positioning with target users
+- Validate that visible cognitive progress drives retention (D7 +15%, D30 +25% targets)
 - Cognitive engagement is the primary success metric, not just fun
 - Every mechanic must have a clear cognitive training target
 - Difficulty is the product — never make it easier just to reduce churn
+- Progress tracking is free — democratizing cognitive insights that competitors paywall ($14.99/mo Lumosity)
 
 ### V2 Feature Set (Current)
 
@@ -600,35 +674,116 @@ Tone: Celebratory, not clinical. "My brain did that." — not a medical report.
 - Rounded corners (12px) on menus, (8px) on buttons
 - Z-index hierarchy: Phone overlay (400) > Tooltips (300) > Score popups (200) > Score display (100) > Canvas (0)
 
+**10. Cognitive Dashboard MVP (6 Core Features)**
+
+**a) Cognitive Metrics Data Engine**
+- Silent collection of 6 gameplay-derived cognitive metrics from session one:
+  - **Reaction Time:** Rolling avg of input response time during normal gameplay
+  - **Spatial Awareness:** Snake length at death / grid coverage percentage
+  - **Cognitive Flexibility:** Performance ratio during Reverse Controls vs. normal play
+  - **Divided Attention:** Survival rate + decision speed during phone calls
+  - **Impulse Control:** Weighted Pick Up vs End decision ratio by game context
+  - **Working Memory:** Score rate during combo mode vs. normal gameplay
+- Storage: localStorage/IndexedDB (no server, no account, privacy by default)
+- Data persists across sessions on same device/browser
+- Rolling averages weighted toward recent sessions for responsive metrics
+- All calculation logic follows formulas defined in Cognitive Analytics Requirements
+
+**b) Enhanced Post-Game Summary (Layer 1 — Hot Moment)**
+- Replaces/enhances current "Your Brain Today" with dynamic, comedy-integrated highlights
+- 2-3 highlights selected dynamically per session (never same pattern twice in a row)
+- Selection priority: Personal Best > Biggest Improvement > Notable Event > Growth Opportunity
+- Comedy caller quotes comment on performance (performance-contextual)
+- Up/down arrows and simple language — no clinical metrics shown
+- "Play Again" and "Dashboard" buttons as clear next actions
+- Streak counter visible at bottom
+- Timing: Stats fade in 300ms after score, stagger 300ms per line, hold 2.5s, fade out 500ms
+
+**c) Brain Map Dashboard (Layer 2 — Cool Moment)**
+- Player-initiated from menu — the cognitive mirror
+- Radar chart showing all 6 domains with dot-based ratings (5 dots max, filled/empty visual)
+- Strongest domain and growth area callouts (dynamically determined)
+- Session count and current streak display prominently
+- "Play Now" button always visible — dashboard is launchpad, not dead end
+- Comedy: rotating caller quote or achievement title on each visit
+- Pixel art styling consistent with CrazySnake's retro aesthetic
+- Accessible from main menu: "Brain Map" option
+
+**d) Calibration Period**
+- First 3-5 sessions build baseline before brain map unlocks
+- "Calibrating your brain..." state with session progress counter (Session 1/5, 2/5, 3/5...)
+- Post-game highlights still show during calibration (individual session data immediate)
+- Brain map unlock is motivational event — the reveal after calibration creates anticipation
+- Prevents volatile early data from undermining trust in metrics
+- Calibration complete message: "Your brain map is ready! Check the dashboard."
+
+**e) Streak System**
+- Consecutive daily play tracking
+- Visual streak counter on post-game screen and dashboard
+- Streak increments on any completed game per calendar day (local timezone)
+- Gentle messaging on streak break: "Your brain took a rest day. Ready to come back stronger?"
+- No guilt, no anxiety — ethical guardrails per game UX principles
+- Streak data stored locally alongside cognitive metrics
+- No notifications, no push — dashboard pulls, not pushes
+
+**f) Comedy Integration**
+- Dashboard and post-game screens maintain CrazySnake's personality
+- Tech pun caller quotes on post-game highlights (21 callers available, performance-contextual selection)
+- Rotating caller quotes on dashboard visits (refresh on each view)
+- Achievement-style labels using humor, not clinical language (e.g., "Your prefrontal cortex just filed a pull request. Merged without conflicts.")
+- No medical terminology, no clinical framing anywhere in dashboard UI
+
 ### Out of V2 Scope (Future)
 
+**Dashboard V2 Features (Deferred):**
+- Trend graphs (Layer 3 deep analytics) — 30-day domain trends, improvement curves
+- Social sharing / brain map cards — shareable cognitive profile cards (Wordle grid moment)
+- Milestones & achievements — cognitive achievement badges and celebrations
+- Streak freeze — risk mitigation for streak anxiety
+- Weekly summary reports — email/in-app cognitive summaries
+- Growth opportunity suggestions — "Your weakest domain is..." nudges
+- Premium tier analytics — extended history, detailed breakdowns
+- Cross-device sync — requires accounts/server infrastructure
+- Leaderboards — cognitive fitness rankings
+
+**Other Future Features:**
 - Multiple difficulty levels / difficulty selection
-- Leaderboards / global score persistence
-- Player accounts / profiles
+- Player accounts / profiles (for cross-device sync only)
 - Native mobile app packaging
 - Haptic feedback on mobile
 - Caller collection / discovery system
-- Social sharing of cognitive stats
-- Longitudinal cognitive tracking across sessions
 - Targeted workout modes ("Focus Training," "Flexibility Training")
 
 ### Post-V2 Vision
 
-**Phase 2: Cognitive Fitness Platform (If Brain Gym Positioning Validates)**
+**Horizon 1 — Dashboard V2: Social & Depth (3-6 months post-MVP)**
 
-- Longitudinal tracking: "Your brain this week" — trends in RC survivals, attention management
-- Targeted workout modes: Focus (phone-heavy), Flexibility (RC-heavy), Uncertainty (high blinking)
+If Cognitive Dashboard MVP validates (60%+ brain map view rate, +15% D7 retention lift, 70%+ calibration completion), expand dashboard with:
+- Shareable brain map cards (the "Wordle grid" moment for organic growth)
+- Trend graphs and Layer 3 deep analytics (30-day improvement curves per domain)
+- Milestones and achievement system (cognitive badges, celebrations)
+- Streak freeze and gentle re-engagement messaging
+- Growth opportunity suggestions per domain ("Focus on Working Memory this week")
+- Weekly cognitive reports with caller-narrated summaries
+
+**Horizon 2 — Cognitive Fitness Platform (6-12 months)**
+
+- Targeted workout modes: "Focus Training" (phone-heavy), "Flexibility Training" (RC-heavy), "Uncertainty Training" (high blinking)
+- Cross-device sync with optional account creation (privacy-first, local-first default)
+- Leaderboards framed as cognitive fitness rankings (non-competitive framing)
+- "Challenge a coworker" with shared game seeds
 - Cognitive warm-up mode for pre-work brain activation
-- Challenge a coworker with shared seeds
-- Cognitive stats sharing ("I survived 8 reverse controls today")
 
-**Phase 3: Platform Expansion**
+**Horizon 3 — Ecosystem (12+ months)**
 
+- Premium tier with extended history and personalized coaching (business model exploration)
+- Corporate wellness integration (brain breaks for teams, aggregate analytics)
+- API for research partnerships (anonymized, opt-in cognitive data for academic research)
 - Progressive Web App for offline play
 - Native mobile with haptic feedback
 - Steam release as premium cognitive fitness game
-- Corporate wellness programs (brain breaks during work)
 - Educational institutions (cognitive warm-ups before classes)
+- New game modes targeting additional cognitive faculties
 
 ### Risk Mitigation Strategy
 
@@ -843,6 +998,80 @@ Tone: Celebratory, not clinical. "My brain did that." — not a medical report.
 - FR143: Touch controls functional on mobile browsers
 - FR144: Game loads within 3 seconds on broadband (5 Mbps+)
 
+### Cognitive Dashboard — Metrics Data Engine
+
+- FR150: System silently collects 6 cognitive metrics from session one (no opt-in required, automatic and local)
+- FR151: Reaction Time metric calculated as rolling average of input response time during normal gameplay (excludes Reverse Controls and phone call periods)
+- FR152: Spatial Awareness metric calculated as snake length at death divided by grid coverage percentage
+- FR153: Cognitive Flexibility metric calculated as performance ratio: (score rate during Reverse Controls) / (score rate during normal play)
+- FR154: Divided Attention metric calculated from survival rate and decision speed during phone call overlays
+- FR155: Impulse Control metric calculated as weighted Pick Up vs End decision ratio by game context (combo mode, high score, blinking food)
+- FR156: Working Memory metric calculated as score rate during combo mode vs. normal gameplay
+- FR157: All cognitive data stored locally via localStorage/IndexedDB (no server, no account, privacy by default)
+- FR158: Data persists across sessions on same device/browser
+- FR159: Rolling averages weighted toward recent 10 sessions for responsive metrics that reflect improvement
+- FR160: Metric calculation follows formulas defined in Cognitive Analytics Requirements document
+
+### Cognitive Dashboard — Enhanced Post-Game Summary (Layer 1)
+
+- FR161: Post-game screen displays 2-3 dynamic highlights selected from cognitive performance (replaces/enhances "Your Brain Today")
+- FR162: Highlight selection priority: Personal Best > Biggest Improvement > Notable Event > Growth Opportunity
+- FR163: Highlight selection algorithm ensures no repeated pattern in consecutive sessions (variety enforcement)
+- FR164: Each highlight includes comedy caller quote contextual to performance (21 callers available, performance-based selection)
+- FR165: Highlights use up/down arrows and simple language (no clinical metrics, no numbers except achievements)
+- FR166: Post-game screen includes "Play Again" and "Dashboard" buttons as clear next actions
+- FR167: Streak counter visible at bottom of post-game screen (current streak days)
+- FR168: Highlight timing: fade in 300ms after score display, stagger 300ms per line, hold 2.5s, fade out 500ms
+- FR169: "Play Again" button appears after highlights fade (~3.3s total from death)
+- FR170: All cognitiveStats reset on new game start
+
+### Cognitive Dashboard — Brain Map Dashboard (Layer 2)
+
+- FR171: Brain Map accessible from main menu ("Brain Map" option)
+- FR172: Brain Map displays radar chart with all 6 cognitive domains
+- FR173: Each domain rated on 5-dot scale (filled/empty dots, visual not numeric)
+- FR174: Radar chart uses pixel art styling consistent with game aesthetic
+- FR175: Dashboard displays strongest domain callout (dynamically determined from highest metric)
+- FR176: Dashboard displays growth area callout (dynamically determined from lowest metric or biggest recent improvement)
+- FR177: Session count displayed prominently (total games played)
+- FR178: Current streak displayed prominently (consecutive days with at least one game)
+- FR179: "Play Now" button always visible on dashboard (dashboard is launchpad, not dead end)
+- FR180: Rotating caller quote or achievement title displayed on each dashboard visit (refreshes on view, humor not clinical)
+- FR181: Dashboard uses purple theme color rgb(157, 178, 221) for borders and accents
+- FR182: Brain Map unavailable during calibration period (shows calibration state instead)
+
+### Cognitive Dashboard — Calibration Period
+
+- FR183: First 3-5 sessions function as calibration period before brain map unlocks
+- FR184: Calibration state displays "Calibrating your brain..." with session progress counter (Session 1/5, 2/5, 3/5...)
+- FR185: Post-game highlights display during calibration (individual session data immediate, brain map delayed)
+- FR186: Brain map unlocks automatically after session 5 completion
+- FR187: Calibration complete message displayed: "Your brain map is ready! Check the dashboard."
+- FR188: Calibration completion triggers one-time celebration moment (visual fanfare, caller quote)
+- FR189: Calibration state prevents volatile early data from populating brain map (builds baseline first)
+
+### Cognitive Dashboard — Streak System
+
+- FR190: Streak tracks consecutive calendar days with at least one completed game
+- FR191: Streak increments on first game completion per calendar day (local timezone)
+- FR192: Streak counter displays on post-game screen and brain map dashboard
+- FR193: Streak continues across multiple games per day (only first game counts for day)
+- FR194: Streak breaks if no game played for 24+ hours (calendar day missed)
+- FR195: Gentle messaging on streak break: "Your brain took a rest day. Ready to come back stronger?" (no guilt, no anxiety)
+- FR196: Streak data stored locally alongside cognitive metrics (localStorage/IndexedDB)
+- FR197: No push notifications, no external reminders (dashboard pulls, not pushes per ethical design)
+- FR198: Streak resets to 0 on break, new streak starts on next game
+
+### Cognitive Dashboard — Comedy Integration
+
+- FR199: Post-game highlights include tech pun caller quotes contextual to performance (21 callers available)
+- FR200: Brain map dashboard displays rotating caller quote on each visit (refreshes on view)
+- FR201: Caller quote selection uses performance context: high score → celebratory, death during RC → empathetic, streak milestone → encouraging
+- FR202: Achievement-style labels use humor not clinical language throughout dashboard UI
+- FR203: No medical terminology anywhere in dashboard (avoid clinical framing per game UX principles)
+- FR204: Calibration complete message includes caller celebration quote
+- FR205: Dashboard maintains CrazySnake's retro pixel art and Jersey20 font aesthetic
+
 ---
 
 ## Non-Functional Requirements
@@ -914,11 +1143,148 @@ Tone: Celebratory, not clinical. "My brain did that." — not a medical report.
   - Grace period score threshold
   - Pick Up Fibonacci sequence
   - Effect durations and speed multipliers
+  - Dashboard metric calculation weights
+  - Calibration session threshold
+  - Highlight selection priorities
 - NFR40: Core gameplay mechanics unit testable
 - NFR41: Food effects testable in isolation
 - NFR42: Cross-browser compatibility validatable through automated testing
+- NFR43: Dashboard metric calculations unit testable in isolation
+- NFR44: Cognitive data engine separable from UI rendering
+
+### Dashboard Data Accuracy & Reliability
+
+- NFR45: Cognitive metric calculations produce consistent results for identical gameplay sessions (deterministic formulas)
+- NFR46: Data collection captures 100% of relevant gameplay events (no missed inputs during normal operation)
+- NFR47: Metric values update within 500ms of session completion (data processing responsive)
+- NFR48: Rolling averages reflect recent 10 sessions accurately (weighted calculation correct)
+- NFR49: Brain map radar chart displays metrics within ±5% of calculated values (visualization accuracy)
+- NFR50: Streak tracking accurate across browser timezone changes and daylight saving time transitions
+
+### Dashboard Performance & Responsiveness
+
+- NFR51: Post-game highlights render within 300ms of death screen (no perceptible delay)
+- NFR52: Brain map dashboard loads within 500ms of menu selection (instant feel)
+- NFR53: Radar chart renders smoothly at 60 FPS during any animations (no jank)
+- NFR54: Dashboard UI does not cause frame drops in background game rendering (if game preview implemented)
+- NFR55: Metric recalculation completes within 200ms per session (background processing)
+
+### Dashboard Storage & Privacy
+
+- NFR56: localStorage/IndexedDB stores minimum 100 sessions of cognitive data per browser (adequate history)
+- NFR57: Total storage footprint < 5MB for 100 sessions (efficient data structure)
+- NFR58: Data persists across browser restarts and OS updates (durable storage)
+- NFR59: No cognitive data transmitted to external servers (privacy by default)
+- NFR60: No analytics tracking of dashboard usage (local-only operation)
+- NFR61: Data export/deletion functionality accessible if browser storage needs clearing (user control)
+
+### Dashboard Usability
+
+- NFR62: Brain map radar chart comprehensible within 10 seconds for new users (clear visual design)
+- NFR63: Dot-based ratings (5-dot scale) immediately understandable without explanation (intuitive mapping)
+- NFR64: Calibration progress counter sets clear expectation for unlock timing (reduces uncertainty)
+- NFR65: Post-game highlights feel celebratory not clinical (tone validates per user testing)
+- NFR66: Caller comedy quotes contextual to performance, not random (relevance matters)
+- NFR67: Streak break messaging feels gentle not guilt-inducing per qualitative feedback (ethical design validation)
+
+---
+
+## V3 Retro Visual Upgrade — Functional Requirements
+
+**Context:** V3 transforms CrazySnakeLite from functional gameplay to an immersive 80s arcade experience through 8 progressive visual enhancements. These requirements are derived from UX design specifications (`ux-design-retro-graphic-upgrade.md`) and Architecture V4 decisions, implementing authentic 80s graphic design principles while maintaining cognitive training effectiveness.
+
+**Scope:** Three epics (Visual Clarity Enhancement, Progressive Arcade Transformation, Immersive Arcade Polish) delivering Neon Noir aesthetic, dual-channel food recognition, CRT authenticity, and snake personality.
+
+### Progressive Visual Transformation
+
+- FR206: Playfield background progressively darkens through 6 score-based tiers (0-14: #E8E8E8 light grey → 100+: #2A2A2A near-black), with smooth 2-second CSS transitions between tiers
+- FR207: Grid opacity progressively decreases across tiers (0-14: 0.9 opacity → 100+: 0.3 opacity minimum) while maintaining WCAG visibility at all levels
+- FR208: CSS/Canvas hybrid rendering architecture: background-color controlled via CSS classes on canvas element (GPU-composited), canvas rendering handles only game objects (snake, food, grid lines, effects)
+- FR209: Tier changes are event-driven (triggered on score crossing threshold), not per-frame polling, with previous tier class removed before applying new tier class
+
+### Distinctive Food Recognition
+
+- FR210: Each of 6 food types renders with distinctive pixel-art shape within 14x14 canvas: Growing (filled square), Invincibility (4-point star), Wall-Phase (ring/hollow circle), Speed Boost (cross/plus), Speed Decrease (hollow square), Reverse Controls (X/diagonal cross)
+- FR211: All food shapes include 1px outline in darker variant of fill color for separation against any background tier
+- FR212: Food items display CRT phosphor glow effect with score-based intensity: 0-14 (0px blur), 15-49 (3px blur), 50-99 (5px blur), 100+ (8px blur), with glow color matching food base color
+- FR213: Glow rendering uses defensive rendering pattern (withShadow helper) that guarantees canvas state cleanup via try/finally, preventing shadow leaks between render calls
+
+### Score-Gated Progression System
+
+- FR214: Progression system extended from 3 fields (speed, phoneFrequency, effectChance) to 8 fields, adding: glowIntensity, gridOpacity, backgroundColor, borderColor, titleEffect
+- FR215: All visual progression parameters defined in config.js PROGRESSION tables with score thresholds, resolved via progression.js getProgressionValue() function following existing tier-based pattern
+
+### Snake Personality & Character
+
+- FR216: Snake head displays direction-tracking pupils (2px dark circles offset toward current movement direction) and subtle top-light reflection (1-2px lighter pixel highlight)
+- FR217: At score 50+, snake body segments display 1px outline in lighter shade of snake color for visibility on dark backgrounds (tiers 3-5)
+
+### Typography & Text Treatment
+
+- FR218: Game title uses chrome/neon text effect via CSS text-shadow (layered shadows: dark outline + bright inner glow)
+- FR219: "GAME OVER" text uses depth/shadow effect with dark offset shadow (4px 4px 0 rgba(0,0,0,0.8))
+- FR220: "NEW HIGH SCORE" text uses pulsing gold effect via CSS animation (scale 1.0 → 1.1 → 1.0, 1.5s loop), disabled if user has prefers-reduced-motion enabled
+
+### CRT Authenticity Effects
+
+- FR221: CRT scanline overlay applied via CSS pseudo-element (::after) with repeating-linear-gradient (2px transparent, 2px rgba(0,0,0,0.03)), 3% opacity, pointer-events: none
+- FR222: Grid intersection dots render at each grid intersection (1.5px radius circles, ~525 interior dots) using grid line color with progressive opacity matching grid lines
+
+### Reactive Border System
+
+- FR223: Arcade bezel border displays 7 reactive color states with priority cascade: death red flash (priority 7) > phone ring gold pulse (6) > phone answer green flash (5) > combo active (4) > effect RC orange (3) > effect other yellow (2) > default purple/cyan (1)
+- FR224: Border state updates are event-driven via centralized border state manager, triggered by game events (death, phone.ring, phone.answered, combo.start/end, effects.activate/expire), averaging ~5 updates per game (not 60 checks/sec)
+- FR225: Border colors and animations defined in CSS classes, applied via className updates on border element
+- FR226: Death state triggers red flash for 0.3s, phone ring state triggers gold pulse animation (2s loop), all states auto-clear on expiration with priority cascade re-resolution
+
+### Performance Optimization
+
+- FR227: Grid intersection dots use offscreen canvas caching pattern: dots pre-rendered once to offscreen canvas, copied to main canvas via single drawImage() operation per frame
+- FR228: Offscreen canvas cache invalidated and regenerated only when grid opacity tier changes (event-driven), reducing operations from 1,050 ops/frame to 1 op/frame
+
+---
+
+## V3 Retro Visual Upgrade — Non-Functional Requirements
+
+### Performance Budget
+
+- NFR68: 58+ FPS minimum maintained during all V3 visual enhancements active simultaneously (dark playfield, shaped food with glow, grid dots, reactive border, typography effects)
+- NFR69: Maximum frame time 17.24ms per frame (1000ms / 58fps budget)
+- NFR70: Food shape + glow rendering contributes < 2ms per frame for all 6 food types
+- NFR71: Offscreen canvas caching achieves ~1000x performance gain (1,050 ops → 1 op/frame) for grid dot rendering
+
+### Visual Accessibility
+
+- NFR72: Grid lines maintain minimum 0.3 opacity at tier-5 (darkest playfield) ensuring WCAG visibility compliance
+- NFR73: Food colors + 8px glow achieve WCAG AA contrast ratio (4.5:1 minimum) on darkest background (#2A2A2A at tier-5)
+- NFR74: Dual-channel food recognition (shape + color) aids color-blind players by providing redundant visual channel
+
+### Reduced Motion Support
+
+- NFR75: prefers-reduced-motion CSS media query disables pulsing animation on "NEW HIGH SCORE" text (static gold text instead)
+- NFR76: Background tier transitions and border animations continue under reduced motion (slow color shifts, not motion)
+
+### Visual Coherence & Design Authority
+
+- NFR77: All V3 enhancements pass Five-Question Filter validation from game-ux-principles.md (Working Memory cost, Competence feedback, Clarity, Flow preservation, Emotional impact)
+- NFR78: Visual enhancements maintain retro 8-bit pixel art aesthetic consistent with existing game design (Jersey20 font, pixel-art caller portraits, sharp corners on phone overlay)
+
+### Module Boundary Compliance
+
+- NFR79: config.js owns all tunable visual progression parameters (tier thresholds, colors, opacity values, glow intensities)
+- NFR80: progression.js resolves score → tier values for all 8 fields, no scoring logic in render.js
+- NFR81: render.js applies resolved visual values (colors, opacity, glow) via canvas operations, reads from gameState
+- NFR82: game.js orchestrates tier changes and border state updates, no visual rendering logic
+- NFR83: style.css defines tier classes, border colors, typography effects via declarative CSS
+
+### Zero Dependencies & GPU Optimization
+
+- NFR84: All V3 visual enhancements use browser-native APIs only (Canvas API, CSS, no external libraries)
+- NFR85: Background tier transitions use CSS background-color property (NOT canvas fillRect) to leverage GPU compositing
+- NFR86: Border state changes use CSS className updates (NOT inline styles) for GPU-optimized rendering
 
 ---
 
 *PRD prepared by Mary (Analyst) with Celia (Neuro-Game Design Expert)*
-*"A brain gym disguised as Snake. Difficulty is the product. Comedy makes it fun."*
+*Updated 2026-02-16 with V3 Retro Visual Upgrade (8 visual enhancements, Neon Noir aesthetic)*
+*"A brain gym disguised as Snake. See your cognitive growth in an 80s arcade. Come back tomorrow and do it again."*

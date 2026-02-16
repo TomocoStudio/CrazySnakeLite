@@ -1,11 +1,16 @@
 ---
 project_name: 'CrazySnakeLite'
 user_name: 'Tomoco'
-date: '2026-02-07'
+date: '2026-02-16'
 v1_date: '2026-01-23'
+v2_date: '2026-02-07'
+v3_date: '2026-02-15'
+v4_date: '2026-02-16'
 sections_completed: ['technology_stack', 'implementation_rules', 'anti_patterns', 'architecture_rules', 'file_responsibilities', 'testing']
 status: 'complete'
 v2_update: true
+v3_update: true
+v4_update: true
 optimized_for_llm: true
 ---
 
@@ -13,6 +18,8 @@ optimized_for_llm: true
 
 _Critical rules and patterns for implementing CrazySnakeLite. Read this before writing any code._
 _Updated for v2: Food v2 (Fibonacci scoring, blinking food, combo mode) + Phone Calls v2 (Pick Up vs End, caller portraits)._
+_Updated for v3: Cognitive Dashboard MVP (metrics engine, Skill Map dashboard, enhanced highlights, streak system, async storage layer)._
+_Updated for v4: Retro Graphic Upgrade (progressive dark playfield, food shapes + glow, defensive rendering patterns, CSS/Canvas hybrid, performance budgets)._
 
 ---
 
@@ -26,8 +33,72 @@ _Updated for v2: Food v2 (Fibonacci scoring, blinking food, combo mode) + Phone 
 | **Styling** | Plain CSS |
 | **Build** | None - direct file serving |
 | **Dependencies** | Zero external dependencies |
+| **Storage (V3)** | IndexedDB (session history) + localStorage (profile, streak, highlights) — all browser-native |
 
 **Local Development:** Requires local server for ES6 modules (use `python -m http.server 8000` or VS Code Live Server)
+
+---
+
+## UX Design Authority (MANDATORY FOR ALL FRONTEND WORK)
+
+**🚨 CRITICAL: Before ANY frontend, visual, or UI decision:**
+
+All agents (Dev, Architect, PM, etc.) working on visual systems, UI components, or user-facing features **MUST** read and follow Sally's UX design specifications:
+
+### Required UX Documents (Read BEFORE Implementation)
+
+1. **`game-ux-principles.md`** — Cognitive science foundation (Hodent, 2018)
+   - Five-Question Filter for all design decisions
+   - 7 non-negotiable design axioms
+   - Cognitive foundations (perception, memory, attention, motivation, emotion, learning)
+   - **READ THIS FIRST** before proposing any game mechanic or visual change
+
+2. **`dataviz-principles.md`** — Data visualization baseline (Tufte, Knaflic, McCandless, Rosling)
+   - **MANDATORY for Cognitive Dashboard work**
+   - 5 universal tenets, operational design rules
+   - Chart selection guide, color rules, 12-point design checklist
+
+3. **`ux-design-retro-graphic-upgrade.md`** — V4 visual enhancement specifications
+   - 8 enhancements with pixel-perfect specs
+   - 80s arcade design principles
+   - Validated against Five-Question Filter
+
+4. **`ux-design-retro-graphic-upgrade-technical-addendum.md`** — V4 implementation patterns
+   - Code-level specifications for all 8 enhancements
+   - Performance validation procedures
+   - Integration checklists
+
+5. **`ux-design-cognitive-dashboard.md`** — V3 Skill Map & dashboard UX
+   - Pixel block bar specifications
+   - Calibration experience design
+   - Comedy integration patterns
+
+### UX Design Compliance Rules
+
+**NEVER:**
+- Implement visual features without checking Sally's specs first
+- Deviate from established design patterns (retro pixel aesthetic, score-based progression, comedy integration)
+- Add UI elements that contradict the Five-Question Filter
+- Use clinical language in dashboard UI (violates Axiom: "Comedy is a system")
+- Implement time-based visual progression (violates Axiom 1: "Score-based, never time-based")
+
+**ALWAYS:**
+- Reference Sally's specifications for colors, sizes, layouts, animations
+- Validate new visual ideas against game-ux-principles.md before proposing
+- Maintain visual coherence across all screens (menu → playing → game-over → skill map)
+- Use the retro pixel aesthetic consistently (Jersey20 font, 64x64 portraits, neon colors, CRT effects)
+
+### Visual Coherence Checklist
+
+Before shipping any visual change:
+- [ ] Aligns with 80s retro aesthetic (neon colors, pixel art, CRT simulation)
+- [ ] Passes Five-Question Filter (working memory, competence feedback, clarity, flow, emotional impact)
+- [ ] Maintains score-based progression (never time-based)
+- [ ] Preserves comedy integration (tech puns, retro humor, celebratory tone)
+- [ ] Matches existing visual vocabulary (colors, fonts, shapes, spacing)
+- [ ] Documented in Sally's UX specs OR approved by UX Designer agent
+
+**Bottom line:** Sally's UX work is the **visual design bible** for CrazySnake. Treat it with the same authority as project-context.md and architecture.md.
 
 ---
 
@@ -151,6 +222,192 @@ function onDeath(gameState) { /* all death logic here */ }        // CORRECT
 // Inline if-else chains in the game loop body                    // WRONG
 ```
 
+### V3 Async Storage Patterns (MUST follow exactly)
+
+```javascript
+// ALWAYS await storage calls — even localStorage wrappers return Promises
+const sessions = await storage.getSessions(10);  // CORRECT
+const sessions = storage.getSessions(10);         // WRONG — returns Promise, not data
+
+// ONLY 3 files call storage.js directly:
+//   game.js (orchestrator), dashboard.js (reads for rendering), streak.js (reads/writes)
+// Pure modules (metrics.js, highlights.js) NEVER import storage.js
+import { getSessions } from './storage.js';       // WRONG in metrics.js or highlights.js
+// Instead: pass data as function arguments
+const scores = calculateDomainScores(sessions);   // CORRECT — data received as arg
+```
+
+### V3 Null Metric Propagation (MUST follow exactly)
+
+```javascript
+// null means "not applicable" — NEVER coerce to 0
+// metrics.js skips null sessions in weighted average
+if (val !== null && val !== undefined) {           // CORRECT — explicit null check
+  valueSum += val * weights[i];
+}
+const avg = sessions.reduce((sum, s) =>
+  sum + (s.metrics[key] || 0), 0) / sessions.length; // WRONG — inflates denominators
+```
+
+### V3 Date Comparison (MUST follow exactly)
+
+```javascript
+// Streaks: ALWAYS use local timezone 'YYYY-MM-DD' strings
+function getTodayDateString() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+}
+// Compare date strings directly — NEVER use Date objects or UTC
+dateA === dateB                                    // CORRECT
+new Date(dateA) < new Date(dateB)                  // WRONG — timezone issues
+```
+
+### V3 DOM Rendering Patterns (MUST follow exactly)
+
+```javascript
+// Dashboard/Skill Map: static containers in index.html, dynamic content via JS
+barsContainer.innerHTML = '';                       // Clear previous render
+const row = document.createElement('div');          // CORRECT — createElement
+barsContainer.appendChild(row);                     // CORRECT — appendChild
+
+// Screen visibility: ALWAYS use .hidden class
+screen.classList.remove('hidden');                   // CORRECT
+screen.style.display = 'block';                     // WRONG
+
+// Block bars: ALWAYS 5 blocks per row, filled/empty CSS classes
+block.className = i < score ? 'block filled' : 'block empty'; // CORRECT
+block.style.backgroundColor = '#9DB2DD';            // WRONG — use CSS classes
+```
+
+### V3 Highlight Output Contract (MUST follow exactly)
+
+```javascript
+// selectHighlights() returns array of 2-3 objects, ALWAYS this shape:
+const highlight = {
+  type: 'personal_best',    // 'personal_best' | 'improvement' | 'notable_event' | 'growth_opportunity'
+  stat: 'rcSurvived',       // Which stat
+  value: 5,                 // Numeric value
+  text: 'New record!',      // Pre-formatted display text
+  icon: '★',                // Display icon
+  isPersonalBest: true       // Boolean
+};
+// ALL 6 fields required. type from the 4-value enum only.
+```
+
+### V3 Calibration State (MUST follow exactly)
+
+```javascript
+// calibrationComplete is a boolean in stored profile — set once during onDeath
+// ALL UI reads the stored boolean, NEVER recalculates from session count
+if (profile?.calibrationComplete) { /* full bars */ }     // CORRECT
+if (profile?.totalSessions >= 5) { /* full bars */ }      // WRONG — recalculating
+
+// calibrationComplete lives in storage, NOT in gameState (persistent, not per-game)
+```
+
+### V4 Defensive Rendering Patterns (MUST follow exactly)
+
+```javascript
+// Canvas shadow state: ALWAYS use withShadow() helper to prevent state leak
+function withShadow(ctx, shadowConfig, drawFn) {
+  const { color, blur } = shadowConfig;
+  ctx.shadowColor = color;
+  ctx.shadowBlur = blur;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+  drawFn(ctx);
+  // GUARANTEED cleanup
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+}
+
+// Usage — CORRECT
+withShadow(ctx, { color: foodColor, blur: glowIntensity }, (ctx) => {
+  renderFoodShape(ctx, x, y, type, color, outlineColor);
+});
+
+// WRONG — manual shadow cleanup (easy to forget)
+ctx.shadowBlur = 8;
+renderFoodShape(...);
+ctx.shadowBlur = 0;  // If forgotten, glow bleeds onto other renders!
+```
+
+### V4 Progression State Pattern (MUST follow exactly)
+
+```javascript
+// progression.getState() returns 8 fields — call ONCE per frame, destructure all
+const progressionState = progression.getState(gameState.score);
+const { background, gridLine, glowIntensity, lineOpacity, dotOpacity } = progressionState;
+
+// WRONG — multiple calls per frame
+const bg = progression.getState(score).background;           // Redundant call
+const glow = progression.getState(score).glowIntensity;     // Redundant call
+```
+
+### V4 CSS/Canvas Hybrid Pattern (MUST follow exactly)
+
+```javascript
+// Canvas background: use CSS background-color, NOT canvas fillRect
+const canvas = document.getElementById('game-canvas');
+canvas.style.backgroundColor = background;  // CORRECT — GPU-composited transition
+
+// CSS transition handles the 2s fade automatically
+// #game-canvas { transition: background-color 2000ms ease-in-out; }
+
+// WRONG — canvas fillRect for background
+ctx.fillStyle = background;
+ctx.fillRect(0, 0, canvas.width, canvas.height);  // WRONG — no transition support
+```
+
+### V4 Border State Pattern (MUST follow exactly)
+
+```javascript
+// Border updates: event-driven ONLY, NEVER poll in game loop
+function updateBorderState(gameState) {
+  // Priority cascade: death > phone > combo > effects > default
+  if (gameState.justDied) { /* ... */ return; }
+  if (gameState.phoneCall.active) { /* ... */ return; }
+  // ... etc
+}
+
+// Call ONLY when state changes
+function onPhoneShow(gameState) {
+  updateBorderState(gameState);  // CORRECT — state changed
+}
+
+// WRONG — polling in game loop
+function update(gameState) {
+  updateBorderState(gameState);  // WRONG — called 60x/sec!
+}
+```
+
+### V4 Performance Pattern (MUST follow exactly)
+
+```javascript
+// Offscreen canvas caching for > 100 canvas ops per frame
+let gridDotsCache = null;
+
+function renderGridDots(ctx, gameState) {
+  const { gridLine, dotOpacity } = progression.getState(gameState.score);
+
+  // Invalidate cache only when tier changes
+  if (!gridDotsCache || gridDotsCache.opacity !== dotOpacity) {
+    const offscreen = document.createElement('canvas');
+    offscreen.width = canvas.width;
+    offscreen.height = canvas.height;
+    const offCtx = offscreen.getContext('2d');
+
+    // Render all 525 dots ONCE to offscreen
+    // ... render dots ...
+
+    gridDotsCache = { canvas: offscreen, opacity: dotOpacity };
+  }
+
+  // Stamp cached result (1 op instead of 1,050)
+  ctx.drawImage(gridDotsCache.canvas, 0, 0);
+}
+```
+
 ### Configuration Rules
 
 **ALL tunable values MUST be in config.js:**
@@ -161,6 +418,8 @@ function onDeath(gameState) { /* all death logic here */ }        // CORRECT
 - Phone call timing
 - All colors
 - V2: Fibonacci score values, blink/combo/phone threshold tables, combo canvas colors, popup tier specs, phone pickup Fibonacci sequence, phone grace score (3), cognitive stats tracking
+- V3: DASHBOARD section (calibration threshold, rolling window size, recency weights, metric normalization ranges, block scale mapping, domain labels, comedy quote pools)
+- V4: BACKGROUND_PROGRESSION (6 score tiers), FOOD_GLOW (3 blur tiers), GRID_OPACITY_PROGRESSION (6 opacity tiers), BORDER_COLORS (7 border states), food outline colors (6 types), snake dark outline threshold (score 50), CRT scanline toggle/opacity, grid dot radius
 
 **NEVER hardcode magic numbers in other files.**
 
@@ -202,15 +461,25 @@ All paths relative to project root. All filenames kebab-case.
 | Module | Allowed Access |
 |--------|---------------|
 | **State** | Only through passed `gameState` parameter |
-| **DOM** | Only in `main.js` (setup), `phone.js` (overlay), `score-popup.js` (popups) |
+| **DOM** | Only in `main.js` (setup), `phone.js` (overlay), `score-popup.js` (popups), `cognitive-feedback.js` (post-game), **V3: +`dashboard.js`** (Skill Map) |
 | **Canvas** | Only in `render.js` |
 | **Scoring Logic** | Only in `scoring.js` — pure calculation, no side effects |
 | **Threshold Data** | Only in `config.js` — `progression.js` reads, never owns |
 | **Tier Resolution** | Only in `progression.js` — consumers call `getState()` once, destructure |
 | **Combo Logic** | Only in `combo.js` — `game.js` delegates, never manipulates combo fields directly |
-| **localStorage** | Only in `storage.js` |
+| **Storage (all)** | Only in `storage.js` — wraps IndexedDB + localStorage |
+| **Storage callers** | V3: Only `game.js`, `dashboard.js`, `streak.js` call storage.js. **Pure modules (`metrics.js`, `highlights.js`) NEVER call storage.** |
+| **Metric Calculation** | V3: Only in `metrics.js` — pure functions, no DOM, no storage |
+| **Highlight Selection** | V3: Only in `highlights.js` — pure functions, no DOM, no storage |
+| **Streak Logic** | V3: Only in `streak.js` — date comparison + storage read/write |
+| **Quote Data** | V3: Only in `config.js` (DASHBOARD.QUOTES) — never embed quote text in rendering code |
 | **Audio** | Only in `audio.js` (v2: includes priority system) |
 | **Config** | Import `CONFIG` from `config.js` everywhere |
+| **Visual Progression** | V4: Only in `progression.js` — extends `getState()` to return 8 fields (3 existing + 5 new visual) |
+| **Defensive Rendering** | V4: Only in `render.js` — `withShadow()`, `withOpacity()` helpers prevent canvas state leak |
+| **Canvas Background** | V4: Only in `game.js` — `updateCanvasBackground()` uses CSS `background-color`, NOT canvas fillRect |
+| **Border Orchestration** | V4: Only in `game.js` — `updateBorderState()` priority cascade, event-driven calls in handlers |
+| **Offscreen Caching** | V4: Only in `render.js` — grid dots cached to offscreen canvas, invalidated on tier change |
 
 ---
 
@@ -231,6 +500,19 @@ All paths relative to project root. All filenames kebab-case.
 | `progression.getState(score)` called multiple times in one function | Call once, destructure: `const { a, b } = getState(score)` |
 | `window.matchMedia(...)` in individual modules | Read `CONFIG.REDUCED_MOTION` (detected once in main.js) |
 | Scoring math in game.js or combo.js | All scoring calculations in `scoring.js` only |
+| V3: `storage.getSessions(10)` without `await` | `const sessions = await storage.getSessions(10)` |
+| V3: `import { getSessions } from './storage.js'` in metrics.js | Pass sessions array as function argument |
+| V3: `session.metrics.rcSurvivalRate \|\| 0` | Check for `null` explicitly, skip in weighted average |
+| V3: `element.style.display = 'none'` for screens | `element.classList.add('hidden')` |
+| V3: `new Date('2026-02-15')` for streak comparison | `getTodayDateString()` local timezone string comparison |
+| V3: Hard-coded quote text in dashboard.js | `CONFIG.DASHBOARD.QUOTES.celebration[i]` |
+| V3: `if (totalSessions >= 5)` in UI code | `if (profile.calibrationComplete)` — read the stored boolean |
+| V4: `ctx.shadowBlur = 8; renderFood(); ctx.shadowBlur = 0;` | `withShadow(ctx, {color, blur}, (ctx) => renderFood())` |
+| V4: `progression.getState(score).background` called 3+ times/frame | Call once: `const {background, gridLine, glowIntensity} = getState(score)` |
+| V4: `canvas.style.backgroundColor = bg` every frame | Cache tier: `if (bg !== lastBg) { canvas.style.backgroundColor = bg; }` |
+| V4: `updateBorderState(gameState)` in game loop | Event-driven only: call in `onPhoneShow()`, `onDeath()`, etc. |
+| V4: Canvas `fillRect()` for background color | CSS `canvas.style.backgroundColor` with transition |
+| V4: 525 grid dots rendered every frame without cache | Offscreen canvas: render once to cache, `drawImage()` per frame |
 
 ---
 
@@ -262,7 +544,7 @@ function gameLoop(currentTime) {
 
 ```javascript
 const gameState = {
-  phase: 'menu',  // 'menu' | 'playing' | 'gameover'
+  phase: 'menu',  // 'menu' | 'playing' | 'gameover' | 'skillmap' (V3)
   isPaused: false,
 
   snake: {
@@ -323,11 +605,20 @@ const gameState = {
     comboMultipliers: 0,     // Combo food B eaten (multiplier triggered)
     pickUpStreak: 0,         // Consecutive Pick Ups this game (mirrors pickUpCount)
     peakComboScore: 0        // Highest single combo score this game
+  },
+
+  // V3: Session tracking (for building session record at death)
+  session: {
+    startTime: 0,              // Date.now() at game start
+    inputTimestamps: [],       // For reaction time proxy
+    rcPeriods: [],             // [{startTick, endTick, survived}]
+    comboPeriods: [],          // [{startTick, endTick, score}]
+    phonePeriods: []           // [{showTime, dismissTime, action}]
   }
 };
 ```
 
-**Reset Rules:** On new game / Play Again: ALL fields reset. `phoneCall.pickUpCount` → 0. `combo` → inactive. `ui.mysteryFoodTooltipShown` → false. `cognitiveStats` → all 0.
+**Reset Rules:** On new game / Play Again: ALL fields reset. `phoneCall.pickUpCount` → 0. `combo` → inactive. `ui.mysteryFoodTooltipShown` → false. `cognitiveStats` → all 0. V3: `session` → all reset. **Dashboard persistent data (profile, streak, calibration) lives in storage, NOT in gameState — survives game resets.**
 
 ### Effect Duration Rule
 
@@ -403,6 +694,56 @@ All systems query `progression.getState(score)` for score-based thresholds:
 
 Threshold tables live in `config.js`. Resolution logic in `progression.js`.
 
+### V3 Session Lifecycle (onDeath flow)
+
+```
+game.js onDeath() — V3 enhanced:
+1. Existing: Award death bonuses (combo + phone consolation)
+2. Existing: Update high score
+3. NEW: buildSessionRecord(gameState) → session record
+4. NEW: await storage.saveSession(record)
+5. NEW: sessions = await storage.getSessions(10)
+6. NEW: domainScores = metrics.calculateDomainScores(sessions)
+7. NEW: await storage.updateProfile({ domainScores, totalSessions, calibrationComplete })
+8. NEW: streakResult = await streak.checkAndUpdateStreak()
+9. NEW: highlights = highlights.selectHighlights(record, sessions, lastPattern)
+10. NEW: await cognitiveFeedback.showPostGameScreen(highlights, streakResult, profile)
+11. gameState.phase = 'gameover'
+```
+
+**Session records built ONCE, in ONE place (game.js), before any storage writes.**
+
+### V3 Phase Navigation
+
+```
+menu → playing (New Game)
+menu → skillmap (Skill Map button)
+playing → gameover (death)
+gameover → playing (Play Again)
+gameover → skillmap (Skill Map button)
+skillmap → playing (Play Now)
+skillmap → menu (Back to Menu / ESC)
+gameover → menu (ESC)
+```
+
+**ESC from skillmap → menu (consistent with ESC from gameover → menu).**
+
+### V3 Skill Map Dashboard
+
+- DOM overlay at z-index 350 (between tooltips 300 and phone 400)
+- Pixel block bars: 5 blocks per row, 16×16px, 2px gap
+- Filled: `#9DB2DD`, Empty: `#3A3A3A` with 1px border `#555555`
+- Growth indicators: ▲ green `#81C784` (improved), ▽ amber `#FFB74D` (declined)
+- Two render paths: calibrating (empty bars + "Warming up...") vs unlocked (full bars + callouts)
+- Reads storage, never calculates — dashboard.js is a display module only
+
+### V3 Streak System
+
+- Calendar-day tracking, local timezone `'YYYY-MM-DD'` strings
+- Ethical guardrails: no red on break, no guilt language, no push notifications
+- Break message: "Rest day logged. Ready for another round?"
+- Milestones at 7, 14, 30, 60 days
+
 ### Visual Specifications
 
 **Grid Styling:**
@@ -438,11 +779,15 @@ Threshold tables live in `config.js`. Resolution logic in `progression.js`.
 | `input.js` | Emit actions (v2: +Enter key for Pick Up) | Process game logic |
 | `phone.js` | Control overlay DOM, phone state machine (v2: two-button UI, Pick Up timer, portraits, one-liners, scheduling) | Modify snake/food/score state, calculate bonuses |
 | `audio.js` | Play sounds (v2: +score sounds, +combo sounds, +phone sounds, +priority system) | Access game logic |
-| `storage.js` | localStorage access | Contain game logic |
+| `storage.js` | V3: Async storage abstraction — IndexedDB (sessions) + localStorage (profile, streak, highlights, high score). initStorage(), saveSession(), getSessions(), getProfile(), updateProfile(), getStreak(), updateStreak() | Contain game logic. Existing loadHighScore/saveHighScore remain sync. |
 | `scoring.js` | Calculate food/combo/phone score values (pure functions) | Trigger popups, modify state, access DOM |
 | `progression.js` | Resolve score → tier (blink, combo, phone probabilities/tiers) | Own threshold data (that's config.js), hold state |
 | `combo.js` | Manage combo state machine (activate, lifecycle, pause/resume) | Calculate scores (delegates to scoring.js), render |
 | `score-popup.js` | Spawn/animate/cleanup DOM popups, particles, screen shake | Contain game logic, calculate scores |
+| `metrics.js` | V3: Pure domain score calculation — sessions → normalized 0-1 → 5-block scale. calculateDomainScores(), toBlockScale(), calculateGrowthIndicators() | Import storage.js, access DOM, hold state. Only imports config.js. |
+| `highlights.js` | V3: Pure highlight selection — priority algorithm, variety enforcement, comedy quote context. selectHighlights(), selectPerformanceQuote() | Import storage.js, access DOM, hold state. Only imports config.js. |
+| `dashboard.js` | V3: Skill Map DOM rendering — block bars, callouts, calibration placeholder, navigation. renderSkillMap(), hideSkillMap() | Calculate metrics (reads stored profile only), hold game state |
+| `streak.js` | V3: Calendar-day streak logic — date comparison, streak state, ethical messaging. checkAndUpdateStreak(), getStreakMessage() | Access DOM, hold game state, use UTC dates |
 
 ---
 
@@ -457,7 +802,7 @@ Threshold tables live in `config.js`. Resolution logic in `progression.js`.
 - Test framework: None (vanilla JS, manual test functions in `/test` folder)
 - Test files: Mirror structure (`test/snake.test.js` for `js/snake.js`)
 - Run tests: Open `test/index.html` in browser, verify console output
-- Coverage target: Core game logic modules (state, snake, food, collision, effects)
+- Coverage target: Core game logic modules (state, snake, food, collision, effects), V3: +metrics.js, +highlights.js, +streak.js (all pure, highly testable)
 
 **Manual Testing Checklist:**
 - Cross-browser: Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
@@ -475,6 +820,13 @@ Threshold tables live in `config.js`. Resolution logic in `progression.js`.
 - V2: Death during combo + phone awards both bonuses
 - V2: Caller portraits display (fallback icon if missing)
 - V2: Reduced motion mode respects `prefers-reduced-motion`
+- V3: Skill Map renders block bars correctly (5 blocks, filled/empty, growth indicators)
+- V3: Calibration placeholder shows during sessions 1-5, full Skill Map after session 5
+- V3: Streak increments on first game per calendar day, resets on 2+ day gap
+- V3: Post-game "RECAP" shows highlights, comedy quote, streak counter
+- V3: Navigation: Skill Map button on menu + game-over, ESC from Skill Map → menu
+- V3: Storage: IndexedDB persists sessions across browser restarts
+- V3: Null metrics handled gracefully (0 filled blocks, no growth indicator)
 
 **Performance Validation:**
 - Load time: Use DevTools Network tab → verify DOMContentLoaded < 3 seconds
@@ -482,6 +834,8 @@ Threshold tables live in `config.js`. Resolution logic in `progression.js`.
 - Phone overlay FPS: Record during active phone call, verify no frame drops
 - V2: Verify DOM popup cleanup (no orphaned elements after popups animate out)
 - V2: Audio priority system — no sound mud during combo + phone + score overlap
+- V3: Async storage operations complete without errors (IndexedDB write + read cycle)
+- V3: Graceful degradation if IndexedDB unavailable (game still playable, dashboard shows calibration indefinitely)
 
 ---
 
@@ -490,7 +844,7 @@ Threshold tables live in `config.js`. Resolution logic in `progression.js`.
 **For AI Agents:**
 - Read this file before implementing any code
 - **MANDATORY: Read `_bmad-output/planning-artifacts/game-ux-principles.md` before any game design decision.** This is the cognitive science and UX baseline for the project. All new mechanics, system changes, and feature proposals must pass the Five-Question Filter and comply with the 7 Design Axioms defined there.
-- Follow ALL rules exactly as documented — both v1 and v2 sections
+- Follow ALL rules exactly as documented — v1, v2, and v3 sections
 - When in doubt, prefer the more restrictive option
 - Architecture reference for full details: `_bmad-output/planning-artifacts/architecture.md`
 
@@ -499,4 +853,4 @@ Threshold tables live in `config.js`. Resolution logic in `progression.js`.
 - Update when technology stack or patterns change
 - Remove rules that become obvious over time
 
-Last Updated: 2026-02-07
+Last Updated: 2026-02-15

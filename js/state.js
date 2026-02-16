@@ -46,7 +46,8 @@ export function createInitialState() {
       position: null,
       type: 'growing',
       isBlinking: false,      // Story 8.1: Is this food blinking (mystery food)?
-      hiddenType: null        // Story 8.1: Locked effect type (for blinking food)
+      hiddenType: null,       // Story 8.1: Locked effect type (for blinking food)
+      spawnedAt: null         // Story 13.2: Timestamp when food spawned (for reaction time)
     },
 
     activeEffect: null,
@@ -98,6 +99,12 @@ export function createInitialState() {
       pickUpStreak: 0,               // Story 9.7: Consecutive Pick Ups (reset on End)
       comboMultipliers: 0,           // Story 10.4: Total combo multipliers triggered
       peakComboScore: 0              // Story 10.4: Highest single combo score this game
+    },
+
+    // Metrics Tracking (Story 13.1+ - Cognitive Dashboard)
+    metricsTracking: {
+      rawEvents: [],                 // Array of gameplay events for metric calculations
+      lastInputTime: null            // Timestamp of last directional input (for reaction time)
     },
 
     // Combo Mode (Epic 10, Story 10.1 - v2)

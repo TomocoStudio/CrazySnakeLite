@@ -379,3 +379,41 @@ export function stopMenuMusic() {
     }
   }
 }
+
+/**
+ * Play jackpot fanfare for high-value combos (15-29 points)
+ * Story 10.4: 600ms triumphant ascending chord
+ * TODO: Implement audio synthesis or load sound file
+ */
+export function playJackpot() {
+  console.log('🎉 [Audio] JACKPOT! 600ms fanfare (15-29 points)');
+  // TODO: AudioContext synthesis or HTMLAudioElement playback
+  // Could use Web Audio API oscillators to create ascending chord:
+  // - 440 Hz (A4) → 523 Hz (C5) → 659 Hz (E5) over 600ms
+}
+
+/**
+ * Play legendary fanfare for massive combos (30+ points)
+ * Story 10.4: 800ms extended triumphant chord with harmonic richness
+ * TODO: Implement audio synthesis or load sound file
+ */
+export function playLegendary() {
+  console.log('🏆 [Audio] LEGENDARY! 800ms extended fanfare (30+ points)');
+  // TODO: AudioContext synthesis or HTMLAudioElement playback
+  // Could use Web Audio API oscillators to create rich harmonic chord:
+  // - Multiple frequencies for harmonic richness
+  // - Extended duration (800ms) for more dramatic effect
+}
+
+/**
+ * Play combo exit deflation audio (300ms descending tone)
+ * Story 10.5: Signals return to normal mode
+ * TODO: Implement audio synthesis or load sound file
+ */
+export function playComboExit() {
+  console.log('📉 [Audio] COMBO EXIT: 300ms deflation (descending tone)');
+  // TODO: AudioContext synthesis — descending tone from high to low frequency
+  // Could use Web Audio API oscillator:
+  // - Start at 800Hz, exponentially decay to 200Hz over 300ms
+  // - Fade out volume for "deflation" feel
+}

@@ -53,6 +53,12 @@ export function applyEffect(gameState, effectType) {
   if (effectType === EFFECT_TYPES.REVERSE_CONTROLS) {
     gameState.effects.reverseControlsActive = true;
     console.log('[Effects] reverseControlsActive = TRUE (RC activated)');
+
+    // Story 13.4: Track RC start event for cognitive flexibility metric
+    gameState.metricsTracking.rawEvents.push({
+      type: 'rc_start',
+      timestamp: Date.now()
+    });
   }
 
   // Update snake color based on effect
@@ -73,6 +79,12 @@ export function clearEffect(gameState) {
   // Story 11.1: Clear reverseControlsActive flag when effect ends
   if (gameState.effects.reverseControlsActive) {
     console.log('[Effects] reverseControlsActive = FALSE (effect cleared)');
+
+    // Story 13.4: Track RC end event for cognitive flexibility metric
+    gameState.metricsTracking.rawEvents.push({
+      type: 'rc_end',
+      timestamp: Date.now()
+    });
   }
   gameState.effects.reverseControlsActive = false;
 

@@ -1,4 +1,4 @@
-# generated: 2026-02-13
+# generated: 2026-02-15
 # project: CrazySnakeLite
 # project_key: crazy-snake-lite
 # tracking_system: file-system
@@ -33,7 +33,7 @@
 # - SM typically creates next story after previous one is 'done' to incorporate learnings
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
-generated: 2026-02-13
+generated: 2026-02-15
 project: CrazySnakeLite
 project_key: crazy-snake-lite
 tracking_system: file-system
@@ -74,7 +74,7 @@ development_status:
   4-3-game-over-screen-enhancement: done
   4-4-menu-navigation-and-pause: done
   4-5-state-based-movement-sounds: done
-  4-6-game-over-melody: backlog  # Deferred - waiting for melody composition
+  4-6-game-over-melody: backlog
   epic-4-retrospective: done
 
   # Epic 5: Visual & Audio Polish v2.0
@@ -103,7 +103,7 @@ development_status:
   7-1-update-food-scoring-fibonacci: review
   7-2-score-popup-system-basic: review
   7-3-high-value-score-popups: done
-  7-4-fibonacci-musical-progression: blocked  # Waiting for MP3 sound files
+  7-4-fibonacci-musical-progression: blocked
   7-5-popup-queue-system: done
   7-6-reduced-motion-mode-popups: done
   epic-7-retrospective: optional
@@ -112,8 +112,8 @@ development_status:
   epic-8: in-progress
   8-1-color-cycling-animation: review
   8-2-score-based-blinking-percentage: review
-  8-3-drop-shadow-spatial-anchoring: backlog  # User rejected - aesthetic preference (reverted)
-  8-4-first-time-mystery-food-tooltip: backlog  # User rejected - no need for tooltip (reverted)
+  8-3-drop-shadow-spatial-anchoring: backlog
+  8-4-first-time-mystery-food-tooltip: backlog
   8-5-reduced-motion-mode-blinking: review
   8-6-track-blinking-food-stats: review
   epic-8-retrospective: optional
@@ -131,13 +131,13 @@ development_status:
 
   # Epic 10: Combo Mode System
   epic-10: done
-  10-1-combo-probability-activation: done  # Reviewed 2026-02-14, all issues fixed
-  10-2-canvas-color-transition: done  # Reviewed 2026-02-14, CSS duplication fixed
-  10-3-striped-snake-rendering: done  # Reviewed 2026-02-14, rendering logic verified
-  10-4-multiplicative-scoring: done  # Reviewed 2026-02-14, multiplier calculation correct
-  10-5-third-food-exits-combo: done  # Reviewed 2026-02-14, exitCombo integration verified
-  10-6-combo-pause-phone-calls: done  # Reviewed 2026-02-14, pause logic implemented
-  10-7-combo-stats-analytics: done  # Reviewed 2026-02-14, analytics tracking complete
+  10-1-combo-probability-activation: done
+  10-2-canvas-color-transition: done
+  10-3-striped-snake-rendering: done
+  10-4-multiplicative-scoring: done
+  10-5-third-food-exits-combo: done
+  10-6-combo-pause-phone-calls: done
+  10-7-combo-stats-analytics: done
   epic-10-retrospective: optional
 
   # Epic 11: Cognitive Feedback & RC Recognition
@@ -163,3 +163,78 @@ development_status:
   12-9-session-id-generation: ready-for-dev
   12-10-graceful-degradation-test: ready-for-dev
   epic-12-retrospective: optional
+
+  # Epic 13: Cognitive Metrics Data Engine
+  epic-13: in-progress
+  13-1-define-metrics-data-model-storage-schema: ready-for-dev
+  13-2-implement-reaction-time-metric-calculation: ready-for-dev
+  13-3-implement-spatial-awareness-metric-calculation: ready-for-dev
+  13-4-implement-cognitive-flexibility-metric-calculation: ready-for-dev
+  13-5-implement-divided-attention-metric-calculation: ready-for-dev
+  13-6-implement-impulse-control-metric-calculation: ready-for-dev
+  13-7-implement-working-memory-metric-calculation: ready-for-dev
+  13-8-implement-rolling-10-session-weighted-averages: ready-for-dev
+  13-9-implement-storage-persistence-retrieval: ready-for-dev
+  13-10-create-metrics-module-event-capture: ready-for-dev
+  13-11-test-metrics-accuracy-edge-cases: ready-for-dev
+  epic-13-retrospective: optional
+
+  # Epic 14: Enhanced Post-Game Summary
+  epic-14: in-progress
+  14-1-implement-highlight-selection-algorithm: ready-for-dev
+  14-2-create-post-game-highlights-ui: ready-for-dev
+  14-3-integrate-caller-quotes-performance-context: ready-for-dev
+  14-4-add-variety-enforcement-prevent-repetition: ready-for-dev
+  14-5-display-calibration-state-counter: ready-for-dev
+  14-6-add-streak-counter-post-game-screen: ready-for-dev
+  14-7-implement-play-again-skill-map-buttons: ready-for-dev
+  14-8-test-highlight-selection-edge-cases: ready-for-dev
+  epic-14-retrospective: optional
+
+  # Epic 15: Calibration Period System
+  epic-15: in-progress
+  15-1-implement-calibration-state-management: ready-for-dev
+  15-2-add-session-counter-progress-tracking: ready-for-dev
+  15-3-create-brain-map-unlock-logic: ready-for-dev
+  15-4-implement-calibration-complete-celebration: ready-for-dev
+  15-5-gate-skill-map-access-during-calibration: ready-for-dev
+  15-6-implement-baseline-data-collection: ready-for-dev
+  15-7-test-calibration-state-persistence: ready-for-dev
+  epic-15-retrospective: optional
+
+  # Epic 16: Skill Map Dashboard
+  epic-16: in-progress
+  16-1-create-skill-map-screen-navigation: ready-for-dev
+  16-2-implement-pixel-block-bar-visualization: ready-for-dev
+  16-3-add-strongest-domain-growth-area-callouts: ready-for-dev
+  16-4-display-session-count-streak: ready-for-dev
+  16-5-add-rotating-caller-quotes: ready-for-dev
+  16-6-implement-play-now-button: ready-for-dev
+  16-7-add-back-to-menu-navigation: ready-for-dev
+  16-8-apply-consistent-dashboard-styling: ready-for-dev
+  16-9-test-skill-map-performance-responsiveness: ready-for-dev
+  epic-16-retrospective: optional
+
+  # Epic 17: Streak System
+  epic-17: in-progress
+  17-1-implement-daily-streak-tracking-logic: ready-for-dev
+  17-2-add-calendar-day-detection-local-timezone: ready-for-dev
+  17-3-create-streak-persistence-storage: ready-for-dev
+  17-4-implement-gentle-break-messaging: ready-for-dev
+  17-5-display-streak-post-game-skill-map: ready-for-dev
+  17-6-implement-streak-reset-new-streak-start: ready-for-dev
+  17-7-test-streak-edge-cases-timezone-handling: ready-for-dev
+  epic-17-retrospective: optional
+
+  # Epic 18: Dashboard Comedy Integration
+  epic-18: in-progress
+  18-1-create-caller-quote-database-performance-context: ready-for-dev
+  18-2-implement-contextual-quote-selection-algorithm: ready-for-dev
+  18-3-integrate-quotes-post-game-highlights: ready-for-dev
+  18-4-integrate-quotes-skill-map-dashboard: ready-for-dev
+  18-5-add-celebration-quote-calibration-complete: ready-for-dev
+  18-6-verify-no-clinical-language-dashboard-ui: ready-for-dev
+  18-7-maintain-retro-aesthetic-consistency: ready-for-dev
+  18-8-test-quote-contextual-relevance: ready-for-dev
+  18-9-create-comedy-quote-content-guidelines: ready-for-dev
+  epic-18-retrospective: optional

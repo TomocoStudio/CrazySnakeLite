@@ -35,6 +35,7 @@ export function spawnFood(gameState) {
   gameState.food.type = foodType;  // Always set type (used by render.js for non-blinking)
   gameState.food.isBlinking = shouldBlink;
   gameState.food.hiddenType = shouldBlink ? foodType : null;  // Lock effect type if blinking
+  gameState.food.spawnedAt = Date.now();  // Story 13.2: Track spawn time for reaction time metric
 
   // Story 8.6: Track blinking food spawn in analytics (opportunity metric)
   if (shouldBlink) {

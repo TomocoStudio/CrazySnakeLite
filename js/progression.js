@@ -33,3 +33,20 @@ export function getDifficultyTier(score) {
   if (score < 80) return 'advanced';      // 50% blinking
   return 'expert';                        // 60% blinking (capped)
 }
+
+/**
+ * Calculate combo activation probability based on current score
+ * Story 10.1: Progressive combo probability (0% → 40% cap)
+ * @param {number} score - Current game score
+ * @returns {number} Probability (0.0 to 0.4) that combo should activate
+ */
+export function getComboProbability(score) {
+  for (const tier of CONFIG.COMBO_PROBABILITIES) {
+    if (score >= tier.minScore && score <= tier.maxScore) {
+      return tier.probability;
+    }
+  }
+
+  // Fallback: return max probability (40%)
+  return 0.4;
+}

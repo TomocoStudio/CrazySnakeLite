@@ -12,6 +12,16 @@ import { getFoodScore } from './scoring.js';
 import { spawnPopup, spawnPhoneBonusPopup, spawnComboPopup, spawnParticles, triggerScreenShake, gridToPixel, spawnFlash } from './score-popup.js';
 import { getComboProbability } from './progression.js';
 import { activateCombo, isComboActive, exitCombo } from './combo.js';
+import {
+  calculateReactionTime,
+  calculateSpatialAwareness,
+  calculateCognitiveFlexibility,
+  calculateDividedAttention,
+  calculateImpulseControl,
+  calculateWorkingMemory,
+  calculateRollingAverages
+} from './metrics.js';
+import { saveSession, getSessions } from './storage.js';
 
 const TICK_RATE = CONFIG.TICK_RATE;
 
@@ -91,6 +101,24 @@ function update(gameState) {
     // Award base food score immediately
     const scoreIncrease = getFoodScore(effectType);
     gameState.score += scoreIncrease;
+
+    // Story 13.2: Track reaction time (food spawn to consumption)
+    if (food.spawnedAt) {
+      const responseTime = Date.now() - food.spawnedAt;
+      const duringRC = gameState.effects.reverseControlsActive || false;
+      const duringPhone = gameState.phoneCall.active || false;
+
+      gameState.metricsTracking.rawEvents.push({
+        type: 'food_eaten',
+        timestamp: Date.now(),
+        foodType: effectType,
+        scoreGained: scoreIncrease,
+        responseTime: responseTime,
+        duringRC: duringRC,
+        duringPhone: duringPhone,
+        duringCombo: gameState.combo?.active || false  // Story 13.7: Track combo mode
+      });
+    }
 
     // Story 9.5: Check if grace period should end
     if (gameState.phoneCall.graceActive && gameState.score >= CONFIG.PHONE_GRACE_SCORE) {
@@ -244,6 +272,24 @@ function update(gameState) {
         timestamp: Date.now()
       });
 
+      // Story 13.5: Track phone call event for divided attention metric
+      // Story 13.6: Include context for impulse control metric
+      gameState.metricsTracking.rawEvents.push({
+        type: 'phone_call',
+        timestamp: Date.now(),
+        decision: 'pickup',
+        decisionTime: reactionTime,
+        survived: false, // Died during countdown
+        bonus: gameState.phoneCall.pickUpBonus,
+        context: {
+          inComboMode: gameState.combo?.active || false,
+          currentScore: gameState.score, // Score at death (before consolation bonus)
+          pickupBonus: gameState.phoneCall.pickUpBonus,
+          blinkingFoodActive: gameState.food?.isBlinking || false,
+          snakeLength: gameState.snake?.segments?.length || 0
+        }
+      });
+
       const consolationBonus = gameState.phoneCall.pickUpBonus;
       gameState.score += consolationBonus;
 
@@ -281,6 +327,57 @@ function update(gameState) {
     // Play death sound (Bug fix)
     playDeathSound();
     gameState.phase = 'gameover';
+
+    // Story 13.9: Save session metrics to IndexedDB
+    saveSessionMetrics(gameState);
+  }
+}
+
+/**
+ * Calculate and save session metrics to IndexedDB
+ * Story 13.9: Persistence and retrieval
+ * @param {Object} gameState - Game state at game over
+ */
+async function saveSessionMetrics(gameState) {
+  try {
+    // Calculate all 6 cognitive metrics from rawEvents
+    const metrics = {
+      reactionTime: calculateReactionTime(gameState.metricsTracking.rawEvents),
+      spatialAwareness: calculateSpatialAwareness(
+        gameState.snake.segments.length,
+        CONFIG.GRID_WIDTH,
+        CONFIG.GRID_HEIGHT,
+        CONFIG.GRID_UNIT_SIZE
+      ),
+      cognitiveFlexibility: calculateCognitiveFlexibility(gameState.metricsTracking.rawEvents),
+      dividedAttention: calculateDividedAttention(gameState.metricsTracking.rawEvents),
+      impulseControl: calculateImpulseControl(gameState.metricsTracking.rawEvents),
+      workingMemory: calculateWorkingMemory(gameState.metricsTracking.rawEvents)
+    };
+
+    // Query previous sessions for rolling average calculation
+    const previousSessions = await getSessions(9); // Get last 9 sessions
+
+    // Calculate rolling averages
+    const rollingAverages = calculateRollingAverages(metrics, previousSessions);
+
+    // Build session object
+    const sessionData = {
+      sessionId: crypto.randomUUID(),
+      timestamp: Date.now(),
+      score: gameState.score,
+      metrics: metrics,
+      rollingAverages: rollingAverages,
+      rawEvents: gameState.metricsTracking.rawEvents
+    };
+
+    // Save to IndexedDB (async, non-blocking)
+    await saveSession(sessionData);
+
+    console.log('[Game] Session metrics saved:', sessionData.sessionId);
+  } catch (error) {
+    console.error('[Game] Failed to save session metrics:', error);
+    // Graceful degradation - game continues even if save fails
   }
 }
 
@@ -351,6 +448,24 @@ function checkPickUpTimerExpiration(gameState, currentTime) {
     survived: true,
     bonus: gameState.phoneCall.pickUpBonus,
     timestamp: Date.now()
+  });
+
+  // Story 13.5: Track phone call event for divided attention metric
+  // Story 13.6: Include context for impulse control metric
+  gameState.metricsTracking.rawEvents.push({
+    type: 'phone_call',
+    timestamp: Date.now(),
+    decision: 'pickup',
+    decisionTime: reactionTime,
+    survived: true, // Timer completed without death
+    bonus: gameState.phoneCall.pickUpBonus,
+    context: {
+      inComboMode: gameState.combo?.active || false,
+      currentScore: gameState.score - gameState.phoneCall.pickUpBonus, // Score before bonus
+      pickupBonus: gameState.phoneCall.pickUpBonus,
+      blinkingFoodActive: gameState.food?.isBlinking || false,
+      snakeLength: gameState.snake?.segments?.length || 0
+    }
   });
 
   // Timer expired - award bonus

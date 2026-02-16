@@ -41,6 +41,12 @@ export function activateCombo(food, gameState) {
   // Reset food count (this is food #1)
   gameState.combo.foodCount = 1;
 
+  // Story 13.7: Track combo start event for working memory metric
+  gameState.metricsTracking.rawEvents.push({
+    type: 'combo_start',
+    timestamp: Date.now()
+  });
+
   // Story 10.2: Select random canvas color (stored but not applied - grid inversion used instead)
   const colors = CONFIG.COMBO_CANVAS_COLORS;
   gameState.combo.canvasColor = colors[Math.floor(Math.random() * colors.length)];
@@ -67,6 +73,12 @@ export function isComboActive(gameState) {
 export function exitCombo(gameState) {
   // NOTE: Canvas background color handled by render.js clearCanvas() using grid inversion
   // No need to manually reset canvas.style.backgroundColor
+
+  // Story 13.7: Track combo end event for working memory metric
+  gameState.metricsTracking.rawEvents.push({
+    type: 'combo_end',
+    timestamp: Date.now()
+  });
 
   // Reset combo state
   gameState.combo.active = false;

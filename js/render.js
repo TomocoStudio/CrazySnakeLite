@@ -130,12 +130,21 @@ function renderSnake(ctx, gameState) {
       ctx.fillStyle = snakeColor;
       ctx.fillRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
 
+      // COMBO MODE Step #1: Darker border on all segments when combo active (foodCount = 1)
+      if (isComboActive(gameState) && gameState.combo.foodCount === 1) {
+        ctx.strokeStyle = '#000000';  // Black border
+        ctx.lineWidth = 2;            // Thicker border
+        ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
+      }
+
       // Head distinction: border + eyes on first segment (head at index 0)
       if (index === 0) {
-        // Subtle border (matches grid background)
-        ctx.strokeStyle = CONFIG.HEAD_BORDER_COLOR;
-        ctx.lineWidth = CONFIG.HEAD_BORDER_WIDTH;
-        ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
+        // Subtle border (matches grid background) - only if not in combo mode
+        if (!isComboActive(gameState)) {
+          ctx.strokeStyle = CONFIG.HEAD_BORDER_COLOR;
+          ctx.lineWidth = CONFIG.HEAD_BORDER_WIDTH;
+          ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
+        }
 
         // White eyes that rotate with direction (Story 5-4)
         renderSnakeEyes(ctx, x, y, snake.direction);

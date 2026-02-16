@@ -86,6 +86,12 @@ export function showPhoneCall(callerName = 'Unknown Caller', gameState = null) {
   if (gameState) {
     gameState.analyticsState.totalPhoneCalls += 1;
     gameState.analyticsState.phoneCallShowTime = Date.now();
+
+    // Story 10.7: Track phone + combo overlap
+    if (gameState.combo.active) {
+      gameState.analyticsState.comboPhoneOverlaps += 1;
+      if (DEBUG) console.log('[Phone] Call during active combo (overlap tracked)');
+    }
   }
 
   // Story 9.4: Select random caller
@@ -190,6 +196,12 @@ function endCall(gameState) {
   gameState.cognitiveStats.pickUpStreak = 0; // Reset streak on End
   gameState.analyticsState.totalEnds += 1;
 
+  // Story 10.7: Track phone + combo overlap survival
+  if (gameState.combo.active) {
+    gameState.analyticsState.comboPhoneOverlapSurvived += 1;
+    if (DEBUG) console.log('[Phone] Call during combo survived (End action)');
+  }
+
   // Story 9.7: Track event
   trackPhoneCall({
     action: 'end',
@@ -197,6 +209,24 @@ function endCall(gameState) {
     survived: true, // End always survives (no death risk)
     bonus,
     timestamp: Date.now()
+  });
+
+  // Story 13.5: Track phone call event for divided attention metric
+  // Story 13.6: Include context for impulse control metric
+  gameState.metricsTracking.rawEvents.push({
+    type: 'phone_call',
+    timestamp: Date.now(),
+    decision: 'end',
+    decisionTime: reactionTime,
+    survived: true, // End always survives
+    bonus: bonus,
+    context: {
+      inComboMode: gameState.combo?.active || false,
+      currentScore: gameState.score,
+      pickupBonus: 0, // End doesn't have pickup bonus
+      blinkingFoodActive: gameState.food?.isBlinking || false,
+      snakeLength: gameState.snake?.segments?.length || 0
+    }
   });
 
   // Story 9.6: Spawn phone bonus popup at snake head position (suppress 0-value popups)
@@ -228,6 +258,12 @@ function pickUpCall(gameState) {
   gameState.cognitiveStats.phoneCallsManaged += 1;
   gameState.cognitiveStats.pickUpStreak += 1;
   gameState.analyticsState.totalPickUps += 1;
+
+  // Story 10.7: Track phone + combo overlap survival (Pick Up counts as survival)
+  if (gameState.combo.active) {
+    gameState.analyticsState.comboPhoneOverlapSurvived += 1;
+    if (DEBUG) console.log('[Phone] Call during combo survived (Pick Up action)');
+  }
 
   // Story 9.4: Stop phone ringing animation
   const portraitElement = document.querySelector('.phone-icon');
