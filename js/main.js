@@ -32,7 +32,7 @@ const scoreValueElement = document.getElementById('score-value');
 const newHighScoreIndicator = document.getElementById('new-high-score-indicator');
 const scoreDisplay = document.getElementById('score-display');
 const playAgainBtn = document.getElementById('play-again-btn');
-const menuBtn = document.getElementById('menu-btn');
+const skillMapBtn = document.getElementById('skill-map-btn');
 
 /**
  * Update score display DOM element
@@ -259,7 +259,7 @@ function handleUIUpdate(state) {
 
       // Story 11.4: Hide Play Again button initially (shown after stats complete)
       playAgainBtn.classList.add('hidden');
-      menuBtn.classList.add('hidden');
+      skillMapBtn.classList.add('hidden');
 
       // Story 4.2/4.3: Save high score if new record and show indicator
       console.log('[Game] Game Over - Score:', state.score, 'High Score:', state.highScore);
@@ -357,10 +357,21 @@ function handleUIUpdate(state) {
         // Story 14.5: sessionContext includes calibration state for footer rendering
         await showHighlights(highlights, callerQuote, sessionContext);
 
-        // Show buttons after highlight animation completes (t=3.3s)
-        console.log('[Main] Highlights animation complete - showing Play Again button');
+        // Story 14.7: Show buttons after highlight animation completes (t=3.3s)
+        console.log('[Main] Highlights animation complete - showing Play Again and Skill Map buttons');
         playAgainBtn.classList.remove('hidden');
-        menuBtn.classList.remove('hidden');
+        skillMapBtn.classList.remove('hidden');
+
+        // Story 14.7: Set Skill Map button state based on calibration
+        if (sessionContext && sessionContext.calibrationState === 'in_progress') {
+          // Calibration period (sessions 1-4): Grey out Skill Map button
+          skillMapBtn.disabled = true;
+          console.log('[Story 14.7] Skill Map button disabled - calibration in progress');
+        } else {
+          // Calibration complete (session 5+): Enable Skill Map button
+          skillMapBtn.disabled = false;
+          console.log('[Story 14.7] Skill Map button enabled - calibration complete');
+        }
       }, CONFIG.COGNITIVE_STATS_DISPLAY.initialDelay);
     }
   }
@@ -382,10 +393,14 @@ newGameBtn.addEventListener('click', startNewGame);
 // Wire up Play Again button
 playAgainBtn.addEventListener('click', handlePlayAgain);
 
-// Menu button - Return to main menu (Story 4.2)
-menuBtn.addEventListener('click', () => {
+// Story 14.7: Skill Map button - Opens full dashboard (Epic 16)
+skillMapBtn.addEventListener('click', () => {
+  // TODO Epic 16: Open Skill Map / Dashboard
+  console.log('[Story 14.7] Skill Map button clicked - Epic 16 not yet implemented');
+
+  // Placeholder: Return to menu for now
   gameState.phase = 'menu';
-  gameState.isPaused = false;  // Clear pause flag when explicitly returning to menu
+  gameState.isPaused = false;
   updateHighScoreDisplay(gameState.highScore);
 });
 

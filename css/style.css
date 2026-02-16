@@ -211,40 +211,78 @@ body {
 }
 
 
-#gameover-screen button {
-  display: block;
-  width: 200px;
-  margin: 10px auto;
-  padding: 12px;
+/* Story 14.7: Game Over Buttons Container */
+.game-over-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 20px auto;
+  max-width: 450px;
+  flex-wrap: wrap;  /* Allow wrapping on very small screens */
+}
+
+/* Story 14.7: Individual Button Styling */
+.game-over-btn {
+  flex: 1;
+  min-width: 160px;
+  padding: 12px 24px;
   font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 16px;
   font-weight: bold;
   background-color: #000000;  /* Inactive: black background */
   color: #FFFFFF;  /* Always white text */
-  border: 2px solid rgb(157, 178, 221);  /* Inactive: light purple-blue border */
-  border-radius: 8px;  /* Small rounded corners */
+  border: 2px solid rgb(157, 178, 221);  /* Purple border */
+  border-radius: 8px;  /* Story 14.7: 8px rounded corners */
   cursor: pointer;
   transition: all 0.2s;
 }
 
-#gameover-screen button:hover {
+.game-over-btn:hover:not(:disabled) {
   background-color: rgb(157, 178, 221);  /* Active: light purple-blue background */
-  border-color: rgb(157, 178, 221);  /* Keep same border color */
-  color: #FFFFFF;  /* Always white text */
-  transform: scale(1.05);  /* Scale up effect */
+  border-color: rgb(157, 178, 221);
+  color: #FFFFFF;
+  transform: scale(1.05);
 }
 
-#gameover-screen button:active {
-  background-color: rgb(157, 178, 221);  /* Active: light purple-blue background */
-  border-color: rgb(157, 178, 221);  /* Keep same border color */
-  transform: scale(0.98);  /* Scale down when clicked */
+.game-over-btn:active:not(:disabled) {
+  background-color: rgb(157, 178, 221);
+  border-color: rgb(157, 178, 221);
+  transform: scale(0.98);
 }
 
-#gameover-screen button.selected {
-  background-color: rgb(157, 178, 221);  /* Active: light purple-blue background */
-  border-color: rgb(157, 178, 221);  /* Keep same border color */
-  color: #FFFFFF;  /* Always white text */
-  transform: scale(1.05);  /* Scale up effect */
+.game-over-btn.selected {
+  background-color: rgb(157, 178, 221);  /* Play Again default selected */
+  border-color: rgb(157, 178, 221);
+  color: #FFFFFF;
+  transform: scale(1.05);
+}
+
+/* Story 14.7: Disabled state for Skill Map during calibration */
+.game-over-btn:disabled {
+  background-color: #1a1a1a;  /* Darker grey background */
+  color: #666666;  /* Greyed out text */
+  border-color: #444444;  /* Greyed out border */
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Story 14.7: Hidden state for buttons during animation sequence */
+.game-over-btn.hidden {
+  display: none;
+}
+
+/* Story 14.7: Mobile viewport - stack buttons vertically */
+@media (max-width: 767px) {
+  .game-over-buttons {
+    flex-direction: column;
+    gap: 12px;
+    max-width: 280px;
+  }
+
+  .game-over-btn {
+    min-width: 100%;
+    min-height: 44px;  /* Story 14.7: Minimum touch target */
+  }
 }
 
 /* ========================================
@@ -498,6 +536,12 @@ body {
 
   .confetti-particle {
     display: none !important; /* Hide confetti entirely */
+  }
+
+  /* Story 14.7: Disable button transform animations */
+  .game-over-btn:hover:not(:disabled),
+  .game-over-btn.selected {
+    transform: none !important;
   }
 
   /* Story 14.6: Disable streak milestone animation */
