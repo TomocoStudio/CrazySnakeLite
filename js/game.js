@@ -381,7 +381,11 @@ function update(gameState) {
     gameState.phase = 'gameover';
 
     // Story 13.9: Save session metrics to IndexedDB
-    saveSessionMetrics(gameState);
+    // Story 14.1: Store metrics for highlight selection
+    saveSessionMetrics(gameState).then(result => {
+      gameState.currentSessionMetrics = result.metrics;
+      gameState.rollingAverages = result.rollingAverages;
+    });
   }
 }
 
@@ -427,9 +431,13 @@ async function saveSessionMetrics(gameState) {
     await saveSession(sessionData);
 
     console.log('[Game] Session metrics saved:', sessionData.sessionId);
+
+    // Story 14.1: Return metrics and rollingAverages for highlight selection
+    return { metrics, rollingAverages };
   } catch (error) {
     console.error('[Game] Failed to save session metrics:', error);
     // Graceful degradation - game continues even if save fails
+    return { metrics: {}, rollingAverages: {} };
   }
 }
 

@@ -170,6 +170,83 @@ async function pruneOldSessions() {
 }
 
 // ========================================
+// HIGHLIGHT SELECTION STORAGE (Story 14.1)
+// ========================================
+
+/**
+ * Get all-time high values for each cognitive metric across all sessions
+ * @returns {Promise<Object>} Max values for each of 6 metrics
+ */
+export async function getAllTimeHighs() {
+  // Query all sessions (up to MAX_SESSIONS)
+  const sessions = await getSessions(MAX_SESSIONS);
+
+  // First session edge case: return all zeros
+  if (sessions.length === 0) {
+    return {
+      reactionTime: 0,
+      spatialAwareness: 0,
+      cognitiveFlexibility: 0,
+      dividedAttention: 0,
+      impulseControl: 0,
+      workingMemory: 0
+    };
+  }
+
+  // Track max value for each metric
+  const allTimeHighs = {
+    reactionTime: 0,
+    spatialAwareness: 0,
+    cognitiveFlexibility: 0,
+    dividedAttention: 0,
+    impulseControl: 0,
+    workingMemory: 0
+  };
+
+  // Iterate sessions and track Math.max() for each metric
+  sessions.forEach(session => {
+    if (session.metrics) {
+      Object.keys(allTimeHighs).forEach(metric => {
+        const value = session.metrics[metric];
+        if (typeof value === 'number' && !isNaN(value)) {
+          allTimeHighs[metric] = Math.max(allTimeHighs[metric], value);
+        }
+      });
+    }
+  });
+
+  return allTimeHighs;
+}
+
+/**
+ * Retrieve last session's highlight pattern from localStorage
+ * Used for variety enforcement (Story 14.1)
+ * @returns {Array<string>} Array of highlight types or empty array
+ */
+export function getLastSessionPattern() {
+  const stored = localStorage.getItem('crazysnakeLite_lastSessionPattern');
+  return stored ? JSON.parse(stored) : [];
+}
+
+/**
+ * Save current session's highlight pattern to localStorage
+ * Used for variety enforcement in next session (Story 14.1)
+ * @param {Array<string>} pattern - Array of highlight types
+ */
+export function saveSessionPattern(pattern) {
+  if (!Array.isArray(pattern)) {
+    console.warn('[Storage] Invalid session pattern - expected array');
+    return;
+  }
+
+  try {
+    localStorage.setItem('crazysnakeLite_lastSessionPattern', JSON.stringify(pattern));
+  } catch (error) {
+    console.warn('[Storage] Failed to save session pattern:', error.message);
+  }
+}
+
+// ========================================
 // LOCALSTORAGE METHODS (Profile, Streak, Highlights)
 // ========================================
 

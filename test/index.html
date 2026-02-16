@@ -118,6 +118,32 @@
           window.testResults.failed++;
           window.testResults.tests.push({ status: 'fail', message });
         }
+      },
+      isArray: (value, message) => {
+        if (Array.isArray(value)) {
+          console.log(`✓ PASS: ${message}`);
+          window.testResults.passed++;
+          window.testResults.tests.push({ status: 'pass', message });
+        } else {
+          console.error(`✗ FAIL: ${message}`);
+          console.error(`  Expected: Array`);
+          console.error(`  Actual: ${typeof value}`);
+          window.testResults.failed++;
+          window.testResults.tests.push({ status: 'fail', message });
+        }
+      },
+      isObject: (value, message) => {
+        if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          console.log(`✓ PASS: ${message}`);
+          window.testResults.passed++;
+          window.testResults.tests.push({ status: 'pass', message });
+        } else {
+          console.error(`✗ FAIL: ${message}`);
+          console.error(`  Expected: Object`);
+          console.error(`  Actual: ${typeof value}`);
+          window.testResults.failed++;
+          window.testResults.tests.push({ status: 'fail', message });
+        }
       }
     };
 
@@ -158,7 +184,9 @@
       import('./combo-stats-analytics.test.js'),
       import('./rc-survived.test.js'),
       import('./storage.test.js'),
-      import('./metrics.test.js')
+      import('./metrics.test.js'),
+      import('./storage-highlights.test.js'),
+      import('./cognitive-feedback-highlights.test.js')
     ]).then(() => {
       window.displayResults();
     }).catch(err => {

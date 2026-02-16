@@ -6,10 +6,10 @@ import { initInput } from './input.js';
 import { spawnFood } from './food.js';
 import { applyEffect, clearEffect, EFFECT_TYPES } from './effects.js';
 import { scheduleNextCall, initPhoneSystem } from './phone.js';
-import { saveHighScore, initStorage } from './storage.js';
+import { saveHighScore, initStorage, getAllTimeHighs, getLastSessionPattern, saveSessionPattern } from './storage.js';
 import { initAudio, resumeAudio, closeAudio, playMenuMusic, stopMenuMusic, isAudioReady } from './audio.js';
 import { initStarRatings, initCharCounter, openFeedbackModal, closeFeedbackModal, resetFeedbackForm, getFormData, captureMetadata, formatEmailBody, formatEmailSubject, submitFeedback, showThankYouScreen, closeThankYouScreen, initFeedbackModal } from './feedback.js';
-import { showCognitiveStats } from './cognitive-feedback.js';
+import { showCognitiveStats, selectHighlights } from './cognitive-feedback.js';
 import { trackSessionEnd, trackGameStart } from './analytics.js';
 
 // Initialize canvas and context
@@ -284,7 +284,38 @@ function handleUIUpdate(state) {
       }
 
       // Story 11.3-11.4: Show cognitive stats, then Play Again button after sequence completes
+      // Story 14.1: Select highlights before displaying stats
       setTimeout(async () => {
+        // Wait for metrics to be available (populated by saveSessionMetrics in game.js)
+        // Add small delay to ensure async saveSessionMetrics completes
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        // Story 14.1: Query all-time highs and last session pattern in parallel
+        const [allTimeHighs, lastPattern] = await Promise.all([
+          getAllTimeHighs(),
+          Promise.resolve(getLastSessionPattern())
+        ]);
+
+        // Story 14.1: Select highlights if metrics are available
+        if (state.currentSessionMetrics && state.rollingAverages) {
+          const highlights = selectHighlights(
+            state.currentSessionMetrics,
+            state.rollingAverages,
+            allTimeHighs,
+            state.cognitiveStats,
+            lastPattern
+          );
+
+          // Save pattern for variety enforcement
+          saveSessionPattern(highlights.map(h => h.type));
+
+          // Story 14.2 will render highlights here
+          // For now, log them for verification
+          console.log('[Epic 14] Highlights:', highlights);
+        } else {
+          console.warn('[Epic 14] Session metrics not available yet - skipping highlight selection');
+        }
+
         await showCognitiveStats(state);
 
         // Show buttons after stats sequence completes

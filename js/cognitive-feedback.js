@@ -171,3 +171,209 @@ export function hideCognitiveStats() {
     }, CONFIG.COGNITIVE_STATS_DISPLAY.fadeDuration);
   }
 }
+
+// ========================================
+// HIGHLIGHT SELECTION (Story 14.1)
+// ========================================
+
+/**
+ * Metric display names for highlight text formatting
+ */
+const METRIC_DISPLAY_NAMES = {
+  reactionTime: 'Reaction Time',
+  spatialAwareness: 'Spatial Awareness',
+  cognitiveFlexibility: 'Cognitive Flexibility',
+  dividedAttention: 'Divided Attention',
+  impulseControl: 'Impulse Control',
+  workingMemory: 'Working Memory'
+};
+
+/**
+ * Select 2-3 highlights from session based on 4-tier priority system.
+ * Story 14.1: Intelligent highlight selection with variety enforcement.
+ *
+ * Priority Tiers:
+ * 1. Personal Best - new all-time high for any metric
+ * 2. Biggest Improvement - 15%+ increase vs rolling average
+ * 3. Notable Events - achievement milestones (RC survived, combos, etc)
+ * 4. Growth Opportunity - lowest rolling average metric (if engaged)
+ *
+ * @param {Object} sessionMetrics - Current session's 6 cognitive metrics
+ * @param {Object} rollingAverages - Rolling averages for 6 metrics
+ * @param {Object} allTimeHighs - All-time highs for 6 metrics
+ * @param {Object} cognitiveStats - Raw game stats (rcSurvived, phoneCallsManaged, etc)
+ * @param {Array<string>} lastSessionPattern - Previous session's highlight types
+ * @returns {Array<Object>} Array of 0-3 highlight objects
+ */
+export function selectHighlights(sessionMetrics, rollingAverages, allTimeHighs, cognitiveStats, lastSessionPattern = []) {
+  const highlights = [];
+
+  // PRIORITY 1: Personal Bests
+  Object.keys(sessionMetrics).forEach(metric => {
+    const sessionValue = sessionMetrics[metric];
+    const allTimeHigh = allTimeHighs[metric];
+
+    // Check for new personal best (must be greater than previous high)
+    if (sessionValue > allTimeHigh && allTimeHigh > 0) {
+      highlights.push({
+        type: 'personal_best',
+        metric: metric,
+        value: sessionValue,
+        text: `${METRIC_DISPLAY_NAMES[metric]}: NEW PERSONAL BEST!`,
+        icon: '🎯',
+        priority: 1
+      });
+    }
+  });
+
+  // PRIORITY 2: Biggest Improvements (15%+ delta)
+  const improvements = [];
+  Object.keys(sessionMetrics).forEach(metric => {
+    const sessionValue = sessionMetrics[metric];
+    const rollingAvg = rollingAverages[metric];
+
+    // Skip if no rolling average yet (first few sessions)
+    if (!rollingAvg || rollingAvg === 0) return;
+
+    const delta = (sessionValue - rollingAvg) / rollingAvg;
+
+    // 15% improvement threshold (>= for "15%+" means 15% or more)
+    if (delta >= 0.15) {
+      const percentImprovement = Math.round(delta * 100);
+      improvements.push({
+        type: 'improvement',
+        metric: metric,
+        value: sessionValue,
+        delta: delta,
+        text: `${METRIC_DISPLAY_NAMES[metric]} up ${percentImprovement}% this session`,
+        icon: '⬆',
+        priority: 2
+      });
+    }
+  });
+
+  // Sort improvements by delta descending, add biggest improvement
+  improvements.sort((a, b) => b.delta - a.delta);
+  if (improvements.length > 0) {
+    highlights.push(improvements[0]);
+  }
+
+  // PRIORITY 3: Notable Events
+  const notableEvents = [];
+
+  if (cognitiveStats.rcSurvived >= 3) {
+    notableEvents.push({
+      type: 'notable',
+      subtype: 'rc_survived',
+      value: cognitiveStats.rcSurvived,
+      text: `Survived ${cognitiveStats.rcSurvived} Reverse Controls — brain on fire`,
+      icon: '🔥',
+      priority: 3
+    });
+  }
+
+  if (cognitiveStats.comboMultipliers >= 1) {
+    notableEvents.push({
+      type: 'notable',
+      subtype: 'combo',
+      value: cognitiveStats.comboMultipliers,
+      text: 'First combo survived! Welcome to the big leagues',
+      icon: '🔥',
+      priority: 3
+    });
+  }
+
+  if (cognitiveStats.phoneCallsManaged >= 5) {
+    notableEvents.push({
+      type: 'notable',
+      subtype: 'phone_calls',
+      value: cognitiveStats.phoneCallsManaged,
+      text: '5 phone calls managed — multitasking master',
+      icon: '🔥',
+      priority: 3
+    });
+  }
+
+  if (cognitiveStats.mysteryFoodsEaten >= 10) {
+    notableEvents.push({
+      type: 'notable',
+      subtype: 'mystery_foods',
+      value: cognitiveStats.mysteryFoodsEaten,
+      text: '10 mystery foods decoded — pattern recognition elite',
+      icon: '🔥',
+      priority: 3
+    });
+  }
+
+  // Add notable events to highlights
+  highlights.push(...notableEvents);
+
+  // PRIORITY 4: Growth Opportunity (show lowest rolling average if engaged)
+  // Only show if player has at least some engagement (not just green food)
+  const totalEngagement = (cognitiveStats.rcSurvived || 0) +
+                          (cognitiveStats.comboMultipliers || 0) +
+                          (cognitiveStats.phoneCallsManaged || 0) +
+                          (cognitiveStats.mysteryFoodsEaten || 0);
+
+  if (totalEngagement > 0 && Object.keys(rollingAverages).length > 0) {
+    const lowestMetric = Object.entries(rollingAverages)
+      .filter(([_, value]) => value > 0) // Only consider metrics with data
+      .sort((a, b) => a[1] - b[1])[0]; // Sort ascending, take first
+
+    if (lowestMetric) {
+      const [metric, value] = lowestMetric;
+      highlights.push({
+        type: 'growth',
+        metric: metric,
+        value: value,
+        text: `${METRIC_DISPLAY_NAMES[metric]} — time to level up`,
+        icon: '↑',
+        priority: 4
+      });
+    }
+  }
+
+  // Sort by priority (ascending - lower number = higher priority)
+  highlights.sort((a, b) => a.priority - b.priority);
+
+  // Select top 2-3 highlights
+  let selectedHighlights = highlights.slice(0, 3);
+
+  // VARIETY ENFORCEMENT: If pattern matches last session, swap lowest-priority highlight
+  if (selectedHighlights.length > 1 && lastSessionPattern.length > 0) {
+    const currentPattern = selectedHighlights.map(h => h.type);
+    const patternsMatch = currentPattern.every((type, index) => type === lastSessionPattern[index]);
+
+    if (patternsMatch && highlights.length > 3) {
+      // Swap out lowest-priority selected highlight with next available
+      selectedHighlights[selectedHighlights.length - 1] = highlights[3];
+    }
+  }
+
+  // FALLBACK: Zero qualifying highlights → encouragement
+  if (selectedHighlights.length === 0) {
+    const score = cognitiveStats.score || 0;
+    selectedHighlights = [{
+      type: 'encouragement',
+      text: `Score achieved: ${score} — Every session trains your brain`,
+      icon: '🧠',
+      priority: 5
+    }];
+  }
+
+  return selectedHighlights;
+}
+
+/**
+ * Format highlight object into display string.
+ * Story 14.1: Prepares highlight for UI rendering (Story 14.2).
+ *
+ * @param {Object} highlight - Highlight object from selectHighlights()
+ * @returns {string} Formatted display string
+ */
+export function formatHighlightText(highlight) {
+  if (!highlight) return '';
+
+  // Icon + text format
+  return `${highlight.icon} ${highlight.text}`;
+}
