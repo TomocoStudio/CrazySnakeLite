@@ -480,3 +480,185 @@ Before adding a new quote to CALLER_QUOTES, verify:
 5. **Anti-patterns section** - Explicitly show what NOT to do
 6. **Review process** - Establish workflow for adding new quotes
 7. **Minimum viable content** - 63 quotes (21 callers × 3), recommend 84-105 for variety
+
+---
+
+## Tasks / Subtasks
+
+- [x] Create comprehensive content guidelines document (AC: Clear guidelines)
+  - [x] Document purpose and target audience
+  - [x] Define 5 core content principles
+  - [x] Provide writing process (5-step workflow)
+  - [x] Include examples by context (8 scenarios)
+  - [x] Document anti-patterns with explanations
+  - [x] Create quality checklist
+  - [x] Include caller personality reference table
+  - [x] Define review process
+  - [x] Document saved to planning-artifacts/comedy-quote-guidelines.md ✓
+- [x] Document content principles (AC: 5 principles with examples)
+  - [x] Principle 1: Tech puns and programming humor
+  - [x] Principle 2: Celebrate player achievement
+  - [x] Principle 3: Brief and punchy (< 80 chars)
+  - [x] Principle 4: Contextual to performance
+  - [x] Principle 5: Encouraging or empathetic
+  - [x] All principles include good/bad examples ✓
+- [x] Provide context-specific examples (AC: 8 contexts with quotes)
+  - [x] High score examples
+  - [x] Low score examples
+  - [x] RC survived examples
+  - [x] RC death examples
+  - [x] Calibration complete examples
+  - [x] 30-day streak examples
+  - [x] General/encouragement examples
+  - [x] All examples annotated with good/bad labels ✓
+- [x] Document anti-patterns (AC: 5 anti-patterns explained)
+  - [x] Anti-pattern 1: Medical/clinical language
+  - [x] Anti-pattern 2: Generic platitudes
+  - [x] Anti-pattern 3: Negative framing
+  - [x] Anti-pattern 4: Too long (verbose)
+  - [x] Anti-pattern 5: Offensive or exclusionary
+  - [x] All anti-patterns include why forbidden + replacement strategy ✓
+- [x] Create quality checklist (AC: Comprehensive self-review tool)
+  - [x] Content quality criteria (8 items)
+  - [x] Context tagging criteria (3 items)
+  - [x] Relevance criteria (4 items)
+  - [x] Tone criteria (4 items)
+  - [x] Total: 19 checklist items for self-review ✓
+- [x] Document caller personalities (AC: All 21 callers referenced)
+  - [x] Create caller personality reference table
+  - [x] Include one-liner for each caller
+  - [x] Describe personality trait
+  - [x] Provide quote style guidance
+  - [x] All 21 callers documented ✓
+- [x] Document review process (AC: Clear workflow)
+  - [x] 7-step process for new quotes
+  - [x] 5-step process for quote revisions
+  - [x] Include testing guidance
+  - [x] Process ready for team use ✓
+- [x] Include caller distribution status (AC: Track quote balance)
+  - [x] List all 21 callers with current quote counts
+  - [x] Mark minimum viable (3 quotes) vs target (4-5 quotes)
+  - [x] Status: 70 quotes total, all callers at or above minimum ✓
+
+---
+
+## Dev Agent Record
+
+### Implementation Plan
+
+**Approach:** Create comprehensive living document for content creation
+1. Defined purpose and target audience (content creators, developers, UX designers)
+2. Documented 5 core content principles with good/bad examples
+3. Created 5-step writing process (identify context → match caller → add tech → keep brief → tag)
+4. Provided context-specific examples for 8 scenarios
+5. Documented 5 anti-patterns with why forbidden + replacement strategies
+6. Created comprehensive quality checklist (19 items)
+7. Built caller personality reference table (all 21 callers)
+8. Defined review process for new quotes and revisions
+9. Included caller distribution status and targets
+
+**Key Discovery:**
+- Guidelines are examples-driven (show, don't just tell)
+- Anti-patterns section as important as positive examples
+- Quality checklist enables self-review before submission
+- Caller personality reference critical for consistency
+- Living document approach allows updates as patterns emerge
+
+### Debug Log
+
+**No issues encountered** - Documentation story with clear structure provided in spec.
+
+**Design Decisions:**
+- Made document examples-heavy (learn by seeing good vs bad)
+- Included "why forbidden" for each anti-pattern (not just rules)
+- Added replacement strategies (not just "don't do this")
+- Created comprehensive quality checklist for self-review
+- Emphasized caller personality matching for consistency
+
+### Completion Notes
+
+✅ **Successfully completed Story 18.9**
+
+**Content Guidelines Document:**
+- Created `planning-artifacts/comedy-quote-guidelines.md` (comprehensive guide)
+- 5 core content principles with good/bad examples
+- 5-step writing process (identify → match → flavor → brief → tag)
+- 8 context-specific example sections
+- 5 anti-pattern categories with explanations
+- 19-item quality checklist
+- 21-caller personality reference table
+- Review process for new quotes and revisions
+- Caller distribution status and targets
+
+**Document Structure:**
+- **Purpose:** Defines use cases and target audience
+- **Content Principles:** 5 core principles (tech puns, celebrate, brief, contextual, encouraging)
+- **Writing Process:** Step-by-step workflow with examples
+- **Examples by Context:** 8 scenarios with good/bad quotes
+- **Anti-Patterns:** 5 forbidden approaches with why + fixes
+- **Quality Checklist:** 19 self-review criteria
+- **Caller Distribution:** Status tracking for all 21 callers
+- **Review Process:** Workflows for new quotes and revisions
+- **Related Documentation:** Links to relevant stories and UX docs
+
+**Examples Provided:**
+- 40+ good quote examples across all contexts
+- 30+ bad quote examples showing what to avoid
+- Tech metaphor brainstorming guide
+- Editing examples (before → after)
+- Tagging examples with context tags
+
+**Ready for Use:**
+- Content creators can use guidelines immediately
+- Quality checklist enables self-review
+- Review process provides clear workflow
+- Living document can evolve with new patterns
+
+---
+
+## File List
+
+**New Files:**
+- `_bmad-output/planning-artifacts/comedy-quote-guidelines.md` - Comprehensive content creation guidelines (70+ examples)
+
+**Modified Files:**
+- None
+
+**Deleted Files:**
+- None
+
+---
+
+## Change Log
+
+**2026-02-16 - Story 18.9 Implementation**
+
+- Created comprehensive comedy quote content guidelines document
+- Documented 5 core content principles:
+  1. Tech puns and programming humor
+  2. Celebrate player achievement
+  3. Brief and punchy (< 80 chars)
+  4. Contextual to performance
+  5. Encouraging or empathetic
+- Provided 5-step writing process (identify context → match caller → add tech → keep brief → tag appropriately)
+- Included 8 context-specific example sections (high score, low score, RC survived, RC death, calibration, streak, general)
+- Documented 5 anti-pattern categories with why forbidden + replacement strategies:
+  1. Medical/clinical language
+  2. Generic platitudes
+  3. Negative framing
+  4. Too long (verbose)
+  5. Offensive or exclusionary
+- Created comprehensive 19-item quality checklist for self-review
+- Built caller personality reference table (all 21 callers with one-liners and quote styles)
+- Defined review process for new quotes (7 steps) and revisions (5 steps)
+- Included caller distribution status (70 quotes total, all at or above 3-quote minimum)
+- Linked related documentation (Stories 18.1-18.8, UX principles, phone system)
+- All acceptance criteria satisfied
+
+---
+
+## Status
+
+**Status:** review
+**Assigned:** Dev Agent
+**Last Updated:** 2026-02-16

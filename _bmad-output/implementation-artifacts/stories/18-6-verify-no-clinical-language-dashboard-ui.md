@@ -286,3 +286,141 @@ if (violations.length > 0) {
 5. **Comments in code** - Keep developer comments clinical if needed, but NO clinical terms in UI strings
 6. **Documentation exception** - metrics.js INTERNAL calculations can reference clinical terms in comments, but ZERO clinical terms in UI-facing strings
 7. **Future content** - Add validation script to CI/CD to prevent clinical language regression
+
+---
+
+## Tasks / Subtasks
+
+- [x] Scan codebase for forbidden clinical terms (AC: Identify all violations)
+  - [x] Scan js/comedy.js for clinical terminology
+  - [x] Scan js/cognitive-feedback.js for clinical terminology
+  - [x] Scan js/dashboard.js for clinical terminology
+  - [x] Scan js/calibration.js for clinical terminology
+  - [x] Scan js/metrics.js for clinical terminology
+  - [x] Scan index.html for clinical terminology
+  - [x] Found 4 violations in domain label mappings ✓
+- [x] Fix domain label violations (AC: Game-native terms only)
+  - [x] Fix dashboard.js getDomainFullName() - "Cognitive Flexibility" → "Flexibility"
+  - [x] Fix dashboard.js getDomainFullName() - "Divided Attention" → "Attention"
+  - [x] Fix cognitive-feedback.js METRIC_DISPLAY_NAMES - "Cognitive Flexibility" → "Flexibility"
+  - [x] Fix cognitive-feedback.js METRIC_DISPLAY_NAMES - "Divided Attention" → "Attention"
+  - [x] Validate syntax after fixes ✓
+- [x] Verify caller quote content (AC: Humor not clinical)
+  - [x] Review all 63 caller quotes in comedy.js
+  - [x] Confirm tech pun humor tone maintained ✓
+  - [x] Confirm no percentile/clinical comparisons ✓
+- [x] Verify UI-facing labels (AC: Game-native terminology)
+  - [x] Verify "Top Skill" / "Level Up" callouts (not "Strongest" / "Weakest")
+  - [x] Verify calibration messaging ("Warming up..." not "Calibrating brain")
+  - [x] Verify screen titles ("Skill Map" not "Brain Assessment")
+  - [x] All UI labels confirmed game-native ✓
+- [x] Create audit report (AC: Comprehensive documentation)
+  - [x] Document all violations found
+  - [x] Document all fixes applied
+  - [x] Provide code-level review
+  - [x] Include manual review results
+  - [x] Create sign-off checklist
+  - [x] Report saved to validation/18-6-clinical-language-audit.md ✓
+- [x] Final validation scan (AC: Zero clinical terms in UI)
+  - [x] Run comprehensive forbidden term scan
+  - [x] Confirm all violations fixed
+  - [x] Status: ✅ PASS ✓
+
+---
+
+## Dev Agent Record
+
+### Implementation Plan
+
+**Approach:** Comprehensive audit with automated scanning + manual review
+1. Scanned all 6 dashboard files for 25 forbidden clinical/medical terms
+2. Found 4 violations in domain label mappings (not in quotes or UI strings)
+3. Fixed all violations by replacing clinical terms with game-native alternatives
+4. Validated syntax after changes
+5. Created comprehensive audit report documenting findings
+6. Performed final validation scan to confirm zero violations
+
+**Key Discovery:**
+- Caller quotes (63 total) already maintain perfect humor tone - no clinical language
+- UI-facing labels already use game-native terms ("Top Skill", "Level Up")
+- Only violations were in internal domain name mappings (getDomainFullName, METRIC_DISPLAY_NAMES)
+- metrics.js contains clinical terms in INTERNAL comments (acceptable per story spec)
+
+### Debug Log
+
+**No issues encountered** - Violations were straightforward string replacements.
+
+**Validation Results:**
+- Initial scan: 4 violations (domain label mappings)
+- Fixes applied: Changed "Cognitive Flexibility" → "Flexibility", "Divided Attention" → "Attention"
+- Final scan: 0 violations ✅
+
+### Completion Notes
+
+✅ **Successfully completed Story 18.6**
+
+**Violations Found & Fixed:**
+1. dashboard.js line 480: "Cognitive Flexibility" → "Flexibility"
+2. dashboard.js line 481: "Divided Attention" → "Attention"
+3. cognitive-feedback.js line 516: "Cognitive Flexibility" → "Flexibility"
+4. cognitive-feedback.js line 517: "Divided Attention" → "Attention"
+
+**Audit Results:**
+- Files scanned: 6 (comedy.js, cognitive-feedback.js, dashboard.js, calibration.js, metrics.js, index.html)
+- Forbidden terms checked: 25 clinical/medical terms
+- Caller quotes reviewed: 63 quotes across 21 callers
+- Domain labels verified: 6 cognitive domains
+- UI screens reviewed: Post-game highlights, Skill Map, Calibration
+- **Final Status:** ✅ PASS - Zero clinical terms in UI-facing content
+
+**Documentation:**
+- Comprehensive audit report: `validation/18-6-clinical-language-audit.md`
+- Includes violations found, fixes applied, code review, manual testing results
+- Provides recommendations for future safeguards (CI/CD validation script)
+
+**Ready for Production:**
+- All violations fixed and validated
+- Game-native language consistent throughout dashboard
+- Humor tone maintained in all caller quotes
+- No clinical/medical terminology in player-facing content
+
+---
+
+## File List
+
+**Modified Files:**
+- `js/dashboard.js` - Fixed domain labels: "Cognitive Flexibility" → "Flexibility", "Divided Attention" → "Attention"
+- `js/cognitive-feedback.js` - Fixed domain labels: "Cognitive Flexibility" → "Flexibility", "Divided Attention" → "Attention"
+
+**New Files:**
+- `_bmad-output/implementation-artifacts/validation/18-6-clinical-language-audit.md` - Comprehensive audit report
+
+**Deleted Files:**
+- None
+
+---
+
+## Change Log
+
+**2026-02-16 - Story 18.6 Implementation**
+
+- Conducted comprehensive clinical language audit across 6 dashboard files
+- Found 4 violations in domain label mappings:
+  - dashboard.js getDomainFullName(): "Cognitive Flexibility" → "Flexibility"
+  - dashboard.js getDomainFullName(): "Divided Attention" → "Attention"
+  - cognitive-feedback.js METRIC_DISPLAY_NAMES: "Cognitive Flexibility" → "Flexibility"
+  - cognitive-feedback.js METRIC_DISPLAY_NAMES: "Divided Attention" → "Attention"
+- Fixed all 4 violations to use game-native terminology
+- Verified all 63 caller quotes maintain humor tone (no clinical language)
+- Verified all UI-facing labels use approved game-native terms
+- Created comprehensive audit report documenting findings and fixes
+- Final validation: ✅ PASS - Zero clinical terms in UI-facing content
+- All acceptance criteria satisfied
+
+---
+
+## Status
+
+**Status:** review
+**Assigned:** Dev Agent
+**Last Updated:** 2026-02-16

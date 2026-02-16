@@ -2182,6 +2182,9 @@ button:disabled {
   border-radius: 4px;
   border: 1px solid rgba(157, 178, 221, 0.5);
   object-fit: cover;
+  image-rendering: pixelated;  /* Story 18.7: Retro pixel-art style */
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
 }
 
 /* Caller name styling */

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comedy Module Tests</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background-color: #1e1e1e;
+      color: #d4d4d4;
+    }
+    h1 {
+      color: #4ec9b0;
+    }
+    #console {
+      background-color: #252526;
+      border: 1px solid #3e3e42;
+      padding: 15px;
+      border-radius: 5px;
+      white-space: pre-wrap;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .pass { color: #4ec9b0; }
+    .fail { color: #f48771; }
+    .warn { color: #dcdcaa; }
+  </style>
+</head>
+<body>
+  <h1>Comedy Module Test Suite</h1>
+  <div id="console"></div>
+
+  <script type="module">
+    import { runAllTests } from './comedy.test.js';
+
+    // Capture console output
+    const consoleDiv = document.getElementById('console');
+    const originalLog = console.log;
+    const originalError = console.error;
+    const originalWarn = console.warn;
+
+    console.log = (...args) => {
+      const message = args.join(' ');
+      const span = document.createElement('span');
+      if (message.includes('✓ PASS')) {
+        span.className = 'pass';
+      } else if (message.includes('✗')) {
+        span.className = 'fail';
+      }
+      span.textContent = message + '\n';
+      consoleDiv.appendChild(span);
+      originalLog.apply(console, args);
+    };
+
+    console.error = (...args) => {
+      const message = args.join(' ');
+      const span = document.createElement('span');
+      span.className = 'fail';
+      span.textContent = message + '\n';
+      consoleDiv.appendChild(span);
+      originalError.apply(console, args);
+    };
+
+    console.warn = (...args) => {
+      const message = args.join(' ');
+      const span = document.createElement('span');
+      span.className = 'warn';
+      span.textContent = message + '\n';
+      consoleDiv.appendChild(span);
+      originalWarn.apply(console, args);
+    };
+
+    // Run tests
+    runAllTests();
+  </script>
+</body>
+</html>

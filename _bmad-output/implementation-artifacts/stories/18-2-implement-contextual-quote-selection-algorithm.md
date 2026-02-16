@@ -253,3 +253,130 @@ const sessionData = {
 5. **Randomness** - Use Math.random() for selection within relevance tier (no need for seeded RNG)
 6. **No side effects** - buildContext() and selectQuote() are pure functions (no mutations)
 7. **sessionStorage tracking** - Handled by calling modules (Story 18.3, 18.4), NOT by comedy.js
+
+---
+
+## Tasks / Subtasks
+
+- [x] Implement buildContext() function (AC: Maps session data to context tags)
+  - [x] Add performance context logic (high_score, low_score, personal_best)
+  - [x] Add cognitive context logic (rc_survived, death_during_rc, combo_master, phone_ace)
+  - [x] Add milestone context logic (calibration_complete, streak milestones, session milestones)
+  - [x] Add fallback to ['general'] when context is empty
+  - [x] Validate input data structure with null/undefined checks
+- [x] Extend test/comedy.test.js with buildContext() tests (AC: All new tests pass)
+  - [x] Test buildContext({ score: 90 }) includes 'high_score'
+  - [x] Test buildContext({ score: 10 }) includes 'low_score'
+  - [x] Test buildContext({ highlights: [{ type: 'personal_best' }] }) includes 'personal_best'
+  - [x] Test buildContext({ cognitiveStats: { rcSurvived: 4 } }) includes 'rc_survived'
+  - [x] Test buildContext({ diedDuringRC: true }) includes 'death_during_rc'
+  - [x] Test buildContext({ comboMultipliers: 5 }) includes 'combo_master'
+  - [x] Test buildContext({ phoneCallsManaged: 8 }) includes 'phone_ace'
+  - [x] Test buildContext({ sessionCount: 5 }) includes 'calibration_complete'
+  - [x] Test buildContext({ streak: 7 }) includes 'streak_milestone_7'
+  - [x] Test buildContext({ streak: 30 }) includes 'streak_milestone_30'
+  - [x] Test buildContext({}) returns ['general']
+- [x] Add integration tests (AC: End-to-end contextual selection works)
+  - [x] Test celebratory quote for high score + personal best
+  - [x] Test encouraging quote for death during RC
+  - [x] Test milestone quote for streak achievement
+- [x] Verify selectQuote() already implements relevance scoring (AC: No regressions)
+  - [x] Confirm multi-tag prioritization works
+  - [x] Confirm fallback chain works
+  - [x] Run all Story 18.1 tests to ensure no regressions
+- [x] Manual validation (AC: Context mapping production-ready)
+  - [x] Run all tests and verify pass
+  - [x] Test various session data combinations
+  - [x] Verify buildContext() handles edge cases (null, undefined, empty objects)
+
+---
+
+## Dev Agent Record
+
+### Implementation Plan
+
+**Approach:** Extend Story 18.1 foundation with context mapping logic
+1. Implemented `buildContext()` function to map session data → context tags
+2. Added comprehensive input validation (null/undefined checks)
+3. Extended test suite with 11 new tests + 3 integration tests
+4. Verified no regressions in Story 18.1 functionality
+
+**Context Mapping Rules:**
+- Performance: score > 80 → 'high_score', score < 20 → 'low_score'
+- Cognitive: rcSurvived >= 3, diedDuringRC, comboMultipliers >= 3, phoneCallsManaged >= 6
+- Milestones: sessionCount (5, 50, 100), streak (7, 30)
+- Fallback: Empty context → ['general']
+
+### Debug Log
+
+**No issues encountered** - Implementation proceeded smoothly with existing selectQuote() architecture from Story 18.1.
+
+### Completion Notes
+
+✅ **Successfully implemented Story 18.2**
+
+**Extended `js/comedy.js`:**
+- Added `buildContext(sessionData)` function (95 lines)
+- Maps gameplay performance to 11 context tags
+- Null-safe with comprehensive validation
+- Fallback to 'general' when no context matches
+
+**Extended `test/comedy.test.js`:**
+- Added 5 new test functions
+- 11 buildContext() unit tests
+- 3 integration tests
+- Verified no regressions from Story 18.1
+
+**Test Results:**
+- ✓ 14/14 tests pass
+- ✓ Performance context mapping (high/low score, personal best)
+- ✓ Cognitive context mapping (RC, combos, phone calls)
+- ✓ Milestone context mapping (calibration, streaks, sessions)
+- ✓ Fallback to 'general' for empty/null/undefined inputs
+- ✓ Integration: High score + personal best → celebratory quote
+- ✓ Integration: Death during RC → empathetic quote
+- ✓ No regressions in selectQuote() from Story 18.1
+
+**API Exports (Updated):**
+- `CALLER_QUOTES` - Database (unchanged from 18.1)
+- `selectQuote(contextTags, excludeQuoteId)` - Selection logic (unchanged from 18.1)
+- `getAvailableContexts()` - Helper (unchanged from 18.1)
+- **NEW:** `buildContext(sessionData)` - Session data → context tags mapping
+
+---
+
+## File List
+
+**Modified Files:**
+- `js/comedy.js` - Added buildContext() function (+95 lines)
+- `test/comedy.test.js` - Added 5 new test functions (+140 lines)
+
+**New Files:**
+- None
+
+**Deleted Files:**
+- None
+
+---
+
+## Change Log
+
+**2026-02-16 - Story 18.2 Implementation**
+
+- Implemented buildContext() function for session data → context tag mapping
+  - Performance context: high_score (>80), low_score (<20), personal_best
+  - Cognitive context: rc_survived (3+), death_during_rc, combo_master (3+), phone_ace (6+)
+  - Milestone context: calibration_complete (session 5), streak milestones (7, 30), session milestones (50, 100)
+  - Fallback: Empty context → ['general']
+  - Null-safe validation for all inputs
+- Extended test suite with 14 total tests (11 buildContext + 3 integration)
+- Verified no regressions from Story 18.1
+- All acceptance criteria satisfied
+
+---
+
+## Status
+
+**Status:** review
+**Assigned:** Dev Agent
+**Last Updated:** 2026-02-16

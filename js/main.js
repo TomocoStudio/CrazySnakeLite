@@ -11,7 +11,7 @@ import { initAudio, resumeAudio, closeAudio, playMenuMusic, stopMenuMusic, isAud
 import { initStarRatings, initCharCounter, openFeedbackModal, closeFeedbackModal, resetFeedbackForm, getFormData, captureMetadata, formatEmailBody, formatEmailSubject, submitFeedback, showThankYouScreen, closeThankYouScreen, initFeedbackModal } from './feedback.js';
 import { showCognitiveStats, showHighlights, selectHighlights, renderStreakCounter } from './cognitive-feedback.js';
 import { trackSessionEnd, trackGameStart } from './analytics.js';
-import { selectCallerQuote } from './callers.js';
+import { buildContext, selectQuote } from './comedy.js';
 import { getCalibrationState, formatCalibrationCounter } from './calibration.js';
 import { getStreakData, formatStreakCounter, isStreakMilestone } from './streaks.js';
 import { checkAndUpdateStreak } from './streak.js';
@@ -484,13 +484,36 @@ function handleUIUpdate(state) {
             totalSessions: totalSessions
           };
 
-          // Story 14.3: Select caller quote based on performance context
-          callerQuote = selectCallerQuote(
-            { score: state.score, metrics: state.currentSessionMetrics },
-            state.cognitiveStats,
-            highlights,
-            sessionContext
-          );
+          // Story 18.3: Select caller quote using comedy.js system
+          // Build context from session data
+          const quoteContext = buildContext({
+            score: state.score,
+            highlights: highlights,
+            cognitiveStats: {
+              rcSurvived: state.cognitiveStats.rcSurvived || 0
+            },
+            diedDuringRC: state.cognitiveStats.rcDeath || false,
+            comboMultipliers: state.cognitiveStats.comboMultipliers || 0,
+            phoneCallsManaged: state.cognitiveStats.phoneCallsManaged || 0,
+            streak: streakInfo.streakDays,
+            sessionCount: totalSessions
+          });
+
+          // Get last quote ID to prevent repetition
+          const lastQuoteId = sessionStorage.getItem('lastPostGameQuoteId');
+
+          // Select quote with deduplication
+          const selectedQuote = selectQuote(quoteContext, lastQuoteId);
+
+          // Store quote ID for next session
+          sessionStorage.setItem('lastPostGameQuoteId', selectedQuote.id);
+
+          // Format for cognitive-feedback.js (expects {text, caller, portrait})
+          callerQuote = {
+            text: selectedQuote.text,
+            caller: selectedQuote.callerName,
+            portrait: selectedQuote.portrait
+          };
 
           console.log('[Epic 14] Caller quote selected:', callerQuote);
           console.log('[Epic 14] Calibration state:', calibrationInfo.state, `(${totalSessions} sessions)`);

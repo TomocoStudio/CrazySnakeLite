@@ -513,8 +513,8 @@ export function hideCognitiveStats() {
 const METRIC_DISPLAY_NAMES = {
   reactionTime: 'Reaction Time',
   spatialAwareness: 'Spatial Awareness',
-  cognitiveFlexibility: 'Cognitive Flexibility',
-  dividedAttention: 'Divided Attention',
+  cognitiveFlexibility: 'Flexibility',
+  dividedAttention: 'Attention',
   impulseControl: 'Impulse Control',
   workingMemory: 'Working Memory'
 };

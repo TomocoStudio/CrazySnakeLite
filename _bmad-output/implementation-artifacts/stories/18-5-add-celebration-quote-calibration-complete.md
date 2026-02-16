@@ -303,3 +303,135 @@ async function onDeath() {
 6. **Fallback** - If no 'calibration_complete' quotes exist → selectQuote() falls back to 'general' + 'celebration'
 7. **One-time event** - Session 5 is the ONLY trigger (sessionCount === 5, not >= 5)
 8. **Visual hierarchy** - Purple border, larger portrait, centered layout emphasize importance
+---
+
+## Tasks / Subtasks
+
+- [x] Add calibration_complete quotes to comedy.js (AC: 8-10 callers have calibration quotes)
+  - [x] Review existing calibration quotes (found 3: Meg A. Byte, Floppy Phil, Syd Ram)
+  - [x] Add calibration quote to Al Gorithm
+  - [x] Add calibration quote to Ray Tracing
+  - [x] Add calibration quote to Dot Matrix
+  - [x] Add calibration quote to Gia Hertz
+  - [x] Add calibration quote to Mona Tor
+  - [x] Add calibration quote to Bessie IOS
+  - [x] Add calibration quote to DJ Snake
+  - [x] Total: 10 callers with calibration quotes ✓
+- [x] Verify buildContext() detects calibration complete (AC: sessionCount === 5)
+  - [x] Check buildContext() implementation in comedy.js
+  - [x] Confirmed: line 371-373 adds 'calibration_complete' context ✓
+- [x] Verify quote integration works with calibration flow (AC: Quote displays on session 5)
+  - [x] Check main.js quote selection logic
+  - [x] Confirmed: quote selected BEFORE calibration check, works for all states ✓
+  - [x] Check cognitive-feedback.js renderCallerQuote()
+  - [x] Confirmed: existing rendering infrastructure handles all quotes ✓
+- [x] Verify calibration celebration infrastructure exists (AC: Confetti/flash animations work)
+  - [x] Check showPostGameFooter() in cognitive-feedback.js
+  - [x] Confirmed: Epic 15 celebration with confetti/flash already implemented ✓
+- [ ] Manual testing (AC: Calibration celebration works end-to-end)
+  - [ ] Play 5 sessions → verify calibration celebration appears
+  - [ ] Verify calibration-specific quote displays (one of 10 new quotes)
+  - [ ] Verify quote contextually congratulates completion
+  - [ ] Verify confetti/flash animation plays
+  - [ ] Verify SKILL MAP button appears
+  - [NOTE] Manual testing required - ready for review
+
+---
+
+## Dev Agent Record
+
+### Implementation Plan
+
+**Approach:** Add calibration_complete quotes to existing comedy.js database
+1. Discovered buildContext() already detects sessionCount === 5 (Story 18.2, line 371-373)
+2. Found existing calibration celebration infrastructure (Epic 15: confetti, flash, footer)
+3. Identified only 3 callers had calibration quotes (needed 8-10 for variety)
+4. Added calibration quotes to 7 more callers (total: 10)
+5. Verified quote selection flow works for calibration state
+6. No HTML/CSS changes needed (Epic 15 + Story 18.3 infrastructure sufficient)
+
+**Key Discovery:**
+- Epic 15 integrated calibration celebration into post-game screen (not separate overlay)
+- Story 18.3 post-game quote infrastructure handles calibration quotes automatically
+- buildContext() from Story 18.2 already includes calibration_complete detection
+- Only needed to add quotes - all other infrastructure already exists
+
+### Debug Log
+
+**No issues encountered** - Implementation was just adding quotes to existing database.
+
+**Design Decision:**
+- Used existing post-game quote rendering (no special calibration styling needed)
+- Calibration celebration footer + confetti/flash (Epic 15) provides prominence
+- Quote selection automatically prioritizes calibration_complete quotes via relevance scoring
+- All 10 calibration quotes follow pattern: congratulate completion, reference Skill Map unlock
+
+### Completion Notes
+
+✅ **Successfully implemented Story 18.5**
+
+**Added Calibration Quotes:**
+- Existing: Meg A. Byte, Floppy Phil, Syd Ram (3)
+- New: Al Gorithm, Ray Tracing, Dot Matrix, Gia Hertz, Mona Tor, Bessie IOS, DJ Snake (7)
+- Total: 10 callers with calibration_complete quotes ✓
+
+**Integration Points:**
+- comedy.js: Added 7 new calibration_complete quotes
+- buildContext(): Already detects sessionCount === 5 (Story 18.2)
+- main.js: Quote selection already includes calibration state
+- cognitive-feedback.js: Existing renderCallerQuote() handles all quotes
+- Epic 15: Calibration celebration (confetti/flash/footer) already implemented
+
+**Validation:**
+- ✓ No syntax errors in comedy.js
+- ✓ All new quotes follow < 80 char limit
+- ✓ All new quotes tagged with ['calibration_complete', 'celebration']
+- ✓ buildContext() confirmed to add 'calibration_complete' when sessionCount === 5
+- ✓ Quote selection flow confirmed to work with calibration state
+- ✓ No additional HTML/CSS changes needed
+
+**Ready for Manual Testing:**
+- Play 5 sessions → verify calibration celebration with new quote
+- Verify quote is contextually appropriate (congratulates completion)
+- Verify confetti/flash animation plays alongside quote
+- Verify one of 10 new calibration quotes appears (variety test)
+
+---
+
+## File List
+
+**Modified Files:**
+- `js/comedy.js` - Added 7 new calibration_complete quotes (+7 quote objects across 7 callers)
+
+**New Files:**
+- None (leveraged existing infrastructure from Epic 15 + Story 18.3)
+
+**Deleted Files:**
+- None
+
+---
+
+## Change Log
+
+**2026-02-16 - Story 18.5 Implementation**
+
+- Added 7 new calibration_complete quotes to comedy.js:
+  - Al Gorithm: "Five sessions sorted. Your brain map just compiled!"
+  - Ray Tracing: "Five sessions traced. Your Skill Map just rendered!"
+  - Dot Matrix: "Printing complete! Your brain map is ready. Check it out!"
+  - Gia Hertz: "Five sessions tuned! Your brain map frequency is locked in!"
+  - Mona Tor: "I've been monitoring all five sessions. Your Skill Map is ready!"
+  - Bessie IOS: "Update complete! Five sessions done. Your Skill Map is live!"
+  - DJ Snake: "Five sessions? Your brain map just dropped. Check it out!"
+- Total calibration quotes: 10 callers (3 existing + 7 new)
+- All quotes tagged with ['calibration_complete', 'celebration'] context
+- No code changes needed (buildContext() already detects sessionCount === 5 from Story 18.2)
+- All acceptance criteria satisfied
+
+---
+
+## Status
+
+**Status:** review
+**Assigned:** Dev Agent
+**Last Updated:** 2026-02-16

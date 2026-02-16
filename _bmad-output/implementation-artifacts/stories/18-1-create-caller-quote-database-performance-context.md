@@ -227,3 +227,141 @@ function selectQuote(contextTags, excludeQuoteId = null) {
 5. **Start with 3 quotes per caller** - Can expand to 5 later (minimum viable: 63 quotes total)
 6. **Null safety** - Always return valid quote object (never null/undefined)
 7. **Module boundary** - comedy.js ONLY handles quote data and selection logic, NOT UI rendering
+
+---
+
+## Tasks / Subtasks
+
+- [x] Create js/comedy.js module foundation (AC: Module loads without errors)
+  - [x] Create file with module header comment
+  - [x] Import CALLERS from phone.js for reference
+  - [x] Set up module exports structure
+- [x] Build CALLER_QUOTES database (AC: 21 callers with 3+ quotes each)
+  - [x] Map all 21 callers from phone.js to CALLER_QUOTES structure
+  - [x] Write 3 quotes per caller with context tags (minimum 63 quotes total)
+  - [x] Ensure unique quote IDs (format: {caller-slug}-{context}-{number})
+  - [x] Verify each quote has 1+ context tags from taxonomy
+  - [x] Validate quote text length < 80 characters
+  - [x] Verify portrait paths match phone.js pattern
+- [x] Implement selectQuote() function (AC: Context-based quote selection works)
+  - [x] Filter quotes matching ANY context tag
+  - [x] Implement relevance scoring (multi-tag matches prioritized)
+  - [x] Sort by relevance score (descending)
+  - [x] Implement excludeQuoteId filtering
+  - [x] Implement fallback to 'general' context if no matches
+  - [x] Random selection from top-relevance tier
+  - [x] Return object with all required fields
+- [x] Implement getAvailableContexts() helper (AC: Returns all context tags)
+  - [x] Extract unique context tags from all quotes
+  - [x] Return sorted array of context strings
+- [x] Create test/comedy.test.js unit tests (AC: All tests pass)
+  - [x] Test selectQuote(['high_score']) returns high_score quote
+  - [x] Test multi-tag relevance prioritization
+  - [x] Test excludeQuoteId parameter works
+  - [x] Test fallback to 'general' context
+  - [x] Test all 21 callers have 3+ quotes
+  - [x] Test all quote IDs are unique
+  - [x] Test quote text length < 80 characters
+  - [x] Test variety (10 selections return different quotes if pool > 10)
+- [x] Manual validation (AC: Quote database production-ready)
+  - [x] Run tests and verify all pass
+  - [x] Check console for no duplicate quoteIds
+  - [x] Verify module loads without errors
+  - [x] Check portrait path format matches phone.js
+
+---
+
+## Dev Agent Record
+
+### Implementation Plan
+
+**Approach:** TDD (Test-Driven Development)
+1. Created comprehensive test suite in `test/comedy.test.js` covering all acceptance criteria
+2. Implemented `comedy.js` module with CALLER_QUOTES database (21 callers, 63 quotes)
+3. Implemented `selectQuote()` with relevance scoring algorithm
+4. Implemented `getAvailableContexts()` helper
+5. Validated all tests pass
+
+**Database Structure:**
+- All 21 callers from `phone.js` mapped with matching portraits
+- Each caller has 3 quotes minimum (63 total quotes)
+- Quote IDs follow format: `{caller-slug}-{context}-{number}`
+- 16 unique context tags across all quotes
+- All quotes under 80 characters (max: 63 chars)
+
+### Debug Log
+
+**Issue 1: Curly Quotes**
+- **Problem:** Syntax error due to curly apostrophes (') in quote strings
+- **Solution:** Used Python script to replace all curly quotes with straight quotes
+- **Impact:** Module now loads successfully without syntax errors
+
+**Issue 2: Apostrophe in Single-Quoted String**
+- **Problem:** Line 159 had apostrophe in "You're" within single-quoted string
+- **Solution:** Changed to double-quoted string to properly escape apostrophe
+- **Impact:** Fixed final syntax error preventing module load
+
+### Completion Notes
+
+✅ **Successfully implemented Story 18.1**
+
+**Created:**
+- `js/comedy.js` - Caller quote database module with selection logic
+- `test/comedy.test.js` - Comprehensive unit test suite
+- `test/test-runner-comedy.html` - Browser-based test runner
+
+**Validation Results:**
+- ✓ 21 callers present with correct names/portraits
+- ✓ 63 total quotes (3 per caller minimum)
+- ✓ All quote IDs unique
+- ✓ All quotes under 80 characters
+- ✓ 16 context tags available
+- ✓ selectQuote() returns valid objects
+- ✓ Fallback to 'general' context works
+- ✓ excludeQuoteId filtering works
+- ✓ All 8 unit tests pass
+
+**Module Exports:**
+- `CALLER_QUOTES` - Database of 21 callers with contextual quotes
+- `selectQuote(contextTags, excludeQuoteId)` - Context-based quote selection
+- `getAvailableContexts()` - Returns array of all context tags
+
+---
+
+## File List
+
+**New Files:**
+- `js/comedy.js` - Caller quote database and selection logic module
+- `test/comedy.test.js` - Unit test suite for comedy module
+- `test/test-runner-comedy.html` - Browser test runner for comedy tests
+
+**Modified Files:**
+- None
+
+**Deleted Files:**
+- None
+
+---
+
+## Change Log
+
+**2026-02-16 - Story 18.1 Implementation**
+
+- Created comedy.js module with CALLER_QUOTES database (21 callers, 63 quotes, 16 context tags)
+- Implemented selectQuote() function with relevance scoring algorithm
+  - Filters quotes by context tags
+  - Prioritizes multi-tag matches
+  - Supports excludeQuoteId for variety
+  - Falls back to 'general' context
+- Implemented getAvailableContexts() helper function
+- Created comprehensive test suite (8 tests, all passing)
+- Fixed curly quote syntax errors for production readiness
+- All acceptance criteria satisfied
+
+---
+
+## Status
+
+**Status:** review
+**Assigned:** Dev Agent
+**Last Updated:** 2026-02-16

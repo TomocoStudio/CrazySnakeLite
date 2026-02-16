@@ -2,8 +2,10 @@
 // Story 16.1: Dashboard skeleton (rendering logic filled in 16.2-16.8)
 // Story 16.9: Performance optimizations (DOM caching, batching, cleanup)
 // Story 17.5: Streak display integration
+// Story 18.4: Comedy.js integration for rotating quotes
 import { getProfile, getStreak } from './storage.js';
 import { CONFIG } from './config.js';
+import { selectQuote } from './comedy.js';
 
 // Story 16.9: Cached DOM references for performance
 let barsContainer, calloutsContainer, statsContainer, quoteContainer;
@@ -281,59 +283,43 @@ function renderSessionStats(totalSessions, currentStreak) {
 
 /**
  * Select a dashboard quote based on current profile state
- * Story 16.5: Prioritizes milestone > domain-specific > general
- * Never shows same quote twice in a row
+ * Story 18.4: Replaced old system with comedy.js integration
+ * Uses comedy.js for quote selection with sessionStorage deduplication
  * @param {Object} profile - Player profile from storage
  * @returns {Object} - { text, caller, portrait }
  */
 function selectDashboardQuote(profile) {
-  const { totalSessions, currentStreak, domainScores, lastQuote } = profile;
+  const { totalSessions, currentStreak } = profile;
 
-  let quotePool = [];
-  let context = 'general';
+  // Build context tags for quote selection
+  const context = ['general'];  // Always include general as fallback
 
-  // Priority 1: Milestone quotes (7-day, 30-day, 50/100 sessions)
-  if (currentStreak === 7 || currentStreak === 30) {
-    quotePool = CONFIG.DASHBOARD.QUOTES.milestone;
-    context = 'milestone';
-  } else if (totalSessions === 50 || totalSessions === 100) {
-    quotePool = CONFIG.DASHBOARD.QUOTES.milestone;
-    context = 'milestone';
-  }
-  // Priority 2: Domain-specific quotes (strongest domain)
-  else {
-    const strongestDomain = determineStrongestDomain(domainScores);
-    const domainQuotes = CONFIG.DASHBOARD.QUOTES.domainSpecific[strongestDomain];
+  // Add milestone contexts
+  if (currentStreak === 7) context.push('streak_milestone_7');
+  if (currentStreak === 30) context.push('streak_milestone_30');
+  if (currentStreak > 0) context.push('streak_active');
 
-    // 30% chance to show domain-specific quote, 70% general
-    if (domainQuotes && Math.random() < 0.3) {
-      quotePool = domainQuotes;
-      context = 'domain';
-    }
-  }
+  if (totalSessions === 50) context.push('session_50');
+  if (totalSessions === 100) context.push('session_100');
 
-  // Fallback to general pool
-  if (quotePool.length === 0) {
-    quotePool = CONFIG.DASHBOARD.QUOTES.general;
-    context = 'general';
-  }
+  // Get last Skill Map quote ID (separate from post-game)
+  const lastQuoteId = sessionStorage.getItem('lastSkillMapQuoteId');
 
-  // Select random quote, avoiding last shown
-  let selectedQuote;
-  if (quotePool.length === 1) {
-    selectedQuote = quotePool[0];
-  } else {
-    const availableQuotes = quotePool.filter(q => q.text !== lastQuote);
-    if (availableQuotes.length === 0) {
-      // If all quotes match lastQuote (shouldn't happen), pick random
-      selectedQuote = quotePool[Math.floor(Math.random() * quotePool.length)];
-    } else {
-      selectedQuote = availableQuotes[Math.floor(Math.random() * availableQuotes.length)];
-    }
-  }
+  // Select quote using comedy.js with deduplication
+  const selectedQuote = selectQuote(context, lastQuoteId);
 
-  console.log('[Story 16.5] Quote selected:', { context, text: selectedQuote.text, caller: selectedQuote.caller });
-  return selectedQuote;
+  // Store quote ID for next visit
+  sessionStorage.setItem('lastSkillMapQuoteId', selectedQuote.id);
+
+  // Map to expected format
+  const quote = {
+    text: selectedQuote.text,
+    caller: selectedQuote.callerName,
+    portrait: selectedQuote.portrait
+  };
+
+  console.log('[Story 18.4] Skill Map quote selected:', { context, text: quote.text, caller: quote.caller });
+  return quote;
 }
 
 /**
@@ -491,8 +477,8 @@ function getDomainFullName(key) {
   const names = {
     reactionTime: 'Reaction Time',
     spatialAwareness: 'Spatial Awareness',
-    cognitiveFlexibility: 'Cognitive Flexibility',
-    dividedAttention: 'Divided Attention',
+    cognitiveFlexibility: 'Flexibility',
+    dividedAttention: 'Attention',
     impulseControl: 'Impulse Control',
     workingMemory: 'Working Memory'
   };
