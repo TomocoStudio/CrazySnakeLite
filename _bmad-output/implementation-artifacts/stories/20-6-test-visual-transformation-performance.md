@@ -2,9 +2,9 @@
 
 **Epic:** 20 - Progressive Arcade Transformation (Neon Noir)
 **Story ID:** 20.6
-**Status:** 🔴 NOT STARTED
+**Status:** ✅ REVIEW (Test Infrastructure Ready - Awaiting Manual Testing)
 **Created:** 2026-02-16
-**Completed:** —
+**Completed:** 2026-02-17
 
 ---
 
@@ -48,33 +48,38 @@
 
 ## Tasks / Subtasks
 
-- [ ] Create test plan document
-  - [ ] Visual transformation test scenarios
-  - [ ] Performance validation procedures
-  - [ ] Emotional arc assessment criteria
-  - [ ] Edge case test matrix
-- [ ] Execute visual transformation tests
+- [x] Create test plan document
+  - [x] Visual transformation test scenarios (TESTING-GUIDE.md)
+  - [x] Performance validation procedures (DevTools instructions)
+  - [x] Emotional arc assessment criteria (playtester questions)
+  - [x] Edge case test matrix (6 edge case scenarios)
+- [x] Create test infrastructure
+  - [x] Test report template (epic-20-test-report.md)
+  - [x] Testing guide with step-by-step instructions
+  - [x] Screenshots directory with README
+  - [x] 46 test cases documented with pass/fail checkboxes
+- [ ] Execute visual transformation tests (MANUAL - awaiting tester)
   - [ ] Verify all 6 background tiers (colors, thresholds)
   - [ ] Verify all 6 grid opacity tiers (values, synchronization)
   - [ ] Verify all 7 border states (colors, priority cascade)
   - [ ] Verify transition smoothness (2s background, 300ms border)
-- [ ] Execute performance tests
+- [ ] Execute performance tests (MANUAL - awaiting tester)
   - [ ] Measure FPS during tier transitions (DevTools Performance tab)
   - [ ] Verify GPU compositing (DevTools Rendering tab)
   - [ ] Count tier changes per game (console logs)
   - [ ] Measure memory usage (DevTools Memory tab)
-- [ ] Execute emotional arc assessment
+- [ ] Execute emotional arc assessment (MANUAL - awaiting 3+ playtesters)
   - [ ] Playtest tier-0/1 (safe daylight feel)
   - [ ] Playtest tier-2/3 (building intensity feel)
   - [ ] Playtest tier-4/5 (Neon Noir / final boss feel)
-- [ ] Execute edge case tests
+- [ ] Execute edge case tests (MANUAL - awaiting tester)
   - [ ] Rapid tier crossing (combo multiplier)
   - [ ] Game reset (new game, return to menu)
   - [ ] Overlapping border states (priority cascade)
-- [ ] Document test results
-  - [ ] Create test report with pass/fail for each criterion
-  - [ ] Include screenshots at each tier
-  - [ ] Include DevTools performance data
+- [ ] Document test results (MANUAL - after testing complete)
+  - [ ] Fill in test report with pass/fail for each criterion
+  - [ ] Capture and save screenshots at each tier
+  - [ ] Collect and record DevTools performance data
 
 ---
 
@@ -393,17 +398,125 @@ NFR-V3-8 (GPU Optimization via CSS compositing)
 
 ### Agent Model Used
 
-_To be filled by QA/Dev agent_
+Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 
 ### Debug Log References
 
-_To be filled by QA/Dev agent_
+None - Test infrastructure creation only (no debugging required)
 
 ### Completion Notes List
 
-_To be filled by QA/Dev agent_
+**Test Infrastructure Created:**
+
+This is a **manual testing story** that requires human QA execution. As an AI dev agent, I cannot play the game, observe visual progressions, gather subjective feedback, or take screenshots. Instead, I've created comprehensive test infrastructure for manual execution:
+
+✅ **Created: epic-20-test-report.md (46 test cases)**
+- 7 test suites covering all Epic 20 functionality
+- Pass/fail checkboxes for each test
+- Space for screenshots, performance data, playtester feedback
+- Issue tracking sections
+- Final sign-off checklist
+- Professional test report format ready for completion
+
+✅ **Created: TESTING-GUIDE.md (step-by-step instructions)**
+- Quick start testing checklist (~2 hours total time)
+- Detailed procedures for each test suite
+- DevTools usage instructions (Performance, Rendering, Memory tabs)
+- Screenshot capture instructions
+- Common issues and debugging tips
+- Time estimates for each test suite
+- Cross-browser testing procedures
+
+✅ **Created: screenshots/README.md**
+- Screenshot capture instructions (macOS/Windows/Browser)
+- Required screenshot checklist (11 screenshots)
+- Naming conventions for consistency
+- Screenshot best practices
+- Example directory structure
+
+✅ **Directory Structure:**
+```
+_bmad-output/implementation-artifacts/test-reports/
+├── epic-20-test-report.md          ← Fill in after manual testing
+├── TESTING-GUIDE.md                ← Step-by-step testing instructions
+└── screenshots/
+    ├── README.md                   ← Screenshot capture guide
+    └── [screenshots go here]       ← Save 11 required screenshots
+```
+
+**What Was Created:**
+
+**1. Comprehensive Test Report Template (epic-20-test-report.md):**
+- Test Suite 1: Background Tiers (7 tests)
+- Test Suite 2: Grid Opacity (8 tests)
+- Test Suite 3: Border States (11 tests)
+- Test Suite 4: Performance (5 tests)
+- Test Suite 5: Emotional Arc (5 tests)
+- Test Suite 6: Edge Cases (6 tests)
+- Test Suite 7: Integration (4 tests)
+- **Total: 46 test cases** with pass/fail tracking
+- Issues tracking section
+- Performance data collection tables
+- Playtester feedback forms (3+ testers)
+- Final sign-off checklist
+
+**2. Step-by-Step Testing Guide (TESTING-GUIDE.md):**
+- Quick start checklist (7 test procedures)
+- DevTools setup instructions for:
+  - FPS measurement (Performance tab)
+  - GPU compositing verification (Rendering tab)
+  - Memory leak detection (Memory tab)
+  - Console log counting (event-driven validation)
+- Screenshot naming conventions
+- Time estimates (~2 hours total)
+- Common issues and debugging tips
+- Cross-browser testing procedures
+
+**3. Screenshot Infrastructure:**
+- Created screenshots/ directory
+- README with capture instructions
+- 11 required screenshots checklist:
+  - 6 tier screenshots (tier-0 through tier-5)
+  - 5 border state screenshots (death, phone ring, phone pickup, combo, effects)
+  - Optional DevTools screenshots
+
+**Testing Scope:**
+- **Functional:** All 6 background tiers, 6 grid opacity tiers, 7 border states
+- **Performance:** FPS ≥58, GPU compositing, event-driven updates, no memory leaks
+- **UX:** Emotional progression (safe → intense → Neon Noir)
+- **Edge Cases:** Rapid crossing, resets, overlapping states
+- **Integration:** Background + grid + border synchronization
+- **Cross-Browser:** Chrome, Firefox, Safari
+
+**Next Steps (Manual Execution Required):**
+1. Open game in browser
+2. Follow TESTING-GUIDE.md step-by-step
+3. Fill in epic-20-test-report.md with results
+4. Capture 11 required screenshots
+5. Calculate pass rate (target: ≥95%, or 44/46 tests)
+6. Sign off if all critical tests pass
+
+**Note:** Manual testing cannot be automated as it requires:
+- Visual observation of color changes and transitions
+- Subjective assessment of emotional progression
+- DevTools performance profiling
+- Screenshot capture
+- Playtester feedback collection (3+ people)
 
 ### File List
 
-- _bmad-output/implementation-artifacts/test-reports/epic-20-test-report.md (new - test results document)
-- _bmad-output/implementation-artifacts/test-reports/screenshots/ (new - tier screenshots)
+- _bmad-output/implementation-artifacts/test-reports/epic-20-test-report.md (created - comprehensive test report template with 46 test cases)
+- _bmad-output/implementation-artifacts/test-reports/TESTING-GUIDE.md (created - step-by-step testing instructions)
+- _bmad-output/implementation-artifacts/test-reports/screenshots/ (created - directory for test screenshots)
+- _bmad-output/implementation-artifacts/test-reports/screenshots/README.md (created - screenshot capture guide)
+
+### Change Log
+
+**2026-02-17:** Story 20.6 test infrastructure ready - Awaiting manual testing execution
+- Created comprehensive test report template with 46 test cases across 7 test suites
+- Created step-by-step testing guide with DevTools instructions and time estimates
+- Created screenshot directory with capture instructions and naming conventions
+- Test infrastructure covers: visual transformation (background/grid/border), performance (FPS/GPU/memory), emotional arc, edge cases, integration, cross-browser
+- Ready for manual QA execution (~2 hours total testing time)
+- Pass rate target: ≥95% (44/46 tests) with all critical tests passing
+- After manual testing complete: fill in test report, mark story as done, proceed to Epic 20 retrospective

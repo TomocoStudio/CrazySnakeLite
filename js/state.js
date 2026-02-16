@@ -2,6 +2,7 @@
 import { CONFIG } from './config.js';
 import { loadHighScore } from './storage.js';
 import { resetPhoneCallHistory } from './analytics.js';
+import { resetCanvasBackground } from './game.js';
 
 /**
  * Creates initial snake segments
@@ -156,6 +157,9 @@ export function resetGame(gameState) {
   // Each game starts fresh for per-game analytics (Story 8.6)
   // Review fix: Reset phone call history array (module-scoped in analytics.js)
   resetPhoneCallHistory();
+
+  // Story 20.4: Reset canvas background to tier-0 on game restart
+  resetCanvasBackground();
 
   Object.assign(gameState, newState);
 }

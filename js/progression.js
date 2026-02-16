@@ -79,12 +79,40 @@ function resolveThreshold(score, thresholds) {
 }
 
 /**
- * Get current progression state for all 8 visual/gameplay fields
- * Story 19.1: Unified progression system (3 existing + 5 new visual fields)
+ * Generic threshold resolver for Epic 20 progression configs (Story 20.2, 20.3)
+ * Supports both colors (background) and values (gridOpacity) arrays
  * @param {number} score - Current game score
- * @returns {Object} Current state with 8 fields:
+ * @param {Object} config - Config object with thresholds and colors/values arrays
+ * @returns {*} Resolved value (hex string, float, etc.)
+ */
+function resolveProgressionTier(score, config) {
+  const { thresholds, colors, values } = config;
+  const dataArray = colors || values;  // Support both array types
+  const normalizedScore = Math.max(0, score);
+
+  // Find the highest threshold <= score
+  let tierIndex = 0;
+  for (let i = thresholds.length - 1; i >= 0; i--) {
+    if (normalizedScore >= thresholds[i]) {
+      tierIndex = i;
+      break;
+    }
+  }
+
+  return dataArray[tierIndex];  // Return tier value (color or opacity)
+}
+
+/**
+ * Get current progression state for all visual/gameplay fields
+ * Story 19.1: Unified progression system (3 existing + 5 new visual fields)
+ * Story 20.2: Added background field for CSS/Canvas hybrid rendering
+ * Story 20.3: Added gridOpacity field for progressive grid dimming
+ * @param {number} score - Current game score
+ * @returns {Object} Current state with 10 fields:
  *   - speed, phoneFrequency, effectChance (existing V1/V2 fields)
- *   - glowIntensity, gridOpacity, backgroundColor, gridLineColor, gridDotOpacity (new V4 visual fields)
+ *   - glowIntensity, backgroundColor, gridLineColor, gridDotOpacity (V4 Epic 19 canvas visual fields)
+ *   - background (V4 Epic 20 CSS background color - Story 20.2)
+ *   - gridOpacity (V4 Epic 20 progressive grid dimming - Story 20.3)
  */
 export function getState(score) {
   return {
@@ -94,11 +122,14 @@ export function getState(score) {
     phoneFrequency: resolveThreshold(score, CONFIG.PHONE_CALL_TIERS), // Placeholder - returns tier object
     effectChance: resolveThreshold(score, CONFIG.COMBO_PROBABILITIES),
 
-    // New visual fields (V4) - Story 19.1
+    // V4 Epic 19: Canvas visual fields - for canvas rendering
     glowIntensity: resolveThreshold(score, CONFIG.GLOW_INTENSITY_THRESHOLDS),
-    gridOpacity: resolveThreshold(score, CONFIG.GRID_OPACITY_THRESHOLDS),
     backgroundColor: resolveThreshold(score, CONFIG.BACKGROUND_THRESHOLDS),
     gridLineColor: resolveThreshold(score, CONFIG.GRID_LINE_THRESHOLDS),
-    gridDotOpacity: resolveThreshold(score, CONFIG.GRID_DOT_OPACITY_THRESHOLDS)
+    gridDotOpacity: resolveThreshold(score, CONFIG.GRID_DOT_OPACITY_THRESHOLDS),
+
+    // V4 Epic 20: CSS/Canvas hybrid + Progressive visual transformation
+    background: resolveProgressionTier(score, CONFIG.BACKGROUND_PROGRESSION),  // Story 20.2: CSS background
+    gridOpacity: resolveProgressionTier(score, CONFIG.GRID_OPACITY_PROGRESSION)  // Story 20.3: Grid dimming
   };
 }

@@ -252,13 +252,13 @@ development_status:
   epic-19-retrospective: optional
 
   # Epic 20: Progressive Arcade Transformation
-  epic-20: backlog
-  20-1-define-css-tier-system: backlog
-  20-2-implement-css-canvas-hybrid-rendering: backlog
-  20-3-create-progressive-grid-opacity-system: backlog
-  20-4-implement-background-transition-logic: backlog
-  20-5-create-event-driven-border-foundation: backlog
-  20-6-test-visual-transformation-performance: backlog
+  epic-20: in-progress
+  20-1-define-css-tier-system: review
+  20-2-implement-css-canvas-hybrid-rendering: review
+  20-3-create-progressive-grid-opacity-system: review
+  20-4-implement-background-transition-logic: review
+  20-5-create-event-driven-border-foundation: review
+  20-6-test-visual-transformation-performance: review
   epic-20-retrospective: optional
 
   # Epic 21: Immersive Arcade Polish

@@ -416,5 +416,59 @@ export const CONFIG = {
     { minScore: 50,  maxScore: 79,  opacity: 0.15 },   // Faint dots emerge
     { minScore: 80,  maxScore: 99,  opacity: 0.25 },   // Medium intensity
     { minScore: 100, maxScore: Infinity, opacity: 0.35 }  // Full dot visibility
-  ]
+  ],
+
+  // ========================================================================
+  // EPIC 20: CSS/CANVAS HYBRID VISUAL TRANSFORMATION (Story 20.1)
+  // GPU-composited CSS background color transitions (not canvas fillRect)
+  // ========================================================================
+
+  // V4: Progressive Visual Transformation - Background Color Tiers (Story 20.1)
+  // 6 score thresholds for CSS background color transitions
+  BACKGROUND_PROGRESSION: {
+    // 6 score thresholds for background color tiers
+    thresholds: [0, 15, 30, 50, 75, 100],
+
+    // 6 background colors (light grey → near-black)
+    colors: [
+      '#e8e8e8',  // tier-0 (0-14): Safe daylight
+      '#d0d0d0',  // tier-1 (15-29): Slight tension
+      '#b8b8b8',  // tier-2 (30-49): Warm-up complete
+      '#808080',  // tier-3 (50-74): Building intensity
+      '#505050',  // tier-4 (75-99): Serious arcade
+      '#1a1a1a'   // tier-5 (100+): Full Neon Noir
+    ]
+  },
+
+  // V4: Grid Opacity Dimming - Progressive Scaffolding Removal (Story 20.3)
+  // Same thresholds as background for synchronized visual progression
+  GRID_OPACITY_PROGRESSION: {
+    // Reuse BACKGROUND_PROGRESSION thresholds (same 6 tiers)
+    thresholds: [0, 15, 30, 50, 75, 100],
+
+    // 6 opacity values (strong → ghost)
+    values: [
+      0.9,   // tier-0 (0-14): Strong scaffolding
+      0.75,  // tier-1 (15-29): Slight fade
+      0.6,   // tier-2 (30-49): Moderate fade
+      0.5,   // tier-3 (50-74): Half opacity
+      0.4,   // tier-4 (75-99): Faint
+      0.3    // tier-5 (100+): Ghost lines (WCAG minimum, NFR-V3-3)
+    ]
+  },
+
+  // V4: Reactive Border System (Epic 20 foundation, Epic 21 full implementation)
+  // Story 20.5: Event-driven border state management with priority cascade
+  // 7 border states communicate game state at a glance
+  BORDER_COLORS: {
+    death: '#FF0000',           // Red (500ms flash, highest priority)
+    phoneRing: '#FFD700',       // Gold (decision point, 2nd priority)
+    phonePickup: '#28a745',     // Green (committed, 3rd priority)
+    combo: null,                // Dynamic (set from gameState.combo.canvasColor, 4th priority)
+    reverseControls: '#FFA500', // Orange (5th priority)
+    invincibility: '#FFFF00',   // Yellow (6th priority)
+    default: '#9D4EDD'          // Purple (lowest priority, base state)
+  },
+
+  BORDER_DEATH_FLASH_DURATION: 500  // Death flash duration (ms)
 };

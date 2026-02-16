@@ -10,7 +10,7 @@ import { trackPhoneCall, trackFoodEaten, trackPhoneCallEvent, trackGameOver } fr
 import { playMoveSound, playDeathSound, playJackpot, playLegendary, playComboExit } from './audio.js';
 import { getFoodScore } from './scoring.js';
 import { spawnPopup, spawnPhoneBonusPopup, spawnComboPopup, spawnParticles, triggerScreenShake, gridToPixel, spawnFlash } from './score-popup.js';
-import { getComboProbability } from './progression.js';
+import { getComboProbability, getState as getProgressionState } from './progression.js';
 import { activateCombo, isComboActive, exitCombo } from './combo.js';
 import {
   calculateReactionTime,
@@ -31,6 +31,12 @@ let accumulator = 0;
 
 // UI update callback (set by main.js)
 let uiUpdateCallback = null;
+
+// Story 20.2: Track previous background tier for CSS/Canvas hybrid rendering
+let lastBackground = null;
+
+// Story 20.5: Track death flash state for border priority cascade
+let deathFlashActive = false;
 
 /**
  * Main game loop - Fixed timestep + RAF
@@ -77,6 +83,110 @@ export function gameLoop(currentTime, ctx, gameState) {
 }
 
 /**
+ * Update canvas background color based on score tier and combo mode (Story 20.2)
+ * CSS/Canvas hybrid rendering: CSS handles background transitions, canvas handles game objects
+ * Event-driven: Only updates when tier changes OR combo state changes (NOT every frame)
+ * @param {Object} gameState - Current game state
+ */
+function updateCanvasBackground(gameState) {
+  const canvas = document.getElementById('game-canvas');
+
+  // Combo mode: Use inverted background (darker)
+  // Normal mode: Use progression-based background (light → dark)
+  const background = isComboActive(gameState)
+    ? CONFIG.COLORS.comboBackground
+    : getProgressionState(gameState.score).background;
+
+  // Only update if background changed (event-driven, not per-frame)
+  if (background !== lastBackground) {
+    canvas.style.backgroundColor = background;
+    lastBackground = background;
+
+    const mode = isComboActive(gameState) ? 'COMBO' : 'NORMAL';
+    console.log(`[V4] Background changed to ${background} (${mode}) at score ${gameState.score}`);
+  }
+}
+
+/**
+ * Reset canvas background to tier-0 default on game restart (Story 20.4)
+ * Called when starting a new game to ensure clean visual state
+ */
+export function resetCanvasBackground() {
+  const canvas = document.getElementById('game-canvas');
+  canvas.style.backgroundColor = '#e8e8e8';  // tier-0 default
+  lastBackground = '#e8e8e8';
+
+  console.log('[V4] Background reset to tier-0 (#e8e8e8)');
+}
+
+/**
+ * Update canvas border color based on game state priority cascade (Story 20.5)
+ * Event-driven: called ONLY when game state changes (death, phone, combo, effects)
+ *
+ * Priority cascade (highest to lowest):
+ * 1. Death flash (red, 500ms) - highest priority
+ * 2. Phone ring (gold) - decision point
+ * 3. Phone pickup (green) - committed
+ * 4. Combo (dynamic) - multiplier active
+ * 5. Reverse Controls (orange) - disorienting effect
+ * 6. Invincibility (yellow) - protected state
+ * 7. Default (purple) - base state
+ *
+ * @param {Object} gameState - Current game state
+ */
+export function updateBorderState(gameState) {
+  const canvas = document.getElementById('game-canvas');
+
+  // Priority cascade evaluation (highest to lowest)
+
+  // 1. Death flash (500ms, highest priority)
+  if (deathFlashActive) {
+    canvas.style.borderColor = CONFIG.BORDER_COLORS.death;
+    console.log('[V4] Border → death flash (red)');
+    return;
+  }
+
+  // 2. Phone ring (gold, decision point)
+  if (gameState.phoneCall.active && !gameState.phoneCall.pickedUp) {
+    canvas.style.borderColor = CONFIG.BORDER_COLORS.phoneRing;
+    console.log('[V4] Border → phone ring (gold)');
+    return;
+  }
+
+  // 3. Phone pickup (green, committed)
+  if (gameState.phoneCall.pickedUp && gameState.phoneCall.pickUpEndTime > Date.now()) {
+    canvas.style.borderColor = CONFIG.BORDER_COLORS.phonePickup;
+    console.log('[V4] Border → phone pickup (green)');
+    return;
+  }
+
+  // 4. Combo (dynamic color from combo system)
+  if (gameState.combo.active && !gameState.combo.paused) {
+    canvas.style.borderColor = gameState.combo.canvasColor;
+    console.log(`[V4] Border → combo (${gameState.combo.canvasColor})`);
+    return;
+  }
+
+  // 5. Reverse Controls (orange)
+  if (gameState.effects.reverseControlsActive) {
+    canvas.style.borderColor = CONFIG.BORDER_COLORS.reverseControls;
+    console.log('[V4] Border → reverse controls (orange)');
+    return;
+  }
+
+  // 6. Invincibility (yellow)
+  if (gameState.activeEffect?.type === 'invincibility') {
+    canvas.style.borderColor = CONFIG.BORDER_COLORS.invincibility;
+    console.log('[V4] Border → invincibility (yellow)');
+    return;
+  }
+
+  // 7. Default (purple)
+  canvas.style.borderColor = CONFIG.BORDER_COLORS.default;
+  console.log('[V4] Border → default (purple)');
+}
+
+/**
  * Game logic update (fixed timestep)
  */
 function update(gameState) {
@@ -105,6 +215,9 @@ function update(gameState) {
     // Award base food score immediately
     const scoreIncrease = getFoodScore(effectType);
     gameState.score += scoreIncrease;
+
+    // Story 20.2: Update background tier if score crossed threshold (event-driven)
+    updateCanvasBackground(gameState);
 
     // Story 13.2: Track reaction time (food spawn to consumption)
     if (food.spawnedAt) {
@@ -168,6 +281,12 @@ function update(gameState) {
         // Activate combo with current food as Effect A
         activateCombo({ type: effectType }, gameState);
 
+        // Story 20.2: Update background to combo mode color
+        updateCanvasBackground(gameState);
+
+        // Story 20.5: Update border to combo color
+        updateBorderState(gameState);
+
         // Story 10.7: Track combo activation (Review fix: moved from combo.js to game.js for proper module boundaries)
         gameState.analyticsState.totalCombosTriggered += 1;
       }
@@ -197,6 +316,9 @@ function update(gameState) {
           gameState.score -= scoreIncrease; // Remove base score that was added earlier
           gameState.score += comboScore;    // Add multiplied score instead
 
+          // Story 20.2: Update background tier after combo score applied
+          updateCanvasBackground(gameState);
+
           // Spawn combo popup at snake head
           const head = gameState.snake.segments[0];
           spawnComboPopup(comboScore, head.x, head.y);
@@ -222,6 +344,12 @@ function update(gameState) {
 
           // Exit combo mode (transition canvas, reset state)
           exitCombo(gameState);
+
+          // Story 20.2: Update background back to normal progression color
+          updateCanvasBackground(gameState);
+
+          // Story 20.5: Update border back to normal state
+          updateBorderState(gameState);
 
           // Play exit audio (deflation tone)
           playComboExit();
@@ -265,9 +393,15 @@ function update(gameState) {
       // Growing food clears effect and sets snake to green
       clearEffect(gameState);
       gameState.snake.color = CONFIG.COLORS.snakeGrowing;
+
+      // Story 20.5: Update border when effect cleared
+      updateBorderState(gameState);
     } else {
       // Special food applies its effect (clears previous first)
       applyEffect(gameState, effectType);
+
+      // Story 20.5: Update border when effect applied
+      updateBorderState(gameState);
     }
 
     // Spawn new food
@@ -337,6 +471,9 @@ function update(gameState) {
       const consolationBonus = gameState.phoneCall.pickUpBonus;
       gameState.score += consolationBonus;
 
+      // Story 20.2: Update background tier after death bonus applied
+      updateCanvasBackground(gameState);
+
       // Increment Pick Up count (consolation counts too)
       gameState.phoneCall.pickUpCount += 1;
 
@@ -363,6 +500,12 @@ function update(gameState) {
     // Exit combo mode if active (reset canvas color and state)
     if (gameState.combo.active) {
       exitCombo(gameState);
+
+      // Story 20.2: Update background back to normal progression color
+      updateCanvasBackground(gameState);
+
+      // Story 20.5: Update border back to normal state
+      updateBorderState(gameState);
     }
 
     // Story 12.4: Store previous score for next game's trackGameStart
@@ -383,6 +526,15 @@ function update(gameState) {
     // Play death sound (Bug fix)
     playDeathSound();
     gameState.phase = 'gameover';
+
+    // Story 20.5: Trigger death flash border (500ms, highest priority)
+    deathFlashActive = true;
+    updateBorderState(gameState);
+
+    setTimeout(() => {
+      deathFlashActive = false;
+      updateBorderState(gameState);  // Re-evaluate priority after flash
+    }, CONFIG.BORDER_DEATH_FLASH_DURATION);
 
     // Story 13.9: Save session metrics to IndexedDB
     // Story 14.1: Store metrics for highlight selection
@@ -642,6 +794,9 @@ function checkPickUpTimerExpiration(gameState, currentTime) {
   const bonus = gameState.phoneCall.pickUpBonus;
   gameState.score += bonus;
 
+  // Story 20.2: Update background tier after phone bonus applied
+  updateCanvasBackground(gameState);
+
   // Increment Pick Up count (for stats/analytics, not used in effect-based bonuses)
   gameState.phoneCall.pickUpCount += 1;
 
@@ -657,6 +812,9 @@ function checkPickUpTimerExpiration(gameState, currentTime) {
   // Review fix: Use hidePhoneOverlay instead of duplicated inline logic
   hidePhoneOverlay(gameState);
 
+  // Story 20.5: Update border state after phone timer expires
+  updateBorderState(gameState);
+
   // Story 9.5: Schedule next call after Pick Up timer expires
   scheduleNextCall(gameState);
 
@@ -670,5 +828,9 @@ export function startGameLoop(ctx, gameState, onUIUpdate) {
   uiUpdateCallback = onUIUpdate;
   lastTime = performance.now();
   accumulator = 0;
+
+  // Story 20.2: Initialize canvas background color (tier-0 at score 0)
+  updateCanvasBackground(gameState);
+
   requestAnimationFrame((time) => gameLoop(time, ctx, gameState));
 }

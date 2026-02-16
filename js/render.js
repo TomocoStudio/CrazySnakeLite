@@ -2,7 +2,7 @@
 import { CONFIG } from './config.js';
 import { isEffectActive } from './effects.js';
 import { isComboActive } from './combo.js';
-import { getState } from './progression.js';  // Story 19.3: Get glow intensity
+import { getState as getProgressionState } from './progression.js';  // Story 19.3: Get glow intensity, Story 20.3: Get grid opacity
 
 /**
  * Main render function - called every frame (60 FPS)
@@ -16,30 +16,35 @@ export function render(ctx, gameState) {
 }
 
 /**
- * Clears the canvas
- * Combo mode: Inverted background color (darker)
+ * Clears the canvas to transparent
+ * Story 20.2: CSS/Canvas hybrid rendering - CSS handles background, canvas is transparent
+ * Removed fillRect for background color (breaks GPU optimization and prevents CSS transitions)
  */
 function clearCanvas(ctx, gameState) {
-  // Combo mode: Use darker background (216, 216, 216)
-  // Normal mode: Use lighter background (232, 232, 232)
-  ctx.fillStyle = isComboActive(gameState)
-    ? CONFIG.COLORS.comboBackground
-    : CONFIG.COLORS.background;
-  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  // Clear to transparent - CSS background-color shows through
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+  // Note: Background color (including combo mode) now handled by CSS via game.js updateCanvasBackground()
 }
 
 /**
- * Renders subtle grid lines
+ * Renders subtle grid lines with progressive opacity dimming
+ * Story 20.3: Grid fades from 0.9 (tier-0) to 0.3 (tier-5) as score increases
  * Combo mode: Inverted grid color (lighter)
  */
 function renderGrid(ctx, gameState) {
+  // Story 20.3: Get progressive grid opacity (0.9 → 0.3)
+  const { gridOpacity } = getProgressionState(gameState.score);
+
   // Combo mode: Use lighter grid (232, 232, 232)
   // Normal mode: Use darker grid (216, 216, 216)
   ctx.strokeStyle = isComboActive(gameState)
     ? CONFIG.COLORS.comboGridLine
     : CONFIG.COLORS.gridLine;
   ctx.lineWidth = CONFIG.GRID_LINE_WIDTH;
-  ctx.globalAlpha = CONFIG.GRID_LINE_OPACITY;
+
+  // Story 20.3: Apply progressive opacity (affects all grid drawing)
+  ctx.globalAlpha = gridOpacity;
 
   // Vertical lines
   for (let x = 0; x <= CONFIG.GRID_WIDTH; x++) {
@@ -59,6 +64,7 @@ function renderGrid(ctx, gameState) {
     ctx.stroke();
   }
 
+  // CRITICAL: Reset globalAlpha to prevent opacity bleed to other rendering
   ctx.globalAlpha = 1.0;
 }
 

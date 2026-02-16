@@ -39,10 +39,13 @@ body {
 #game-canvas {
   display: block;
   background-color: #E8E8E8;
-  border: 8px solid #800080;  /* Story 5-8: Matches wall phase food for UX association */
+  border: 8px solid #9D4EDD;  /* Story 20.5: Default purple border (reactive border system) */
   box-shadow: 0 0 0 8px #1A1A2E;  /* 4px light purple outer border */
   border-radius: 10px;  /* Subtle rounded corners */
-  transition: background-color 500ms ease-in-out;  /* Story 10.2: Smooth combo color transitions */
+  /* Story 20.1, 20.5: V4 Progressive visual transformation */
+  transition:
+    background-color 2000ms ease-in-out,  /* Slow cinematic background fade */
+    border-color 300ms ease-in-out;       /* Fast responsive border snap */
 }
 
 /* Score Display - Story 5-2: Dual Score Layout */

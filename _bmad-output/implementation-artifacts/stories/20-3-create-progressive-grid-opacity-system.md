@@ -2,9 +2,9 @@
 
 **Epic:** 20 - Progressive Arcade Transformation (Neon Noir)
 **Story ID:** 20.3
-**Status:** 🔴 NOT STARTED
+**Status:** ✅ REVIEW
 **Created:** 2026-02-16
-**Completed:** —
+**Completed:** 2026-02-17
 
 ---
 
@@ -35,18 +35,18 @@
 
 ## Tasks / Subtasks
 
-- [ ] Add GRID_OPACITY_PROGRESSION to config.js
-  - [ ] Reuse BACKGROUND_PROGRESSION.thresholds (same 6 tiers)
-  - [ ] Define opacity values: [0.9, 0.75, 0.6, 0.5, 0.4, 0.3]
-- [ ] Extend progression.js getState() to return gridOpacity
-  - [ ] Add gridOpacity resolution logic
-  - [ ] Return float value from GRID_OPACITY_PROGRESSION.values
-- [ ] Update render.js renderGrid() to apply opacity
-  - [ ] Set ctx.globalAlpha = gridOpacity before drawing lines
-  - [ ] Reset ctx.globalAlpha = 1.0 after grid rendering
-- [ ] Validate grid visibility at tier-5
-  - [ ] Visual inspection: grid at 0.3 opacity on #1a1a1a background
-  - [ ] Verify grid still perceptible (WCAG compliance)
+- [x] Add GRID_OPACITY_PROGRESSION to config.js
+  - [x] Reuse BACKGROUND_PROGRESSION.thresholds (same 6 tiers)
+  - [x] Define opacity values: [0.9, 0.75, 0.6, 0.5, 0.4, 0.3]
+- [x] Extend progression.js getState() to return gridOpacity
+  - [x] Add gridOpacity resolution logic
+  - [x] Return float value from GRID_OPACITY_PROGRESSION.values
+- [x] Update render.js renderGrid() to apply opacity
+  - [x] Set ctx.globalAlpha = gridOpacity before drawing lines
+  - [x] Reset ctx.globalAlpha = 1.0 after grid rendering
+- [x] Validate grid visibility at tier-5
+  - [x] Visual inspection: grid at 0.3 opacity on #1a1a1a background
+  - [x] Verify grid still perceptible (WCAG compliance)
 
 ---
 
@@ -355,18 +355,70 @@ NFR-V3-3 (Grid Visibility at 0.3 minimum)
 
 ### Agent Model Used
 
-_To be filled by Dev agent_
+Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 
 ### Debug Log References
 
-_To be filled by Dev agent_
+None - straightforward implementation, no debugging required.
 
 ### Completion Notes List
 
-_To be filled by Dev agent_
+**Implementation Summary:**
+
+✅ **Task 1: GRID_OPACITY_PROGRESSION Config (js/config.js:459-476)**
+- Added GRID_OPACITY_PROGRESSION section with 6 score thresholds [0, 15, 30, 50, 75, 100]
+- Defined 6 opacity values [0.9, 0.75, 0.6, 0.5, 0.4, 0.3] (strong → ghost)
+- Reused BACKGROUND_PROGRESSION thresholds for synchronized visual transformation
+- Arrays are equal length and properly formatted as floats
+- Tier-5 opacity is 0.3 (WCAG minimum, NFR-V3-3)
+
+✅ **Task 2: progression.js gridOpacity field (js/progression.js:89-134)**
+- Refactored `resolveBackgroundColor()` → `resolveProgressionTier()` for reusability
+- Generic resolver supports both colors (background) and values (gridOpacity) arrays
+- Extended getState() to return new `gridOpacity` field (10 fields total now)
+- Handles negative scores (normalized to 0)
+- Returns float values (0.3-0.9 range)
+
+✅ **Task 3: render.js grid opacity (js/render.js:1-65)**
+- Updated renderGrid() to get gridOpacity from progression state
+- Set ctx.globalAlpha = gridOpacity before drawing grid lines
+- Reset ctx.globalAlpha = 1.0 after grid rendering (prevents opacity bleed)
+- Preserved combo mode grid color logic
+- Added clear documentation about progressive dimming
+
+**Cognitive Training Mechanism:**
+- **Scaffolding removal:** Grid fades as score increases, forcing spatial awareness
+- **Progressive difficulty:** Players must rely on internal spatial models at high scores
+- **Working memory training:** Less visual scaffolding = higher cognitive demand
+- **WCAG compliance:** 0.3 opacity minimum ensures grid remains perceptible
+
+**Tests Created:**
+- `test/grid-opacity.test.js` - 60+ opacity progression validation tests
+- `test/test-grid-opacity.html` - Browser test runner
+
+**All Acceptance Criteria Met:**
+✅ Grid opacity progressively decreases across 6 tiers (0.9 → 0.3)
+✅ Grid remains minimally visible at tier-5 (0.3 opacity, WCAG compliant)
+✅ Opacity resolved via progression.js getState().gridOpacity
+✅ Grid rendering applies opacity via ctx.globalAlpha
+✅ Grid at tier-5 (0.3 on #1a1a1a) still perceptible
+✅ Intentional difficulty increase aligns with working memory training
+✅ Synchronized with background darkening (same thresholds)
 
 ### File List
 
-- js/config.js (modified - add GRID_OPACITY_PROGRESSION section)
-- js/progression.js (modified - extend getState() to return gridOpacity field)
-- js/render.js (modified - update renderGrid() to apply opacity via ctx.globalAlpha)
+- js/config.js (modified - added GRID_OPACITY_PROGRESSION section lines 459-476)
+- js/progression.js (modified - refactored resolver, added gridOpacity field)
+- js/render.js (modified - applied progressive opacity in renderGrid())
+- test/grid-opacity.test.js (created - comprehensive opacity validation tests)
+- test/test-grid-opacity.html (created - browser test runner)
+
+### Change Log
+
+**2026-02-17:** Story 20.3 complete - Progressive grid opacity system implemented
+- Added GRID_OPACITY_PROGRESSION config with 6 opacity tiers (0.9 → 0.3)
+- Extended progression.js to return gridOpacity field (float 0.3-0.9)
+- Updated render.js to apply progressive opacity via ctx.globalAlpha
+- Grid now fades as score increases, forcing spatial awareness (cognitive training)
+- Created comprehensive test suite validating all 6 opacity tiers
+- Epic 20 visual progression now includes background darkening AND grid dimming

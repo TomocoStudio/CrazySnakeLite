@@ -9,6 +9,7 @@
 import { CONFIG } from './config.js';
 import { spawnPhoneBonusPopup } from './score-popup.js';
 import { trackPhoneCall, trackPhoneCallEvent } from './analytics.js';
+import { updateBorderState } from './game.js';
 
 // Debug logging flag - set to false for production
 const DEBUG = false;
@@ -242,6 +243,9 @@ function endCall(gameState) {
   // Hide overlay and clear phone state
   hidePhoneOverlay(gameState);
 
+  // Story 20.5: Update border state after phone dismissed
+  updateBorderState(gameState);
+
   if (DEBUG) {
     const effectType = gameState.activeEffect?.type || 'growing';
     console.log('[Phone] Call ended: +' + bonus + ' point(s), active effect:', effectType);
@@ -315,6 +319,9 @@ function pickUpCall(gameState) {
   // Start countdown animation
   fill.style.transition = `width ${duration}ms linear`;
   fill.style.width = '0%';
+
+  // Story 20.5: Update border to phone pickup state (green)
+  updateBorderState(gameState);
 
   if (DEBUG) {
     const effectType = gameState.activeEffect?.type || 'growing';
@@ -478,6 +485,10 @@ export function scheduleNextCall(gameState, currentTime = null) {
 export function triggerPhoneCall(gameState) {
   gameState.phoneCall.active = true;
   showPhoneCall(null, gameState);
+
+  // Story 20.5: Update border to phone ring state (gold)
+  updateBorderState(gameState);
+
   if (DEBUG) console.log('[Phone] Call triggered');
 }
 
