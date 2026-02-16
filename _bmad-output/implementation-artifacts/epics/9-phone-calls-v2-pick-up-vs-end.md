@@ -1,8 +1,8 @@
 # Epic 9: Phone Calls v2 — Pick Up vs End
 
-**Status:** 🔴 NOT STARTED
+**Status:** 🟢 COMPLETED
 **Created:** 2026-02-08
-**Completed:** —
+**Completed:** 2026-02-16
 
 ---
 
