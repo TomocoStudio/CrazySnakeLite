@@ -134,10 +134,10 @@ export function calculateReactionTime(rawEvents) {
 export function calculateSpatialAwareness(snakeLength, gridWidth, gridHeight, gridUnitSize) {
   if (snakeLength === 0) return 0.5; // Neutral score if no data
 
-  // Calculate grid coverage percentage
-  const snakeArea = snakeLength * (gridUnitSize ** 2);
-  const totalGridArea = gridWidth * gridHeight;
-  const gridCoveragePercentage = snakeArea / totalGridArea;
+  // Calculate grid coverage percentage (both in cells, not pixels)
+  const snakeAreaCells = snakeLength;
+  const totalGridAreaCells = gridWidth * gridHeight;
+  const gridCoveragePercentage = snakeAreaCells / totalGridAreaCells;
 
   // Spatial awareness = snake length / grid coverage ratio
   // Higher score = more efficient space usage (longer snake relative to grid coverage)
