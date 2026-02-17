@@ -33,7 +33,12 @@ export function initDashboard() {
 export async function renderSkillMap() {
   const profile = await getProfile();
 
-  if (!profile || !profile.calibrationComplete) {
+  // Validate profile has required data for full skill map
+  const hasRequiredData = profile?.domainScores &&
+                          profile?.sessionsCompleted !== undefined &&
+                          profile?.currentStreak !== undefined;
+
+  if (!profile || !profile.calibrationComplete || !hasRequiredData) {
     renderCalibrationPlaceholder(profile);
   } else {
     renderFullSkillMap(profile);
@@ -66,7 +71,7 @@ function renderCalibrationPlaceholder(profile) {
   });
 
   // Calibration message (below bars)
-  const sessionCount = profile?.totalSessions || 0;
+  const sessionCount = profile?.sessionsCompleted || 0;
   calloutsContainer.innerHTML = `
     <p class="calibration-message">
       Warming up...<br>
@@ -96,7 +101,8 @@ function renderCalibrationPlaceholder(profile) {
  * @param {Object} profile - User profile data
  */
 function renderFullSkillMap(profile) {
-  const { domainScores, previousDomainScores, totalSessions, currentStreak } = profile;
+  const { domainScores, previousDomainScores, sessionsCompleted, currentStreak } = profile;
+  const totalSessions = sessionsCompleted || 0;  // Use sessionsCompleted as totalSessions
 
   // Story 16.9: Clear all containers (use cached references)
   barsContainer.innerHTML = '';
@@ -152,8 +158,9 @@ function renderFullSkillMap(profile) {
  * Create a single block bar row with optional indicators
  * Story 16.2: Core visualization component
  * Story 16.3: Added indicators support (★, ↑, ▲)
+ * Enhanced: 0.1 precision with 10-segment horizontal fills
  * @param {string} label - Domain name (abbreviated)
- * @param {number} blockScore - Rating on 0-5 scale (from metrics.js toBlockScale)
+ * @param {number} blockScore - Rating on 0-5 scale with 0.1 precision
  * @param {Object} indicators - { star: bool, growthArrow: bool, improvedArrow: bool }
  * @returns {HTMLElement} - The row DOM element
  */
@@ -167,22 +174,42 @@ function createBlockBarRow(label, blockScore, indicators = {}) {
   labelEl.textContent = label;
   row.appendChild(labelEl);
 
-  // Block container (5 blocks)
+  // Block container (5 blocks with partial fills)
   const blocksContainer = document.createElement('div');
   blocksContainer.className = 'blocks-container';
 
   for (let i = 0; i < 5; i++) {
+    const blockValue = i + 1; // Block represents values 1.0, 2.0, 3.0, 4.0, 5.0
     const block = document.createElement('div');
-    block.className = i < blockScore ? 'block filled' : 'block empty';
+
+    // Determine fill state
+    if (blockScore >= blockValue) {
+      // Fully filled
+      block.className = 'block filled';
+    } else if (blockScore > i && blockScore < blockValue) {
+      // Partially filled
+      const fillPercentage = (blockScore - i) * 100; // Convert 0.0-1.0 to 0-100%
+      block.className = 'block partial';
+
+      // Create inner fill element
+      const fill = document.createElement('div');
+      fill.className = 'block-fill';
+      fill.style.width = `${fillPercentage}%`;
+      block.appendChild(fill);
+    } else {
+      // Empty
+      block.className = 'block empty';
+    }
+
     blocksContainer.appendChild(block);
   }
 
   row.appendChild(blocksContainer);
 
-  // Rating text (e.g., "4/5")
+  // Rating text with 1 decimal place (e.g., "3.7/5")
   const ratingText = document.createElement('span');
   ratingText.className = 'rating-text';
-  ratingText.textContent = `${blockScore}/5`;
+  ratingText.textContent = `${blockScore.toFixed(1)}/5`;
   row.appendChild(ratingText);
 
   // Indicators (Story 16.3)
@@ -289,7 +316,8 @@ function renderSessionStats(totalSessions, currentStreak) {
  * @returns {Object} - { text, caller, portrait }
  */
 function selectDashboardQuote(profile) {
-  const { totalSessions, currentStreak } = profile;
+  const totalSessions = profile.sessionsCompleted || 0;
+  const { currentStreak } = profile;
 
   // Build context tags for quote selection
   const context = ['general'];  // Always include general as fallback

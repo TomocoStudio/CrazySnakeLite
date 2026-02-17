@@ -69,7 +69,7 @@ All agents (Dev, Architect, PM, etc.) working on visual systems, UI components, 
    - Integration checklists
 
 5. **`ux-design-cognitive-dashboard.md`** — V3 Skill Map & dashboard UX
-   - Pixel block bar specifications
+   - Pixel block bar specifications (0.1 precision with horizontal fills)
    - Calibration experience design
    - Comedy integration patterns
 
@@ -281,9 +281,20 @@ barsContainer.appendChild(row);                     // CORRECT — appendChild
 screen.classList.remove('hidden');                   // CORRECT
 screen.style.display = 'block';                     // WRONG
 
-// Block bars: ALWAYS 5 blocks per row, filled/empty CSS classes
-block.className = i < score ? 'block filled' : 'block empty'; // CORRECT
-block.style.backgroundColor = '#9DB2DD';            // WRONG — use CSS classes
+// Block bars: 5 blocks per row with 0.1 precision (partial fills via horizontal bars)
+// Each block can be: filled (100%), partial (1-99% horizontal fill), or empty (0%)
+if (score >= blockValue) {
+  block.className = 'block filled';  // CORRECT
+} else if (score > i && score < blockValue) {
+  block.className = 'block partial';  // Partial fill
+  const fill = document.createElement('div');
+  fill.className = 'block-fill';
+  fill.style.width = `${(score - i) * 100}%`;  // Proportional horizontal fill
+  block.appendChild(fill);
+} else {
+  block.className = 'block empty';  // CORRECT
+}
+block.style.backgroundColor = '#9DB2DD';  // WRONG — use CSS classes
 ```
 
 ### V3 Highlight Output Contract (MUST follow exactly)
@@ -737,8 +748,9 @@ gameover → menu (ESC)
 ### V3 Skill Map Dashboard
 
 - DOM overlay at z-index 350 (between tooltips 300 and phone 400)
-- Pixel block bars: 5 blocks per row, 16×16px, 2px gap
-- Filled: `#9DB2DD`, Empty: `#3A3A3A` with 1px border `#555555`
+- Pixel block bars: 5 blocks per row, 16×16px, 2px gap, 0.1 precision (0.0-5.0 scale)
+- Filled: `#9DB2DD`, Partial: horizontal purple fill bar, Empty: `#3A3A3A` with 1px border `#555555`
+- Rating text: "3.7/5" format (one decimal place)
 - Growth indicators: ▲ green `#81C784` (improved), ▽ amber `#FFB74D` (declined)
 - Two render paths: calibrating (empty bars + "Warming up...") vs unlocked (full bars + callouts)
 - Reads storage, never calculates — dashboard.js is a display module only
@@ -790,9 +802,9 @@ gameover → menu (ESC)
 | `progression.js` | Resolve score → tier (blink, combo, phone probabilities/tiers) | Own threshold data (that's config.js), hold state |
 | `combo.js` | Manage combo state machine (activate, lifecycle, pause/resume) | Calculate scores (delegates to scoring.js), render |
 | `score-popup.js` | Spawn/animate/cleanup DOM popups, particles, screen shake | Contain game logic, calculate scores |
-| `metrics.js` | V3: Pure domain score calculation — sessions → normalized 0-1 → 5-block scale. calculateDomainScores(), toBlockScale(), calculateGrowthIndicators() | Import storage.js, access DOM, hold state. Only imports config.js. |
+| `metrics.js` | V3: Pure domain score calculation — sessions → normalized 0-1 → 0.0-5.0 scale (0.1 precision). calculateDomainScores(), toBlockScale(), calculateGrowthIndicators() | Import storage.js, access DOM, hold state. Only imports config.js. |
 | `highlights.js` | V3: Pure highlight selection — priority algorithm, variety enforcement, comedy quote context. selectHighlights(), selectPerformanceQuote() | Import storage.js, access DOM, hold state. Only imports config.js. |
-| `dashboard.js` | V3: Skill Map DOM rendering — block bars, callouts, calibration placeholder, navigation. renderSkillMap(), hideSkillMap() | Calculate metrics (reads stored profile only), hold game state |
+| `dashboard.js` | V3: Skill Map DOM rendering — block bars with partial fills (0.1 precision), callouts, calibration placeholder, navigation. renderSkillMap(), hideSkillMap() | Calculate metrics (reads stored profile only), hold game state |
 | `streak.js` | V3: Calendar-day streak logic — date comparison, streak state, ethical messaging. checkAndUpdateStreak(), getStreakMessage() | Access DOM, hold game state, use UTC dates |
 
 ---
@@ -826,8 +838,9 @@ gameover → menu (ESC)
 - V2: Death during combo + phone awards both bonuses
 - V2: Caller portraits display (fallback icon if missing)
 - V2: Reduced motion mode respects `prefers-reduced-motion`
-- V3: Skill Map renders block bars correctly (5 blocks, filled/empty, growth indicators)
-- V3: Calibration placeholder shows during sessions 1-5, full Skill Map after session 5
+- V3: Skill Map renders block bars correctly (5 blocks with 0.1 precision, filled/partial/empty states, horizontal fill bars, growth indicators, decimal text "3.7/5")
+- V3: Partial blocks show proportional horizontal fills (e.g., score 3.7 shows 3 full blocks + 4th block at 70% fill)
+- V3: Calibration placeholder shows during sessions 1-4, full Skill Map after session 5
 - V3: Streak increments on first game per calendar day, resets on 2+ day gap
 - V3: Post-game "RECAP" shows highlights, comedy quote, streak counter
 - V3: Navigation: Skill Map button on menu + game-over, ESC from Skill Map → menu

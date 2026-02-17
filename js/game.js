@@ -584,11 +584,78 @@ function update(gameState) {
       sessionsCompleted: newSessionCount
     });
 
-    // Check calibration threshold (5 sessions)
-    if (newSessionCount === 5 && !profile.calibrationComplete) {
+    // Check calibration threshold (5+ sessions)
+    if (newSessionCount >= 5 && !profile.calibrationComplete) {
       updateProfile({ calibrationComplete: true });
-      console.log('[Game] Calibration complete - 5 sessions reached');
+      console.log('[Game] Calibration complete - 5+ sessions reached');
     }
+
+    // Calculate and update domain scores after each session
+    updateDomainScores().catch(error => {
+      console.error('[Game] Failed to update domain scores:', error);
+    });
+  }
+}
+
+/**
+ * Calculate domain scores from recent sessions and update profile
+ * Converts individual session metrics into aggregated 0-5 domain scores
+ */
+async function updateDomainScores() {
+  try {
+    // Get last 10 sessions for rolling average
+    const sessions = await getSessions(10);
+
+    if (sessions.length === 0) {
+      console.log('[Game] No sessions found, skipping domain score update');
+      return;
+    }
+
+    // Calculate average normalized metrics across sessions (0-1 scale)
+    const avgMetrics = {
+      reactionTime: 0,
+      spatialAwareness: 0,
+      cognitiveFlexibility: 0,
+      dividedAttention: 0,
+      impulseControl: 0,
+      workingMemory: 0
+    };
+
+    // Sum up all metrics
+    sessions.forEach(session => {
+      if (session.metrics) {
+        avgMetrics.reactionTime += session.metrics.reactionTime || 0;
+        avgMetrics.spatialAwareness += session.metrics.spatialAwareness || 0;
+        avgMetrics.cognitiveFlexibility += session.metrics.cognitiveFlexibility || 0;
+        avgMetrics.dividedAttention += session.metrics.dividedAttention || 0;
+        avgMetrics.impulseControl += session.metrics.impulseControl || 0;
+        avgMetrics.workingMemory += session.metrics.workingMemory || 0;
+      }
+    });
+
+    // Calculate averages
+    const sessionCount = sessions.length;
+    Object.keys(avgMetrics).forEach(key => {
+      avgMetrics[key] = avgMetrics[key] / sessionCount;
+    });
+
+    // Convert to 0-5 block scale with 0.1 precision (10 segments per block)
+    const domainScores = {
+      reactionTime: Math.round(avgMetrics.reactionTime * 50) / 10,
+      spatialAwareness: Math.round(avgMetrics.spatialAwareness * 50) / 10,
+      cognitiveFlexibility: Math.round(avgMetrics.cognitiveFlexibility * 50) / 10,
+      dividedAttention: Math.round(avgMetrics.dividedAttention * 50) / 10,
+      impulseControl: Math.round(avgMetrics.impulseControl * 50) / 10,
+      workingMemory: Math.round(avgMetrics.workingMemory * 50) / 10
+    };
+
+    // Update profile with domain scores
+    updateProfile({ domainScores });
+
+    console.log('[Game] Domain scores updated:', domainScores);
+  } catch (error) {
+    console.error('[Game] Error calculating domain scores:', error);
+    throw error;
   }
 }
 

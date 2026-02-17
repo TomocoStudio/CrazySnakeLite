@@ -378,6 +378,7 @@ function handleUIUpdate(state) {
     if (phaseChanged) {
       menuScreen.classList.add('hidden');
       gameoverScreen.classList.add('hidden');
+      skillMapScreen.classList.add('hidden');  // Hide Skill Map when starting game
       scoreDisplay.classList.remove('hidden');  // Fix: Show score during gameplay
       stopMenuMusic();  // Stop menu music when game starts
     }
@@ -556,8 +557,10 @@ function handleUIUpdate(state) {
       skillMapScreen.classList.remove('hidden');
       stopMenuMusic();  // Stop menu music when entering Skill Map
 
-      // Story 16.1: Render Skill Map content
-      dashboard.renderSkillMap();
+      // Story 16.1: Render Skill Map content (async with error handling)
+      dashboard.renderSkillMap().catch(error => {
+        console.error('[BUG FIX] Error rendering Skill Map:', error);
+      });
       console.log('[Story 16.1] Skill Map screen displayed');
     }
   }
@@ -603,12 +606,16 @@ skillMapMenuBtn.addEventListener('click', () => {
 });
 
 // Story 16.1: Play Now button (Skill Map → New Game)
-playNowBtn.addEventListener('click', () => {
-  console.log('[Story 16.1] Play Now clicked - starting new game');
-  resetGame(gameState);
-  gameState.phase = 'playing';
-  spawnFood(gameState);
-});
+if (playNowBtn) {
+  playNowBtn.addEventListener('click', () => {
+    console.log('[Story 16.1] Play Now clicked - starting new game');
+    resetGame(gameState);
+    gameState.phase = 'playing';
+    spawnFood(gameState);
+  });
+} else {
+  console.error('[Main] Play Now button not found in DOM');
+}
 
 // Story 16.1: Back to Menu link (Skill Map → Menu)
 backToMenuLink.addEventListener('click', (e) => {

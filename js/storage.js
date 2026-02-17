@@ -323,6 +323,15 @@ export function getProfile() {
     if (profile.celebrationShown === undefined) {
       profile.celebrationShown = false;
     }
+    if (profile.sessionsCompleted === undefined) {
+      profile.sessionsCompleted = 0;
+    }
+    if (profile.totalSessions === undefined) {
+      profile.totalSessions = 0;
+    }
+    if (profile.currentStreak === undefined) {
+      profile.currentStreak = 0;
+    }
     return profile;
   }
 

@@ -2,9 +2,25 @@
 
 **Author:** Sally (UX Designer)
 **For:** Tomoco
-**Date:** 2026-02-15
-**Status:** Draft for Review
+**Date:** 2026-02-15 (Updated: 2026-02-17)
+**Status:** Implemented v2 (0.1 Precision Enhancement)
 **Foundations:** `dataviz-principles.md` (DataViz), `game-ux-principles.md` (Hodent), PRD v2.1, Product Brief (2026-02-15), Party Mode Summary, Cognitive Analytics Requirements
+
+---
+
+## Version History
+
+**v2 — 2026-02-17: 0.1 Precision Enhancement**
+- **Change:** Enhanced block bars from integer-only (0-5) to 0.1 precision (0.0-5.0)
+- **Implementation:** Horizontal fill bars show partial block fills (e.g., 3.7 shows as 3 full + 70% filled 4th block)
+- **Rationale:** User feedback — integer scale too coarse for tracking meaningful progress between whole numbers
+- **Impact:** Maintains grid-native aesthetic while providing fine-grained progress feedback
+- **Technical:** 50 total segments (5 blocks × 10 segments each), text displays "3.7/5" format
+
+**v1 — 2026-02-15: Original Design**
+- Integer 5-block scale (0, 1, 2, 3, 4, 5)
+- Filled/empty states only
+- Text displays "3/5" format
 
 ---
 
@@ -169,7 +185,7 @@ This is the *cool moment* — the player is rested, curious, and has their full 
 
 | Principle | Application |
 |-----------|-------------|
-| **Graphical Integrity** | Block-based ratings (5 blocks per domain) are proportionally accurate. 3 filled blocks = 60% of max. No distortion. |
+| **Graphical Integrity** | Block-based ratings with 0.1 precision (5 blocks, 10 segments each) are proportionally accurate. 3.7/5 shows as 3 full blocks + 70% fill on 4th block = 74% of max. No distortion. Horizontal fills are linear and proportional. |
 | **Cognitive Empathy** | Full cognitive budget available, but still a casual gamer — not a data analyst. Max 6 data dimensions (the 6 domains). |
 | **Signal-to-Noise** | No chart borders. No decorative elements. Bars + labels only. Background is the game's dark overlay, not a clinical white. |
 | **Aesthetic Affordance** | Pixel block bars — grid-based, orthogonal, flat-color. Matches CrazySnake's square-everything visual language. Feels like an RPG stat screen, not a corporate dashboard. |
@@ -235,25 +251,33 @@ Pixel block bars satisfy the same DataViz requirements while staying inside Craz
 
 ### Pixel Block Bars — Design Deep Dive
 
-The pixel block bar grid is the heart of the Skill Map. Each domain is a horizontal row of 5 square blocks — filled or empty — creating a visual pattern that's instantly readable and native to CrazySnake's grid-based world.
+The pixel block bar grid is the heart of the Skill Map. Each domain is a horizontal row of 5 square blocks — each with horizontal fill capability — creating a visual pattern that's instantly readable and native to CrazySnake's grid-based world.
 
-**Why 5-block scale (not continuous):**
+**Evolution: From Integer to 0.1 Precision**
 
 | Approach | Pros | Cons | Verdict |
 |----------|------|------|---------|
 | Continuous bar (0-100%) | Precise | False precision — our metrics don't validate to that granularity. Violates Tufte's dimensional constraint. Smooth gradients break the pixel aesthetic. | Reject |
-| 5-block scale | Honest granularity. Instantly readable. Grid-native. Feels like an RPG stat screen. | Less precise | **Use this** |
-| 10-block scale | More range | Too wide for the layout. Blocks become tiny. False precision. | Reject |
+| 5-block integer (original) | Honest granularity. Instantly readable. Grid-native. Feels like an RPG stat screen. | Too coarse — doesn't show meaningful progress between whole numbers. | Good foundation |
+| 10-block scale | More range | Too wide for the layout. Blocks become tiny. | Reject |
+| **5-block + horizontal fills (0.1 precision)** | Maintains grid aesthetic + shows fine-grained progress. Honest precision (10 segments). Visual clarity via partial fills. | Slightly more complex rendering | **Implemented** |
 
-The 5-block scale matches the *actual* confidence level of our metrics. Showing 3/5 blocks is more honest than showing 62.4% when our rolling average has meaningful variance.
+The **5-block scale with 0.1 precision** (50 total segments: 5 blocks × 10 segments each) balances honest granularity with meaningful feedback. Showing "3.7/5" with a 70%-filled fourth block provides progress visibility without false precision — our rolling averages validate to this level of confidence.
 
-**Block Bar Visual Specifications:**
+**Block Bar Visual Specifications (v2 — 0.1 Precision with Horizontal Fills):**
 
-- **Layout:** 6 rows, each containing: domain label (left-aligned) → 5 square blocks (right-aligned) → rating text (e.g., "4/5") → optional indicator
+- **Layout:** 6 rows, each containing: domain label (left-aligned) → 5 square blocks with fill capability (right-aligned) → rating text (e.g., "3.7/5") → optional indicator
 - **Block size:** 16x16px per block, 2px gap between blocks. Total bar width: ~90px (5 blocks + 4 gaps).
-- **Block shape:** Square — matches food shapes, grid units, and snake segments. No rounded corners on blocks.
-- **Filled blocks:** Purple theme color `rgb(157, 178, 221)` — solid fill, no gradient, no shadow.
-- **Empty blocks:** Dark grey `#3A3A3A` with subtle 1px border `#555555` — visible but receding. Reads as "potential" not "missing."
+- **Block shape:** Square — matches food shapes, grid units, and snake segments. No rounded corners on outer blocks.
+- **Score scale:** 0.0 to 5.0 with 0.1 precision (50 total segments: 5 blocks × 10 segments per block)
+- **Filled blocks (100%):** Purple theme color `rgb(157, 178, 221)` — solid fill, no gradient, no shadow.
+- **Empty blocks (0%):** Dark grey `#3A3A3A` with subtle 1px border `#555555` — visible but receding. Reads as "potential" not "missing."
+- **Partial blocks (1%-99%):** Dark grey container with purple horizontal fill bar
+  - Container: Same as empty block (`#3A3A3A` + `#555555` border)
+  - Inner fill: Purple bar (`rgb(157, 178, 221)`) fills from left to right
+  - Fill width: Proportional to decimal value (e.g., 0.3 = 30% fill, 0.7 = 70% fill)
+  - Smooth transition: 300ms ease-out when score updates
+  - **Example:** Score 3.7 shows: [■■■■■] [■■■■■] [■■■■■] [■■■■··] [·····] (3 full + 1 at 70% + 1 empty)
 - **Domain labels:** Jersey20, 14px, white, left-aligned. Abbreviated where needed:
   - "Reaction Time" → "Reaction" (or full if space allows)
   - "Spatial Awareness" → "Spatial"
@@ -261,7 +285,7 @@ The 5-block scale matches the *actual* confidence level of our metrics. Showing 
   - "Divided Attention" → "Attention"
   - "Impulse Control" → "Impulse"
   - "Working Memory" → "Memory"
-- **Rating text:** "4/5" in 12px Jersey20, light grey `#B0B0B0`, right of the bar. This is the only numeric representation — one instance per row, not redundant (Tufte: one encoding per data point).
+- **Rating text:** "3.7/5" (one decimal place) in 12px Jersey20, light grey `#B0B0B0`, right of the bar. Min-width: 38px to accommodate decimal. This is the only numeric representation — one instance per row, not redundant (Tufte: one encoding per data point).
 - **Row spacing:** 8px vertical gap between rows. Enough breathing room for readability without wasting vertical space.
 - **No borders around the bar section.** The bars create their own visual boundary (Gestalt: closure).
 
@@ -729,7 +753,7 @@ Before shipping any dashboard surface, verify against the DataViz Principles che
 
 ### Layer 2 (Skill Map)
 
-- [ ] **Graphical Integrity:** Block ratings map proportionally to metric calculations. 3 blocks = 60% ± 5%.
+- [ ] **Graphical Integrity:** Block ratings with 0.1 precision map proportionally to metric calculations. 3.7/5 = 74% exactly. Horizontal fills are linear and proportional (0.3 = 30% fill width).
 - [ ] **Data-Ink Maximized:** No decorative borders on bars. Filled/empty blocks + labels + rating text only.
 - [ ] **Cognitive Load:** 6 domains displayed, but narrative callouts focus attention on 2 (Top Skill + Level Up). Player grasps profile shape in < 5 seconds.
 - [ ] **Takeaway Title:** Callout cards state the insight ("Top Skill: Spatial Awareness")

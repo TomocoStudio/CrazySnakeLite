@@ -18,13 +18,33 @@
 body {
   margin: 0;
   overflow: hidden;
-  background-image: url('../assets/Background08_256x256.png');
+  background-image: url('../assets/pictures/Background08_02_256x256.png');
   background-repeat: repeat;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   font-family: 'Jersey20', 'Courier New', monospace;
+  position: relative;  /* For scanline pseudo-element positioning */
+}
+
+/* Full-page CRT scanline overlay - covers entire webpage */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    rgba(0, 0, 0, 0.03) 3px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  pointer-events: none;  /* Click-through - no interaction blocking */
+  z-index: 9999;         /* Above everything for full CRT effect */
 }
 
 /* Game container - centers the canvas */
@@ -35,28 +55,11 @@ body {
   align-items: center;
 }
 
-/* Story 21.3: CRT Scanline Overlay - Subtle horizontal lines for authentic 80s arcade CRT feel */
-#game-container::after {
-  content: '';
-  position: absolute;
-  top: 8px;      /* Inside the 8px border */
-  left: 8px;
-  right: 8px;
-  bottom: 8px;
-  border-radius: 4px;  /* Match inner canvas corners (10px outer - ~4px inner) */
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0px,
-    transparent 3px,
-    rgba(0, 0, 0, 0.03) 3px,
-    rgba(0, 0, 0, 0.03) 4px
-  );
-  pointer-events: none;  /* Click-through to canvas - no interaction blocking */
-  z-index: 50;           /* Above canvas, below all UI elements */
-}
+/* Story 21.3: CRT Scanline Overlay - Now applied to full page via body::after (see line ~31) */
+/* Game-container specific scanlines removed to avoid double-effect */
 
 /* Story 21.3: Optional toggle class to disable scanlines */
-#game-container.no-scanlines::after {
+body.no-scanlines::after {
   display: none;
 }
 
@@ -2027,13 +2030,31 @@ button:disabled {
   border: 1px solid #555555;  /* Subtle border */
 }
 
-/* Rating text (right side, "4/5" format) */
+/* Partial block (0.1 precision with horizontal fill) */
+.block.partial {
+  background-color: #3A3A3A;  /* Dark grey background */
+  border: 1px solid #555555;  /* Subtle border */
+  position: relative;
+  overflow: hidden;  /* Clip the fill to block boundaries */
+}
+
+/* Inner fill for partial blocks (horizontal progress bar) */
+.block-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: rgb(157, 178, 221);  /* Purple theme - matches filled blocks */
+  transition: width 300ms ease-out;  /* Smooth animation when score updates */
+}
+
+/* Rating text (right side, "3.7/5" format with decimal) */
 .rating-text {
   font-family: 'Jersey20', sans-serif;
   font-size: 12px;
   color: #B0B0B0;  /* Light grey */
   margin-left: 8px;
-  min-width: 30px;
+  min-width: 38px;  /* Wider to fit "3.7/5" with decimal */
 }
 
 /* Calibration placeholder message */
