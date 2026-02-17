@@ -274,3 +274,8 @@ development_status:
   21-6-integrate-border-orchestration-game-events: review
   21-7-test-immersive-arcade-polish-performance: review
   epic-21-retrospective: optional
+
+  # Epic 22: V5 Immersive Atmospheric Enhancement
+  epic-22: in-progress
+  22-1-dynamic-background-glow: review
+  epic-22-retrospective: optional

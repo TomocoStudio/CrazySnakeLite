@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webpage Background Glow Tests - CrazySnakeLite</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Jersey20', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    .demo-container {
+      min-height: 100vh;
+      padding: 60px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      /* Base tiled background image for all options */
+      background-image: url('assets/pictures/Background08_02_256x256.png');
+      background-repeat: repeat;
+      background-size: 256px 256px;
+    }
+
+    /* Universal vignette effect for all options */
+    .demo-container::after {
+      content: '';
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 150%;
+      height: 150%;
+      background: radial-gradient(
+        ellipse at center,
+        transparent 0%,
+        transparent 30%,
+        rgba(0, 0, 0, 0.3) 50%,
+        rgba(0, 0, 0, 0.6) 70%,
+        rgba(0, 0, 0, 0.85) 100%
+      );
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    h1 {
+      text-align: center;
+      color: #FFFF00;
+      text-shadow: 0 0 20px rgba(255, 255, 0, 0.8);
+      margin-bottom: 10px;
+      font-size: 32px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #fff;
+      margin-bottom: 40px;
+      font-size: 18px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .option-label {
+      background: rgba(0, 0, 0, 0.85);
+      padding: 15px 30px;
+      border-radius: 8px;
+      border: 2px solid #00CED1;
+      margin-bottom: 30px;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+    }
+
+    .option-title {
+      color: #00CED1;
+      font-size: 24px;
+      margin-bottom: 5px;
+      text-shadow: 0 0 10px rgba(0, 206, 209, 0.8);
+    }
+
+    .option-desc {
+      color: #aaa;
+      font-size: 14px;
+    }
+
+    .game-canvas-demo {
+      width: 500px;
+      height: 400px;
+      background: #1a1a1a;
+      border: 8px solid #000;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+      position: relative;
+      z-index: 10;
+    }
+
+    .nav {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 1000;
+    }
+
+    .nav button {
+      background: rgba(0, 206, 209, 0.2);
+      border: 2px solid #00CED1;
+      color: #00CED1;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .nav button:hover {
+      background: rgba(0, 206, 209, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .nav button.active {
+      background: #00CED1;
+      color: #000;
+      font-weight: bold;
+    }
+
+    /* ===== Base Pulse Animations ===== */
+    @keyframes pulse-intense {
+      0%, 100% {
+        opacity: 0.6;
+        filter: blur(40px);
+      }
+      50% {
+        opacity: 1;
+        filter: blur(60px);
+      }
+    }
+
+    @keyframes pulse-subtle {
+      0%, 100% {
+        opacity: 0.4;
+        filter: blur(50px);
+      }
+      50% {
+        opacity: 0.7;
+        filter: blur(70px);
+      }
+    }
+
+    @keyframes pulse-dramatic {
+      0%, 100% {
+        opacity: 0.7;
+        filter: blur(30px);
+      }
+      50% {
+        opacity: 1;
+        filter: blur(80px);
+      }
+    }
+
+    @keyframes color-shift {
+      0% { filter: blur(50px) hue-rotate(0deg); opacity: 0.6; }
+      33% { filter: blur(60px) hue-rotate(60deg); opacity: 0.8; }
+      66% { filter: blur(50px) hue-rotate(-60deg); opacity: 0.8; }
+      100% { filter: blur(50px) hue-rotate(0deg); opacity: 0.6; }
+    }
+
+    /* ===== VARIATION 1: Magenta/Purple (Original - Intense) ===== */
+    .bg-option-1::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(
+        ellipse at center,
+        rgba(255, 0, 255, 0.4) 0%,
+        rgba(255, 0, 255, 0.25) 30%,
+        rgba(138, 43, 226, 0.15) 50%,
+        rgba(10, 10, 10, 0.7) 80%
+      );
+      animation: pulse-intense 2s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ===== VARIATION 2: Cyan/Blue (Invincibility Theme) ===== */
+    .bg-option-2::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(
+        ellipse at center,
+        rgba(0, 255, 255, 0.4) 0%,
+        rgba(0, 206, 209, 0.25) 30%,
+        rgba(65, 105, 225, 0.15) 50%,
+        rgba(10, 10, 10, 0.7) 80%
+      );
+      animation: pulse-intense 2s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ===== VARIATION 3: Red/Orange (Speed Boost Theme) ===== */
+    .bg-option-3::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(
+        ellipse at center,
+        rgba(255, 69, 0, 0.4) 0%,
+        rgba(255, 0, 0, 0.25) 30%,
+        rgba(220, 20, 60, 0.15) 50%,
+        rgba(10, 10, 10, 0.7) 80%
+      );
+      animation: pulse-intense 2s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ===== VARIATION 4: Subtle Magenta (Less Intense) ===== */
+    .bg-option-4::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(
+        ellipse at center,
+        rgba(255, 0, 255, 0.25) 0%,
+        rgba(255, 0, 255, 0.15) 30%,
+        rgba(138, 43, 226, 0.08) 50%,
+        rgba(10, 10, 10, 0.75) 80%
+      );
+      animation: pulse-subtle 3s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ===== VARIATION 5: Dramatic Magenta (Very Intense) ===== */
+    .bg-option-5::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(
+        ellipse at center,
+        rgba(255, 0, 255, 0.6) 0%,
+        rgba(255, 0, 255, 0.4) 25%,
+        rgba(138, 43, 226, 0.25) 45%,
+        rgba(75, 0, 130, 0.15) 65%,
+        rgba(10, 10, 10, 0.65) 85%
+      );
+      animation: pulse-dramatic 1.5s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ===== VARIATION 6: Multi-Color Shifting (Combo Colors) ===== */
+    .bg-option-6::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(
+        ellipse at center,
+        rgba(255, 0, 255, 0.4) 0%,
+        rgba(138, 43, 226, 0.25) 30%,
+        rgba(75, 0, 130, 0.15) 50%,
+        rgba(10, 10, 10, 0.7) 80%
+      );
+      animation: color-shift 8s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ===== VARIATION 7: Food Color Cycle (Ultra Smooth) ===== */
+    .bg-option-7::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(
+        ellipse at center,
+        rgba(255, 0, 0, 0.5) 0%,
+        rgba(255, 0, 0, 0.3) 30%,
+        rgba(200, 0, 0, 0.2) 50%,
+        rgba(10, 10, 10, 0.7) 80%
+      );
+      animation: pulse-intense 2s ease-in-out infinite, smooth-hue-cycle 24s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes smooth-hue-cycle {
+      /* Start: Red */
+      0% { filter: blur(50px) hue-rotate(0deg); }
+
+      /* Green (120deg from red) */
+      16.66% { filter: blur(50px) hue-rotate(120deg); }
+
+      /* Cyan (180deg from red) */
+      33.33% { filter: blur(50px) hue-rotate(180deg); }
+
+      /* Blue (240deg from red) */
+      50% { filter: blur(50px) hue-rotate(240deg); }
+
+      /* Magenta (300deg from red) */
+      66.66% { filter: blur(50px) hue-rotate(300deg); }
+
+      /* Yellow (60deg from red) */
+      83.33% { filter: blur(50px) hue-rotate(60deg); }
+
+      /* Back to Red */
+      100% { filter: blur(50px) hue-rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="demo-container bg-option-1">
+  <!-- Navigation -->
+  <div class="nav">
+    <button onclick="switchBackground(1)" class="active" id="btn-1">V1</button>
+    <button onclick="switchBackground(2)" id="btn-2">V2</button>
+    <button onclick="switchBackground(3)" id="btn-3">V3</button>
+    <button onclick="switchBackground(4)" id="btn-4">V4</button>
+    <button onclick="switchBackground(5)" id="btn-5">V5</button>
+    <button onclick="switchBackground(6)" id="btn-6">V6</button>
+    <button onclick="switchBackground(7)" id="btn-7">V7</button>
+  </div>
+
+  <!-- Content -->
+  <div class="option-label" id="option-label">
+    <h2 class="option-title">V1: Magenta/Purple (Original)</h2>
+    <p class="option-desc">Intense magenta-purple pulse (2s cycle). Perfect for combo mode state. Medium intensity.</p>
+  </div>
+
+  <h1>🎮 CrazySnakeLite</h1>
+  <p class="subtitle">Option 5 Variations - Webpage Background Glow</p>
+
+  <!-- Mock game canvas -->
+  <div class="game-canvas-demo"></div>
+
+  <script>
+    const options = {
+      1: {
+        title: 'V1: Magenta/Purple (Original)',
+        desc: 'Intense magenta-purple pulse (2s cycle). Perfect for combo mode state. Medium intensity.',
+        class: 'bg-option-1'
+      },
+      2: {
+        title: 'V2: Cyan/Blue (Invincibility)',
+        desc: 'Cyan-blue pulse (2s cycle). Matches invincibility food color theme. Medium intensity.',
+        class: 'bg-option-2'
+      },
+      3: {
+        title: 'V3: Red/Orange (Speed Boost)',
+        desc: 'Red-orange pulse (2s cycle). Matches speed boost energy theme. Medium intensity.',
+        class: 'bg-option-3'
+      },
+      4: {
+        title: 'V4: Subtle Magenta (Calm)',
+        desc: 'Softer magenta pulse (3s cycle, slower). Less intense, more atmospheric. Great for default state.',
+        class: 'bg-option-4'
+      },
+      5: {
+        title: 'V5: Dramatic Magenta (Intense)',
+        desc: 'Maximum intensity magenta pulse (1.5s cycle, faster). Very bold and energetic. Eye-catching.',
+        class: 'bg-option-5'
+      },
+      6: {
+        title: 'V6: Multi-Color Shift (Dynamic)',
+        desc: 'Magenta base with slow color shift (8s cycle). Hue rotates through purple/blue/pink spectrum.',
+        class: 'bg-option-6'
+      },
+      7: {
+        title: 'V7: Food Color Cycle (Game Sync)',
+        desc: 'Cycles through all 6 food colors (18s cycle): Green→Yellow→Purple→Red→Cyan→Orange. Simulates dynamic sync with active food.',
+        class: 'bg-option-7'
+      }
+    };
+
+    function switchBackground(optionNum) {
+      const body = document.querySelector('.demo-container');
+      const label = document.getElementById('option-label');
+      const option = options[optionNum];
+
+      // Remove all bg classes
+      body.className = 'demo-container ' + option.class;
+
+      // Update label
+      label.querySelector('.option-title').textContent = option.title;
+      label.querySelector('.option-desc').textContent = option.desc;
+
+      // Update active button
+      document.querySelectorAll('.nav button').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`btn-${optionNum}`).classList.add('active');
+    }
+  </script>
+</body>
+</html>

@@ -16,6 +16,7 @@ import { getCalibrationState, formatCalibrationCounter } from './calibration.js'
 import { getStreakData, formatStreakCounter, isStreakMilestone } from './streaks.js';
 import { checkAndUpdateStreak } from './streak.js';
 import * as dashboard from './dashboard.js';
+import { initBackgroundGlow, setGlowToWhite } from './background-glow.js';  // Story 22.1: Dynamic background glow
 
 // Initialize canvas and context
 const canvas = document.getElementById('game-canvas');
@@ -117,7 +118,10 @@ function startNewGame() {
   updateScoreDisplay(gameState.score, gameState.highScore);
   scoreDisplay.classList.remove('hidden');
 
-  // Spawn first food
+  // Story 22.1: Set background glow to white before first food spawns
+  setGlowToWhite();
+
+  // Spawn first food (will automatically trigger glow color transition)
   spawnFood(gameState);
 
   // Schedule first phone call
@@ -252,6 +256,9 @@ const gameState = createInitialState();
 // Initialize high score display (Story 4.2)
 updateHighScoreDisplay(gameState.highScore);
 
+// Story 22.1: Initialize dynamic background glow system (white glow for menu)
+initBackgroundGlow();
+
 // Initialize phone system (Story 3.3)
 initPhoneSystem(gameState, () => Date.now());
 
@@ -370,6 +377,8 @@ function handleUIUpdate(state) {
       skillMapScreen.classList.add('hidden');  // Hide Skill Map when returning to menu
       scoreDisplay.classList.add('hidden');  // Fix: Hide score on menu
       updateHighScoreDisplay(state.highScore);
+      // Story 22.1: Set background glow to white on menu
+      setGlowToWhite();
       // Only play menu music if audio is initialized (after user interaction)
       if (isAudioReady()) {
         playMenuMusic();  // Start menu music loop
@@ -395,6 +404,8 @@ function handleUIUpdate(state) {
       gameoverScreen.classList.remove('hidden');
       scoreDisplay.classList.add('hidden');  // Fix: Hide score on game over
       stopMenuMusic();  // Stop menu music on game over
+      // Story 22.1: Set background glow to white on game over
+      setGlowToWhite();
 
       // Story 11.4: Hide Play Again button initially (shown after stats complete)
       playAgainBtn.classList.add('hidden');
@@ -557,6 +568,8 @@ function handleUIUpdate(state) {
       scoreDisplay.classList.add('hidden');
       skillMapScreen.classList.remove('hidden');
       stopMenuMusic();  // Stop menu music when entering Skill Map
+      // Story 22.1: Set background glow to white on Skill Map
+      setGlowToWhite();
 
       // Story 16.1: Render Skill Map content (async with error handling)
       dashboard.renderSkillMap().catch(error => {

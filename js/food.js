@@ -1,6 +1,7 @@
 // CrazySnakeLite - Food Spawning Module
 import { CONFIG } from './config.js';
 import { getBlinkingProbability } from './progression.js';
+import { updateGlowForFood } from './background-glow.js';  // Story 22.1: Background glow sync
 
 /**
  * Spawn food at random empty position
@@ -43,6 +44,10 @@ export function spawnFood(gameState) {
   if (shouldBlink) {
     gameState.analyticsState.totalBlinkingFoodsSpawned += 1;
   }
+
+  // Story 22.1: Update background glow to match food color
+  // Called BEFORE return to ensure glow updates before food renders (prevents 1-frame flash)
+  updateGlowForFood(foodType);
 }
 
 /**

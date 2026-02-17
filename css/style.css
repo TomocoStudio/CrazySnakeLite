@@ -2028,6 +2028,81 @@ button:disabled {
 }
 
 /* ========================================
+   Dynamic Background Glow System - Story 22.1
+   ======================================== */
+
+/* Base background glow layer (red gradient with hue-rotate for smooth color shifts) */
+.background-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    ellipse at center,  /* Elliptical to match 5:4 canvas aspect ratio */
+    rgba(255, 0, 0, 0.5) 0%,
+    rgba(255, 0, 0, 0.3) 30%,
+    rgba(200, 0, 0, 0.2) 50%,
+    rgba(10, 10, 10, 0.7) 80%
+  );
+  filter: blur(50px) hue-rotate(0deg);  /* Hue-rotate enables smooth color transitions */
+  transition: filter 800ms ease-in-out;  /* Smooth 800ms color fade on food spawn */
+  animation: pulse-intense 2s ease-in-out infinite;  /* Breathing pulse animation */
+  pointer-events: none;  /* Click-through - no interaction blocking */
+  z-index: -2;  /* Behind vignette and all game elements */
+}
+
+/* White glow for menu/game-over/skill-map/default states */
+.background-glow.white-glow {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.2) 30%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(10, 10, 10, 0.7) 80%
+  );
+  filter: blur(50px);  /* No hue rotation for white */
+}
+
+/* Breathing pulse animation (2s cycle, creates living/organic feel) */
+@keyframes pulse-intense {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Vignette overlay (darkens edges, focuses attention on game area) */
+.background-vignette {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150%;  /* Extends beyond viewport to ensure edge coverage */
+  height: 150%;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    transparent 30%,
+    rgba(0, 0, 0, 0.3) 50%,
+    rgba(0, 0, 0, 0.6) 70%,
+    rgba(0, 0, 0, 0.85) 100%
+  );
+  pointer-events: none;
+  z-index: -1;  /* Above glow, below all game elements */
+}
+
+/* Accessibility: Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .background-glow {
+    animation: none;  /* Disable breathing pulse */
+    transition: none;  /* Instant color changes, no smooth fade */
+  }
+}
+
+/* ========================================
    Particle System - Story 7.3
    ======================================== */
 
