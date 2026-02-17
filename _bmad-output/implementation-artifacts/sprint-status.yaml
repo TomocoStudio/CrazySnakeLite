@@ -106,6 +106,9 @@ development_status:
   7-4-fibonacci-musical-progression: blocked
   7-5-popup-queue-system: done
   7-6-reduced-motion-mode-popups: done
+  7-7-speed-boost-flash: done
+  7-8-wall-phase-flash: done
+  7-9-invincibility-flash: review
   epic-7-retrospective: optional
 
   # Epic 8: Progressive Blinking Food System

@@ -9,7 +9,7 @@ import { checkPhoneCallTiming, dismissPhoneCall, scheduleNextCall, hidePhoneOver
 import { trackPhoneCall, trackFoodEaten, trackPhoneCallEvent, trackGameOver } from './analytics.js';
 import { playMoveSound, playDeathSound, playJackpot, playLegendary, playComboExit } from './audio.js';
 import { getFoodScore } from './scoring.js';
-import { spawnPopup, spawnPhoneBonusPopup, spawnComboPopup, spawnParticles, triggerScreenShake, gridToPixel, spawnFlash, spawnVictoryFlash, spawnSpeedFlash } from './score-popup.js';
+import { spawnPopup, spawnPhoneBonusPopup, spawnComboPopup, spawnParticles, triggerScreenShake, gridToPixel, spawnFlash, spawnVictoryFlash, spawnSpeedFlash, spawnInvincibilityFlash } from './score-popup.js';
 import { getComboProbability, getState as getProgressionState } from './progression.js';
 import { activateCombo, isComboActive, exitCombo } from './combo.js';
 import {
@@ -338,7 +338,19 @@ function update(gameState) {
     }
 
     // Story 7.2: Spawn score popup at food position (temporal contiguity <200ms)
-    spawnPopup(scoreIncrease, foodPosition.x, foodPosition.y, '', effectType);
+    // Story 7.9: Skip popup for invincibility (+0) - flash replaces it
+    if (effectType !== 'invincibility') {
+      spawnPopup(scoreIncrease, foodPosition.x, foodPosition.y, '', effectType);
+    }
+
+    // Story 7.9: Invincibility power flash (replaces "+0" popup)
+    if (effectType === 'invincibility') {
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+
+      // Spawn random invincibility message flash at center screen (NO stagger)
+      spawnInvincibilityFlash(centerX, centerY);
+    }
 
     // Story 7.3: Special effects for +8 (Reverse Controls)
     if (effectType === 'reverseControls') {

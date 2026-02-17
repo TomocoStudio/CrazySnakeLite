@@ -1997,6 +1997,36 @@ button:disabled {
   }
 }
 
+/* Invincibility power flash - Story 7.9 */
+.invincibility-flash {
+  position: fixed;
+  font-family: 'Jersey20', sans-serif;
+  font-size: 48px;
+  color: #FFFF00;  /* Yellow - matches invincibility food color */
+  font-weight: 900;
+  text-shadow: 0 0 12px rgba(255, 255, 0, 0.8),
+               2px 2px 4px rgba(0, 0, 0, 1);  /* Yellow glow + black shadow */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  pointer-events: none;
+  z-index: 1000;
+  animation: invincibilityFlashFadeUp 3500ms ease-out forwards;
+}
+
+@keyframes invincibilityFlashFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+}
+
 /* ========================================
    Particle System - Story 7.3
    ======================================== */

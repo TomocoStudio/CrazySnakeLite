@@ -71,6 +71,17 @@ const WALL_PHASE_MESSAGES = [
   "BOUNDARY BROKEN!"
 ];
 
+// Invincibility power message pool (Story 7.9)
+export const INVINCIBILITY_MESSAGES = [
+  "INVINCIBLE!",
+  "IMMORTAL!",
+  "SHIELDED!",
+  "FEARLESS!",
+  "NO DAMAGE!",
+  "ARMORED!",
+  "IMMUNE!"
+];
+
 /**
  * Spawn a random victory message flash (Story 11.1)
  * Used for RC survival celebration with rotating messages
@@ -134,6 +145,32 @@ export function spawnPhaseFlash(x, y) {
 
   const flash = document.createElement('div');
   flash.className = 'phase-flash';
+  flash.textContent = randomMessage;
+
+  // Position flash at pixel coordinates
+  flash.style.left = `${x}px`;
+  flash.style.top = `${y}px`;
+
+  // Add to DOM
+  document.body.appendChild(flash);
+
+  // Auto-remove after animation completes (3500ms)
+  flash.addEventListener('animationend', () => {
+    flash.remove();
+  });
+}
+
+/**
+ * Spawn a random invincibility power message flash (Story 7.9)
+ * Used for Invincibility celebration with rotating messages
+ * @param {number} x - X position in viewport pixels
+ * @param {number} y - Y position in viewport pixels
+ */
+export function spawnInvincibilityFlash(x, y) {
+  const randomMessage = INVINCIBILITY_MESSAGES[Math.floor(Math.random() * INVINCIBILITY_MESSAGES.length)];
+
+  const flash = document.createElement('div');
+  flash.className = 'invincibility-flash';
   flash.textContent = randomMessage;
 
   // Position flash at pixel coordinates
