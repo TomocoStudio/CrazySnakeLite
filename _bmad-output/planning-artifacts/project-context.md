@@ -437,7 +437,7 @@ function renderGridDots(ctx, gameState) {
 - All colors
 - V2: Fibonacci score values, blink/combo/phone threshold tables, combo canvas colors, popup tier specs, phone pickup Fibonacci sequence, phone grace score (3), cognitive stats tracking
 - V3: DASHBOARD section (calibration threshold, rolling window size, recency weights, metric normalization ranges, block scale mapping, domain labels, comedy quote pools)
-- V4: BACKGROUND_PROGRESSION (6 score tiers), FOOD_GLOW (3 blur tiers), GRID_OPACITY_PROGRESSION (6 opacity tiers), BORDER_COLORS (7 border states), food outline colors (6 types), snake dark outline threshold (score 50), CRT scanline toggle/opacity, grid dot radius
+- V4: BACKGROUND_PROGRESSION (6 score tiers), FOOD_GLOW (3 blur tiers), GRID_OPACITY_PROGRESSION (6 opacity tiers), BORDER_COLORS (6 border states - wall safety focus), food outline colors (6 types), snake dark outline threshold (score 50), CRT scanline toggle/opacity, grid dot radius
 
 **NEVER hardcode magic numbers in other files.**
 
@@ -771,10 +771,18 @@ gameover → menu (ESC)
 - Grid opacity: `0.9`
 - Unit size: `20px` (canvas 500x400)
 
-**Border Styling:**
-- Border color: `#9D4EDD` (purple)
-- Border width: `6px`
-- No glow effect (solid border only)
+**Border Styling (Reactive Border System - V4 Enhancement 7):**
+- **Primary Function:** Wall safety communication (black = danger, color = safe)
+- Default: `#000000` (black) — hitting wall = death
+- Border width: `8px`
+- **Reactive States:**
+  - Wall Phase active: `#800080` (purple) — safe to cross walls
+  - Invincibility active: `#FFFF00` (yellow) with 400ms blink animation — invincible to everything
+  - Phone ringing: `#FFD700` (gold) — reward opportunity
+  - Phone picked up: `#28a745` (green) — committed state
+  - Combo active: matches `COMBO_CANVAS_COLORS[i]` (dynamic)
+- Priority cascade: Phone > Combo > Invincibility > Wall Phase > Default
+- Transition: `border-color 300ms ease-in-out` (smooth color shifts)
 
 **Food Shapes (all 10x10 pixels at grid unit center):**
 - Growing (green): Filled square

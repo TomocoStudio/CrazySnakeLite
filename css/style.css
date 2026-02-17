@@ -67,7 +67,7 @@ body.no-scanlines::after {
 #game-canvas {
   display: block;
   background-color: #E8E8E8;
-  border: 8px solid #9D4EDD;  /* Story 20.5: Default purple border (reactive border system) */
+  border: 8px solid #000000;  /* Default black border (wall = death) */
   box-shadow: 0 0 0 8px #1A1A2E;  /* 4px light purple outer border */
   border-radius: 10px;  /* Subtle rounded corners */
   /* Story 20.1, 20.5: V4 Progressive visual transformation */
@@ -101,8 +101,23 @@ body.no-scanlines::after {
   border-color: #FFA500;  /* Orange - reverse controls active */
 }
 
+#game-canvas.border-wallPhase {
+  border-color: #800080;  /* Purple - wall phase active (safe to cross) */
+}
+
 #game-canvas.border-invincibility {
   border-color: #FFFF00;  /* Yellow - invincibility active */
+  animation: borderBlink 400ms steps(2, jump-none) infinite;  /* Blinking yellow border */
+}
+
+/* Blinking animation for invincibility border */
+@keyframes borderBlink {
+  0%, 49% {
+    border-color: #FFFF00;  /* Yellow */
+  }
+  50%, 100% {
+    border-color: #000000;  /* Black */
+  }
 }
 
 /* Score Display - Story 5-2: Dual Score Layout */
@@ -1941,10 +1956,9 @@ button:disabled {
   transition: opacity 300ms ease-in-out;  /* Story 16.6: Smooth fade-out */
 }
 
-/* Hidden state - fade out when transitioning to game */
+/* Hidden state - instant hide to prevent flash of empty content */
 #skill-map-screen.hidden {
-  opacity: 0;
-  pointer-events: none;  /* Prevent interaction during fade-out */
+  display: none;
 }
 
 /* Disable screen fade if user prefers reduced motion */

@@ -3,6 +3,7 @@ import { CONFIG } from './config.js';
 import { isEffectActive, clearEffect } from './effects.js';
 import { getWallPhaseBonus } from './scoring.js';
 import { spawnPopup } from './score-popup.js';
+import { updateBorderState, updateCanvasBackground } from './game.js';
 
 /**
  * Move snake one step in current direction
@@ -33,6 +34,10 @@ export function moveSnake(gameState) {
 
       // Wall-phase was consumed (single-use)
       clearEffect(gameState);
+
+      // Update border and background to reflect effect cleared (walls return to default)
+      updateBorderState(gameState);
+      updateCanvasBackground(gameState);
     }
   } else if (isEffectActive(gameState, 'invincibility')) {
     // Invincibility also wraps (but doesn't consume the effect)

@@ -88,7 +88,7 @@ export function gameLoop(currentTime, ctx, gameState) {
  * Event-driven: Only updates when tier changes OR combo state changes (NOT every frame)
  * @param {Object} gameState - Current game state
  */
-function updateCanvasBackground(gameState) {
+export function updateCanvasBackground(gameState) {
   const canvas = document.getElementById('game-canvas');
 
   // Combo mode: Use inverted background (darker)
@@ -137,65 +137,57 @@ export function resetCanvasBackground() {
 export function updateBorderState(gameState) {
   const canvas = document.getElementById('game-canvas');
 
-  // Story 21.4: Clear all border classes first (CSS class-based approach)
+  // Clear all border classes first
   canvas.classList.remove(
-    'border-death',
     'border-phone-ring',
     'border-phone-pickup',
     'border-combo',
-    'border-reverse',
-    'border-invincibility'
+    'border-invincibility',
+    'border-wallPhase'
   );
 
   // Priority cascade evaluation (highest to lowest)
 
-  // 1. Death flash (500ms, highest priority)
-  if (deathFlashActive) {
-    canvas.classList.add('border-death');
-    console.log('[V4] Border → death flash (red)');
-    return;
-  }
-
-  // 2. Phone ring (gold, decision point)
+  // 1. Phone ring (gold, decision point)
   if (gameState.phoneCall.active && !gameState.phoneCall.pickedUp) {
     canvas.classList.add('border-phone-ring');
     console.log('[V4] Border → phone ring (gold)');
     return;
   }
 
-  // 3. Phone pickup (green, committed)
+  // 2. Phone pickup (green, committed)
   if (gameState.phoneCall.pickedUp && gameState.phoneCall.pickUpEndTime > Date.now()) {
     canvas.classList.add('border-phone-pickup');
     console.log('[V4] Border → phone pickup (green)');
     return;
   }
 
-  // 4. Combo (dynamic color from combo system)
+  // 3. Combo (dynamic color from combo system)
   if (gameState.combo.active && !gameState.combo.paused) {
     canvas.classList.add('border-combo');
-    // Story 21.4: Dynamic color still uses inline style (CSS class provides transition)
+    // Dynamic color still uses inline style (CSS class provides transition)
     canvas.style.borderColor = gameState.combo.canvasColor;
     console.log(`[V4] Border → combo (${gameState.combo.canvasColor})`);
     return;
   }
 
-  // 5. Reverse Controls (orange)
-  if (gameState.effects.reverseControlsActive) {
-    canvas.classList.add('border-reverse');
-    console.log('[V4] Border → reverse controls (orange)');
-    return;
-  }
-
-  // 6. Invincibility (yellow)
+  // 4. Invincibility (yellow blinking)
   if (gameState.activeEffect?.type === 'invincibility') {
     canvas.classList.add('border-invincibility');
-    console.log('[V4] Border → invincibility (yellow)');
+    console.log('[V4] Border → invincibility (yellow blinking)');
     return;
   }
 
-  // 7. Default (purple) - clear inline style, let CSS default take over
+  // 5. Wall Phase (purple - safe to cross walls)
+  if (gameState.activeEffect?.type === 'wallPhase') {
+    canvas.classList.add('border-wallPhase');
+    console.log('[V4] Border → wall phase (purple - safe crossing)');
+    return;
+  }
+
+  // 6. Default (black) - clear inline style, let CSS default take over
   canvas.style.borderColor = '';
-  console.log('[V4] Border → default (purple)');
+  console.log('[V4] Border → default (black)');
 }
 
 /**
@@ -406,14 +398,16 @@ function update(gameState) {
       clearEffect(gameState);
       gameState.snake.color = CONFIG.COLORS.snakeGrowing;
 
-      // Story 20.5: Update border when effect cleared
+      // Update border and background when effect cleared
       updateBorderState(gameState);
+      updateCanvasBackground(gameState);
     } else {
       // Special food applies its effect (clears previous first)
       applyEffect(gameState, effectType);
 
-      // Story 20.5: Update border when effect applied
+      // Update border and background when effect applied
       updateBorderState(gameState);
+      updateCanvasBackground(gameState);
     }
 
     // Spawn new food

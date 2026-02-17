@@ -678,7 +678,7 @@ The arcade cabinet bezel wasn't just a frame — it was a design canvas. Differe
 
 ### Current State
 
-- Canvas border: 8px solid `#800080` (purple)
+- Canvas border: 8px solid `#000000` (black)
 - Outer shadow: `0 0 0 8px #1A1A2E` (dark navy)
 - Border radius: 10px
 - Static — never changes during gameplay
@@ -688,52 +688,56 @@ The arcade cabinet bezel wasn't just a frame — it was a design canvas. Differe
 
 **Concept:** The border becomes a reactive feedback channel that responds to game events with color shifts. It's still a bold solid border (no gradients, no imagery — that would violate the pixel economy principle), but it subtly communicates game state through color, leveraging the player's peripheral vision.
 
+**Primary Function:** The border's PRIMARY role is **wall safety communication** — it tells the player whether crossing the boundary is safe or deadly. This is the cognitive core. Phone and combo states are secondary visual feedback layers.
+
 #### Border State Table
 
 | Game State | Border Color | Transition | Rationale |
 |---|---|---|---|
-| **Normal play** | `#800080` (purple) | — | Current default. Matches wall phase food. Visual anchor. |
+| **Normal play** | `#000000` (black) | — | Default state. Black = danger. Hitting wall = death. Clear baseline. |
+| **Wall Phase active** | `#800080` (purple) | 300ms | Safe to cross! Purple matches wall phase food color. Semantic consistency. |
+| **Invincibility active** | `#FFFF00` (yellow) | 400ms blink (yellow ↔ black) | Invincible to everything. Blinking yellow = maximum attention, matches invincibility food. Animation reinforces temporary power state. |
 | **Phone ringing** | `#FFD700` (gold) | 300ms pulse | Peripheral alert: "attention needed!" Gold = reward opportunity. |
 | **Phone picked up** | `#28a745` (green) | 200ms | Committed. Green = go, matches Pick Up button. |
 | **Combo active** | Matches `COMBO_CANVAS_COLORS[i]` | 500ms (match existing) | Border syncs with canvas for total immersion. |
-| **Invincibility** | `#FFFF00` (yellow) | Match strobe interval | Peripheral reinforcement of invincibility state. |
-| **Reverse Controls** | `#FFA500` (orange) | 200ms | Peripheral warning: "controls are flipped!" The border screams the state. |
-| **Death** | `#FF0000` (red) | 100ms flash | Hard cut to red. Visceral. 500ms flash then return to purple. |
 
 #### Implementation
 
 ```css
 /* CSS transition for smooth border color changes */
 #game-canvas {
+  border: 8px solid #000000;  /* Default black border (wall = death) */
   transition:
-    background-color 500ms ease-in-out,
+    background-color 2000ms ease-in-out,
     border-color 300ms ease-in-out;
 }
 
 /* State classes */
 #game-canvas.border-phone-ring {
-  border-color: #FFD700;
+  border-color: #FFD700;  /* Gold */
 }
 
 #game-canvas.border-phone-pickup {
-  border-color: #28a745;
+  border-color: #28a745;  /* Green */
 }
 
 #game-canvas.border-combo {
-  /* border-color set dynamically via style.setProperty */
+  /* border-color set dynamically via JS from gameState.combo.canvasColor */
+}
+
+#game-canvas.border-wallPhase {
+  border-color: #800080;  /* Purple - wall phase active (safe to cross) */
 }
 
 #game-canvas.border-invincibility {
-  border-color: #FFFF00;
+  border-color: #FFFF00;  /* Yellow - invincibility active */
+  animation: borderBlink 400ms steps(2, jump-none) infinite;
 }
 
-#game-canvas.border-reverse {
-  border-color: #FFA500;
-}
-
-#game-canvas.border-death {
-  border-color: #FF0000;
-  transition: border-color 100ms ease-in;
+/* Blinking animation for invincibility border */
+@keyframes borderBlink {
+  0%, 49% { border-color: #FFFF00; }  /* Yellow */
+  50%, 100% { border-color: #000000; }  /* Black */
 }
 ```
 
@@ -742,14 +746,13 @@ The arcade cabinet bezel wasn't just a frame — it was a design canvas. Differe
 ```javascript
 // config.js
 BORDER_COLORS: {
-  default: '#800080',
-  phoneRing: '#FFD700',
-  phonePickup: '#28a745',
-  invincibility: '#FFFF00',
-  reverseControls: '#FFA500',
-  death: '#FF0000'
-},
-BORDER_DEATH_FLASH_DURATION: 500,  // ms before returning to default
+  default: '#000000',        // Black (wall = death)
+  phoneRing: '#FFD700',      // Gold (reward opportunity)
+  phonePickup: '#28a745',    // Green (committed state)
+  combo: null,               // Dynamic (set from combo.canvasColor)
+  wallPhase: '#800080',      // Purple (safe to cross walls)
+  invincibility: '#FFFF00'   // Yellow (invincible, with blink animation)
+}
 ```
 
 #### Module Boundaries
@@ -761,22 +764,23 @@ BORDER_DEATH_FLASH_DURATION: 500,  // ms before returning to default
 
 #### Priority Resolution
 
-When multiple states overlap (e.g., combo + phone + reverse controls), the priority order:
-1. Death (always wins, but lasts only 500ms)
-2. Phone states (ringing/pickup — most time-critical decision)
-3. Combo (ambient, lower priority)
-4. Active effect (invincibility, reverse controls)
-5. Default purple
+When multiple states overlap (e.g., combo + phone + invincibility), the priority cascade:
+1. **Phone ring** (highest priority — time-critical decision point, gold border)
+2. **Phone pickup** (committed state, green border)
+3. **Combo active** (environmental immersion, dynamic color)
+4. **Invincibility** (player safety state, yellow blinking)
+5. **Wall Phase** (player safety state, purple solid)
+6. **Default** (black border — wall = death)
 
-This mirrors the existing priority pattern in audio.js.
+**Rationale:** Phone states take priority because they represent time-limited decision points. Combo mode is environmental. Effects (invincibility, wallPhase) are the primary cognitive feedback but yield to higher-priority game events. This cascade ensures the most critical information always wins.
 
 #### Five-Question Filter
 
-1. **Working Memory:** Near-zero WM cost. Border color is peripheral — processed preattentively without conscious attention allocation. It's the same principle as combo canvas color: ambient state signal.
-2. **Competence Feedback:** The border reacting to game events makes the player feel "the game is responding to me." Environmental responsiveness = competence validation.
-3. **Clarity:** Each border color is maximally distinct and semantically consistent with existing color associations (gold = reward, green = go, red = death, orange = danger/RC).
-4. **Flow Preservation:** Peripheral signals support flow by reducing the need to check UI elements. "I know my controls are reversed because the border is orange" — no need to look at a status indicator.
-5. **Emotional Impact:** The death flash (100ms snap to red) is the biggest emotional punch. It's visceral, instant, and unmistakable. Combined with the dark playfield at high scores, a red border flash against a near-black void will be *dramatic*.
+1. **Working Memory:** Near-zero WM cost. Border color is peripheral — processed preattentively without conscious attention allocation. The primary border function (wall safety communication) uses the simplest possible encoding: black = danger, color = safe. This is universal human association (darkness = threat, light/color = safety).
+2. **Competence Feedback:** The border reacting to player-earned effects (eating wallPhase/invincibility food) makes the border feel *responsive* to player action. "I earned this safe state, and the world acknowledges it." Environmental responsiveness = competence validation.
+3. **Clarity:** The wall safety encoding is maximally clear: **Black border = wall kills you. Colored border = wall is safe.** This binary signal is instant to decode. The blinking yellow for invincibility is the strongest possible attention signal (movement in peripheral vision = preattentive pop-out).
+4. **Flow Preservation:** Peripheral wall safety signals support flow by eliminating the need to consciously track effect duration. "I know I can cross walls because the border is purple" — no mental math required. The player can focus entirely on spatial navigation.
+5. **Emotional Impact:** The **purple border transformation** when eating wall phase food is a mini-victory moment: "The rules just changed in my favor." The **blinking yellow invincibility border** is maximum power fantasy — the entire playfield pulses with your temporary invincibility. These are emotional peaks that amplify the core gameplay loop.
 
 ---
 
@@ -910,7 +914,8 @@ When all 8 enhancements work together, the visual progression tells a story:
 - Background approaching dark
 - Grid as ghost lines — spatial awareness test
 - Food items are bright neon beacons in the gathering dark
-- Reverse Controls orange border flash against near-dark = *visceral*
+- Wall Phase purple border against near-dark = clear safety signal
+- Invincibility yellow border blinking against the void = *power fantasy*
 - Every game system visual at peak intensity
 
 ### Score 100+: "Full Neon Noir"
@@ -919,7 +924,8 @@ When all 8 enhancements work together, the visual progression tells a story:
 - Food items radiating CRT-phosphor neon glow (blur 8)
 - Snake visible through white outline highlights
 - Phone calls: gold border pulse against the void
-- Death: red border flash in absolute darkness
+- Wall Phase: purple border glowing in absolute darkness — "the walls are safe now"
+- Invincibility: blinking yellow border illuminating the void in pulses
 - **This is the 80s arcade. The player earned it.**
 
 ---

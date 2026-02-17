@@ -367,6 +367,7 @@ function handleUIUpdate(state) {
     if (phaseChanged) {
       menuScreen.classList.remove('hidden');
       gameoverScreen.classList.add('hidden');
+      skillMapScreen.classList.add('hidden');  // Hide Skill Map when returning to menu
       scoreDisplay.classList.add('hidden');  // Fix: Hide score on menu
       updateHighScoreDisplay(state.highScore);
       // Only play menu music if audio is initialized (after user interaction)
@@ -621,6 +622,8 @@ if (playNowBtn) {
 backToMenuLink.addEventListener('click', (e) => {
   e.preventDefault();
   console.log('[Story 16.1] Back to Menu clicked');
+  // Hide Skill Map screen IMMEDIATELY to prevent flash of empty screen during cleanup
+  skillMapScreen.classList.add('hidden');
   gameState.phase = 'menu';
 });
 
