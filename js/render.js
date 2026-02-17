@@ -187,13 +187,14 @@ function renderSnake(ctx, gameState) {
         color = colorB; // Even segments
       }
 
-      // Draw segment with glow effect
-      withShadow(ctx, { color, blur: 8 }, (ctx) => {
+      // Draw segment with glow effect - white glow for black segments
+      const glowColor = color === '#000000' ? '#FFFFFF' : color;
+      withShadow(ctx, { color: glowColor, blur: 6 }, (ctx) => {
         ctx.fillStyle = color;
         ctx.fillRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
 
-        // Add 1px black border for visual separation (Story 10.3)
-        ctx.strokeStyle = '#000000';
+        // Add 1px border - white when snake is black, black otherwise (visibility on dark background)
+        ctx.strokeStyle = color === '#000000' ? '#FFFFFF' : '#000000';
         ctx.lineWidth = 1;
         ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
 
@@ -230,13 +231,14 @@ function renderSnake(ctx, gameState) {
       const x = segment.x * CONFIG.UNIT_SIZE;
       const y = segment.y * CONFIG.UNIT_SIZE;
 
-      // Draw segment with glow effect
-      withShadow(ctx, { color: snakeColor, blur: 8 }, (ctx) => {
+      // Draw segment with glow effect - white glow for black snake
+      const glowColor = snakeColor === '#000000' ? '#FFFFFF' : snakeColor;
+      withShadow(ctx, { color: glowColor, blur: 6 }, (ctx) => {
         ctx.fillStyle = snakeColor;
         ctx.fillRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
 
-        // Crisp 1px black border on all segments (combo mode style)
-        ctx.strokeStyle = '#000000';
+        // Crisp 1px border - white when snake is black, black otherwise (visibility on dark background)
+        ctx.strokeStyle = snakeColor === '#000000' ? '#FFFFFF' : '#000000';
         ctx.lineWidth = 1;
         ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
 

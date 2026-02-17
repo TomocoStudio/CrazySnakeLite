@@ -1055,6 +1055,75 @@ No new files created. No new dependencies. All changes are additive to existing 
 
 ---
 
+## V4.2 Post-Implementation Enhancement: Black Snake Visibility (2026-02-17)
+
+### User Request
+
+After V4.1 implementation, Tomoco identified a visibility issue with the black snake against the constant dark background (`#1a1a1a`). The black snake with black glow and black border was difficult to see, particularly at game start and during wall phase effect.
+
+### Design Solution
+
+**Adaptive glow and border system:** When the snake is black (`#000000`), use white glow and white border for maximum contrast. For all other snake colors, maintain the original colored glow + black border pattern.
+
+### Specification
+
+| Snake State | Fill | Glow | Border | Rationale |
+|---|---|---|---|---|
+| Black (game start, wall phase) | `#000000` | `#FFFFFF` (blur 6) | `#FFFFFF` 1px | Maximum visibility on dark BG |
+| Yellow (invincibility) | `#FFFF00` | `#FFFF00` (blur 6) | `#000000` 1px | Original V4.1 behavior |
+| Invincibility strobe (black phase) | `#000000` | `#FFFFFF` (blur 6) | `#FFFFFF` 1px | Adaptive during strobe |
+| Combo striped (black segment) | `#000000` | `#FFFFFF` (blur 6) | `#FFFFFF` 1px | Per-segment adaptive |
+| Combo striped (colored segment) | Effect color | Effect color (blur 6) | `#000000` 1px | Original V4.1 behavior |
+
+### Visual Behavior Changes
+
+1. **Glow blur reduced:** From 8px (V4.1) to 6px (V4.2) for subtler, crisper effect
+2. **Adaptive glow color:** `color === '#000000' ? '#FFFFFF' : color`
+3. **Adaptive border color:** `color === '#000000' ? '#FFFFFF' : '#000000'`
+
+### Five-Question Filter Validation
+
+**Q1. Working Memory Impact?**
+✅ **Improves.** White glow on black snake creates instant visual pop against dark background, reducing cognitive load to locate the player's position at game start.
+
+**Q2. Competence Feedback?**
+✅ **Neutral.** Visibility enhancement doesn't change competence signals (score, effects, progression remain unchanged).
+
+**Q3. Clarity of Purpose?**
+✅ **Improves.** The white halo around the black snake at game start immediately signals "this is your character" without requiring the player to squint or search.
+
+**Q4. Flow State?**
+✅ **Improves.** Eliminates the micro-frustration of "where is my snake?" at game start, allowing faster entry into flow state.
+
+**Q5. Emotional Impact?**
+✅ **Positive.** The white-glowing black snake against the dark void has strong "neon ghost" aesthetic appeal, reinforcing the 80s arcade vibe.
+
+**Verdict:** ✅ **Enhancement approved.** Improves visibility without sacrificing any cognitive training value, and amplifies the neon noir aesthetic.
+
+### Axiom Alignment
+
+- **Axiom 7 (Emotional peaks are the product):** White-glowing black snake creates a striking visual "wow" moment at game start
+- **Axiom 6 (Intended challenge only):** Removes unintended challenge of locating the black snake against dark background
+
+### Implementation Notes
+
+- Implemented in `render.js` `renderSnake()` function (both striped and normal code paths)
+- No new config values required (uses existing `CONFIG.COLORS.snakeDefault`)
+- Backward compatible with Story 21.1 outline system (both can coexist at score 50+)
+- See Technical Addendum for code patterns
+
+### Testing Validation
+
+- [x] Black snake visible at game start (score 0)
+- [x] Black snake visible during wall phase effect
+- [x] White glow/border during invincibility strobe (black phase)
+- [x] Black segments in combo mode get white glow/border
+- [x] Colored segments keep original glow/border behavior
+- [x] No visual conflicts with Story 21.1 outline at score 50+
+- [x] FPS stable (blur reduction from 8→6 maintains 60 FPS)
+
+---
+
 *This spec is designed to be consumed by the Architect for architecture integration, the Dev for implementation, and the PM for epic/story creation. All config values are provided so that implementation agents can copy them directly.*
 
 *Source research: "The Visual Language of 1980s Video Games" (Tomoco, 2026), located at `tomoco-docs/80s Video Game Graphic Design Overview.pdf`.*

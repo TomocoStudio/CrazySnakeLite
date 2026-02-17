@@ -1223,6 +1223,116 @@ Before marking the retro graphic upgrade complete:
 
 ---
 
+## V4.2 Enhancement: Black Snake Visibility (2026-02-17)
+
+**Problem:** Black snake (`#000000`) with black glow and black border is nearly invisible against the dark background (`#1a1a1a`), especially at game start and during wall phase effect.
+
+**Solution:** Adaptive glow and border - white when snake is black, colored when snake is any other color.
+
+### Implementation Pattern
+
+```javascript
+// render.js — renderSnake() function (both striped and normal paths)
+
+// For striped snake (combo mode):
+snake.segments.forEach((segment, index) => {
+  const x = segment.x * CONFIG.UNIT_SIZE;
+  const y = segment.y * CONFIG.UNIT_SIZE;
+
+  // Determine segment color
+  const color = index === 0 ? colorB : (index % 2 === 1 ? colorA : colorB);
+
+  // ADAPTIVE GLOW: White glow for black segments, colored glow otherwise
+  const glowColor = color === '#000000' ? '#FFFFFF' : color;
+
+  withShadow(ctx, { color: glowColor, blur: 6 }, (ctx) => {
+    ctx.fillStyle = color;
+    ctx.fillRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
+
+    // ADAPTIVE BORDER: White border for black segments, black otherwise
+    ctx.strokeStyle = color === '#000000' ? '#FFFFFF' : '#000000';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
+
+    // Existing Story 21.1 outline (if score >= 50)
+    if (needsOutline) {
+      ctx.strokeStyle = CONFIG.SNAKE_DARK_OUTLINE_COLOR;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
+    }
+  });
+});
+
+// For normal snake:
+snake.segments.forEach((segment, index) => {
+  const x = segment.x * CONFIG.UNIT_SIZE;
+  const y = segment.y * CONFIG.UNIT_SIZE;
+
+  // Determine snake color (handles invincibility strobe)
+  let snakeColor = snake.color;
+  if (isEffectActive(gameState, 'invincibility')) {
+    const strobePhase = Math.floor(performance.now() / CONFIG.STROBE_INTERVAL) % 2;
+    snakeColor = strobePhase === 0 ? CONFIG.COLORS.snakeInvincibility : CONFIG.COLORS.snakeDefault;
+  }
+
+  // ADAPTIVE GLOW: White glow for black snake, colored glow otherwise
+  const glowColor = snakeColor === '#000000' ? '#FFFFFF' : snakeColor;
+
+  withShadow(ctx, { color: glowColor, blur: 6 }, (ctx) => {
+    ctx.fillStyle = snakeColor;
+    ctx.fillRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
+
+    // ADAPTIVE BORDER: White border for black snake, black otherwise
+    ctx.strokeStyle = snakeColor === '#000000' ? '#FFFFFF' : '#000000';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
+
+    // Existing Story 21.1 outline (if score >= 50)
+    if (needsOutline) {
+      ctx.strokeStyle = CONFIG.SNAKE_DARK_OUTLINE_COLOR;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
+    }
+  });
+});
+```
+
+### Visual Behavior
+
+| Snake State | Fill Color | Glow Color | Border Color | Context |
+|---|---|---|---|---|
+| Game start | Black `#000000` | **White `#FFFFFF`** | **White `#FFFFFF`** | Initial visibility |
+| Wall phase active | Black `#000000` | **White `#FFFFFF`** | **White `#FFFFFF`** | During effect |
+| Invincibility (yellow) | Yellow `#FFFF00` | Yellow `#FFFF00` | Black `#000000` | Normal glow |
+| Invincibility (black strobe) | Black `#000000` | **White `#FFFFFF`** | **White `#FFFFFF`** | Adaptive |
+| Combo striped (black segment) | Black `#000000` | **White `#FFFFFF`** | **White `#FFFFFF`** | Per-segment |
+| Combo striped (colored segment) | Effect color | Effect color | Black `#000000` | Per-segment |
+
+### Design Rationale
+
+1. **Contrast:** White glow + white border creates maximum visibility against `#1a1a1a` background
+2. **Consistency:** Applies to all black segments regardless of game state (start, effects, combo)
+3. **Performance:** Blur reduced from 8 to 6 for subtle, crisp effect
+4. **Compatibility:** Works with existing Story 21.1 outline system (both can coexist at score 50+)
+
+### Testing Checklist
+
+- [ ] Black snake visible at game start (score 0)
+- [ ] Black snake visible during wall phase effect
+- [ ] White glow/border during invincibility strobe (black phase)
+- [ ] Black segments in combo mode get white glow/border
+- [ ] Colored segments keep original glow/border behavior
+- [ ] No visual conflicts with Story 21.1 outline at score 50+
+- [ ] FPS stable (glow reduction from blur 8→6 maintains 60 FPS)
+
+### Config Impact
+
+**No new config values needed.** All logic uses existing constants:
+- `CONFIG.COLORS.snakeDefault` (`#000000`)
+- Hard-coded white `#FFFFFF` for adaptive glow/border (intentional - visibility is binary, not tunable)
+
+---
+
 **End of Technical Addendum**
 
 *This document is designed to be used as a direct reference during implementation. All code snippets are copy-paste ready. All test scenarios can be executed as written. All checklists map to specific files and functions.*

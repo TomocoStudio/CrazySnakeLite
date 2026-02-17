@@ -804,10 +804,14 @@ gameover → menu (ESC)
 - Priority cascade: Phone > Combo > Invincibility > Wall Phase > Default
 - Transition: `border-color 300ms, box-shadow 300ms` (smooth color + glow shifts)
 
-**Snake Visual (V4.1 - Crisp Neon):**
-- All segments: Constant glow (blur 8) + crisp 1px black border
+**Snake Visual (V4.1 - Crisp Neon + V4.2 Black Snake Visibility):**
+- All segments: Adaptive glow (blur 6) + crisp 1px adaptive border
+- **V4.2 Black Snake Enhancement (2026-02-17):**
+  - When snake is black (`#000000`): White glow + white border (visibility on dark background)
+  - When snake is any other color: Colored glow + black border (original V4.1 behavior)
+  - Applies to: Game start, wall phase effect, invincibility strobe (black phase), combo striped segments
 - Border style matches combo mode aesthetic (clean definition)
-- Glow color matches snake state color (black/yellow/purple/red/cyan/orange)
+- Glow color adaptive: matches snake color, except black → white for contrast
 
 **Score Popup Visual (V4.1 - CRT Phosphor Glow):**
 - **Multi-layer text-shadow pattern:** All food score popups use 3-layer glow
