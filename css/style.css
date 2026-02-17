@@ -1625,6 +1625,9 @@ button:disabled {
 .score-popup-growing {
   font-size: 44px;
   color: #00FF00; /* Match food color */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 1),
+               0 0 10px rgba(0, 255, 0, 1),
+               0 0 20px rgba(0, 255, 0, 0.8);
   animation: popup-small 1000ms ease-out forwards;
 }
 
@@ -1632,6 +1635,9 @@ button:disabled {
 .score-popup-speedDecrease {
   font-size: 44px;
   color: #00CED1; /* Match food color */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 1),
+               0 0 10px rgba(0, 206, 209, 1),
+               0 0 20px rgba(0, 206, 209, 0.8);
   animation: popup-small 1000ms ease-out forwards;
 }
 
@@ -1639,15 +1645,19 @@ button:disabled {
 .score-popup-wallPhase {
   font-size: 48px;
   color: #800080; /* Match food color */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 1),
+               0 0 10px rgba(128, 0, 128, 1),
+               0 0 20px rgba(128, 0, 128, 0.8);
   animation: popup-medium 1200ms ease-out forwards;
 }
 
 /* Speed Boost Food (+5) - RED to match food color */
 .score-popup-speedBoost {
-  font-size: 28px;
+  font-size: 44px;
   color: #FF0000; /* RED - matches red food */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9),
-               0 0 8px rgba(255, 0, 0, 0.6); /* Red glow */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 1),
+               0 0 10px rgba(255, 0, 0, 1),
+               0 0 20px rgba(255, 0, 0, 0.8);
   animation: popup-speedboost 1400ms ease-out forwards;
 }
 
@@ -1683,6 +1693,9 @@ button:disabled {
 .score-popup-invincibility {
   font-size: 44px;
   color: #FFFF00; /* Match food color */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 1),
+               0 0 10px rgba(255, 255, 0, 1),
+               0 0 20px rgba(255, 255, 0, 0.8);
   animation: popup-small 1000ms ease-out forwards;
 }
 
@@ -1690,6 +1703,9 @@ button:disabled {
 .score-popup-2 {
   font-size: 46px;
   color: #800080; /* Purple for Wall Phase bonus */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 1),
+               0 0 10px rgba(128, 0, 128, 1),
+               0 0 20px rgba(128, 0, 128, 0.8);
   animation: popup-medium 1000ms ease-out forwards;
 }
 
