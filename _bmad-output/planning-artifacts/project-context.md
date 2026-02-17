@@ -437,7 +437,7 @@ function renderGridDots(ctx, gameState) {
 - All colors
 - V2: Fibonacci score values, blink/combo/phone threshold tables, combo canvas colors, popup tier specs, phone pickup Fibonacci sequence, phone grace score (3), cognitive stats tracking
 - V3: DASHBOARD section (calibration threshold, rolling window size, recency weights, metric normalization ranges, block scale mapping, domain labels, comedy quote pools)
-- V4: BACKGROUND_PROGRESSION (6 score tiers), FOOD_GLOW (3 blur tiers), GRID_OPACITY_PROGRESSION (6 opacity tiers), BORDER_COLORS (6 border states - wall safety focus), food outline colors (6 types), snake dark outline threshold (score 50), CRT scanline toggle/opacity, grid dot radius
+- V4: BACKGROUND_PROGRESSION (constant dark #1a1a1a), GRID_LINE_THRESHOLDS (white→black inverse progression), FOOD_GLOW (constant blur 8), GRID_OPACITY_PROGRESSION (6 opacity tiers), BORDER_COLORS (6 border states - wall safety focus + multi-layer glow), food outline colors (6 types), snake glow (constant blur 8), CRT scanline toggle/opacity, grid dot radius
 
 **NEVER hardcode magic numbers in other files.**
 
@@ -768,21 +768,46 @@ gameover → menu (ESC)
 - Background: `#E8E8E8` (light grey)
 - Grid lines: `#A0A0A0` (darker grey)
 - Grid line width: `0.5px`
-- Grid opacity: `0.9`
+- Grid opacity: Progressive fade (0.9 → 0.3 as score increases)
 - Unit size: `20px` (canvas 500x400)
 
-**Border Styling (Reactive Border System - V4 Enhancement 7):**
+**Canvas Background (V4.1 - Constant Neon Noir):**
+- Background color: `#1a1a1a` (constant dark throughout, no progression)
+- Grid lines: White `#FFFFFF` → Black `#000000` (progressive darkening as mastery increases)
+  - Score 0-14: `#FFFFFF` (full white, max scaffolding)
+  - Score 15-29: `#CCCCCC`
+  - Score 30-49: `#999999`
+  - Score 50-79: `#666666`
+  - Score 80-99: `#333333`
+  - Score 100+: `#000000` (full black, mastery void)
+
+**Object Glow (V4.1 - Constant Maximum Intensity):**
+- All game objects (food + snake) render with constant glow (blur 8)
+- No score-based progression — maximum neon from game start
+- Glow color matches object color (CRT phosphor effect)
+
+**Border Styling (Reactive Border System - V4 Enhancement 7 + V4.1 Glow):**
 - **Primary Function:** Wall safety communication (black = danger, color = safe)
 - Default: `#000000` (black) — hitting wall = death
 - Border width: `8px`
+- **Multi-Layer Neon Glow:** 3-4 layers of CSS box-shadow per state
+  - Inner layer (20px blur, full opacity): Bright core
+  - Middle layer (40px blur, 0.8-0.9 opacity): Strong radiance
+  - Outer layer (60px blur, 0.6-0.7 opacity): Soft halo
+  - Invincibility extra layer (80px blur): Maximum power visual
 - **Reactive States:**
-  - Wall Phase active: `#800080` (purple) — safe to cross walls
-  - Invincibility active: `#FFFF00` (yellow) with 400ms blink animation — invincible to everything
-  - Phone ringing: `#FFD700` (gold) — reward opportunity
-  - Phone picked up: `#28a745` (green) — committed state
+  - Wall Phase active: `#800080` (purple) + purple glow — safe to cross walls
+  - Invincibility active: `#FFFF00` (yellow) + intense yellow glow + 400ms blink animation
+  - Phone ringing: `#FFD700` (gold) + gold glow — reward opportunity
+  - Phone picked up: `#28a745` (green) + green glow — committed state
   - Combo active: matches `COMBO_CANVAS_COLORS[i]` (dynamic)
 - Priority cascade: Phone > Combo > Invincibility > Wall Phase > Default
-- Transition: `border-color 300ms ease-in-out` (smooth color shifts)
+- Transition: `border-color 300ms, box-shadow 300ms` (smooth color + glow shifts)
+
+**Snake Visual (V4.1 - Crisp Neon):**
+- All segments: Constant glow (blur 8) + crisp 1px black border
+- Border style matches combo mode aesthetic (clean definition)
+- Glow color matches snake state color (black/yellow/purple/red/cyan/orange)
 
 **Food Shapes (all 10x10 pixels at grid unit center):**
 - Growing (green): Filled square

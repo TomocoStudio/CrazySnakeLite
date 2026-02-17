@@ -66,14 +66,17 @@ body.no-scanlines::after {
 /* Canvas styling with retro neon aesthetic */
 #game-canvas {
   display: block;
-  background-color: #E8E8E8;
+  background-color: #1a1a1a;  /* Dark background (Full Neon Noir from start) */
   border: 8px solid #000000;  /* Default black border (wall = death) */
-  box-shadow: 0 0 0 8px #1A1A2E;  /* 4px light purple outer border */
+  box-shadow:
+    0 0 0 8px #1A1A2E,  /* Outer border */
+    0 0 20px rgba(0, 0, 0, 0.3);  /* Subtle default glow */
   border-radius: 10px;  /* Subtle rounded corners */
   /* Story 20.1, 20.5: V4 Progressive visual transformation */
   transition:
     background-color 2000ms ease-in-out,  /* Slow cinematic background fade */
-    border-color 300ms ease-in-out;       /* Fast responsive border snap */
+    border-color 300ms ease-in-out,       /* Fast responsive border snap */
+    box-shadow 300ms ease-in-out;         /* Glow transitions with border color */
 }
 
 /* Story 21.4: Reactive Border - 7 State Color System */
@@ -86,28 +89,54 @@ body.no-scanlines::after {
 
 #game-canvas.border-phone-ring {
   border-color: #FFD700;  /* Gold - reward opportunity signal */
+  box-shadow:
+    0 0 0 8px #1A1A2E,
+    0 0 20px 4px rgba(255, 215, 0, 1),     /* Inner intense glow */
+    0 0 40px 8px rgba(255, 215, 0, 0.8),   /* Middle glow */
+    0 0 60px 12px rgba(255, 215, 0, 0.6);  /* Outer diffuse glow */
 }
 
 #game-canvas.border-phone-pickup {
   border-color: #28a745;  /* Green - committed state */
+  box-shadow:
+    0 0 0 8px #1A1A2E,
+    0 0 20px 4px rgba(40, 167, 69, 1),
+    0 0 40px 8px rgba(40, 167, 69, 0.8),
+    0 0 60px 12px rgba(40, 167, 69, 0.6);
 }
 
 #game-canvas.border-combo {
   /* border-color set dynamically via JS from gameState.combo.canvasColor */
-  /* Transition still applies */
+  /* Glow will be set dynamically via JS as well */
 }
 
 #game-canvas.border-reverse {
   border-color: #FFA500;  /* Orange - reverse controls active */
+  box-shadow:
+    0 0 0 8px #1A1A2E,
+    0 0 20px 4px rgba(255, 165, 0, 1),
+    0 0 40px 8px rgba(255, 165, 0, 0.8),
+    0 0 60px 12px rgba(255, 165, 0, 0.6);
 }
 
 #game-canvas.border-wallPhase {
   border-color: #800080;  /* Purple - wall phase active (safe to cross) */
+  box-shadow:
+    0 0 0 8px #1A1A2E,
+    0 0 20px 4px rgba(128, 0, 128, 1),     /* Inner intense purple glow */
+    0 0 40px 8px rgba(128, 0, 128, 0.9),   /* Middle purple glow */
+    0 0 60px 12px rgba(128, 0, 128, 0.7);  /* Outer purple glow */
 }
 
 #game-canvas.border-invincibility {
   border-color: #FFFF00;  /* Yellow - invincibility active */
   animation: borderBlink 400ms steps(2, jump-none) infinite;  /* Blinking yellow border */
+  box-shadow:
+    0 0 0 8px #1A1A2E,
+    0 0 20px 4px rgba(255, 255, 0, 1),     /* Inner intense yellow glow */
+    0 0 40px 8px rgba(255, 255, 0, 1),     /* Middle yellow glow - full intensity */
+    0 0 60px 12px rgba(255, 255, 0, 0.9),  /* Outer yellow glow */
+    0 0 80px 16px rgba(255, 255, 0, 0.7);  /* Extra wide glow for invincibility */
 }
 
 /* Blinking animation for invincibility border */

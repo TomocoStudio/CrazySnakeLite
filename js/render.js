@@ -187,21 +187,23 @@ function renderSnake(ctx, gameState) {
         color = colorB; // Even segments
       }
 
-      // Draw segment
-      ctx.fillStyle = color;
-      ctx.fillRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
+      // Draw segment with glow effect
+      withShadow(ctx, { color, blur: 8 }, (ctx) => {
+        ctx.fillStyle = color;
+        ctx.fillRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
 
-      // Add 1px black border for visual separation (Story 10.3)
-      ctx.strokeStyle = '#000000';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
-
-      // Story 21.1: Add light outline on dark backgrounds (score >= 50)
-      if (needsOutline) {
-        ctx.strokeStyle = CONFIG.SNAKE_DARK_OUTLINE_COLOR;
+        // Add 1px black border for visual separation (Story 10.3)
+        ctx.strokeStyle = '#000000';
         ctx.lineWidth = 1;
         ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
-      }
+
+        // Story 21.1: Add light outline on dark backgrounds (score >= 50)
+        if (needsOutline) {
+          ctx.strokeStyle = CONFIG.SNAKE_DARK_OUTLINE_COLOR;
+          ctx.lineWidth = 1;
+          ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
+        }
+      });
 
       // Head distinction: eyes, pupils, and reflection on first segment (Story 21.1)
       if (index === 0) {
@@ -228,34 +230,26 @@ function renderSnake(ctx, gameState) {
       const x = segment.x * CONFIG.UNIT_SIZE;
       const y = segment.y * CONFIG.UNIT_SIZE;
 
-      // Draw segment with snake color
-      ctx.fillStyle = snakeColor;
-      ctx.fillRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
+      // Draw segment with glow effect
+      withShadow(ctx, { color: snakeColor, blur: 8 }, (ctx) => {
+        ctx.fillStyle = snakeColor;
+        ctx.fillRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
 
-      // COMBO MODE Step #1: Darker border on all segments when combo active (foodCount = 1)
-      if (isComboActive(gameState) && gameState.combo.foodCount === 1) {
-        ctx.strokeStyle = '#000000';  // Black border
-        ctx.lineWidth = 2;            // Thicker border
-        ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
-      }
-
-      // Story 21.1: Add light outline on dark backgrounds (score >= 50)
-      if (needsOutline) {
-        ctx.strokeStyle = CONFIG.SNAKE_DARK_OUTLINE_COLOR;
+        // Crisp 1px black border on all segments (combo mode style)
+        ctx.strokeStyle = '#000000';
         ctx.lineWidth = 1;
         ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
-      }
 
-      // Head distinction: border + eyes on first segment (head at index 0)
-      if (index === 0) {
-        // Subtle border (matches grid background) - only if not in combo mode
-        if (!isComboActive(gameState)) {
-          ctx.strokeStyle = CONFIG.HEAD_BORDER_COLOR;
-          ctx.lineWidth = CONFIG.HEAD_BORDER_WIDTH;
+        // Story 21.1: Add light outline on dark backgrounds (score >= 50)
+        if (needsOutline) {
+          ctx.strokeStyle = CONFIG.SNAKE_DARK_OUTLINE_COLOR;
+          ctx.lineWidth = 1;
           ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
         }
+      });
 
-        // Story 21.1: Eyes, directional pupils, and top-light reflection
+      // Head distinction: eyes, pupils, and reflection (drawn after shadow for crisp details)
+      if (index === 0) {
         renderSnakeHead(ctx, x, y, snake.direction);
       }
     });

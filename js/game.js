@@ -113,10 +113,10 @@ export function updateCanvasBackground(gameState) {
  */
 export function resetCanvasBackground() {
   const canvas = document.getElementById('game-canvas');
-  canvas.style.backgroundColor = '#e8e8e8';  // tier-0 default
-  lastBackground = '#e8e8e8';
+  canvas.style.backgroundColor = '#1a1a1a';  // Dark background (constant)
+  lastBackground = '#1a1a1a';
 
-  console.log('[V4] Background reset to tier-0 (#e8e8e8)');
+  console.log('[V4] Background reset to dark (#1a1a1a)');
 }
 
 /**

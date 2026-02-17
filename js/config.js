@@ -375,33 +375,33 @@ export const CONFIG = {
   // ========================================================================
 
   // Enhancement 3: CRT Phosphor Glow (Story 19.1)
-  // Blur intensity increases with score for retro CRT effect
+  // Strong glow constant throughout for maximum retro CRT effect
   GLOW_INTENSITY_THRESHOLDS: [
-    { minScore: 0,   maxScore: 49,  blur: 3 },
-    { minScore: 50,  maxScore: 79,  blur: 5 },
+    { minScore: 0,   maxScore: 49,  blur: 8 },
+    { minScore: 50,  maxScore: 79,  blur: 8 },
     { minScore: 80,  maxScore: Infinity, blur: 8 }
   ],
 
   // Enhancement 1: Progressive Dark Playfield - Background Colors (Story 19.1)
-  // Canvas darkens progressively from light gray to near-black (Neon Noir aesthetic)
+  // Dark background constant throughout (Full Neon Noir from start)
   BACKGROUND_THRESHOLDS: [
-    { minScore: 0,   maxScore: 14,  background: '#E8E8E8' },  // Light gray (beginner)
-    { minScore: 15,  maxScore: 29,  background: '#D0D0D0' },  // Medium-light gray
-    { minScore: 30,  maxScore: 49,  background: '#B0B0B0' },  // Medium gray
-    { minScore: 50,  maxScore: 79,  background: '#808080' },  // Medium-dark gray
-    { minScore: 80,  maxScore: 99,  background: '#505050' },  // Dark gray
-    { minScore: 100, maxScore: Infinity, background: '#2A2A2A' }  // Near-black (Neon Noir)
+    { minScore: 0,   maxScore: 14,  background: '#1a1a1a' },  // Dark throughout
+    { minScore: 15,  maxScore: 29,  background: '#1a1a1a' },  // Dark throughout
+    { minScore: 30,  maxScore: 49,  background: '#1a1a1a' },  // Dark throughout
+    { minScore: 50,  maxScore: 79,  background: '#1a1a1a' },  // Dark throughout
+    { minScore: 80,  maxScore: 99,  background: '#1a1a1a' },  // Dark throughout
+    { minScore: 100, maxScore: Infinity, background: '#1a1a1a' }  // Dark throughout
   ],
 
   // Enhancement 1: Progressive Dark Playfield - Grid Line Colors (Story 19.1)
-  // Grid lines darken alongside background to maintain subtle contrast
+  // Grid lines start white and progressively darken to black (inverse progression)
   GRID_LINE_THRESHOLDS: [
-    { minScore: 0,   maxScore: 14,  gridLine: '#A0A0A0' },  // Dark gray lines on light BG
-    { minScore: 15,  maxScore: 29,  gridLine: '#909090' },
-    { minScore: 30,  maxScore: 49,  gridLine: '#808080' },
-    { minScore: 50,  maxScore: 79,  gridLine: '#606060' },
-    { minScore: 80,  maxScore: 99,  gridLine: '#404040' },
-    { minScore: 100, maxScore: Infinity, gridLine: '#1A1A1A' }  // Very dark lines (subtle on black)
+    { minScore: 0,   maxScore: 14,  gridLine: '#FFFFFF' },  // Full white (max contrast)
+    { minScore: 15,  maxScore: 29,  gridLine: '#CCCCCC' },  // Light gray
+    { minScore: 30,  maxScore: 49,  gridLine: '#999999' },  // Medium gray
+    { minScore: 50,  maxScore: 79,  gridLine: '#666666' },  // Dark gray
+    { minScore: 80,  maxScore: 99,  gridLine: '#333333' },  // Very dark gray
+    { minScore: 100, maxScore: Infinity, gridLine: '#000000' }  // Full black
   ],
 
   // Enhancement 8: Grid Line Opacity (Story 19.1)
@@ -433,14 +433,14 @@ export const CONFIG = {
     // 6 score thresholds for background color tiers
     thresholds: [0, 15, 30, 50, 75, 100],
 
-    // 6 background colors (light grey → near-black)
+    // Dark background constant throughout (Full Neon Noir from start)
     colors: [
-      '#e8e8e8',  // tier-0 (0-14): Safe daylight
-      '#d0d0d0',  // tier-1 (15-29): Slight tension
-      '#b8b8b8',  // tier-2 (30-49): Warm-up complete
-      '#808080',  // tier-3 (50-74): Building intensity
-      '#505050',  // tier-4 (75-99): Serious arcade
-      '#1a1a1a'   // tier-5 (100+): Full Neon Noir
+      '#1a1a1a',  // tier-0 (0-14): Dark throughout
+      '#1a1a1a',  // tier-1 (15-29): Dark throughout
+      '#1a1a1a',  // tier-2 (30-49): Dark throughout
+      '#1a1a1a',  // tier-3 (50-74): Dark throughout
+      '#1a1a1a',  // tier-4 (75-99): Dark throughout
+      '#1a1a1a'   // tier-5 (100+): Dark throughout
     ]
   },
 

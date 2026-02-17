@@ -33,43 +33,58 @@ The defining visual signature of the 80s arcade was **neon color against absolut
 
 ### Current State
 
-- Normal playfield: light grey `#E8E8E8` background, dark grid `#505050`
-- Combo mode: inverted — dark background `#505050`, light grid `#E6E6E6`
-- The combo mode inversion already demonstrates the dark-mode principle works
+- **V4.1 Update (Feb 2026):** Full Neon Noir from start — constant dark background with inverse grid progression
+- Background: Dark `#1a1a1a` constant throughout (no progression)
+- Grid lines: White → Black progressive darkening as mastery increases
+- Maximum contrast creates arcade void aesthetic immediately
 
 ### Design Specification
 
-**Concept:** The playfield progressively darkens as score increases — the visual world shifts from "safe daylight" to "arcade void" as cognitive demand intensifies. This is not a toggle; it is a **score-gated visual progression** that mirrors the difficulty curve.
+**Concept:** **Immediate arcade immersion** — the playfield is dark from first pixel, establishing the neon void aesthetic instantly. The **grid lines** provide the progression signal, starting as bright white spatial scaffolding and progressively fading to black as the player masters the space.
 
-**Why score-gated:** Axiom 1 says "score-based, never time-based." The darkening is earned through play, not elapsed time. It also directly serves the RPG color psychology principle from the 80s doc: "bright greens, vibrant blues, and sandy yellows convey safety... the palette immediately shifted to oppressive blacks, deep blues, and stark greys to communicate danger."
+**Why inverse grid progression:** The dark void is earned through cognitive familiarity, not score. Starting players need MAXIMUM spatial scaffolding (white grid lines, high contrast). As mastery develops, the grid fades into the void — the player no longer needs the training wheels. This inverts the original "safe daylight → dangerous dark" progression to "supported navigation → mastery void."
 
 #### Color Progression Table
 
-| Score Range | Background | Grid Lines | Mood |
-|---|---|---|---|
-| 0-14 | `#E8E8E8` (current) | `#A0A0A0` (current) | Safe, learning |
-| 15-29 | `#D0D0D0` | `#909090` | Slight tension |
-| 30-49 | `#B0B0B0` | `#808080` | Warm-up complete |
-| 50-79 | `#808080` | `#606060` | Building intensity |
-| 80-99 | `#505050` | `#404040` | Serious arcade |
-| 100+ | `#2A2A2A` | `#1A1A1A` | Full Neon Noir |
+| Score Range | Background | Grid Lines | Grid Opacity | Mood |
+|---|---|---|---|---|
+| 0-14 | `#1a1a1a` | `#FFFFFF` | 0.9 | Arcade void, max scaffolding |
+| 15-29 | `#1a1a1a` | `#CCCCCC` | 0.75 | Grid begins to fade |
+| 30-49 | `#1a1a1a` | `#999999` | 0.6 | Scaffolding removal begins |
+| 50-79 | `#1a1a1a` | `#666666` | 0.5 | Half-visible grid |
+| 80-99 | `#1a1a1a` | `#333333` | 0.4 | Ghost lines emerge |
+| 100+ | `#1a1a1a` | `#000000` | 0.3 | Grid dissolved, mastery void |
 
-- **Transition:** CSS `transition: background-color 2000ms ease-in-out` (2-second smooth fade, matches existing combo transition pattern)
-- **Grid opacity:** Stays at `0.9` across all tiers (grid visibility is a spatial awareness tool — reducing it would be a UX failure per Axiom 6)
-- **Combo mode overlay:** During combo, the canvas color from `COMBO_CANVAS_COLORS` is applied ON TOP of whatever the current progression tier background is. When combo ends, it returns to the tier background.
-- **Food glow amplification:** At darker tiers, the food glow effect (Enhancement 3) becomes more pronounced — the darker the void, the brighter the neon. This is the CRT phosphor principle in action.
+- **Background:** Constant `#1a1a1a` (darkest tier from original spec) — Full Neon Noir from game start
+- **Grid progression:** White → Black (inverse of original) — scaffolding fades as mastery increases
+- **Grid opacity:** Still fades 0.9 → 0.3 (unchanged) — compounds with color darkening for ghost grid effect
+- **Combo mode:** Canvas background still applies combo colors during combo state
+- **Food/Snake glow:** Constant maximum intensity (blur 8) throughout — no score-based changes
 
 #### Config Structure
 
 ```javascript
-// config.js — new section
-BACKGROUND_PROGRESSION: [
-  { minScore: 0,   maxScore: 14,  background: '#E8E8E8', gridLine: '#A0A0A0' },
-  { minScore: 15,  maxScore: 29,  background: '#D0D0D0', gridLine: '#909090' },
-  { minScore: 30,  maxScore: 49,  background: '#B0B0B0', gridLine: '#808080' },
-  { minScore: 50,  maxScore: 79,  background: '#808080', gridLine: '#606060' },
-  { minScore: 80,  maxScore: 99,  background: '#505050', gridLine: '#404040' },
-  { minScore: 100, maxScore: Infinity, background: '#2A2A2A', gridLine: '#1A1A1A' }
+// config.js — V4.1 Update
+BACKGROUND_THRESHOLDS: [
+  { minScore: 0,   maxScore: 14,  background: '#1a1a1a' },  // Dark constant
+  { minScore: 15,  maxScore: 29,  background: '#1a1a1a' },
+  { minScore: 30,  maxScore: 49,  background: '#1a1a1a' },
+  { minScore: 50,  maxScore: 79,  background: '#1a1a1a' },
+  { minScore: 80,  maxScore: 99,  background: '#1a1a1a' },
+  { minScore: 100, maxScore: Infinity, background: '#1a1a1a' }
+],
+
+GRID_LINE_THRESHOLDS: [
+  { minScore: 0,   maxScore: 14,  gridLine: '#FFFFFF' },  // White → Black progression
+  { minScore: 15,  maxScore: 29,  gridLine: '#CCCCCC' },
+  { minScore: 30,  maxScore: 49,  gridLine: '#999999' },
+  { minScore: 50,  maxScore: 79,  gridLine: '#666666' },
+  { minScore: 80,  maxScore: 99,  gridLine: '#333333' },
+  { minScore: 100, maxScore: Infinity, gridLine: '#000000' }
+],
+
+GLOW_INTENSITY_THRESHOLDS: [
+  { minScore: 0,   maxScore: Infinity, blur: 8 }  // Constant maximum glow
 ],
 ```
 
@@ -82,11 +97,11 @@ BACKGROUND_PROGRESSION: [
 
 #### Five-Question Filter
 
-1. **Working Memory:** No WM cost. The background change is ambient/preattentive — the player doesn't process it consciously, they *feel* it.
-2. **Competence Feedback:** Yes — the world visually acknowledges the player's progress. "The game looks different now because I earned it."
-3. **Clarity:** No decoding required. Darker = harder. Universal human association.
-4. **Flow Preservation:** Smooth 2s transitions prevent jarring disruptions. The progression mirrors the existing difficulty curve.
-5. **Emotional Impact:** The shift from light to dark creates a mounting cinematic tension. Reaching "Full Neon Noir" at 100+ should feel like entering the final boss arena.
+1. **Working Memory:** No WM cost. Grid fading is ambient/preattentive — the player doesn't consciously track it, they *feel* the scaffolding dissolve as mastery develops.
+2. **Competence Feedback:** **Inverse feedback** — the grid's dissolution signals mastery, not danger. "The training wheels are coming off because I no longer need them." This is competence validation through scaffolding removal.
+3. **Clarity:** Immediate arcade aesthetic. No "safe daylight" phase to overcome. The dark void establishes the tone from pixel one: "This is an arcade game." Maximum clarity through consistency.
+4. **Flow Preservation:** Grid fades so gradually players don't notice individual transitions. The change is felt over sessions, not within a single game. No jarring shifts to break flow.
+5. **Emotional Impact:** **Instant immersion** — the Full Neon Noir aesthetic from game start creates immediate emotional resonance with 80s arcade memory. No ramp-up period. The glowing neon objects against absolute black void is the emotional baseline, not the earned climax.
 
 #### Accessibility
 
@@ -275,7 +290,7 @@ When food is blinking (mystery mode), the shape cycles along with the color — 
 
 ---
 
-## Enhancement 3: CRT Phosphor Glow on Food Items
+## Enhancement 3: CRT Phosphor Glow on Food Items & Snake
 
 ### 80s Design Principle
 
@@ -285,56 +300,56 @@ CRT phosphor didn't just display color — it emitted light. Each colored pixel 
 
 ### Current State
 
-- Food items are flat-filled shapes with no glow, shadow, or bleed effect
-- The canvas `shadowBlur` property is not used anywhere in `render.js`
+- **V4.1 Update (Feb 2026):** Maximum glow constant throughout — food AND snake radiate neon intensity from game start
+- All game objects (food items, snake segments) render with strong phosphor glow
+- Glow is constant (blur 8) regardless of score — no progression
 
 ### Design Specification
 
-**Concept:** Add a subtle colored glow halo around every food item using canvas `shadowBlur`. The glow uses the food's own color, creating the CRT phosphor bleed effect. The glow intensity scales inversely with background brightness (darker background = more prominent glow), creating a beautiful synergy with Enhancement 1.
+**Concept:** **Maximum neon intensity from first pixel** — every food item and snake segment radiates with full CRT phosphor glow (blur 8). Against the constant dark void background (Enhancement 1), this creates instant arcade aesthetic. The glow is no longer earned through score progression; it's the visual baseline that establishes the neon arcade world immediately.
 
 #### Glow Parameters
 
 | Parameter | Value | Rationale |
 |---|---|---|
-| `shadowColor` | Same as food fill color | Authentic CRT single-phosphor bleed |
-| `shadowBlur` (light bg, score 0-49) | `3` | Subtle hint of glow on light backgrounds |
-| `shadowBlur` (mid bg, score 50-79) | `5` | Growing prominence as void deepens |
-| `shadowBlur` (dark bg, score 80+) | `8` | Full neon arcade glow in Neon Noir mode |
+| `shadowColor` | Same as object color | Authentic CRT single-phosphor bleed |
+| `shadowBlur` | `8` (constant) | Maximum neon glow from game start |
 | `shadowOffsetX / Y` | `0` | Symmetrical halo, not directional shadow |
+| **Applied to** | Food items + Snake segments | All game objects glow equally |
 
-#### Implementation in renderFood()
+#### Implementation
 
 ```javascript
-// Inside renderFood(), before drawing the shape:
-const glowIntensity = getGlowIntensity(gameState.score);
-ctx.shadowColor = color;
-ctx.shadowBlur = glowIntensity;
-ctx.shadowOffsetX = 0;
-ctx.shadowOffsetY = 0;
+// render.js — Food rendering with glow
+withShadow(ctx, { color, blur: 8 }, (ctx) => {
+  renderFoodShape(ctx, x, y, foodType, color, outlineColor);
+});
 
-// ... draw food shape ...
-
-// Reset shadow after drawing
-ctx.shadowColor = 'transparent';
-ctx.shadowBlur = 0;
+// render.js — Snake rendering with glow (both normal and striped modes)
+withShadow(ctx, { color: snakeColor, blur: 8 }, (ctx) => {
+  ctx.fillStyle = snakeColor;
+  ctx.fillRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
+  // Crisp 1px black border for visual definition
+  ctx.strokeStyle = '#000000';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
+});
 ```
 
 #### Config Structure
 
 ```javascript
-// config.js
-FOOD_GLOW: [
-  { minScore: 0,   maxScore: 49,  blur: 3 },
-  { minScore: 50,  maxScore: 79,  blur: 5 },
-  { minScore: 80,  maxScore: Infinity, blur: 8 }
+// config.js — V4.1 Update
+GLOW_INTENSITY_THRESHOLDS: [
+  { minScore: 0, maxScore: Infinity, blur: 8 }  // Constant maximum glow
 ],
 ```
 
 #### Module Boundaries
 
-- **config.js:** Owns glow intensity thresholds
-- **progression.js:** Resolves `score → glowIntensity` (new field in `getState()` return)
-- **render.js:** Applies the resolved glow in `renderFood()`. Already receives `gameState` which contains `score`.
+- **config.js:** Glow intensity constant (blur 8)
+- **render.js:** Applies glow to ALL game objects (food + snake) using `withShadow()` helper
+- **progression.js:** Returns constant glow value (no score dependency)
 
 #### Blinking Food Glow
 
@@ -707,31 +722,52 @@ The arcade cabinet bezel wasn't just a frame — it was a design canvas. Differe
 /* CSS transition for smooth border color changes */
 #game-canvas {
   border: 8px solid #000000;  /* Default black border (wall = death) */
+  box-shadow:
+    0 0 0 8px #1A1A2E,  /* Outer border */
+    0 0 20px rgba(0, 0, 0, 0.3);  /* Subtle default glow */
   transition:
     background-color 2000ms ease-in-out,
-    border-color 300ms ease-in-out;
+    border-color 300ms ease-in-out,
+    box-shadow 300ms ease-in-out;  /* Glow transitions with border */
 }
 
-/* State classes */
+/* State classes with multi-layered neon glow */
 #game-canvas.border-phone-ring {
   border-color: #FFD700;  /* Gold */
+  box-shadow:
+    0 0 0 8px #1A1A2E,
+    0 0 20px 4px rgba(255, 215, 0, 1),     /* Inner intense glow */
+    0 0 40px 8px rgba(255, 215, 0, 0.8),   /* Middle glow */
+    0 0 60px 12px rgba(255, 215, 0, 0.6);  /* Outer diffuse glow */
 }
 
 #game-canvas.border-phone-pickup {
   border-color: #28a745;  /* Green */
-}
-
-#game-canvas.border-combo {
-  /* border-color set dynamically via JS from gameState.combo.canvasColor */
+  box-shadow:
+    0 0 0 8px #1A1A2E,
+    0 0 20px 4px rgba(40, 167, 69, 1),
+    0 0 40px 8px rgba(40, 167, 69, 0.8),
+    0 0 60px 12px rgba(40, 167, 69, 0.6);
 }
 
 #game-canvas.border-wallPhase {
   border-color: #800080;  /* Purple - wall phase active (safe to cross) */
+  box-shadow:
+    0 0 0 8px #1A1A2E,
+    0 0 20px 4px rgba(128, 0, 128, 1),     /* Inner intense purple glow */
+    0 0 40px 8px rgba(128, 0, 128, 0.9),   /* Middle purple glow */
+    0 0 60px 12px rgba(128, 0, 128, 0.7);  /* Outer purple glow */
 }
 
 #game-canvas.border-invincibility {
   border-color: #FFFF00;  /* Yellow - invincibility active */
   animation: borderBlink 400ms steps(2, jump-none) infinite;
+  box-shadow:
+    0 0 0 8px #1A1A2E,
+    0 0 20px 4px rgba(255, 255, 0, 1),     /* Inner intense yellow glow */
+    0 0 40px 8px rgba(255, 255, 0, 1),     /* Middle yellow glow - full intensity */
+    0 0 60px 12px rgba(255, 255, 0, 0.9),  /* Outer yellow glow */
+    0 0 80px 16px rgba(255, 255, 0, 0.7);  /* Extra wide glow - maximum power */
 }
 
 /* Blinking animation for invincibility border */
@@ -740,6 +776,15 @@ The arcade cabinet bezel wasn't just a frame — it was a design canvas. Differe
   50%, 100% { border-color: #000000; }  /* Black */
 }
 ```
+
+**Glow Specification:**
+- **Multi-layered shadows** (3-4 layers per state) create intense neon radiance
+- **Inner layer** (20px blur, full opacity): Bright core glow
+- **Middle layer** (40px blur, 0.8-0.9 opacity): Strong radiance
+- **Outer layer** (60px blur, 0.6-0.7 opacity): Soft diffuse halo
+- **Invincibility extra layer** (80px blur): Maximum power visual
+- Glow color matches border color for semantic consistency
+- Smooth transitions (300ms) sync with border color changes
 
 #### Config Structure
 
