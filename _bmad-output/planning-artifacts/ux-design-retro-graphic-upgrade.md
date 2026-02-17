@@ -732,20 +732,25 @@ The arcade cabinet bezel wasn't just a frame — it was a design canvas. Differe
 
 ### Design Specification
 
-**Concept:** The border becomes a reactive feedback channel that responds to game events with color shifts. It's still a bold solid border (no gradients, no imagery — that would violate the pixel economy principle), but it subtly communicates game state through color, leveraging the player's peripheral vision.
+**🔄 V4.2 UPDATE (2026-02-17):** Border system simplified to universal semantic states.
 
-**Primary Function:** The border's PRIMARY role is **wall safety communication** — it tells the player whether crossing the boundary is safe or deadly. This is the cognitive core. Phone and combo states are secondary visual feedback layers.
+**Concept:** The border communicates **immediate danger level** consistently across all game modes. It's a bold solid border (no gradients, no imagery — pixel economy principle) that uses color to signal wall safety state via peripheral vision.
 
-#### Border State Table
+**Primary Function:** The border's ONLY role is **danger state communication** — it tells the player whether the environment is safe or deadly. This is direct cognitive feedback, not decorative.
+
+**Design Principle:** Border color = danger level, NOT game mode or events.
+
+#### V4.2 Border State Table (Simplified)
 
 | Game State | Border Color | Transition | Rationale |
 |---|---|---|---|
-| **Normal play** | `#000000` (black) | — | Default state. Black = danger. Hitting wall = death. Clear baseline. |
-| **Wall Phase active** | `#800080` (purple) | 300ms | Safe to cross! Purple matches wall phase food color. Semantic consistency. |
-| **Invincibility active** | `#FFFF00` (yellow) | 400ms blink (yellow ↔ black) | Invincible to everything. Blinking yellow = maximum attention, matches invincibility food. Animation reinforces temporary power state. |
-| **Phone ringing** | `#FFD700` (gold) | 300ms pulse | Peripheral alert: "attention needed!" Gold = reward opportunity. |
-| **Phone picked up** | `#28a745` (green) | 200ms | Committed. Green = go, matches Pick Up button. |
-| **Combo active** | Matches `COMBO_CANVAS_COLORS[i]` | 500ms (match existing) | Border syncs with canvas for total immersion. |
+| **Default (no effects)** | `#000000` (black) | — | Walls dangerous. Black = danger = death. Clear semantic baseline. Applies to ALL game modes (normal, combo, phone calls). |
+| **Wall-phase effect active** | `#800080` (purple) | 300ms | Walls safe to cross! Purple matches wall-phase food color. Semantic consistency. Player can phase through walls without dying. |
+| **Invincibility effect active** | `#FFFF00` (yellow) | 400ms blink (yellow ↔ black) | Protected from all danger. Blinking yellow = maximum attention, matches invincibility food. Animation reinforces temporary power state. |
+
+**Removed (V4.2):** Phone borders (gold/green), combo borders (dynamic colors), death flash (red), reverse controls (orange)
+
+**Why removed:** These communicated game events or modes, not danger level. Created visual confusion (e.g., "Is purple border combo mode or wall-phase?"). Simplified to 3 universal states improves cognitive clarity.
 
 #### Implementation
 
@@ -762,25 +767,9 @@ The arcade cabinet bezel wasn't just a frame — it was a design canvas. Differe
     box-shadow 300ms ease-in-out;  /* Glow transitions with border */
 }
 
-/* State classes with multi-layered neon glow */
-#game-canvas.border-phone-ring {
-  border-color: #FFD700;  /* Gold */
-  box-shadow:
-    0 0 0 8px #1A1A2E,
-    0 0 20px 4px rgba(255, 215, 0, 1),     /* Inner intense glow */
-    0 0 40px 8px rgba(255, 215, 0, 0.8),   /* Middle glow */
-    0 0 60px 12px rgba(255, 215, 0, 0.6);  /* Outer diffuse glow */
-}
+/* V4.2: State classes with multi-layered neon glow (SIMPLIFIED) */
 
-#game-canvas.border-phone-pickup {
-  border-color: #28a745;  /* Green */
-  box-shadow:
-    0 0 0 8px #1A1A2E,
-    0 0 20px 4px rgba(40, 167, 69, 1),
-    0 0 40px 8px rgba(40, 167, 69, 0.8),
-    0 0 60px 12px rgba(40, 167, 69, 0.6);
-}
-
+/* Wall-phase: Purple (walls safe) */
 #game-canvas.border-wallPhase {
   border-color: #800080;  /* Purple - wall phase active (safe to cross) */
   box-shadow:
@@ -820,13 +809,13 @@ The arcade cabinet bezel wasn't just a frame — it was a design canvas. Differe
 #### Config Structure
 
 ```javascript
-// config.js
-BORDER_COLORS: {
-  default: '#000000',        // Black (wall = death)
-  phoneRing: '#FFD700',      // Gold (reward opportunity)
-  phonePickup: '#28a745',    // Green (committed state)
-  combo: null,               // Dynamic (set from combo.canvasColor)
-  wallPhase: '#800080',      // Purple (safe to cross walls)
+// config.js — V4.2 UPDATE: Simplified to CSS-only (no BORDER_COLORS object needed)
+// Border colors now managed purely via CSS classes
+
+// V4.2: Border state managed by CSS classes only
+// - Default: #000000 (black, CSS default on #game-canvas)
+// - .border-wallPhase: #800080 (purple, safe to cross walls)
+// - .border-invincibility: #FFFF00 (yellow blinking, protected)
   invincibility: '#FFFF00'   // Yellow (invincible, with blink animation)
 }
 ```

@@ -58,105 +58,95 @@ function update(gameState) {
 
 ---
 
-### Pattern 2: Border State Orchestration (Enhancement 7)
+### Pattern 2: Border State Orchestration (Enhancement 7) — V4.2 SIMPLIFIED
 
-**Problem:** Multiple systems can trigger border color changes simultaneously. Need a priority cascade.
+**🔄 V4.2 UPDATE (2026-02-17):** Border system simplified from 7 states to 3 universal semantic states.
+
+**Design Principle:** Border color communicates **immediate danger state**, not game mode or events.
+
+**V4.2 Universal Border Rules (ALL game modes):**
+- ⚫ **Black** = Walls dangerous (default)
+- 🟣 **Purple** = Walls safe (wall-phase effect active)
+- 🟡 **Yellow** = Protected (invincibility effect active)
+
+**Removed:** Death flash, phone borders, combo borders, reverse controls border
 
 ```javascript
-// game.js — border state management
-function updateBorderState(gameState) {
+// game.js — V4.2 simplified border state management
+export function updateBorderState(gameState) {
   const canvas = document.getElementById('game-canvas');
 
   // Clear all border classes first
   canvas.classList.remove(
-    'border-death',
     'border-phone-ring',
     'border-phone-pickup',
     'border-combo',
-    'border-reverse',
-    'border-invincibility'
+    'border-invincibility',
+    'border-wallPhase'
   );
 
-  // Priority cascade (highest to lowest)
-  // 1. Death flash (500ms, then auto-clear)
-  if (gameState.justDied) {
-    canvas.classList.add('border-death');
-    setTimeout(() => {
-      canvas.classList.remove('border-death');
-      updateBorderState(gameState); // Re-evaluate after flash
-    }, CONFIG.BORDER_DEATH_FLASH_DURATION);
+  // V4.2 Simplified priority cascade (highest to lowest)
+
+  // 1. Wall Phase (purple - safe to cross walls)
+  if (gameState.activeEffect?.type === 'wallPhase') {
+    canvas.classList.add('border-wallPhase');
+    console.log('[V4.2] Border → wall phase (purple - safe crossing)');
     return;
   }
 
-  // 2. Phone states (time-critical decision point)
-  if (gameState.phoneCall.active && !gameState.phoneCall.pickedUp) {
-    canvas.classList.add('border-phone-ring');
-    return;
-  }
-
-  if (gameState.phoneCall.pickedUp && gameState.phoneCall.pickUpEndTime > Date.now()) {
-    canvas.classList.add('border-phone-pickup');
-    return;
-  }
-
-  // 3. Combo (ambient state, lower priority)
-  if (gameState.combo.active) {
-    canvas.classList.add('border-combo');
-    // Dynamic color from combo system
-    canvas.style.borderColor = gameState.combo.canvasColor;
-    return;
-  }
-
-  // 4. Active effect (Reverse Controls > Invincibility)
-  if (gameState.activeEffect?.type === 'reverseControls') {
-    canvas.classList.add('border-reverse');
-    return;
-  }
-
+  // 2. Invincibility (yellow blinking)
   if (gameState.activeEffect?.type === 'invincibility') {
     canvas.classList.add('border-invincibility');
+    console.log('[V4.2] Border → invincibility (yellow blinking)');
     return;
   }
 
-  // 5. Default purple (CSS default, no class needed)
-  canvas.style.borderColor = ''; // Clear inline style, let CSS take over
+  // 3. Default (black) - clear inline style, let CSS default take over
+  canvas.style.borderColor = '';
+  console.log('[V4.2] Border → default (black)');
 }
 
-// Call points in game.js:
-// - After phone.show() or phone.dismiss()
-// - After combo.activate() or combo.exit()
-// - After effects.applyEffect() or effects.clearEffect()
-// - In onDeath() handler
-// - Every game loop tick (for pickup timer expiration check)
+// V4.2 Call points in game.js (event-driven only):
+// - After effects.applyEffect() (when wall-phase or invincibility applied)
+// - After effects.clearEffect() (when effect removed)
+// - After eating food (effect state changes)
+//
+// REMOVED call points (no longer affect border):
+// - Phone call events (phone.show, phone.dismiss, pickUpCall)
+// - Combo events (combo.activate, combo.exit)
+// - Death events (death flash removed)
 ```
 
-**CSS setup:**
+**CSS setup (V4.2):**
 
 ```css
-/* Default border */
+/* Default border - BLACK (walls dangerous) */
 #game-canvas {
-  border: 8px solid #800080;  /* Purple default */
+  border: 8px solid #000000;  /* Black default (V4.2) */
   transition:
     background-color 2000ms ease-in-out,
     border-color 300ms ease-in-out;
 }
 
-/* Border state classes */
-#game-canvas.border-phone-ring {
-  border-color: #FFD700;
+/* Wall-phase border - PURPLE (walls safe) */
+#game-canvas.border-wallPhase {
+  border-color: #800080;  /* Purple */
+  box-shadow:
+    0 0 0 8px #1A1A2E,
+    0 0 20px 4px rgba(128, 0, 128, 1),
+    0 0 40px 8px rgba(128, 0, 128, 0.9),
+    0 0 60px 12px rgba(128, 0, 128, 0.6);
 }
 
-#game-canvas.border-phone-pickup {
-  border-color: #28a745;
-}
-
-#game-canvas.border-combo {
-  /* border-color set dynamically via JS style property */
-  /* Transition still applies */
-}
-
+/* Invincibility border - YELLOW BLINKING (protected) */
 #game-canvas.border-invincibility {
-  border-color: #FFFF00;
+  border-color: #FFFF00;  /* Yellow */
+  animation: borderBlink 400ms steps(2) infinite;
+  box-shadow:
+    0 0 0 8px #1A1A2E,
+    0 0 20px 4px rgba(255, 255, 0, 1),
+    0 0 40px 8px rgba(255, 255, 0, 0.9),
+    0 0 60px 12px rgba(255, 255, 0, 0.6);
 }
 
 #game-canvas.border-reverse {

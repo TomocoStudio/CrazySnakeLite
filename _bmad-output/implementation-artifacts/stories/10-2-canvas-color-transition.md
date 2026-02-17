@@ -6,6 +6,23 @@
 **Created:** 2026-02-08
 **Completed:** 2026-02-14
 **Reviewed:** 2026-02-14
+**V4.2 Update:** 2026-02-17 (Border simplification)
+
+---
+
+## 🔄 V4.2 UPDATE (2026-02-17)
+
+**Combo mode border colors REMOVED.**
+
+**Original:** Combo mode set border color to match canvas color (purple/blue/red/green).
+
+**V4.2 Change:** Combo mode NO LONGER affects border color. Border stays **black** (default) unless wall-phase or invincibility effect is active.
+
+**Rationale:** Border color now communicates **danger level only**, not game mode. Simplified from 7 states to 3 universal states (black default, purple wall-phase, yellow invincibility).
+
+**Canvas background:** Still changes during combo (grid inversion) — this story's implementation UNCHANGED.
+
+**See:** `_bmad-output/planning-artifacts/V4.2-BORDER-SIMPLIFICATION.md`
 
 ---
 

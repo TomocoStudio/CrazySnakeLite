@@ -120,17 +120,15 @@ export function resetCanvasBackground() {
 }
 
 /**
- * Update canvas border color based on game state priority cascade (Story 20.5)
- * Event-driven: called ONLY when game state changes (death, phone, combo, effects)
+ * Update canvas border color based on simplified universal rules (V4.2)
+ * Event-driven: called ONLY when game state changes (effects applied/cleared)
  *
- * Priority cascade (highest to lowest):
- * 1. Death flash (red, 500ms) - highest priority
- * 2. Phone ring (gold) - decision point
- * 3. Phone pickup (green) - committed
- * 4. Combo (dynamic) - multiplier active
- * 5. Reverse Controls (orange) - disorienting effect
- * 6. Invincibility (yellow) - protected state
- * 7. Default (purple) - base state
+ * SIMPLIFIED BORDER RULES (applies to ALL game modes):
+ * 1. Wall Phase (purple) - safe to cross walls
+ * 2. Invincibility (yellow blinking) - protected state
+ * 3. Default (black) - walls are dangerous
+ *
+ * Removed: Phone call borders, combo borders (not working great, adds confusion)
  *
  * @param {Object} gameState - Current game state
  */
@@ -146,48 +144,25 @@ export function updateBorderState(gameState) {
     'border-wallPhase'
   );
 
-  // Priority cascade evaluation (highest to lowest)
+  // Simplified priority cascade (highest to lowest)
 
-  // 1. Phone ring (gold, decision point)
-  if (gameState.phoneCall.active && !gameState.phoneCall.pickedUp) {
-    canvas.classList.add('border-phone-ring');
-    console.log('[V4] Border → phone ring (gold)');
-    return;
-  }
-
-  // 2. Phone pickup (green, committed)
-  if (gameState.phoneCall.pickedUp && gameState.phoneCall.pickUpEndTime > Date.now()) {
-    canvas.classList.add('border-phone-pickup');
-    console.log('[V4] Border → phone pickup (green)');
-    return;
-  }
-
-  // 3. Combo (dynamic color from combo system)
-  if (gameState.combo.active && !gameState.combo.paused) {
-    canvas.classList.add('border-combo');
-    // Dynamic color still uses inline style (CSS class provides transition)
-    canvas.style.borderColor = gameState.combo.canvasColor;
-    console.log(`[V4] Border → combo (${gameState.combo.canvasColor})`);
-    return;
-  }
-
-  // 4. Invincibility (yellow blinking)
-  if (gameState.activeEffect?.type === 'invincibility') {
-    canvas.classList.add('border-invincibility');
-    console.log('[V4] Border → invincibility (yellow blinking)');
-    return;
-  }
-
-  // 5. Wall Phase (purple - safe to cross walls)
+  // 1. Wall Phase (purple - safe to cross walls)
   if (gameState.activeEffect?.type === 'wallPhase') {
     canvas.classList.add('border-wallPhase');
-    console.log('[V4] Border → wall phase (purple - safe crossing)');
+    console.log('[V4.2] Border → wall phase (purple - safe crossing)');
     return;
   }
 
-  // 6. Default (black) - clear inline style, let CSS default take over
+  // 2. Invincibility (yellow blinking)
+  if (gameState.activeEffect?.type === 'invincibility') {
+    canvas.classList.add('border-invincibility');
+    console.log('[V4.2] Border → invincibility (yellow blinking)');
+    return;
+  }
+
+  // 3. Default (black) - clear inline style, let CSS default take over
   canvas.style.borderColor = '';
-  console.log('[V4] Border → default (black)');
+  console.log('[V4.2] Border → default (black)');
 }
 
 /**

@@ -1230,12 +1230,16 @@ If Cognitive Dashboard MVP validates (60%+ brain map view rate, +15% D7 retentio
 - FR221: CRT scanline overlay applied via CSS pseudo-element (::after) with repeating-linear-gradient (2px transparent, 2px rgba(0,0,0,0.03)), 3% opacity, pointer-events: none
 - FR222: Grid intersection dots render at each grid intersection (1.5px radius circles, ~525 interior dots) using grid line color with progressive opacity matching grid lines
 
-### Reactive Border System
+### Reactive Border System (V4.2 SIMPLIFIED - 2026-02-17)
 
-- FR223: Arcade bezel border displays 7 reactive color states with priority cascade: death red flash (priority 7) > phone ring gold pulse (6) > phone answer green flash (5) > combo active (4) > effect RC orange (3) > effect other yellow (2) > default purple/cyan (1)
-- FR224: Border state updates are event-driven via centralized border state manager, triggered by game events (death, phone.ring, phone.answered, combo.start/end, effects.activate/expire), averaging ~5 updates per game (not 60 checks/sec)
-- FR225: Border colors and animations defined in CSS classes, applied via className updates on border element
-- FR226: Death state triggers red flash for 0.3s, phone ring state triggers gold pulse animation (2s loop), all states auto-clear on expiration with priority cascade re-resolution
+**🔄 V4.2 UPDATE:** Border system simplified from 7 states to 3 universal semantic states.
+
+- **FR223 (V4.2):** Canvas border displays 3 danger-level states: wall-phase purple (priority 1, walls safe) > invincibility yellow blinking (priority 2, protected) > default black (priority 3, walls dangerous). Universal across ALL game modes.
+- **FR224 (V4.2):** Border state updates are event-driven via centralized `updateBorderState()`, triggered ONLY by effect changes (wall-phase/invincibility applied or cleared), averaging ~3 updates per game (not 60 checks/sec)
+- FR225: Border colors and animations defined in CSS classes (`.border-wallPhase`, `.border-invincibility`), applied via className updates on canvas element
+- **FR226 (V4.2 REMOVED):** Death flash, phone ring/pickup borders, combo borders, and reverse controls borders REMOVED. Border communicates danger level only, not game events or modes.
+
+**Rationale:** V4.2 simplifies border semantics to communicate immediate danger state consistently across all game modes. Removed event-based borders (phone, combo, death flash) that created visual confusion. See `V4.2-BORDER-SIMPLIFICATION.md` for full design documentation.
 
 ### Performance Optimization
 

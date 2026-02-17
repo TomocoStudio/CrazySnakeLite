@@ -2,9 +2,26 @@
 
 **Epic:** 20 - Progressive Arcade Transformation (Neon Noir)
 **Story ID:** 20.5
-**Status:** ✅ REVIEW
+**Status:** ✅ COMPLETED (V4.2 SIMPLIFIED)
 **Created:** 2026-02-16
 **Completed:** 2026-02-17
+**Updated:** 2026-02-17 (V4.2 Simplification)
+
+---
+
+## 🔄 V4.2 UPDATE (2026-02-17)
+
+**Border system simplified from 7 states to 3 universal states.**
+
+**Original Scope (V4.1):** 7-state priority cascade (death, phone ring, phone pickup, combo, reverse controls, invincibility, default purple)
+
+**Final Implementation (V4.2):** 3-state universal system (wall-phase purple, invincibility yellow, default black)
+
+**Removed:** Death flash, phone call borders, combo borders, reverse controls border
+
+**Rationale:** V4.2 simplifies border semantics to communicate **danger level only**, not game mode or events. Improves cognitive clarity and visual consistency across all game modes.
+
+**See:** `_bmad-output/planning-artifacts/V4.2-BORDER-SIMPLIFICATION.md` for full V4.2 design documentation.
 
 ---
 
