@@ -2047,7 +2047,7 @@ button:disabled {
   );
   filter: blur(50px) hue-rotate(0deg);  /* Hue-rotate enables smooth color transitions */
   transition: filter 800ms ease-in-out;  /* Smooth 800ms color fade on food spawn */
-  animation: pulse-intense 2s ease-in-out infinite;  /* Breathing pulse animation */
+  animation: pulse-intense 4s ease-in-out infinite;  /* Breathing pulse animation (slower, more ambient) */
   pointer-events: none;  /* Click-through - no interaction blocking */
   z-index: -2;  /* Behind vignette and all game elements */
 }
@@ -2064,7 +2064,7 @@ button:disabled {
   filter: blur(50px);  /* No hue rotation for white */
 }
 
-/* Breathing pulse animation (2s cycle, creates living/organic feel) */
+/* Breathing pulse animation (4s cycle, creates relaxed/ambient feel) */
 @keyframes pulse-intense {
   0%, 100% {
     opacity: 0.6;
