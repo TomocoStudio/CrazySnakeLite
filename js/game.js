@@ -5,6 +5,7 @@ import { moveSnake, growSnake } from './snake.js';
 import { checkFoodCollision, checkWallCollision, checkSelfCollision } from './collision.js';
 import { spawnFood } from './food.js';
 import { applyEffect, clearEffect } from './effects.js';
+import { updateGlowForFood } from './background-glow.js';  // Story 22.1: Sync glow with snake state
 import { checkPhoneCallTiming, dismissPhoneCall, scheduleNextCall, hidePhoneOverlay } from './phone.js';
 import { trackPhoneCall, trackFoodEaten, trackPhoneCallEvent, trackGameOver } from './analytics.js';
 import { playMoveSound, playDeathSound, playJackpot, playLegendary, playComboExit } from './audio.js';
@@ -396,12 +397,18 @@ function update(gameState) {
       clearEffect(gameState);
       gameState.snake.color = CONFIG.COLORS.snakeGrowing;
 
+      // Story 22.1: Update glow to match snake state (green for growing)
+      updateGlowForFood(effectType);
+
       // Update border and background when effect cleared
       updateBorderState(gameState);
       updateCanvasBackground(gameState);
     } else {
       // Special food applies its effect (clears previous first)
       applyEffect(gameState, effectType);
+
+      // Story 22.1: Update glow to match snake state (effect color)
+      updateGlowForFood(effectType);
 
       // Update border and background when effect applied
       updateBorderState(gameState);
