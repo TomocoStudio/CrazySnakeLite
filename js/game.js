@@ -137,31 +137,43 @@ export function resetCanvasBackground() {
 export function updateBorderState(gameState) {
   const canvas = document.getElementById('game-canvas');
 
+  // Story 21.4: Clear all border classes first (CSS class-based approach)
+  canvas.classList.remove(
+    'border-death',
+    'border-phone-ring',
+    'border-phone-pickup',
+    'border-combo',
+    'border-reverse',
+    'border-invincibility'
+  );
+
   // Priority cascade evaluation (highest to lowest)
 
   // 1. Death flash (500ms, highest priority)
   if (deathFlashActive) {
-    canvas.style.borderColor = CONFIG.BORDER_COLORS.death;
+    canvas.classList.add('border-death');
     console.log('[V4] Border → death flash (red)');
     return;
   }
 
   // 2. Phone ring (gold, decision point)
   if (gameState.phoneCall.active && !gameState.phoneCall.pickedUp) {
-    canvas.style.borderColor = CONFIG.BORDER_COLORS.phoneRing;
+    canvas.classList.add('border-phone-ring');
     console.log('[V4] Border → phone ring (gold)');
     return;
   }
 
   // 3. Phone pickup (green, committed)
   if (gameState.phoneCall.pickedUp && gameState.phoneCall.pickUpEndTime > Date.now()) {
-    canvas.style.borderColor = CONFIG.BORDER_COLORS.phonePickup;
+    canvas.classList.add('border-phone-pickup');
     console.log('[V4] Border → phone pickup (green)');
     return;
   }
 
   // 4. Combo (dynamic color from combo system)
   if (gameState.combo.active && !gameState.combo.paused) {
+    canvas.classList.add('border-combo');
+    // Story 21.4: Dynamic color still uses inline style (CSS class provides transition)
     canvas.style.borderColor = gameState.combo.canvasColor;
     console.log(`[V4] Border → combo (${gameState.combo.canvasColor})`);
     return;
@@ -169,20 +181,20 @@ export function updateBorderState(gameState) {
 
   // 5. Reverse Controls (orange)
   if (gameState.effects.reverseControlsActive) {
-    canvas.style.borderColor = CONFIG.BORDER_COLORS.reverseControls;
+    canvas.classList.add('border-reverse');
     console.log('[V4] Border → reverse controls (orange)');
     return;
   }
 
   // 6. Invincibility (yellow)
   if (gameState.activeEffect?.type === 'invincibility') {
-    canvas.style.borderColor = CONFIG.BORDER_COLORS.invincibility;
+    canvas.classList.add('border-invincibility');
     console.log('[V4] Border → invincibility (yellow)');
     return;
   }
 
-  // 7. Default (purple)
-  canvas.style.borderColor = CONFIG.BORDER_COLORS.default;
+  // 7. Default (purple) - clear inline style, let CSS default take over
+  canvas.style.borderColor = '';
   console.log('[V4] Border → default (purple)');
 }
 

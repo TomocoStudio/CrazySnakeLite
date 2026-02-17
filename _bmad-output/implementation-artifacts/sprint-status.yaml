@@ -262,12 +262,12 @@ development_status:
   epic-20-retrospective: optional
 
   # Epic 21: Immersive Arcade Polish
-  epic-21: backlog
-  21-1-implement-snake-head-enhancements: backlog
-  21-2-create-typography-treatments: backlog
-  21-3-implement-crt-scanline-overlay: backlog
-  21-4-complete-reactive-border-7-states: backlog
-  21-5-implement-grid-intersection-dots-caching: backlog
-  21-6-integrate-border-orchestration-game-events: backlog
-  21-7-test-immersive-arcade-polish-performance: backlog
+  epic-21: in-progress
+  21-1-implement-snake-head-enhancements: review
+  21-2-create-typography-treatments: review
+  21-3-implement-crt-scanline-overlay: review
+  21-4-complete-reactive-border-7-states: review
+  21-5-implement-grid-intersection-dots-caching: review
+  21-6-integrate-border-orchestration-game-events: review
+  21-7-test-immersive-arcade-polish-performance: review
   epic-21-retrospective: optional

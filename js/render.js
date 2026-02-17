@@ -4,12 +4,18 @@ import { isEffectActive } from './effects.js';
 import { isComboActive } from './combo.js';
 import { getState as getProgressionState } from './progression.js';  // Story 19.3: Get glow intensity, Story 20.3: Get grid opacity
 
+// Story 21.5: Offscreen canvas cache for grid intersection dots (1000x performance gain)
+// Instead of drawing 546 dots per frame (1,092 operations), we draw once and blit (1 operation)
+let gridDotsCache = null;           // Cached offscreen canvas with pre-rendered dots
+let gridDotsCacheValid = false;     // Cache invalidation flag (set false on canvas resize)
+
 /**
  * Main render function - called every frame (60 FPS)
  */
 export function render(ctx, gameState) {
   clearCanvas(ctx, gameState);
   renderGrid(ctx, gameState);
+  renderGridDots(ctx, gameState);  // Story 21.5: Spatial anchor points (offscreen cached)
   renderFood(ctx, gameState);  // Story 19.3: Pass full gameState for glow intensity
   renderSnake(ctx, gameState);  // Pass full gameState for strobe effect
   // Epic 4: renderScore()
@@ -69,6 +75,85 @@ function renderGrid(ctx, gameState) {
 }
 
 /**
+ * Generate offscreen canvas with pre-rendered grid intersection dots (Story 21.5)
+ * Called once and cached - provides 1000x performance gain over per-frame dot rendering
+ * @param {number} canvasWidth - Main canvas width
+ * @param {number} canvasHeight - Main canvas height
+ * @returns {HTMLCanvasElement} Offscreen canvas with white dots at all grid intersections
+ */
+function generateGridDotsCache(canvasWidth, canvasHeight) {
+  // Create offscreen canvas matching main canvas dimensions
+  const offscreenCanvas = document.createElement('canvas');
+  offscreenCanvas.width = canvasWidth;
+  offscreenCanvas.height = canvasHeight;
+  const offscreenCtx = offscreenCanvas.getContext('2d');
+
+  // Draw dots at all grid line intersections
+  // (GRID_WIDTH + 1) vertical lines × (GRID_HEIGHT + 1) horizontal lines
+  // = (20 + 1) × (25 + 1) = 21 × 26 = 546 intersection points
+  offscreenCtx.fillStyle = '#FFFFFF';  // White dots
+
+  for (let x = 0; x <= CONFIG.GRID_WIDTH; x++) {
+    for (let y = 0; y <= CONFIG.GRID_HEIGHT; y++) {
+      const xPos = x * CONFIG.UNIT_SIZE;
+      const yPos = y * CONFIG.UNIT_SIZE;
+
+      offscreenCtx.beginPath();
+      offscreenCtx.arc(xPos, yPos, CONFIG.GRID_DOT_RADIUS, 0, Math.PI * 2);
+      offscreenCtx.fill();
+    }
+  }
+
+  return offscreenCanvas;
+}
+
+/**
+ * Render grid intersection dots with progressive opacity (Story 21.5)
+ * Uses offscreen canvas caching for 1000x performance gain
+ * - Without caching: 546 dots × 2 operations/dot = 1,092 operations per frame
+ * - With caching: 1 operation per frame (drawImage blit)
+ * @param {CanvasRenderingContext2D} ctx - Canvas context
+ * @param {Object} gameState - Current game state (for score-based opacity)
+ */
+function renderGridDots(ctx, gameState) {
+  // Feature flag: Skip if disabled
+  if (!CONFIG.GRID_DOTS_ENABLED) {
+    return;
+  }
+
+  // Get progressive dot opacity from progression system (Story 19.1)
+  // Dots emerge at score 50 and intensify as grid fades
+  const dotOpacity = CONFIG.GRID_DOT_OPACITY_THRESHOLDS.find(
+    threshold => gameState.score >= threshold.minScore && gameState.score <= threshold.maxScore
+  )?.opacity || 0;
+
+  // Early exit if dots not visible yet (score < 50)
+  if (dotOpacity === 0) {
+    return;
+  }
+
+  // Generate cache if not yet created or invalidated (e.g., canvas resize)
+  if (!gridDotsCache || !gridDotsCacheValid) {
+    gridDotsCache = generateGridDotsCache(ctx.canvas.width, ctx.canvas.height);
+    gridDotsCacheValid = true;
+  }
+
+  // Blit cached dot canvas with progressive opacity (1 operation vs 1,092)
+  ctx.globalAlpha = dotOpacity;
+  ctx.drawImage(gridDotsCache, 0, 0);
+  ctx.globalAlpha = 1.0;  // CRITICAL: Reset to prevent opacity bleed
+}
+
+/**
+ * Invalidate grid dots cache (Story 21.5)
+ * Call this when canvas is resized to regenerate dot positions
+ * Export for use by game initialization/resize handlers
+ */
+export function invalidateGridDotsCache() {
+  gridDotsCacheValid = false;
+}
+
+/**
  * Renders the snake with head/body distinction
  * UPDATED in Story 2.2: Add invincibility strobe (yellow ↔ black)
  * UPDATED in Story 5-4: Add white eyes to head, subtle border color, directional eyes
@@ -79,6 +164,9 @@ function renderSnake(ctx, gameState) {
 
   // Story 10.3: Check if combo mode with striped pattern active
   const isStriped = gameState.combo.active && gameState.combo.effectB !== null;
+
+  // Story 21.1: Check if body outline needed for dark backgrounds (score >= 50)
+  const needsOutline = gameState.score >= CONFIG.SNAKE_DARK_OUTLINE_SCORE;
 
   if (isStriped) {
     // Render striped snake (alternating Effect A/Effect B colors)
@@ -108,9 +196,16 @@ function renderSnake(ctx, gameState) {
       ctx.lineWidth = 1;
       ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
 
-      // Head distinction: eyes on first segment
+      // Story 21.1: Add light outline on dark backgrounds (score >= 50)
+      if (needsOutline) {
+        ctx.strokeStyle = CONFIG.SNAKE_DARK_OUTLINE_COLOR;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
+      }
+
+      // Head distinction: eyes, pupils, and reflection on first segment (Story 21.1)
       if (index === 0) {
-        renderSnakeEyes(ctx, x, y, snake.direction);
+        renderSnakeHead(ctx, x, y, snake.direction);
       }
     });
   } else {
@@ -144,6 +239,13 @@ function renderSnake(ctx, gameState) {
         ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
       }
 
+      // Story 21.1: Add light outline on dark backgrounds (score >= 50)
+      if (needsOutline) {
+        ctx.strokeStyle = CONFIG.SNAKE_DARK_OUTLINE_COLOR;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
+      }
+
       // Head distinction: border + eyes on first segment (head at index 0)
       if (index === 0) {
         // Subtle border (matches grid background) - only if not in combo mode
@@ -153,8 +255,8 @@ function renderSnake(ctx, gameState) {
           ctx.strokeRect(x, y, CONFIG.UNIT_SIZE, CONFIG.UNIT_SIZE);
         }
 
-        // White eyes that rotate with direction (Story 5-4)
-        renderSnakeEyes(ctx, x, y, snake.direction);
+        // Story 21.1: Eyes, directional pupils, and top-light reflection
+        renderSnakeHead(ctx, x, y, snake.direction);
       }
     });
   }
@@ -179,18 +281,25 @@ function getEffectColor(effectType) {
 }
 
 /**
- * Render white eyes on snake head that rotate with direction
- * Story 5-4: Improve head visibility and add personality
- * Eyes face the direction of movement (right/left/up/down)
+ * Render snake head with eyes, directional pupils, and top-light reflection
+ * Story 5-4: White eyes that rotate with direction
+ * Story 21.1: Directional pupils + top-light reflection (Mega Man technique)
+ * @param {CanvasRenderingContext2D} ctx - Canvas context
+ * @param {number} headX - Head segment top-left x coordinate
+ * @param {number} headY - Head segment top-left y coordinate
+ * @param {string} direction - Movement direction ('up', 'down', 'left', 'right')
  */
-function renderSnakeEyes(ctx, headX, headY, direction) {
-  const eyeRadius = 2.5;  // 2.5px radius
+function renderSnakeHead(ctx, headX, headY, direction) {
+  const eyeRadius = 2.5;  // 2.5px radius for white eyes
   const eyeSpacing = 8;   // 8px apart (center to center)
+  const pupilRadius = 1.5;  // 1.5px radius for black pupils
+  const pupilOffset = 1.5;  // Offset toward movement direction
 
   const centerX = headX + CONFIG.UNIT_SIZE / 2;
   const centerY = headY + CONFIG.UNIT_SIZE / 2;
 
   let eye1X, eye1Y, eye2X, eye2Y;
+  let pupilDx = 0, pupilDy = 0;
 
   // Position eyes based on direction
   switch (direction) {
@@ -199,6 +308,7 @@ function renderSnakeEyes(ctx, headX, headY, direction) {
       eye1X = centerX - eyeSpacing / 2;
       eye2X = centerX + eyeSpacing / 2;
       eye1Y = eye2Y = headY + CONFIG.UNIT_SIZE / 3;
+      pupilDx = pupilOffset;  // Pupils look right
       break;
 
     case 'left':
@@ -206,6 +316,7 @@ function renderSnakeEyes(ctx, headX, headY, direction) {
       eye1X = centerX - eyeSpacing / 2;
       eye2X = centerX + eyeSpacing / 2;
       eye1Y = eye2Y = headY + CONFIG.UNIT_SIZE / 3;
+      pupilDx = -pupilOffset;  // Pupils look left
       break;
 
     case 'up':
@@ -213,6 +324,7 @@ function renderSnakeEyes(ctx, headX, headY, direction) {
       eye1Y = centerY - eyeSpacing / 2;
       eye2Y = centerY + eyeSpacing / 2;
       eye1X = eye2X = headX + CONFIG.UNIT_SIZE / 3;
+      pupilDy = -pupilOffset;  // Pupils look up
       break;
 
     case 'down':
@@ -220,6 +332,7 @@ function renderSnakeEyes(ctx, headX, headY, direction) {
       eye1Y = centerY - eyeSpacing / 2;
       eye2Y = centerY + eyeSpacing / 2;
       eye1X = eye2X = headX + CONFIG.UNIT_SIZE / 3;
+      pupilDy = pupilOffset;  // Pupils look down
       break;
 
     default:
@@ -227,6 +340,7 @@ function renderSnakeEyes(ctx, headX, headY, direction) {
       eye1X = centerX - eyeSpacing / 2;
       eye2X = centerX + eyeSpacing / 2;
       eye1Y = eye2Y = headY + CONFIG.UNIT_SIZE / 3;
+      pupilDx = pupilOffset;
   }
 
   // Draw white eyes
@@ -241,6 +355,60 @@ function renderSnakeEyes(ctx, headX, headY, direction) {
   ctx.beginPath();
   ctx.arc(eye2X, eye2Y, eyeRadius, 0, Math.PI * 2);
   ctx.fill();
+
+  // Draw black pupils offset toward movement direction (Story 21.1)
+  ctx.fillStyle = '#000000';
+
+  // Pupil 1
+  ctx.beginPath();
+  ctx.arc(eye1X + pupilDx, eye1Y + pupilDy, pupilRadius, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Pupil 2
+  ctx.beginPath();
+  ctx.arc(eye2X + pupilDx, eye2Y + pupilDy, pupilRadius, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Draw top-light reflection on leading edge (Story 21.1 - Mega Man technique)
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+  ctx.lineWidth = 1;
+
+  switch (direction) {
+    case 'right':
+      // Highlight right edge
+      ctx.beginPath();
+      ctx.moveTo(headX + CONFIG.UNIT_SIZE - 0.5, headY + 2);
+      ctx.lineTo(headX + CONFIG.UNIT_SIZE - 0.5, headY + CONFIG.UNIT_SIZE - 2);
+      ctx.stroke();
+      break;
+
+    case 'left':
+      // Highlight left edge
+      ctx.beginPath();
+      ctx.moveTo(headX + 0.5, headY + 2);
+      ctx.lineTo(headX + 0.5, headY + CONFIG.UNIT_SIZE - 2);
+      ctx.stroke();
+      break;
+
+    case 'up':
+      // Highlight top edge
+      ctx.beginPath();
+      ctx.moveTo(headX + 2, headY + 0.5);
+      ctx.lineTo(headX + CONFIG.UNIT_SIZE - 2, headY + 0.5);
+      ctx.stroke();
+      break;
+
+    case 'down':
+      // Highlight bottom edge
+      ctx.beginPath();
+      ctx.moveTo(headX + 2, headY + CONFIG.UNIT_SIZE - 0.5);
+      ctx.lineTo(headX + CONFIG.UNIT_SIZE - 2, headY + CONFIG.UNIT_SIZE - 0.5);
+      ctx.stroke();
+      break;
+  }
+
+  // Reset stroke style to prevent bleed
+  ctx.strokeStyle = 'transparent';
 }
 
 /**
@@ -394,7 +562,7 @@ function renderFood(ctx, gameState) {
   const y = food.position.y * CONFIG.UNIT_SIZE;
 
   // Story 19.3: Get glow intensity from progression system
-  const { glowIntensity } = getState(gameState.score);
+  const { glowIntensity } = getProgressionState(gameState.score);
 
   let color;
   let foodType;

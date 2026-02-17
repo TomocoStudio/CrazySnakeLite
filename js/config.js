@@ -87,6 +87,10 @@ export const CONFIG = {
   HEAD_BORDER_COLOR: '#E8E8E8',  // Story 5-4: Match grid background for subtle effect
   HEAD_BORDER_WIDTH: 2,
 
+  // Snake body outline for dark backgrounds (Story 21.1)
+  SNAKE_DARK_OUTLINE_SCORE: 50,  // Score threshold to enable body outline
+  SNAKE_DARK_OUTLINE_COLOR: 'rgba(255, 255, 255, 0.15)',  // Semi-transparent white
+
   // Touch input
   MIN_SWIPE_DISTANCE: 30,  // pixels
 
@@ -470,5 +474,14 @@ export const CONFIG = {
     default: '#9D4EDD'          // Purple (lowest priority, base state)
   },
 
-  BORDER_DEATH_FLASH_DURATION: 500  // Death flash duration (ms)
+  BORDER_DEATH_FLASH_DURATION: 500,  // Death flash duration (ms)
+
+  // V4: CRT Scanline Overlay (Story 21.3)
+  // Subtle horizontal lines for authentic 80s arcade CRT monitor aesthetics
+  CRT_SCANLINES_ENABLED: true,  // Set to false to disable scanlines (adds .no-scanlines class to #game-container)
+
+  // V4: Grid Intersection Dots (Story 21.5)
+  // Spatial anchor points that emerge as grid fades (score >= 50)
+  GRID_DOT_RADIUS: 1.5,         // Dot radius in pixels (subtle 3px diameter)
+  GRID_DOTS_ENABLED: true       // Set to false to disable intersection dots
 };

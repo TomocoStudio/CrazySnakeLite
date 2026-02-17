@@ -35,6 +35,31 @@ body {
   align-items: center;
 }
 
+/* Story 21.3: CRT Scanline Overlay - Subtle horizontal lines for authentic 80s arcade CRT feel */
+#game-container::after {
+  content: '';
+  position: absolute;
+  top: 8px;      /* Inside the 8px border */
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  border-radius: 4px;  /* Match inner canvas corners (10px outer - ~4px inner) */
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    rgba(0, 0, 0, 0.03) 3px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  pointer-events: none;  /* Click-through to canvas - no interaction blocking */
+  z-index: 50;           /* Above canvas, below all UI elements */
+}
+
+/* Story 21.3: Optional toggle class to disable scanlines */
+#game-container.no-scanlines::after {
+  display: none;
+}
+
 /* Canvas styling with retro neon aesthetic */
 #game-canvas {
   display: block;
@@ -46,6 +71,35 @@ body {
   transition:
     background-color 2000ms ease-in-out,  /* Slow cinematic background fade */
     border-color 300ms ease-in-out;       /* Fast responsive border snap */
+}
+
+/* Story 21.4: Reactive Border - 7 State Color System */
+/* Priority cascade: death > phone > combo > effects > default */
+
+#game-canvas.border-death {
+  border-color: #FF0000;  /* Red - death flash */
+  transition: border-color 100ms ease-in;  /* Fast snap for visceral impact */
+}
+
+#game-canvas.border-phone-ring {
+  border-color: #FFD700;  /* Gold - reward opportunity signal */
+}
+
+#game-canvas.border-phone-pickup {
+  border-color: #28a745;  /* Green - committed state */
+}
+
+#game-canvas.border-combo {
+  /* border-color set dynamically via JS from gameState.combo.canvasColor */
+  /* Transition still applies */
+}
+
+#game-canvas.border-reverse {
+  border-color: #FFA500;  /* Orange - reverse controls active */
+}
+
+#game-canvas.border-invincibility {
+  border-color: #FFFF00;  /* Yellow - invincibility active */
 }
 
 /* Score Display - Story 5-2: Dual Score Layout */
@@ -74,11 +128,13 @@ body {
 #current-score {
   color: #FFFFFF;
   text-align: left;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.3);  /* Story 21.2: Subtle white glow */
 }
 
 #top-score {
   color: rgb(157, 178, 221);
   text-align: right;
+  text-shadow: 0 0 6px rgba(157, 178, 221, 0.3);  /* Story 21.2: Subtle blue glow */
 }
 
 #score-display.hidden {
@@ -109,10 +165,15 @@ body {
   font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 36px;
   font-weight: bold;
-  color: rgb(157, 178, 221);
-  text-shadow: none;
+  color: #FFFFFF;  /* Story 21.2: White base for maximum brightness */
+  text-shadow:
+    0 0 10px rgba(157, 178, 221, 0.8),   /* Soft blue glow (neon tube) */
+    0 0 20px rgba(157, 178, 221, 0.4),   /* Wider glow halo */
+    0 2px 0 #5A6A8A,                      /* Hard shadow bottom (bevel depth) */
+    0 3px 0 #3A4A6A;                      /* Deeper shadow layer (3D effect) */
   margin: 0 0 30px 0;
-  letter-spacing: 2px;
+  letter-spacing: 3px;  /* Story 21.2: Increased from 2px for arcade feel */
+  text-transform: uppercase;
 }
 
 .menu-button {
@@ -187,11 +248,14 @@ body {
 }
 
 #gameover-screen h2 {
-  font-size: 32px;
+  font-size: 36px;  /* Story 21.2: Increased from 32px for more impact */
   margin: 0 0 20px 0;
   color: rgb(157, 178, 221);
-  text-shadow: none;
-  letter-spacing: 2px;
+  text-shadow:
+    0 0 8px rgba(157, 178, 221, 0.6),   /* Soft glow */
+    0 2px 0 rgba(0, 0, 0, 0.8),         /* Hard bottom shadow (depth) */
+    0 4px 8px rgba(0, 0, 0, 0.4);       /* Soft depth shadow (3D) */
+  letter-spacing: 4px;  /* Story 21.2: Increased from 2px for drama */
 }
 
 #gameover-screen .final-score {
@@ -204,13 +268,30 @@ body {
   font-size: 20px;
   font-weight: bold;
   margin: 0 0 20px 0;
-  color: #FFD700;
-  text-shadow: none;
-  animation: none;
+  color: #FFD700;  /* Gold */
+  text-shadow:
+    0 0 10px rgba(255, 215, 0, 0.8),
+    0 0 20px rgba(255, 215, 0, 0.4);
+  animation: highScorePulse 1.5s ease-in-out infinite;  /* Story 21.2: Pulsing gold glow */
 }
 
 #gameover-screen .new-high-score.hidden {
   display: none;
+}
+
+/* Story 21.2: Pulsing animation for NEW HIGH SCORE */
+@keyframes highScorePulse {
+  0%, 100% {
+    text-shadow:
+      0 0 10px rgba(255, 215, 0, 0.8),
+      0 0 20px rgba(255, 215, 0, 0.4);
+  }
+  50% {
+    text-shadow:
+      0 0 15px rgba(255, 215, 0, 1.0),
+      0 0 30px rgba(255, 215, 0, 0.6),
+      0 0 40px rgba(255, 165, 0, 0.3);
+  }
 }
 
 
@@ -811,6 +892,14 @@ button:disabled {
 
   .confetti-burst {
     display: none !important;
+  }
+
+  /* Story 21.2: Disable NEW HIGH SCORE pulsing animation */
+  #gameover-screen .new-high-score {
+    animation: none !important;
+    text-shadow:
+      0 0 10px rgba(255, 215, 0, 0.8),
+      0 0 20px rgba(255, 215, 0, 0.4) !important;
   }
 }
 
