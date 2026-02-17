@@ -1163,40 +1163,160 @@ Content: `"(Space=End / Enter=Pick Up)"`
 
 ---
 
-## Reverse Controls Recognition
+## High-Value Food Recognition
 
-When the player **survives** Reverse Controls (eats next food without dying while controls are reversed), display recognition flash.
+When players consume high-difficulty foods, display celebratory victory message flashes to enhance the achievement feeling.
 
-### RC SURVIVED Flash
+### Reverse Controls Survival Flash
 
+When the player **survives** Reverse Controls (eats next food without dying while controls are reversed), display a celebratory victory message.
+
+**Message Pool (7 messages):**
+```javascript
+const RC_VICTORY_MESSAGES = [
+  "UNSTOPPABLE!",
+  "BRILLIANT!",
+  "LEGENDARY!",
+  "AMAZING!",
+  "YOU RULE!",
+  "YOU ROCK!",
+  "AWESOME!"
+];
+```
+
+**CSS Styling:**
 ```css
-.rc-survived-flash {
+.victory-flash {
   position: absolute;
   font-family: 'Jersey20', monospace;
-  font-size: 12px;
-  color: #FFFFFF;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
+  font-size: 48px;
+  color: #FFA500; /* Orange - matches RC food color */
+  font-weight: 900;
+  text-shadow: 0 0 12px rgba(255, 165, 0, 0.8),
+               2px 2px 4px rgba(0, 0, 0, 1);
   text-transform: uppercase;
   letter-spacing: 1px;
   pointer-events: none;
-  z-index: 200;
-  animation: rc-flash 400ms ease-out forwards;
+  z-index: 1000;
+  animation: victoryFlashFadeUp 2500ms ease-out forwards;
 }
 
-@keyframes rc-flash {
+@keyframes victoryFlashFadeUp {
   0%   { opacity: 0; transform: translateY(0); }
-  20%  { opacity: 1; }
+  30%  { opacity: 1; }
   100% { opacity: 0; transform: translateY(-15px); }
 }
 ```
 
-**Content:** `"RC SURVIVED"`
+**Content:** Random selection from 7-message pool on each survival
 
 **Positioning:** Spawns 20px below the +8 score popup at same x coordinate. Appears 200ms after the +8 popup (stagger rule).
 
-**Duration:** 400ms (fast, unobtrusive)
+**Duration:** 2500ms (bold celebration, long enough to register during gameplay)
 
-**Rationale:** Cognitive acknowledgment, not extra reward. No bonus points — the +8 already compensates. This tells the player: "The game saw what your brain just did."
+**Rationale:** Cognitive acknowledgment with variety. Orange color matches RC food for visual consistency. No bonus points — the +8 already compensates. This tells the player: "The game saw what your brain just did." Random message selection keeps feedback fresh across multiple plays, increasing replay value.
+
+---
+
+### Speed Boost Flash
+
+When the player **eats** a Speed Boost food (+5), display a speed-themed celebratory message.
+
+**Message Pool (7 messages):**
+```javascript
+const SPEED_BOOST_MESSAGES = [
+  "SO FAST!",
+  "BLAZING!",
+  "LIGHTNING!",
+  "SPEED DEMON!",
+  "SUPERSONIC!",
+  "WARP SPEED!",
+  "TURBO MODE!"
+];
+```
+
+**CSS Styling:**
+```css
+.speed-flash {
+  position: absolute;
+  font-family: 'Jersey20', monospace;
+  font-size: 48px;
+  color: #FF0000; /* Red - matches Speed Boost food color */
+  font-weight: 900;
+  text-shadow: 0 0 12px rgba(255, 0, 0, 0.8),
+               2px 2px 4px rgba(0, 0, 0, 1);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  pointer-events: none;
+  z-index: 1000;
+  animation: speedFlashFadeUp 2500ms ease-out forwards;
+}
+
+@keyframes speedFlashFadeUp {
+  0%   { opacity: 0; transform: translateY(0); }
+  30%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-15px); }
+}
+```
+
+**Content:** Random selection from 7-message pool on each Speed Boost consumption
+
+**Positioning:** Spawns 20px below the +5 score popup at same x coordinate. Appears 200ms after the +5 popup (stagger rule).
+
+**Duration:** 2500ms (energetic celebration matching speed theme)
+
+**Rationale:** Speed Boost (+5) is a high-value food that creates exciting gameplay moments. The flash amplifies the "I'm going fast!" feeling and adds thematic variety to the feedback system. Red color matches Speed Boost food for visual consistency and reinforces the speed/energy theme.
+
+---
+
+### Wall Phase Flash
+
+When the player **uses** Wall Phase (crosses through a wall while Wall Phase effect is active), display a spatial mastery celebration message.
+
+**Message Pool (7 messages):**
+```javascript
+const WALL_PHASE_MESSAGES = [
+  "PHASED!",
+  "WALL CROSSED!",
+  "NO LIMITS!",
+  "PHASE MASTER!",
+  "WALL BREAKER!",
+  "GHOSTED IT!",
+  "BOUNDARY BROKEN!"
+];
+```
+
+**CSS Styling:**
+```css
+.phase-flash {
+  position: absolute;
+  font-family: 'Jersey20', monospace;
+  font-size: 48px;
+  color: #800080; /* Purple - matches Wall Phase food color */
+  font-weight: 900;
+  text-shadow: 0 0 12px rgba(128, 0, 128, 0.8),
+               2px 2px 4px rgba(0, 0, 0, 1);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  pointer-events: none;
+  z-index: 1000;
+  animation: phaseFlashFadeUp 2500ms ease-out forwards;
+}
+
+@keyframes phaseFlashFadeUp {
+  0%   { opacity: 0; transform: translateY(0); }
+  30%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-15px); }
+}
+```
+
+**Content:** Random selection from 7-message pool on each wall crossing
+
+**Positioning:** Spawns 20px below the +2 bonus score popup at same x coordinate. Appears 200ms after the +2 popup (stagger rule).
+
+**Duration:** 2500ms (celebrates strategic spatial planning)
+
+**Rationale:** Wall Phase requires strategic navigation - player must eat the food AND successfully navigate to a wall boundary to earn the +2 bonus. The flash celebrates this spatial planning achievement. Purple color matches Wall Phase food for visual consistency. Random message selection keeps feedback fresh across multiple wall crossings.
 
 ---
 

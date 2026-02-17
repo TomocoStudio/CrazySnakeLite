@@ -38,10 +38,121 @@ export function gridToPixel(gridX, gridY) {
   };
 }
 
+// Victory message pool (Story 11.1 - rotating messages)
+const VICTORY_MESSAGES = [
+  "UNSTOPPABLE!",
+  "BRILLIANT!",
+  "LEGENDARY!",
+  "AMAZING!",
+  "YOU RULE!",
+  "YOU ROCK!",
+  "AWESOME!"
+];
+
+// Speed Boost victory message pool (Story 7.7)
+const SPEED_BOOST_MESSAGES = [
+  "SO FAST!",
+  "BLAZING!",
+  "LIGHTNING!",
+  "SPEED DEMON!",
+  "SUPERSONIC!",
+  "WARP SPEED!",
+  "TURBO MODE!"
+];
+
+// Wall Phase victory message pool (Story 7.8)
+const WALL_PHASE_MESSAGES = [
+  "PHASED!",
+  "WALL CROSSED!",
+  "NO LIMITS!",
+  "PHASE MASTER!",
+  "WALL BREAKER!",
+  "GHOSTED IT!",
+  "BOUNDARY BROKEN!"
+];
+
+/**
+ * Spawn a random victory message flash (Story 11.1)
+ * Used for RC survival celebration with rotating messages
+ * @param {number} x - X position in viewport pixels
+ * @param {number} y - Y position in viewport pixels
+ */
+export function spawnVictoryFlash(x, y) {
+  const randomMessage = VICTORY_MESSAGES[Math.floor(Math.random() * VICTORY_MESSAGES.length)];
+
+  const flash = document.createElement('div');
+  flash.className = 'victory-flash';
+  flash.textContent = randomMessage;
+
+  // Position flash at pixel coordinates
+  flash.style.left = `${x}px`;
+  flash.style.top = `${y}px`;
+
+  // Add to DOM
+  document.body.appendChild(flash);
+
+  // Auto-remove after animation completes (3500ms)
+  flash.addEventListener('animationend', () => {
+    flash.remove();
+  });
+}
+
+/**
+ * Spawn a random speed-themed victory message flash (Story 7.7)
+ * Used for Speed Boost celebration with rotating messages
+ * @param {number} x - X position in viewport pixels
+ * @param {number} y - Y position in viewport pixels
+ */
+export function spawnSpeedFlash(x, y) {
+  const randomMessage = SPEED_BOOST_MESSAGES[Math.floor(Math.random() * SPEED_BOOST_MESSAGES.length)];
+
+  const flash = document.createElement('div');
+  flash.className = 'speed-flash';
+  flash.textContent = randomMessage;
+
+  // Position flash at pixel coordinates
+  flash.style.left = `${x}px`;
+  flash.style.top = `${y}px`;
+
+  // Add to DOM
+  document.body.appendChild(flash);
+
+  // Auto-remove after animation completes (3500ms)
+  flash.addEventListener('animationend', () => {
+    flash.remove();
+  });
+}
+
+/**
+ * Spawn a random wall-crossing victory message flash (Story 7.8)
+ * Used for Wall Phase celebration with rotating messages
+ * @param {number} x - X position in viewport pixels
+ * @param {number} y - Y position in viewport pixels
+ */
+export function spawnPhaseFlash(x, y) {
+  const randomMessage = WALL_PHASE_MESSAGES[Math.floor(Math.random() * WALL_PHASE_MESSAGES.length)];
+
+  const flash = document.createElement('div');
+  flash.className = 'phase-flash';
+  flash.textContent = randomMessage;
+
+  // Position flash at pixel coordinates
+  flash.style.left = `${x}px`;
+  flash.style.top = `${y}px`;
+
+  // Add to DOM
+  document.body.appendChild(flash);
+
+  // Auto-remove after animation completes (3500ms)
+  flash.addEventListener('animationend', () => {
+    flash.remove();
+  });
+}
+
 /**
  * Spawn a text flash (Story 11.1)
- * Used for immediate feedback like "RC SURVIVED"
- * @param {string} text - Flash text (e.g., "RC SURVIVED")
+ * Generic flash function for custom text
+ * @param {string} text - Flash text
  * @param {number} x - X position in viewport pixels
  * @param {number} y - Y position in viewport pixels
  */
@@ -57,7 +168,7 @@ export function spawnFlash(text, x, y) {
   // Add to DOM
   document.body.appendChild(flash);
 
-  // Auto-remove after animation completes (2500ms)
+  // Auto-remove after animation completes (3500ms)
   flash.addEventListener('animationend', () => {
     flash.remove();
   });

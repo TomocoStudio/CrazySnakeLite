@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reaction Time Calibration Fix</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #1a1a1a;
+      color: #9DB2DD;
+    }
+    h1 {
+      color: #FFFFFF;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .container {
+      background: #2a2a2a;
+      border: 2px solid #9DB2DD;
+      border-radius: 8px;
+      padding: 30px;
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 20px 0;
+      font-size: 18px;
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      background: #9DB2DD;
+      color: #1a1a1a;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    button:hover {
+      background: #FFFFFF;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(157, 178, 221, 0.5);
+    }
+    button:disabled {
+      background: #555;
+      color: #888;
+      cursor: not-allowed;
+      transform: none;
+    }
+    #output {
+      background: #000;
+      color: #0F0;
+      padding: 20px;
+      border-radius: 4px;
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 300px;
+      max-height: 500px;
+      overflow-y: auto;
+      margin-top: 20px;
+      white-space: pre-wrap;
+      font-family: 'Courier New', monospace;
+    }
+    .info {
+      background: rgba(157, 178, 221, 0.1);
+      border-left: 4px solid #9DB2DD;
+      padding: 15px;
+      margin: 20px 0;
+      line-height: 1.6;
+    }
+    .warning {
+      background: rgba(76, 175, 80, 0.1);
+      border-left: 4px solid #4CAF50;
+      color: #4CAF50;
+      padding: 15px;
+      margin: 20px 0;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <h1>⚡ Reaction Time Calibration Fix</h1>
+
+  <div class="container">
+    <div class="info">
+      <strong>What this does:</strong><br>
+      Recalculates the Reaction Time metric for all your stored sessions using a realistic normalization range (500-3000ms instead of 200-800ms). This accounts for Snake game mechanics like grid traversal distance and tick rate.
+    </div>
+
+    <div class="warning">
+      <strong>📈 Expected Result:</strong><br>
+      Your Reaction score should jump from ~0.25 to around 3.5-4.0 out of 5.0! The old calibration was designed for button-clicking reaction tests, not navigating a snake through a grid.
+    </div>
+
+    <button id="migrateBtn">🚀 Run Migration</button>
+
+    <div id="output"></div>
+  </div>
+
+  <script type="module">
+    console.log('Script loading...');
+
+    import { migrateReactionTime } from './js/migrate-reaction-fix.js';
+
+    console.log('Migration function imported successfully');
+
+    const outputEl = document.getElementById('output');
+    const migrateBtn = document.getElementById('migrateBtn');
+
+    console.log('Elements found:', { outputEl, migrateBtn });
+
+    // Intercept console logs and display in output
+    const originalLog = console.log;
+    const originalError = console.error;
+    const originalWarn = console.warn;
+
+    function log(message, isError = false) {
+      outputEl.textContent += message + '\n';
+      outputEl.scrollTop = outputEl.scrollHeight;
+      if (isError) {
+        originalError(message);
+      } else {
+        originalLog(message);
+      }
+    }
+
+    console.log = (...args) => log(args.join(' '));
+    console.error = (...args) => log('ERROR: ' + args.join(' '), true);
+    console.warn = (...args) => log('WARNING: ' + args.join(' '));
+
+    migrateBtn.addEventListener('click', async () => {
+      console.log('Button clicked!');
+      migrateBtn.disabled = true;
+      migrateBtn.textContent = '⏳ Running migration...';
+      outputEl.textContent = '';
+
+      try {
+        console.log('Starting migration...');
+        await migrateReactionTime();
+        migrateBtn.textContent = '✅ Migration Complete!';
+        migrateBtn.style.background = '#4CAF50';
+
+        setTimeout(() => {
+          log('\n✨ You can now close this page and return to the game.');
+          log('Your Skill Map should show much higher Reaction scores!');
+        }, 1000);
+      } catch (error) {
+        console.error('Migration failed:', error);
+        migrateBtn.textContent = '❌ Migration Failed';
+        migrateBtn.style.background = '#F44336';
+        migrateBtn.disabled = false;
+      }
+    });
+
+    // Initial message
+    outputEl.textContent = 'Ready to migrate. Click the button above to start.\n';
+  </script>
+</body>
+</html>

@@ -18,10 +18,10 @@ Transform the death screen from "I failed" into "look what my brain just did" by
 
 ## Stories
 
-### Story 11.1: Implement "RC SURVIVED" Flash
+### Story 11.1: Implement Victory Message Flash
 
 **As a** player,
-**I want** to receive immediate recognition when I survive Reverse Controls,
+**I want** to receive immediate celebration when I survive Reverse Controls,
 **So that** I feel acknowledged for completing the hardest cognitive challenge.
 
 **Acceptance Criteria:**
@@ -32,29 +32,31 @@ Transform the death screen from "I failed" into "look what my brain just did" by
 
 **Given** I am navigating with Reverse Controls active
 **When** I successfully eat the next food without dying
-**Then** a "RC SURVIVED" text flash appears:
-- Content: "RC SURVIVED" (uppercase, orange text — matches RC food color)
+**Then** a random victory message flash appears:
+- Content: Randomly selected from pool: "UNSTOPPABLE!", "BRILLIANT!", "LEGENDARY!", "AMAZING!", "YOU RULE!", "YOU ROCK!", "AWESOME!"
 - Font: Jersey20, 48px, extra bold (900 weight)
+- Color: Orange (#FFA500) - matches RC food color
 - Position: 20px below the +8 score popup
 - Animation: 2500ms fade-up and fade-out (long enough to register during gameplay)
 - Appears 200ms after the +8 popup (stagger rule)
 
-**Given** the "RC SURVIVED" flash appears
+**Given** the victory message flash appears
 **When** the animation plays
 **Then** the flash does not obstruct gameplay
 **And** the flash auto-removes after 2500ms
+**And** each survival shows a different random message for variety
 
 **Given** I eat Reverse Controls but die before eating the next food
 **When** death occurs
-**Then** no "RC SURVIVED" flash appears
+**Then** no victory message flash appears
 **And** cognitiveStats.rcSurvived does NOT increment
 
 **Technical Notes:**
 - Track effects.reverseControlsActive flag
 - On food consumption after RC: if reverseControlsActive && !died → survived
-- Call spawnFlash("RC SURVIVED", x, y) from score-popup.js
+- Call spawnVictoryFlash(x, y) from score-popup.js (randomly selects from 7-message pool)
 - Position 20px below +8 popup using same x coordinate
-- Use .rc-survived-flash CSS class with 2500ms fade animation
+- Use .victory-flash CSS class with 2500ms fade animation
 - Increment cognitiveStats.rcSurvived ONLY on successful survival
 
 **FRs:** FR70-FR72

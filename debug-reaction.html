@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Debug Reaction Times</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      max-width: 900px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #1a1a1a;
+      color: #9DB2DD;
+    }
+    h1 { color: #FFFFFF; text-align: center; }
+    button {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 20px 0;
+      font-size: 18px;
+      font-family: 'Courier New', monospace;
+      background: #9DB2DD;
+      color: #1a1a1a;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover { background: #FFFFFF; }
+    #output {
+      background: #000;
+      color: #0F0;
+      padding: 20px;
+      border-radius: 4px;
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 400px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 Debug Reaction Times</h1>
+  <button id="analyzeBtn">Analyze Response Times</button>
+  <div id="output"></div>
+
+  <script type="module">
+    import { getSessions } from './js/storage.js';
+
+    const outputEl = document.getElementById('output');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+
+    analyzeBtn.addEventListener('click', async () => {
+      outputEl.textContent = 'Analyzing...\n\n';
+
+      try {
+        const sessions = await getSessions(10);
+
+        if (sessions.length === 0) {
+          outputEl.textContent = 'No sessions found.';
+          return;
+        }
+
+        let output = `Analyzing ${sessions.length} most recent sessions:\n\n`;
+
+        sessions.forEach((session, i) => {
+          const rawEvents = session.rawEvents || [];
+          const foodEatenEvents = rawEvents.filter(e =>
+            e.type === 'food_eaten' &&
+            e.responseTime !== undefined &&
+            e.responseTime > 0 &&
+            !e.duringRC &&
+            !e.duringPhone
+          );
+
+          if (foodEatenEvents.length > 0) {
+            const times = foodEatenEvents.map(e => e.responseTime);
+            const avgTime = times.reduce((sum, t) => sum + t, 0) / times.length;
+            const minTime = Math.min(...times);
+            const maxTime = Math.max(...times);
+
+            output += `Session ${i + 1} (Score: ${session.score}):\n`;
+            output += `  Food eaten: ${foodEatenEvents.length}\n`;
+            output += `  Avg response time: ${avgTime.toFixed(0)}ms\n`;
+            output += `  Min: ${minTime}ms, Max: ${maxTime}ms\n`;
+            output += `  Reaction score: ${session.metrics.reactionTime?.toFixed(4) || 'null'}\n`;
+            output += `  Sample times: [${times.slice(0, 5).map(t => t + 'ms').join(', ')}...]\n\n`;
+          } else {
+            output += `Session ${i + 1}: No valid response time data\n\n`;
+          }
+        });
+
+        // Calculate overall statistics
+        const allTimes = [];
+        sessions.forEach(session => {
+          const events = (session.rawEvents || []).filter(e =>
+            e.type === 'food_eaten' &&
+            e.responseTime > 0 &&
+            !e.duringRC &&
+            !e.duringPhone
+          );
+          allTimes.push(...events.map(e => e.responseTime));
+        });
+
+        if (allTimes.length > 0) {
+          const overallAvg = allTimes.reduce((sum, t) => sum + t, 0) / allTimes.length;
+          output += `\n${'='.repeat(50)}\n`;
+          output += `OVERALL STATISTICS (last 10 sessions):\n`;
+          output += `  Total food eaten: ${allTimes.length}\n`;
+          output += `  Average response time: ${overallAvg.toFixed(0)}ms\n`;
+          output += `  Min: ${Math.min(...allTimes)}ms\n`;
+          output += `  Max: ${Math.max(...allTimes)}ms\n`;
+          output += `\n`;
+          output += `Expected score with ${overallAvg.toFixed(0)}ms average:\n`;
+
+          // Calculate expected score with new range (500-3000ms)
+          const clamped = Math.max(500, Math.min(3000, overallAvg));
+          const normalized = (clamped - 500) / (3000 - 500);
+          const score01 = 1 - normalized; // Inverted
+          const score05 = score01 * 5.0;
+
+          output += `  0-1 scale: ${score01.toFixed(4)}\n`;
+          output += `  0-5 scale: ${score05.toFixed(2)}\n`;
+        }
+
+        outputEl.textContent = output;
+      } catch (error) {
+        outputEl.textContent = `Error: ${error.message}\n${error.stack}`;
+      }
+    });
+
+    outputEl.textContent = 'Click the button to analyze your response times.';
+  </script>
+</body>
+</html>

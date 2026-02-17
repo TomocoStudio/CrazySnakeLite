@@ -231,6 +231,85 @@ Transform flat scoring into a Fibonacci-based reward system with proportional vi
 
 ---
 
+### Story 7.7: Implement Speed Boost Victory Flash
+
+**As a** player,
+**I want** to receive an energetic celebration when I eat Speed Boost food,
+**So that** I feel the excitement and power of going fast.
+
+**Acceptance Criteria:**
+
+**Given** I eat a Speed Boost food (+5)
+**When** the food is consumed
+**Then** a random speed-themed victory message flash appears:
+- Content: Randomly selected from pool: "SO FAST!", "BLAZING!", "LIGHTNING!", "SPEED DEMON!", "SUPERSONIC!", "WARP SPEED!", "TURBO MODE!"
+- Font: Jersey20, 48px, extra bold (900 weight)
+- Color: Red (#FF0000) - matches Speed Boost food color
+- Position: 20px below the +5 score popup
+- Animation: 2500ms fade-up and fade-out (energetic celebration)
+- Appears 200ms after the +5 popup (stagger rule)
+
+**Given** the speed flash appears
+**When** the animation plays
+**Then** the flash does not obstruct gameplay
+**And** the flash auto-removes after 2500ms
+**And** each Speed Boost consumption shows a different random message for variety
+
+**Given** I eat Speed Boost multiple times in a game
+**When** the flash appears each time
+**Then** different messages appear to maintain freshness and excitement
+
+**Technical Notes:**
+- Add SPEED_BOOST_MESSAGES array to score-popup.js (7 messages)
+- Implement spawnSpeedFlash(x, y) similar to victory flash pattern
+- Trigger in game.js when food.type === 'speedBoost'
+- Use .speed-flash CSS class with red (#FF0000) styling
+- 200ms setTimeout for stagger timing after +5 popup
+
+**FRs:** High-value food visual feedback enhancement
+
+---
+
+### Story 7.8: Implement Wall Phase Victory Flash
+
+**As a** player,
+**I want** to receive a spatial mastery celebration when I successfully use Wall Phase,
+**So that** I feel acknowledged for strategic navigation and boundary crossing.
+
+**Acceptance Criteria:**
+
+**Given** I have Wall Phase effect active
+**When** I cross through a wall boundary
+**Then** a random wall-crossing victory message flash appears:
+- Content: Randomly selected from pool: "PHASED!", "WALL CROSSED!", "NO LIMITS!", "PHASE MASTER!", "WALL BREAKER!", "GHOSTED IT!", "BOUNDARY BROKEN!"
+- Font: Jersey20, 48px, extra bold (900 weight)
+- Color: Purple (#800080) - matches Wall Phase food color
+- Position: 20px below the +2 bonus score popup
+- Animation: 2500ms fade-up and fade-out (celebrates spatial achievement)
+- Appears 200ms after the +2 popup (stagger rule)
+
+**Given** the phase flash appears
+**When** the animation plays
+**Then** the flash does not obstruct gameplay
+**And** the flash auto-removes after 2500ms
+**And** each wall crossing shows a different random message for variety
+
+**Given** I eat Wall Phase food but never cross a wall
+**When** the effect expires without wall interaction
+**Then** no phase flash appears (only +1 base score, no bonus)
+
+**Technical Notes:**
+- Add WALL_PHASE_MESSAGES array to score-popup.js (7 messages)
+- Implement spawnPhaseFlash(x, y) similar to victory/speed flash pattern
+- Trigger in game.js/effects.js when wall crossing detected with Wall Phase active
+- Use .phase-flash CSS class with purple (#800080) styling
+- 200ms setTimeout for stagger timing after +2 popup
+- Only trigger when wall crossing occurs (not just eating Wall Phase food)
+
+**FRs:** Wall Phase strategic feedback enhancement
+
+---
+
 ## Technical Architecture
 
 **New Modules:**
@@ -253,18 +332,20 @@ Transform flat scoring into a Fibonacci-based reward system with proportional vi
 
 ## Definition of Done
 
-- [ ] All 6 stories complete with passing acceptance criteria
+- [ ] All 8 stories complete with passing acceptance criteria
 - [ ] Food scoring values match Fibonacci (0, +1, +2, +3, +5, +8)
 - [ ] Wall Phase awards +3 on wall interaction, +1 otherwise
 - [ ] 5 distinct popup animations implemented
 - [ ] Particles spawn and animate for +8
 - [ ] Screen shake triggers for +8
+- [ ] Speed Boost victory flash implemented with 7 random messages (red)
+- [ ] Wall Phase victory flash implemented with 7 random messages (purple)
 - [ ] Fibonacci musical progression audio plays for all values
 - [ ] Popup queue system enforces 300ms stagger
 - [ ] Reduced motion mode functional
 - [ ] No memory leaks during 30-minute extended play test
 - [ ] Visual feedback appears within 200ms of food consumption (temporal contiguity)
-- [ ] All popups auto-cleanup after animation
+- [ ] All popups and flashes auto-cleanup after animation
 - [ ] Code reviewed and merged
 
 ---

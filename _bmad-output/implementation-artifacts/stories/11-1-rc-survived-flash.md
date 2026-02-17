@@ -1,8 +1,8 @@
-# Story 11.1: Implement "RC SURVIVED" Flash
+# Story 11.1: Implement Victory Message Flash
 
 **Epic:** 11 - Cognitive Feedback & RC Recognition
 **Story ID:** 11.1
-**Status:** ✅ done
+**Status:** ✅ done (Updated: 2026-02-17 - Changed to rotating message pool + increased duration to 3500ms)
 **Created:** 2026-02-08
 **Completed:** 2026-02-14
 
@@ -11,7 +11,7 @@
 ## Story
 
 **As a** player,
-**I want** to receive immediate recognition when I survive Reverse Controls,
+**I want** to receive immediate celebration when I survive Reverse Controls,
 **So that** I feel acknowledged for completing the hardest cognitive challenge.
 
 ## Acceptance Criteria
@@ -22,21 +22,23 @@
 
 **Given** I am navigating with Reverse Controls active
 **When** I successfully eat the next food without dying
-**Then** a "RC SURVIVED" text flash appears:
-- Content: "RC SURVIVED" (uppercase, orange text — matches RC food color)
+**Then** a random victory message flash appears:
+- Content: Randomly selected from pool: "UNSTOPPABLE!", "BRILLIANT!", "LEGENDARY!", "AMAZING!", "YOU RULE!", "YOU ROCK!", "AWESOME!"
 - Font: Jersey20, 48px, extra bold (900 weight)
+- Color: Orange (#FFA500) - matches RC food color
 - Position: 20px below the +8 score popup
-- Animation: 2500ms fade-up and fade-out (long enough to register during gameplay)
+- Animation: 3500ms fade-up and fade-out (long enough to register during gameplay)
 - Appears 200ms after the +8 popup (stagger rule)
 
-**Given** the "RC SURVIVED" flash appears
+**Given** the victory message flash appears
 **When** the animation plays
 **Then** the flash does not obstruct gameplay
-**And** the flash auto-removes after 2500ms
+**And** the flash auto-removes after 3500ms
+**And** each survival shows a different random message for variety
 
 **Given** I eat Reverse Controls but die before eating the next food
 **When** death occurs
-**Then** no "RC SURVIVED" flash appears
+**Then** no victory message flash appears
 **And** cognitiveStats.rcSurvived does NOT increment
 
 ## Tasks / Subtasks
@@ -50,7 +52,7 @@
   - [x] Create DOM element with text
   - [x] Position at x, y with 20px offset below popup
   - [x] Apply .rc-survived-flash CSS class
-  - [x] Auto-remove after 2500ms (using animationend event)
+  - [x] Auto-remove after 3500ms (using animationend event)
 - [x] Check RC survival on food consumption
   - [x] In game.js food collision handler: if reverseControlsActive && !died
   - [x] Call spawnFlash("RC SURVIVED", x, y + 20)
@@ -58,7 +60,7 @@
   - [x] Deactivate reverseControlsActive flag (via clearEffect/applyEffect)
 - [x] Add .rc-survived-flash CSS class
   - [x] Font: Jersey20, 48px, orange (#FFA500), 900 weight with orange glow
-  - [x] Animation: fade-up and fade-out over 2500ms
+  - [x] Animation: fade-up and fade-out over 3500ms
   - [x] No background (text only)
 - [x] Test RC survival (unit tests created)
   - [x] Unit test: reverseControlsActive flag tracking
@@ -75,10 +77,11 @@
 
 ### 🎯 STORY OBJECTIVE
 
-Provide immediate metacognitive feedback when players successfully navigate Reverse Controls — the hardest cognitive challenge in the game. The "RC SURVIVED" flash transforms a difficult moment into an achievement, reinforcing that the player's brain did hard work. This is the first real-time cognitive feedback (more coming in death screen).
+Provide immediate metacognitive feedback when players successfully navigate Reverse Controls — the hardest cognitive challenge in the game. Victory messages transform a difficult moment into a celebration, reinforcing that the player's brain did hard work. Random message selection adds variety and keeps feedback fresh across multiple plays. This is the first real-time cognitive feedback (more coming in death screen).
 
 **CRITICAL SUCCESS FACTORS:**
 - Flash only appears on successful survival (not on death)
+- Random message selected from 7-message pool for variety
 - Flash positioned below +8 popup (200ms stagger)
 - Flash auto-removes after 2500ms (bold but non-blocking)
 - cognitiveStats.rcSurvived tracks successful survivals only
@@ -160,19 +163,31 @@ function deactivateAllEffects(effects) {
 }
 ```
 
-**3. score-popup.js — Implement spawnFlash():**
+**3. score-popup.js — Implement spawnFlash() with message pool:**
 
 ```javascript
+// Victory message pool (7 messages)
+const VICTORY_MESSAGES = [
+  "UNSTOPPABLE!",
+  "BRILLIANT!",
+  "LEGENDARY!",
+  "AMAZING!",
+  "YOU RULE!",
+  "YOU ROCK!",
+  "AWESOME!"
+];
+
 /**
- * Spawn a text flash (e.g., "RC SURVIVED").
- * @param {string} text - Flash text
+ * Spawn a random victory message flash.
  * @param {number} x - X position (canvas coordinates)
  * @param {number} y - Y position (canvas coordinates)
  */
-export function spawnFlash(text, x, y) {
+export function spawnVictoryFlash(x, y) {
+  const randomMessage = VICTORY_MESSAGES[Math.floor(Math.random() * VICTORY_MESSAGES.length)];
+
   const flash = document.createElement('div');
-  flash.className = 'rc-survived-flash';
-  flash.textContent = text;
+  flash.className = 'victory-flash';
+  flash.textContent = randomMessage;
 
   // Position flash
   flash.style.left = `${x}px`;
@@ -191,7 +206,7 @@ export function spawnFlash(text, x, y) {
 **4. game.js — Check RC survival on food consumption:**
 
 ```javascript
-import { spawnFlash } from './score-popup.js';
+import { spawnVictoryFlash } from './score-popup.js';
 
 function onFoodEaten(food, gameState) {
   // Award base food score
@@ -204,9 +219,9 @@ function onFoodEaten(food, gameState) {
     const x = window.innerWidth / 2;
     const y = window.innerHeight / 2;
 
-    // Spawn "RC SURVIVED" flash (20px below +8 popup)
+    // Spawn random victory message flash (20px below +8 popup)
     setTimeout(() => {
-      spawnFlash('RC SURVIVED', x, y + 20);
+      spawnVictoryFlash(x, y + 20);
     }, 200); // 200ms stagger after +8 popup
 
     // Track survival
@@ -222,24 +237,24 @@ function onFoodEaten(food, gameState) {
 }
 ```
 
-**5. style.css — Add .rc-survived-flash class:**
+**5. style.css — Add .victory-flash class:**
 
 ```css
-/* RC SURVIVED flash */
-.rc-survived-flash {
+/* Victory message flash (RC survival celebration) */
+.victory-flash {
   position: fixed;
   font-family: 'Jersey20', sans-serif;
   font-size: 48px;
   color: #FFA500;  /* Orange - matches RC food color */
   font-weight: 900;
-  text-shadow: 0 0 12px rgba(255, 165, 0, 0.9),
+  text-shadow: 0 0 12px rgba(255, 165, 0, 0.8),
                2px 2px 4px rgba(0, 0, 0, 1);
   pointer-events: none;
   z-index: 1000;
-  animation: rcFlashFadeUp 2500ms ease-out forwards;
+  animation: victoryFlashFadeUp 3500ms ease-out forwards;
 }
 
-@keyframes rcFlashFadeUp {
+@keyframes victoryFlashFadeUp {
   0% {
     opacity: 0;
     transform: translateY(0);
@@ -260,37 +275,42 @@ function onFoodEaten(food, gameState) {
 
 **Manual Testing Checklist:**
 
-1. **RC Survival Flash Appears:**
+1. **Victory Flash Appears:**
    - Eat Reverse Controls food
    - Navigate with reversed controls (up→down, left→right)
    - Eat next food successfully
-   - Verify "RC SURVIVED" flash appears
+   - Verify random victory message flash appears (one of 7 messages)
    - Verify flash positioned 20px below +8 popup
-   - Verify flash displays for ~2500ms then disappears
+   - Verify flash displays for ~3500ms then disappears
 
-2. **Flash Timing (200ms Stagger):**
+2. **Message Variety:**
+   - Survive Reverse Controls multiple times (5-10 runs)
+   - Verify different messages appear each time
+   - Confirm all 7 messages can appear: UNSTOPPABLE!, BRILLIANT!, LEGENDARY!, AMAZING!, YOU RULE!, YOU ROCK!, AWESOME!
+
+3. **Flash Timing (200ms Stagger):**
    - Eat Reverse Controls food
    - Eat next food
    - Verify +8 popup appears first
-   - Verify "RC SURVIVED" flash appears 200ms later (stagger)
+   - Verify victory message flash appears 200ms later (stagger)
 
-3. **cognitiveStats.rcSurvived Increments:**
+4. **cognitiveStats.rcSurvived Increments:**
    - Survive Reverse Controls 3 times
    - Check cognitiveStats.rcSurvived
    - Verify value = 3
 
-4. **No Flash on Death:**
+5. **No Flash on Death:**
    - Eat Reverse Controls food
    - Deliberately die before eating next food (hit wall)
-   - Verify NO flash appears
+   - Verify NO victory flash appears
    - Verify cognitiveStats.rcSurvived does NOT increment
 
-5. **reverseControlsActive Resets:**
+6. **reverseControlsActive Resets:**
    - Eat Reverse Controls food (reverseControlsActive = true)
    - Eat next food (survived)
    - Verify reverseControlsActive = false (deactivated)
 
-6. **Flash Does Not Obstruct Gameplay:**
+7. **Flash Does Not Obstruct Gameplay:**
    - Spawn flash during active gameplay
    - Verify flash is bold (48px orange) but pointer-events: none
    - Verify flash does not block snake or food input
@@ -304,10 +324,18 @@ function onFoodEaten(food, gameState) {
 
 ### 📚 CRITICAL DATA FORMATS
 
+**Victory message pool:**
+```javascript
+const VICTORY_MESSAGES = [
+  "UNSTOPPABLE!", "BRILLIANT!", "LEGENDARY!", "AMAZING!",
+  "YOU RULE!", "YOU ROCK!", "AWESOME!"
+];
+```
+
 **Flash positioning:**
 ```javascript
-spawnFlash('RC SURVIVED', x, y + 20);  // CORRECT (20px below popup)
-spawnFlash('RC SURVIVED', x, y - 20);  // WRONG (above popup, obstructs score)
+spawnVictoryFlash(x, y + 20);  // CORRECT (20px below popup)
+spawnVictoryFlash(x, y - 20);  // WRONG (above popup, obstructs score)
 ```
 
 **RC survival check:**
@@ -318,8 +346,8 @@ if (effects.reverseControls) { /* survived */ }        // WRONG (different field
 
 **Timing:**
 ```javascript
-setTimeout(() => spawnFlash(), 200);  // CORRECT (200ms stagger)
-setTimeout(() => spawnFlash(), 0);    // WRONG (no stagger)
+setTimeout(() => spawnVictoryFlash(), 200);  // CORRECT (200ms stagger)
+setTimeout(() => spawnVictoryFlash(), 0);    // WRONG (no stagger)
 ```
 
 ---
@@ -328,22 +356,23 @@ setTimeout(() => spawnFlash(), 0);    // WRONG (no stagger)
 
 **Read before implementing:**
 - `_bmad-output/planning-artifacts/game-ux-principles.md` — Metacognitive feedback (Flavell, 1979)
-- `_bmad-output/planning-artifacts/prd.md` — FR70-FR72 (RC SURVIVED flash)
+- `_bmad-output/planning-artifacts/prd.md` — FR70-FR72 (Victory flash on RC survival)
 
 **Key Design Principles:**
 - **Metacognitive feedback:** Make players aware of their cognitive accomplishments
 - **Immediate recognition:** Flash appears right when survival confirmed
-- **Non-intrusive:** 2500ms duration, bold but pointer-events: none, auto-removes
+- **Message variety:** 7 rotating messages keep feedback fresh across multiple plays
+- **Non-intrusive:** 3500ms duration, bold but pointer-events: none, auto-removes
 - **Achievement framing:** Transforms hard moment into recognized accomplishment
 
 ---
 
 ### 📋 FRs COVERED
 
-FR70-FR72 (RC SURVIVED flash on successful navigation)
+FR70-FR72 (Victory message flash on successful RC navigation)
 
 **Detailed FR Mapping:**
-- FR70: Flash appears when player survives Reverse Controls → onFoodEaten() check
+- FR70: Flash appears when player survives Reverse Controls → onFoodEaten() check with random message
 - FR71: Flash positioned below +8 popup with 200ms stagger → setTimeout + y + 20
 - FR72: Flash auto-removes after 2500ms → animationend cleanup
 
@@ -356,24 +385,27 @@ FR70-FR72 (RC SURVIVED flash on successful navigation)
 - [x] effects.reverseControlsActive flag added to state.js
 - [x] reverseControlsActive set to true when Reverse Controls activates
 - [x] reverseControlsActive set to false when effect deactivated
-- [x] spawnFlash(text, x, y) implemented in score-popup.js
-- [x] Flash DOM element created with text content
-- [x] .rc-survived-flash CSS class applied
+- [x] spawnVictoryFlash(x, y) implemented in score-popup.js with message pool
+- [x] VICTORY_MESSAGES array contains 7 messages: UNSTOPPABLE!, BRILLIANT!, LEGENDARY!, AMAZING!, YOU RULE!, YOU ROCK!, AWESOME!
+- [x] Random message selection on each flash
+- [x] Flash DOM element created with random message text
+- [x] .victory-flash CSS class applied
 - [x] Flash positioned at x, y + 20 (20px below popup)
-- [x] Flash auto-removes after 2500ms
+- [x] Flash auto-removes after 3500ms
 - [x] onFoodEaten() checks if reverseControlsActive = true
-- [x] If true: spawnFlash("RC SURVIVED", x, y + 20)
+- [x] If true: spawnVictoryFlash(x, y + 20)
 - [x] If true: cognitiveStats.rcSurvived += 1
 - [x] Flash appears 200ms after +8 popup (stagger)
 - [x] Flash font: Jersey20, 48px, orange (#FFA500), 900 weight
-- [x] Flash animation: fade-up and fade-out (2500ms)
+- [x] Flash animation: fade-up and fade-out (3500ms)
 - [x] No flash appears on death before next food
 - [x] cognitiveStats.rcSurvived does NOT increment on death
-- [x] Manual testing checklist completed
+- [x] Manual testing: verify message variety across multiple survivals
 - [x] Edge cases tested (double RC, death during flash, fast eating)
 
 **Common Mistakes to Avoid:**
 - ❌ Flash appears even when player dies (should only appear on survival)
+- ❌ Same message appears every time (should be random)
 - ❌ Incrementing rcSurvived on RC activation (should increment on survival)
 - ❌ Flash positioned above popup (obstructs +8 score)
 - ❌ No stagger delay (flash appears same time as +8 popup)
