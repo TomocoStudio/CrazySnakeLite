@@ -240,7 +240,7 @@ export async function getAllTimeHighs() {
   // First session edge case: return all zeros
   if (sessions.length === 0) {
     return {
-      reactionTime: 0,
+      decisionSpeed: 0,
       spatialAwareness: 0,
       cognitiveFlexibility: 0,
       dividedAttention: 0,
@@ -251,7 +251,7 @@ export async function getAllTimeHighs() {
 
   // Track max value for each metric
   const allTimeHighs = {
-    reactionTime: 0,
+    decisionSpeed: 0,
     spatialAwareness: 0,
     cognitiveFlexibility: 0,
     dividedAttention: 0,

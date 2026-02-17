@@ -511,7 +511,7 @@ export function hideCognitiveStats() {
  * Metric display names for highlight text formatting
  */
 const METRIC_DISPLAY_NAMES = {
-  reactionTime: 'Reaction Time',
+  decisionSpeed: 'Decision Speed',
   spatialAwareness: 'Spatial Awareness',
   cognitiveFlexibility: 'Flexibility',
   dividedAttention: 'Attention',

@@ -210,7 +210,7 @@ export const CONFIG = {
     // Domain-specific comedy quotes for callout cards
     DOMAIN_QUOTES: {
       topSkill: {
-        reactionTime: "Your reflexes have their own zip code — they arrive that fast.",
+        decisionSpeed: "Your decisions arrive before your brain finishes thinking. That's talent.",
         spatialAwareness: "Your snake navigates like it has GPS. No, wait — better than GPS.",
         cognitiveFlexibility: "Reverse Controls? Please. Your brain treats that like a warm-up.",
         dividedAttention: "Phone calls during gameplay? You multitask like you've got two brains.",
@@ -218,7 +218,7 @@ export const CONFIG = {
         workingMemory: "Combo mode? Your working memory eats those for breakfast."
       },
       levelUp: {
-        reactionTime: "Reaction Time is your next frontier — speed runs, here you come.",
+        decisionSpeed: "Decision Speed is your next frontier — commit faster, score higher.",
         spatialAwareness: "Spatial Awareness wants some love. Let that snake grow long and proud.",
         cognitiveFlexibility: "Reverse Controls is your gym. Get in there and flip some neurons.",
         dividedAttention: "Phone calls are your next level. Pick up more — you can handle it.",
@@ -310,9 +310,9 @@ export const CONFIG = {
 
       // Domain-specific quotes (shown when strongest domain matches)
       domainSpecific: {
-        reactionTime: [
+        decisionSpeed: [
           {
-            text: "Your reaction time is clocking in faster than my compiler.",
+            text: "Decision speed off the charts. Your brain skips 'thinking' and goes straight to 'doing'.",
             caller: "Kernel Sanders",
             portrait: "assets/callers/kernel-sanders.png"
           }

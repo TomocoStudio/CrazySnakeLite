@@ -225,6 +225,7 @@ function handleTouchEnd(event, gameState) {
  * Set snake direction with validation
  * Prevents 180° reversal
  * UPDATED in Story 2.5: Handle reverse controls
+ * UPDATED for Decision Speed: Track first input change after food spawn
  */
 function setDirection(gameState, intendedDirection) {
   const currentDirection = gameState.snake.direction;
@@ -233,6 +234,14 @@ function setDirection(gameState, intendedDirection) {
   // This is critical: validate BEFORE inverting, not after
   if (OPPOSITES[currentDirection] === intendedDirection) {
     return;  // Can't turn into self
+  }
+
+  // Decision Speed metric: Track first directional change after food spawns
+  // Only record on actual direction CHANGE (not same-direction repeat)
+  // Timestamp recorded BEFORE invertDirection() to measure decision latency
+  if (gameState.food && !gameState.food.firstInputRecorded && intendedDirection !== currentDirection) {
+    gameState.food.firstInputAfterSpawn = Date.now();
+    gameState.food.firstInputRecorded = true;
   }
 
   // Apply reverseControls inversion if active

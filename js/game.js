@@ -13,7 +13,7 @@ import { spawnPopup, spawnPhoneBonusPopup, spawnComboPopup, spawnParticles, trig
 import { getComboProbability, getState as getProgressionState } from './progression.js';
 import { activateCombo, isComboActive, exitCombo } from './combo.js';
 import {
-  calculateReactionTime,
+  calculateDecisionSpeed,
   calculateSpatialAwareness,
   calculateCognitiveFlexibility,
   calculateDividedAttention,
@@ -223,9 +223,10 @@ function update(gameState) {
     // Story 20.2: Update background tier if score crossed threshold (event-driven)
     updateCanvasBackground(gameState);
 
-    // Story 13.2: Track reaction time (food spawn to consumption)
-    if (food.spawnedAt) {
-      const responseTime = Date.now() - food.spawnedAt;
+    // Decision Speed metric: Track time from food spawn to first input change
+    // Only records if player changed direction (respects autonomy - not changing can be correct)
+    if (food.spawnedAt && food.firstInputAfterSpawn) {
+      const decisionTime = food.firstInputAfterSpawn - food.spawnedAt;
       const duringRC = gameState.effects.reverseControlsActive || false;
       const duringPhone = gameState.phoneCall.active || false;
 
@@ -234,7 +235,7 @@ function update(gameState) {
         timestamp: Date.now(),
         foodType: effectType,
         scoreGained: scoreIncrease,
-        responseTime: responseTime,
+        decisionTime: decisionTime,  // Renamed from responseTime
         duringRC: duringRC,
         duringPhone: duringPhone,
         duringCombo: gameState.combo?.active || false  // Story 13.7: Track combo mode
@@ -607,7 +608,7 @@ async function updateDomainScores() {
 
     // Calculate average normalized metrics across sessions (0-1 scale)
     const avgMetrics = {
-      reactionTime: 0,
+      decisionSpeed: 0,
       spatialAwareness: 0,
       cognitiveFlexibility: 0,
       dividedAttention: 0,
@@ -618,7 +619,7 @@ async function updateDomainScores() {
     // Sum up all metrics
     sessions.forEach(session => {
       if (session.metrics) {
-        avgMetrics.reactionTime += session.metrics.reactionTime || 0;
+        avgMetrics.decisionSpeed += session.metrics.decisionSpeed || 0;
         avgMetrics.spatialAwareness += session.metrics.spatialAwareness || 0;
         avgMetrics.cognitiveFlexibility += session.metrics.cognitiveFlexibility || 0;
         avgMetrics.dividedAttention += session.metrics.dividedAttention || 0;
@@ -635,7 +636,7 @@ async function updateDomainScores() {
 
     // Convert to 0-5 block scale with 0.1 precision (10 segments per block)
     const domainScores = {
-      reactionTime: Math.round(avgMetrics.reactionTime * 50) / 10,
+      decisionSpeed: Math.round(avgMetrics.decisionSpeed * 50) / 10,
       spatialAwareness: Math.round(avgMetrics.spatialAwareness * 50) / 10,
       cognitiveFlexibility: Math.round(avgMetrics.cognitiveFlexibility * 50) / 10,
       dividedAttention: Math.round(avgMetrics.dividedAttention * 50) / 10,
@@ -662,7 +663,7 @@ async function saveSessionMetrics(gameState) {
   try {
     // Calculate all 6 cognitive metrics from rawEvents
     const metrics = {
-      reactionTime: calculateReactionTime(gameState.metricsTracking.rawEvents),
+      decisionSpeed: calculateDecisionSpeed(gameState.metricsTracking.rawEvents),
       spatialAwareness: calculateSpatialAwareness(
         gameState.snake.segments.length,
         CONFIG.GRID_WIDTH,

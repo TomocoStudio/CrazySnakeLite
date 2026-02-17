@@ -52,7 +52,7 @@ export function endSession(finalScore, snakeLength, gridWidth, gridHeight, gridU
 
   // Calculate all 6 metrics
   const metrics = {
-    reactionTime: calculateReactionTime(currentRawEvents),
+    decisionSpeed: calculateDecisionSpeed(currentRawEvents),
     spatialAwareness: calculateSpatialAwareness(snakeLength, gridWidth, gridHeight, gridUnitSize),
     cognitiveFlexibility: calculateCognitiveFlexibility(currentRawEvents),
     dividedAttention: calculateDividedAttention(currentRawEvents),
@@ -77,44 +77,48 @@ export function endSession(finalScore, snakeLength, gridWidth, gridHeight, gridU
 }
 
 // ========================================
-// REACTION TIME METRIC (Story 13.2)
+// DECISION SPEED METRIC
 // ========================================
 
 /**
- * Calculate reaction time metric from rawEvents
+ * Calculate decision speed metric from rawEvents
+ * Measures: Time from food spawn to first directional input change
+ * Based on cognitive science (Hodent framework) - decision-making latency under perceptual load
  * @param {Array} rawEvents - Array of gameplay events
- * @returns {number} Normalized reaction time score (0-1, higher = better)
+ * @returns {number} Normalized decision speed score (0-1, higher = better)
  */
-export function calculateReactionTime(rawEvents) {
-  // Extract food_eaten events with response times
-  const responseTimes = rawEvents
+export function calculateDecisionSpeed(rawEvents) {
+  // Extract food_eaten events with decision times
+  const decisionTimes = rawEvents
     .filter(event =>
       event.type === 'food_eaten' &&
-      event.responseTime !== undefined &&
-      event.responseTime > 0 &&
+      event.decisionTime !== undefined &&
+      event.decisionTime > 0 &&
       !event.duringRC &&        // Exclude Reverse Controls periods
       !event.duringPhone        // Exclude phone call periods
     )
-    .map(event => event.responseTime);
+    .map(event => event.decisionTime);
 
-  if (responseTimes.length === 0) {
+  if (decisionTimes.length === 0) {
     return 0.5; // Neutral score if no valid data
   }
 
   // Remove outliers (> 2 standard deviations above mean)
-  const filteredTimes = removeOutliers(responseTimes);
+  const filteredTimes = removeOutliers(decisionTimes);
 
   if (filteredTimes.length === 0) {
     return 0.5; // Neutral score if all data was outliers
   }
 
-  // Calculate average response time
-  const avgResponseTime = average(filteredTimes);
+  // Calculate average decision time
+  const avgDecisionTime = average(filteredTimes);
 
   // Normalize to 0-1 scale (lower time = higher score)
-  // Typical range: 200-800ms
-  // 200ms = 1.0 (excellent), 500ms = 0.5 (average), 800ms+ = 0.0 (slow)
-  const normalized = normalize(avgResponseTime, 200, 800, true); // true = invert (lower is better)
+  // Based on perceptual/cognitive limits (not navigation complexity)
+  // 200ms = 1.0 (excellent - near perceptual minimum, instant decision)
+  // 800ms = 0.5 (average - thoughtful decision under normal conditions)
+  // 2000ms = 0.0 (slow - hesitation, indecision, or distraction)
+  const normalized = normalize(avgDecisionTime, 200, 2000, true); // true = invert (lower is better)
 
   return normalized;
 }
@@ -413,7 +417,7 @@ const ROLLING_WEIGHTS = [0.2, 0.18, 0.16, 0.14, 0.12, 0.10, 0.06, 0.03, 0.01, 0.
  * @returns {Object} Rolling averages for all 6 metrics
  */
 export function calculateRollingAverages(currentSessionMetrics, previousSessions = []) {
-  const metricKeys = ['reactionTime', 'spatialAwareness', 'cognitiveFlexibility', 'dividedAttention', 'impulseControl', 'workingMemory'];
+  const metricKeys = ['decisionSpeed', 'spatialAwareness', 'cognitiveFlexibility', 'dividedAttention', 'impulseControl', 'workingMemory'];
   const rollingAverages = {};
 
   metricKeys.forEach(key => {
@@ -456,7 +460,7 @@ export function calculateRollingAverages(currentSessionMetrics, previousSessions
  */
 export function calculateBaselineMetrics(sessions) {
   const domains = [
-    'reactionTime',
+    'decisionSpeed',
     'spatialAwareness',
     'cognitiveFlexibility',
     'dividedAttention',

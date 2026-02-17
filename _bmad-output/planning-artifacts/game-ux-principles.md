@@ -32,6 +32,7 @@ The "twists" that CrazySnakeLite layers on top of classic Snake are not random f
 
 | Cognitive Faculty | Why AI Threatens It | CrazySnakeLite Mechanic |
 |---|---|---|
+| **Decision speed** | AI provides instant answers; humans lose practice making quick decisions under perceptual load | Food spawns → commit to direction change — trains rapid decision-making |
 | **Cognitive flexibility** | AI provides one answer; humans stop considering alternatives | Reverse Controls — must suppress learned motor patterns and remap |
 | **Sustained attention** | AI handles monitoring; human attention spans shrink | Continuous snake navigation — look away and you die |
 | **Working memory** | AI remembers everything; humans offload to tools | Managing food + effect + combo + phone = 4-item WM training |

@@ -1,10 +1,9 @@
-// CrazySnakeLite - Spatial Awareness Bug Fix Migration
-// Recalculates spatialAwareness metric for all stored sessions
-// Run once to fix the 131 sessions with incorrect spatial scores
+// CrazySnakeLite - Decision Speed Metric Migration
+// Resets decisionSpeed metric for all stored sessions (cannot retroactively calculate)
+// Existing sessions have responseTime (navigation time) not decisionTime (first input latency)
+// Per Sally's spec: Set to null, shows "Calibrating..." until 5 new games played
 
-import { calculateSpatialAwareness } from './metrics.js';
 import { getSessions, getProfile, updateProfile } from './storage.js';
-import { CONFIG } from './config.js';
 
 /**
  * Update a session in IndexedDB (helper function since storage.js doesn't export this)
@@ -81,8 +80,11 @@ function calculateDomainScores(sessions) {
 /**
  * Main migration function
  */
-async function migrateSpatialAwareness() {
-  console.log('🔧 Starting Spatial Awareness Migration...\n');
+async function migrateDecisionSpeed() {
+  console.log('🔧 Starting Decision Speed Migration...\n');
+  console.log('📋 Context: Replacing broken "Reaction Time" metric');
+  console.log('   Old metric measured navigation time (penalized mastery)');
+  console.log('   New metric measures decision latency (snake-length agnostic)\n');
 
   try {
     // Step 1: Load all sessions
@@ -95,8 +97,9 @@ async function migrateSpatialAwareness() {
       return;
     }
 
-    // Step 2: Recalculate spatialAwareness for each session
-    console.log('🔄 Recalculating Spatial Awareness for all sessions...');
+    // Step 2: Reset decisionSpeed metric for each session
+    console.log('🔄 Resetting Decision Speed for all sessions...');
+    console.log('   (Cannot retroactively calculate - no firstInputAfterSpawn data)\n');
     let updatedCount = 0;
     let errorCount = 0;
 
@@ -106,36 +109,23 @@ async function migrateSpatialAwareness() {
       try {
         console.log(`  Processing session ${i + 1}/${allSessions.length}...`);
 
-        // Extract parameters needed for spatial calculation
-        // snakeLength = score + STARTING_LENGTH (since score = foods eaten)
-        const snakeLength = session.score + CONFIG.STARTING_LENGTH;
+        // Reset decision speed to null (no data available)
+        session.metrics.decisionSpeed = null;
 
-        console.log(`    Parameters: snakeLength=${snakeLength}, gridW=${CONFIG.GRID_WIDTH}, gridH=${CONFIG.GRID_HEIGHT}, unitSize=${CONFIG.UNIT_SIZE}`);
-
-        // Recalculate spatial awareness with FIXED formula
-        const newSpatialScore = calculateSpatialAwareness(
-          snakeLength,
-          CONFIG.GRID_WIDTH,
-          CONFIG.GRID_HEIGHT,
-          CONFIG.UNIT_SIZE
-        );
-
-        console.log(`    calculateSpatialAwareness returned: ${newSpatialScore}`);
-
-        const oldSpatialScore = session.metrics.spatialAwareness;
-        console.log(`    Old: ${oldSpatialScore?.toFixed(4) || 'null'} → New: ${newSpatialScore.toFixed(4)}`);
-
-        // Update the session's spatial awareness metric
-        session.metrics.spatialAwareness = newSpatialScore;
+        // Optional: Remove old reactionTime field (cleanup)
+        if (session.metrics.reactionTime !== undefined) {
+          console.log(`    Removing old reactionTime field: ${session.metrics.reactionTime?.toFixed(4) || 'null'}`);
+          delete session.metrics.reactionTime;
+        }
 
         // Save updated session back to storage
-        console.log(`    Saving to IndexedDB...`);
+        console.log(`    Setting decisionSpeed = null, saving to IndexedDB...`);
         await updateSessionInDB(session);
         console.log(`    ✓ Saved`);
 
         updatedCount++;
       } catch (error) {
-        console.error(`  ❌ Error updating session ${i + 1}:`, error.message, error.stack);
+        console.error(`  ❌ Error updating session ${i + 1}:`, error.message);
         errorCount++;
       }
     }
@@ -160,7 +150,7 @@ async function migrateSpatialAwareness() {
     });
 
     // Step 4: Update profile with new domain scores
-    console.log('\n💾 Updating profile with corrected domain scores...');
+    console.log('\n💾 Updating profile with new domain scores...');
     const profile = await getProfile();
     await updateProfile({
       ...profile,
@@ -174,11 +164,17 @@ async function migrateSpatialAwareness() {
     console.log('═══════════════════════════════════════');
     console.log('🎉 Migration Complete!');
     console.log('═══════════════════════════════════════');
-    console.log(`✅ ${updatedCount} sessions recalculated`);
+    console.log(`✅ ${updatedCount} sessions reset (decisionSpeed = null)`);
     console.log(`✅ Domain scores updated`);
     console.log(`✅ Profile updated`);
-    console.log('\n👉 Refresh the game and check your Skill Map!');
-    console.log('   The Spatial domain should now show your real scores.\n');
+    console.log('\n📈 Next Steps:');
+    console.log('   1. Play 5 new games to calibrate Decision Speed');
+    console.log('   2. Skill Map will show "Decision: Calibrating..." during calibration');
+    console.log('   3. After 5 games, Decision Speed will display with real data\n');
+    console.log('🎯 Expected Improvement:');
+    console.log('   High-score games will no longer show 0.0 Decision Speed');
+    console.log('   Metric now measures cognitive skill (decision latency)');
+    console.log('   Better play → better scores (mastery properly rewarded)\n');
 
   } catch (error) {
     console.error('❌ Migration failed:', error);
@@ -187,4 +183,4 @@ async function migrateSpatialAwareness() {
 }
 
 // Export for execution from HTML page or console
-export { migrateSpatialAwareness };
+export { migrateDecisionSpeed };

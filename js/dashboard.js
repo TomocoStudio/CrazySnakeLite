@@ -61,7 +61,7 @@ function renderCalibrationPlaceholder(profile) {
   barsContainer.innerHTML = '';
 
   const domains = [
-    'Reaction', 'Spatial', 'Flexibility',
+    'Decision', 'Spatial', 'Flexibility',
     'Attention', 'Impulse', 'Memory'
   ];
 
@@ -119,7 +119,7 @@ function renderFullSkillMap(profile) {
   // Story 16.9: Batch render all 6 rows using DocumentFragment (single reflow)
   const barFragment = document.createDocumentFragment();
   const domains = [
-    { key: 'reactionTime', label: 'Reaction' },
+    { key: 'decisionSpeed', label: 'Decision' },
     { key: 'spatialAwareness', label: 'Spatial' },
     { key: 'cognitiveFlexibility', label: 'Flexibility' },
     { key: 'dividedAttention', label: 'Attention' },
@@ -498,12 +498,12 @@ function calculateImprovementIndicators(currentScores, previousScores) {
 /**
  * Get full domain name from key
  * Story 16.3: Used for callout card titles
- * @param {string} key - Domain key (e.g., 'reactionTime')
- * @returns {string} - Full name (e.g., 'Reaction Time')
+ * @param {string} key - Domain key (e.g., 'decisionSpeed')
+ * @returns {string} - Full name (e.g., 'Decision Speed')
  */
 function getDomainFullName(key) {
   const names = {
-    reactionTime: 'Reaction Time',
+    decisionSpeed: 'Decision Speed',
     spatialAwareness: 'Spatial Awareness',
     cognitiveFlexibility: 'Flexibility',
     dividedAttention: 'Attention',

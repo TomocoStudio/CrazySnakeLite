@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decision Speed Migration</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      background: #1a1a1a;
+      color: #00ff00;
+      padding: 40px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #00ff00;
+      border-bottom: 2px solid #00ff00;
+      padding-bottom: 10px;
+    }
+    button {
+      background: #00ff00;
+      color: #1a1a1a;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      font-family: 'Courier New', monospace;
+      cursor: pointer;
+      margin: 20px 0;
+    }
+    button:hover {
+      background: #00cc00;
+    }
+    button:disabled {
+      background: #666;
+      cursor: not-allowed;
+    }
+    #output {
+      background: #000;
+      padding: 20px;
+      border: 1px solid #00ff00;
+      margin-top: 20px;
+      white-space: pre-wrap;
+      font-size: 14px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    .info {
+      background: #2a2a2a;
+      padding: 15px;
+      border-left: 4px solid #00ff00;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔧 Decision Speed Metric Migration</h1>
+
+  <div class="info">
+    <strong>What this does:</strong><br>
+    • Resets decisionSpeed metric to null for all existing sessions<br>
+    • Removes old reactionTime field (cleanup)<br>
+    • Updates domain scores<br>
+    • After migration, play 5 new games to calibrate
+  </div>
+
+  <button id="migrate-btn">Run Migration</button>
+  <button id="back-btn" onclick="window.location.href='index.html'">Back to Game</button>
+
+  <div id="output"></div>
+
+  <script type="module">
+    import { migrateDecisionSpeed } from './js/migrate-decision-speed.js';
+
+    const btn = document.getElementById('migrate-btn');
+    const output = document.getElementById('output');
+
+    // Intercept console.log for display
+    const originalLog = console.log;
+    const originalError = console.error;
+
+    function displayLog(...args) {
+      const message = args.join(' ');
+      output.textContent += message + '\n';
+      output.scrollTop = output.scrollHeight;
+      originalLog(...args);
+    }
+
+    function displayError(...args) {
+      const message = '❌ ' + args.join(' ');
+      output.textContent += message + '\n';
+      output.scrollTop = output.scrollHeight;
+      originalError(...args);
+    }
+
+    console.log = displayLog;
+    console.error = displayError;
+
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      btn.textContent = 'Running...';
+      output.textContent = '';
+
+      try {
+        await migrateDecisionSpeed();
+        btn.textContent = 'Migration Complete ✅';
+        output.textContent += '\n🎮 You can now return to the game and play 5 sessions to calibrate.\n';
+      } catch (error) {
+        btn.textContent = 'Migration Failed ❌';
+        btn.disabled = false;
+        displayError('Migration error:', error);
+      }
+    });
+  </script>
+</body>
+</html>
