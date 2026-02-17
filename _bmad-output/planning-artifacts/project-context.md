@@ -809,6 +809,23 @@ gameover → menu (ESC)
 - Border style matches combo mode aesthetic (clean definition)
 - Glow color matches snake state color (black/yellow/purple/red/cyan/orange)
 
+**Score Popup Visual (V4.1 - CRT Phosphor Glow):**
+- **Multi-layer text-shadow pattern:** All food score popups use 3-layer glow
+  - Black outline: `2px 2px 4px rgba(0, 0, 0, 1)` — crisp definition
+  - Inner glow: `0 0 10px rgba(color, 1)` — bright core at full opacity
+  - Outer glow: `0 0 20px rgba(color, 0.8)` — soft halo at 80% opacity
+- **Color matching:** Glow color matches food type color exactly
+  - Growing (+1): Green `rgba(0, 255, 0, ...)`
+  - Speed decrease (+2): Cyan `rgba(0, 206, 209, ...)`
+  - Wall phase (+1): Purple `rgba(128, 0, 128, ...)`
+  - Speed boost (+5): Red `rgba(255, 0, 0, ...)`
+  - Invincibility (+0): Yellow `rgba(255, 255, 0, ...)`
+  - Reverse controls (+8): Orange/gold (multi-layer)
+  - Phone/combo bonuses: Gold/magenta/red (multi-layer)
+- **Size consistency:** All food popups 44-48px font-size for visual balance
+- **Performance:** CSS-only effect (zero canvas rendering cost)
+- **Effect:** Numbers appear to glow *off* the screen with CRT phosphor luminosity
+
 **Food Shapes (all 10x10 pixels at grid unit center):**
 - Growing (green): Filled square
 - Invincibility (yellow): 4-point star

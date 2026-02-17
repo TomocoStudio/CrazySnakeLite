@@ -504,8 +504,8 @@ In the 80s, text wasn't just readable — it was *dramatic*. The GAME OVER scree
 - Title "Crazy Snake": `rgb(157, 178, 221)`, `text-shadow: none`, `letter-spacing: 2px`
 - "GAME OVER": same color, `text-shadow: none`
 - "NEW HIGH SCORE": `#FFD700`, `text-shadow: none`
-- Score popups: have text-shadows and glow effects (good, already 80s-aligned)
-- Overall: flat text with no depth, no drama, no brand treatment
+- **V4.1 Update (Feb 2026):** Score popups now have full multi-layer CRT phosphor glow matching food colors
+- Overall: flat text with no depth, no drama, no brand treatment (except score popups)
 
 ### Design Specification
 
@@ -593,6 +593,37 @@ This is a celebration moment. It should SHINE.
 ```
 
 **Effect:** Very subtle glow on the score display. Just enough to make the numbers feel "lit" rather than printed. This is the lowest-intensity treatment — the score display should be readable, not dramatic.
+
+#### 5E: Score Popup Enhancement (V4.1 Implementation)
+
+**Status:** ✅ Implemented Feb 2026
+
+Score popups are the micro-celebration moments when the player eats food — they're small but emotionally high-impact. They need to match the intensity of the CRT phosphor glow on the food itself.
+
+```css
+/* Multi-layer glow pattern (applied to all food score popups) */
+text-shadow:
+  2px 2px 4px rgba(0, 0, 0, 1),        /* Black outline for definition */
+  0 0 10px rgba(color, 1),              /* Inner glow at full opacity */
+  0 0 20px rgba(color, 0.8);            /* Outer glow at 80% opacity */
+```
+
+**Applied to all food popups:**
+- Growing food (+1): Green glow `rgba(0, 255, 0, ...)`
+- Speed decrease (+2): Cyan glow `rgba(0, 206, 209, ...)`
+- Wall phase (+1): Purple glow `rgba(128, 0, 128, ...)`
+- Speed boost (+5): Red glow `rgba(255, 0, 0, ...)`
+- Invincibility (+0): Yellow glow `rgba(255, 255, 0, ...)`
+- Wall phase bonus (+2): Purple glow `rgba(128, 0, 128, ...)`
+- Reverse controls (+8): Orange/gold glow (already had multi-layer)
+- Phone call bonus: Gold glow (already had multi-layer)
+- Combo bonuses: Magenta/gold/red glow (already had multi-layer)
+
+**Size consistency:** All food popups now use 44-48px font-size for visual balance (speed boost was increased from 28px to 44px).
+
+**Effect:** Every score popup now has the same intense CRT phosphor glow as the snake and food objects. The glow color matches the food type, creating instant visual association between the food eaten and the reward gained. The 3-layer shadow creates depth and luminosity — the numbers appear to glow *off* the screen, not just sit on it.
+
+**Performance:** CSS text-shadow only — zero canvas rendering cost.
 
 #### Five-Question Filter
 
