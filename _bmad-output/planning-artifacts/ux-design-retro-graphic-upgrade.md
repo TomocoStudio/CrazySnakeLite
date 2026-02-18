@@ -1108,3 +1108,41 @@ After V4.1 implementation, Tomoco identified a visibility issue with the black s
 *This spec is designed to be consumed by the Architect for architecture integration, the Dev for implementation, and the PM for epic/story creation. All config values are provided so that implementation agents can copy them directly.*
 
 *Source research: "The Visual Language of 1980s Video Games" (Tomoco, 2026), located at `tomoco-docs/80s Video Game Graphic Design Overview.pdf`.*
+
+---
+
+## Post-Implementation Record — Canvas Border & Grid Line Tuning (2026-02-18)
+
+### Canvas Border Default Color — White `#FFFFFF` (Deliberate Semantic Choice)
+
+**Decision:** Canvas default border stays `#FFFFFF` — NOT Electric Blue `#00B4FF`.
+
+**Rationale:** The reactive border system is a semantic communication layer. Colored border = a specific game effect is active and the player's relationship to the wall has changed (gold = phone ringing, green = picked up, purple = wall phase safe to cross, etc.). **White = neutral wall = death if you touch it.** No behavior promise attached.
+
+Changing the default to Electric Blue would pollute this semantic system — players could misread it as the speed-decrease food behavior (which is also blue). White is the correct neutral signal. It is intentionally the highest-contrast color to reinforce "this wall will kill you."
+
+**CSS:** `border: 8px solid #FFFFFF` on `#game-canvas` (no glow — white wall is matte, not neon).
+
+---
+
+### Grid Line Color — Final Value: `rgba(255, 255, 255, 0.3)`
+
+**Problem:** Original grid line color `#505050` (RGB 80/80/80) was too heavy against the `#1a1a1a` canvas background, creating a visual "cage" effect. This was compounded by the stark white border — the interior grid fought the exterior frame for attention.
+
+**Tuning session results:**
+
+| Value tested | Result |
+|---|---|
+| `rgba(255,255,255,0.05)` | Invisible |
+| `rgba(255,255,255,0.07)` | Still invisible |
+| `rgba(255,255,255,0.15)` | Too faint |
+| `rgba(255,255,255,0.5)` | Too heavy |
+| `rgba(255,255,255,0.9)` | Way too much |
+| `rgba(0,180,255,0.3)` | Too much blue — rejected |
+| **`rgba(255,255,255,0.3)`** | **✅ Approved — subtle spatial scaffold** |
+
+**Final value:** `CONFIG.COLORS.gridLine = 'rgba(255, 255, 255, 0.3)'`
+
+**Design rationale:** Grid lines are a spatial scaffold only — they should recede behind game elements (snake, food, effects), not compete with the white border frame. At `0.3` they are clearly visible for spatial orientation without creating visual noise. The progressive opacity system (`gridOpacity` from `getProgressionState`) further multiplies this value as score increases (effective opacity: ~0.27 at score 0, ~0.09 at score 100+).
+
+**Note on Electric Blue grid:** Also tested `rgba(0,180,255,0.3)` — rejected. Too much blue coloring inside the canvas creates noise when combined with the snake's reactive halo and other neon elements.
