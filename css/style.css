@@ -1702,13 +1702,15 @@ button:disabled {
   /* Styling */
   font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 13px;
+  font-weight: bold;
+  text-transform: uppercase;
   background-color: rgba(26, 26, 26, 0.9);
   color: #fff;
   border: 2px solid #00B4FF;
   border-radius: 6px;
   padding: 9px 13px;
   cursor: pointer;
-  box-shadow: 0 0 0 6px rgb(26, 26, 46);  /* Extra border for visibility */
+  box-shadow: 0 0 6px rgba(0, 180, 255, 0.25);  /* Ambient halo — matches design system */
 
   /* Flexbox for icon + text */
   display: flex;
@@ -1723,15 +1725,18 @@ button:disabled {
   background-color: #00B4FF;
   color: #fff;
   border-color: #00B4FF;
-  transform: translateY(-2px);
+  transform: scale(1.05);
   box-shadow:
-    0 0 0 6px rgb(26, 26, 46),
     0 0 12px rgba(0, 180, 255, 0.9),
-    0 0 24px rgba(0, 180, 255, 0.5);
+    0 0 24px rgba(0, 180, 255, 0.5),
+    0 0 40px rgba(0, 180, 255, 0.2);
 }
 
 .feedback-button:active {
-  transform: translateY(0);
+  transform: scale(0.98);
+  box-shadow:
+    0 0 8px rgba(0, 180, 255, 0.8),
+    0 0 16px rgba(0, 180, 255, 0.4);
 }
 
 .feedback-button:focus-visible {
