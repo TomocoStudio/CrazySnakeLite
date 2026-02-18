@@ -34,7 +34,7 @@
     <!-- Main Menu Screen - Story 4.2 -->
     <div id="menu-screen">
       <h1 class="game-title">Crazy Snake</h1>
-      <button id="new-game-btn" class="menu-button">New Game</button>
+      <button id="new-game-btn" class="menu-button selected">New Game</button>
       <button id="skill-map-menu-btn" class="menu-button">Skill Map</button>
       <div id="high-score-display">
         <p>Top Score: <span id="high-score-value">0</span></p>
@@ -190,10 +190,13 @@
       </div>
     </div>
 
-    <!-- Skill Map Dashboard (V3) - Story 16.1 -->
+    <!-- Skill Map Dashboard (V3) - Story 16.1 / V2 Redesign 2026-02-18 -->
     <div id="skill-map-screen" class="screen hidden">
       <div class="skill-map-container">
-        <h2 class="skill-map-title">🎯 YOUR SKILL MAP</h2>
+        <div class="skill-map-title-block">
+          <span class="skill-map-label">YOUR</span>
+          <h2 class="skill-map-title">SKILL MAP</h2>
+        </div>
         <div id="skill-map-bars-container">
           <!-- Rendered by dashboard.js -->
         </div>
@@ -207,8 +210,8 @@
           <!-- Caller quote — rendered by dashboard.js -->
         </div>
         <div class="skill-map-actions">
-          <button id="play-now-btn" class="menu-button">PLAY NOW</button>
-          <a href="#" id="back-to-menu-link" class="secondary-link">← Back to Menu</a>
+          <button id="play-now-btn" class="game-over-btn selected">PLAY NOW</button>
+          <button id="back-to-menu-btn" class="game-over-btn">BACK TO MENU</button>
         </div>
       </div>
     </div>

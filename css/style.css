@@ -182,9 +182,12 @@ body.no-scanlines::after {
   font-weight: bold;
   background: rgba(0, 0, 0, 0.8);
   padding: 8px 16px;
-  border: 8px solid rgb(157, 178, 221);  /* Match menu frame color */
-  box-shadow: 0 0 0 8px #1A1A2E;
-  border-radius: 12px;  /* Match menu frame rounded corners */
+  border: 8px solid #00B4FF;
+  box-shadow:
+    0 0 0 1px #00B4FF,
+    0 0 14px rgba(0, 180, 255, 0.5),
+    0 0 28px rgba(0, 180, 255, 0.25);
+  border-radius: 12px;
   z-index: 100;
   pointer-events: none;
   display: flex;
@@ -201,9 +204,9 @@ body.no-scanlines::after {
 }
 
 #top-score {
-  color: rgb(157, 178, 221);
+  color: #00B4FF;
   text-align: right;
-  text-shadow: 0 0 6px rgba(157, 178, 221, 0.3);  /* Story 21.2: Subtle blue glow */
+  text-shadow: 0 0 6px rgba(0, 180, 255, 0.3);  /* Story 21.2: Subtle blue glow */
 }
 
 #score-display.hidden {
@@ -219,9 +222,13 @@ body.no-scanlines::after {
   text-align: center;
   background-color: rgba(0, 0, 0, 0.9);
   padding: 40px;
-  border: 8px solid rgb(157, 178, 221);  /* Light purple-blue frame */
-  border-radius: 12px;  /* Small rounded corners */
-  box-shadow: 0 0 0 8px #1A1A2E;  /* Double-border pattern */
+  border: 8px solid #00B4FF;
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 1px #00B4FF,
+    0 0 20px rgba(0, 180, 255, 0.55),
+    0 0 40px rgba(0, 180, 255, 0.28),
+    0 0 70px rgba(0, 180, 255, 0.12);
   z-index: 200;
   min-width: 300px;
 }
@@ -236,8 +243,8 @@ body.no-scanlines::after {
   font-weight: bold;
   color: #FFFFFF;  /* Story 21.2: White base for maximum brightness */
   text-shadow:
-    0 0 10px rgba(157, 178, 221, 0.8),   /* Soft blue glow (neon tube) */
-    0 0 20px rgba(157, 178, 221, 0.4),   /* Wider glow halo */
+    0 0 10px rgba(0, 180, 255, 0.8),   /* Soft blue glow (neon tube) */
+    0 0 20px rgba(0, 180, 255, 0.4),   /* Wider glow halo */
     0 2px 0 #5A6A8A,                      /* Hard shadow bottom (bevel depth) */
     0 3px 0 #3A4A6A;                      /* Deeper shadow layer (3D effect) */
   margin: 0 0 30px 0;
@@ -252,25 +259,44 @@ body.no-scanlines::after {
   padding: 15px 40px;
   margin: 10px;
   cursor: pointer;
-  border: 2px solid rgb(157, 178, 221);  /* Inactive: light purple-blue border */
-  border-radius: 8px;  /* Small rounded corners */
-  background-color: #000000;  /* Inactive: black background */
-  color: #FFFFFF;  /* Always white text */
+  border: 2px solid #00B4FF;
+  border-radius: 8px;
+  background-color: #000000;
+  color: #FFFFFF;
+  text-transform: uppercase;
   transition: all 0.2s;
   min-width: 200px;
+  box-shadow: 0 0 6px rgba(0, 180, 255, 0.25);
 }
 
 .menu-button:hover {
-  background-color: rgb(157, 178, 221);  /* Active: light purple-blue background */
-  border-color: rgb(157, 178, 221);  /* Keep same border color */
-  color: #FFFFFF;  /* Always white text */
+  background-color: #00B4FF;
+  border-color: #00B4FF;
+  color: #FFFFFF;
   transform: scale(1.05);
+  box-shadow:
+    0 0 12px rgba(0, 180, 255, 0.9),
+    0 0 24px rgba(0, 180, 255, 0.5),
+    0 0 40px rgba(0, 180, 255, 0.2);
 }
 
 .menu-button:active {
-  background-color: rgb(157, 178, 221);  /* Active: light purple-blue background */
-  border-color: rgb(157, 178, 221);  /* Keep same border color */
+  background-color: #00B4FF;
+  border-color: #00B4FF;
   transform: scale(0.98);
+  box-shadow:
+    0 0 8px rgba(0, 180, 255, 0.8),
+    0 0 16px rgba(0, 180, 255, 0.4);
+}
+
+.menu-button.selected {
+  background-color: #00B4FF;
+  border-color: #00B4FF;
+  color: #FFFFFF;
+  box-shadow:
+    0 0 12px rgba(0, 180, 255, 0.9),
+    0 0 24px rgba(0, 180, 255, 0.5),
+    0 0 40px rgba(0, 180, 255, 0.2);
 }
 
 #high-score-display {
@@ -290,7 +316,7 @@ body.no-scanlines::after {
 }
 
 #high-score-value {
-  color: rgb(157, 178, 221);
+  color: #00B4FF;
   font-size: 24px;
   font-weight: bold;
 }
@@ -306,9 +332,13 @@ body.no-scanlines::after {
   max-height: 95vh;
   overflow-y: auto;
   background-color: rgba(0, 0, 0, 0.92);
-  border: 8px solid rgb(157, 178, 221);
+  border: 8px solid #00B4FF;
   border-radius: 12px;
-  box-shadow: 0 0 0 8px #1A1A2E;
+  box-shadow:
+    0 0 0 1px #00B4FF,
+    0 0 20px rgba(0, 180, 255, 0.55),
+    0 0 40px rgba(0, 180, 255, 0.28),
+    0 0 70px rgba(0, 180, 255, 0.12);
   padding: 20px 20px 16px;
   text-align: center;
   font-family: 'Jersey20', 'Courier New', monospace;
@@ -396,32 +426,45 @@ body.no-scanlines::after {
   font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 16px;
   font-weight: bold;
-  background-color: #000000;  /* Inactive: black background */
-  color: #FFFFFF;  /* Always white text */
-  border: 2px solid rgb(157, 178, 221);  /* Purple border */
-  border-radius: 8px;  /* Story 14.7: 8px rounded corners */
+  background-color: #000000;
+  color: #FFFFFF;
+  border: 2px solid #00B4FF;
+  border-radius: 8px;
   cursor: pointer;
+  text-transform: uppercase;
   transition: all 0.2s;
+  box-shadow: 0 0 6px rgba(0, 180, 255, 0.25);
 }
 
 .game-over-btn:hover:not(:disabled) {
-  background-color: rgb(157, 178, 221);  /* Active: light purple-blue background */
-  border-color: rgb(157, 178, 221);
+  background-color: #00B4FF;
+  border-color: #00B4FF;
   color: #FFFFFF;
   transform: scale(1.05);
+  box-shadow:
+    0 0 12px rgba(0, 180, 255, 0.9),
+    0 0 24px rgba(0, 180, 255, 0.5),
+    0 0 40px rgba(0, 180, 255, 0.2);
 }
 
 .game-over-btn:active:not(:disabled) {
-  background-color: rgb(157, 178, 221);
-  border-color: rgb(157, 178, 221);
+  background-color: #00B4FF;
+  border-color: #00B4FF;
   transform: scale(0.98);
+  box-shadow:
+    0 0 8px rgba(0, 180, 255, 0.8),
+    0 0 16px rgba(0, 180, 255, 0.4);
 }
 
 .game-over-btn.selected {
-  background-color: rgb(157, 178, 221);  /* Play Again default selected */
-  border-color: rgb(157, 178, 221);
+  background-color: #00B4FF;
+  border-color: #00B4FF;
   color: #FFFFFF;
   transform: scale(1.05);
+  box-shadow:
+    0 0 12px rgba(0, 180, 255, 0.9),
+    0 0 24px rgba(0, 180, 255, 0.5),
+    0 0 40px rgba(0, 180, 255, 0.2);
 }
 
 /* Story 14.7: Disabled state for Skill Map during calibration */
@@ -471,12 +514,12 @@ body.no-scanlines::after {
 .cognitive-stats-header {
   font-family: 'Jersey20', sans-serif;
   font-size: 12px;
-  color: rgb(157, 178, 221);
+  color: #00B4FF;
   text-transform: uppercase;
   letter-spacing: 5px;
   margin-bottom: 10px;
   padding-top: 14px;
-  border-top: 1px solid rgba(157, 178, 221, 0.3);
+  border-top: 1px solid rgba(0, 180, 255, 0.3);
   text-align: center;
   opacity: 0;
   animation: fadeInStats 300ms ease-out forwards;
@@ -533,7 +576,7 @@ body.no-scanlines::after {
   margin-top: 12px;
   padding: 10px 12px;
   background: rgba(255, 255, 255, 0.05);
-  border-left: 3px solid rgba(157, 178, 221, 0.5);
+  border-left: 3px solid rgba(0, 180, 255, 0.5);
   border-radius: 0 4px 4px 0;
   opacity: 0;
   animation: fadeInStats 400ms ease-out forwards;
@@ -560,7 +603,7 @@ body.no-scanlines::after {
   gap: 8px;
   font-family: 'Jersey20', sans-serif;
   font-size: 13px;
-  color: rgb(157, 178, 221);
+  color: #00B4FF;
 }
 
 .caller-portrait {
@@ -669,7 +712,7 @@ button:disabled {
 
 .calibration-gate-content {
   background-color: rgba(0, 0, 0, 0.9);
-  border: 8px solid rgb(157, 178, 221);
+  border: 8px solid #00B4FF;
   border-radius: 12px;
   padding: 40px;
   max-width: 500px;
@@ -681,7 +724,7 @@ button:disabled {
 .calibration-gate-content h2 {
   font-family: 'Jersey20', monospace;
   font-size: 28px;
-  color: rgb(157, 178, 221);
+  color: #00B4FF;
   margin: 0 0 20px 0;
   letter-spacing: 1px;
 }
@@ -707,20 +750,28 @@ button:disabled {
   font-size: 18px;
   background-color: #000000;
   color: #FFFFFF;
-  border: 2px solid rgb(157, 178, 221);
+  border: 2px solid #00B4FF;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 0 6px rgba(0, 180, 255, 0.25);
 }
 
 .gate-close-btn:hover {
-  background-color: rgb(157, 178, 221);
+  background-color: #00B4FF;
   color: #FFFFFF;
   transform: scale(1.05);
+  box-shadow:
+    0 0 12px rgba(0, 180, 255, 0.9),
+    0 0 24px rgba(0, 180, 255, 0.5),
+    0 0 40px rgba(0, 180, 255, 0.2);
 }
 
 .gate-close-btn:active {
   transform: scale(0.98);
+  box-shadow:
+    0 0 8px rgba(0, 180, 255, 0.8),
+    0 0 16px rgba(0, 180, 255, 0.4);
 }
 
 /* Story 14.5 + 15.4: Calibration Complete Celebration */
@@ -785,11 +836,11 @@ button:disabled {
 @keyframes buttonPulse {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(157, 178, 221, 0.7);
+    box-shadow: 0 0 0 0 rgba(0, 180, 255, 0.7);
   }
   50% {
     transform: scale(1.05);
-    box-shadow: 0 0 0 10px rgba(157, 178, 221, 0);
+    box-shadow: 0 0 0 10px rgba(0, 180, 255, 0);
   }
 }
 
@@ -1369,7 +1420,7 @@ button:disabled {
 
 .thank-you-container {
   background-color: rgba(0, 0, 0, 0.6);  /* Very transparent - see through to overlay */
-  border: 8px solid rgb(157, 178, 221);  /* Light purple-blue frame */
+  border: 8px solid #00B4FF;  /* Light purple-blue frame */
   border-radius: 12px;  /* Small rounded corners */
   padding: 40px;
   max-width: 400px;
@@ -1414,23 +1465,31 @@ button:disabled {
   padding: 12px 20px;
   font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 18px;
-  background-color: #000000;  /* Inactive: black background */
-  color: #FFFFFF;  /* Always white text */
-  border: 2px solid rgb(157, 178, 221);  /* Inactive: light purple-blue border */
-  border-radius: 8px;  /* Small rounded corners */
+  background-color: #000000;
+  color: #FFFFFF;
+  border: 2px solid #00B4FF;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 0 6px rgba(0, 180, 255, 0.25);
 }
 
 #back-to-game-btn:hover {
-  background-color: rgb(157, 178, 221);  /* Active: light purple-blue background */
-  border-color: rgb(157, 178, 221);  /* Keep same border color */
-  color: #FFFFFF;  /* Always white text */
+  background-color: #00B4FF;
+  border-color: #00B4FF;
+  color: #FFFFFF;
   transform: scale(1.05);
+  box-shadow:
+    0 0 12px rgba(0, 180, 255, 0.9),
+    0 0 24px rgba(0, 180, 255, 0.5),
+    0 0 40px rgba(0, 180, 255, 0.2);
 }
 
 #back-to-game-btn:active {
-  transform: scale(0.98);  /* Scale down when clicked */
+  transform: scale(0.98);
+  box-shadow:
+    0 0 8px rgba(0, 180, 255, 0.8),
+    0 0 16px rgba(0, 180, 255, 0.4);
 }
 
 /* Mobile Responsiveness */
@@ -1481,9 +1540,14 @@ button:disabled {
 
 /* Feedback Container */
 .feedback-container {
-  background-color: rgba(0, 0, 0, 0.6);  /* Very transparent - see through to overlay */
-  border: 8px solid rgb(157, 178, 221);  /* Light purple-blue frame */
-  border-radius: 12px;  /* Small rounded corners */
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 8px solid #00B4FF;
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 1px #00B4FF,
+    0 0 20px rgba(0, 180, 255, 0.55),
+    0 0 40px rgba(0, 180, 255, 0.28),
+    0 0 70px rgba(0, 180, 255, 0.12);
   padding: 30px;
   max-width: 500px;
   width: 90%;
@@ -1584,7 +1648,7 @@ button:disabled {
 
 .feedback-textarea:focus {
   outline: none;
-  border-color: rgb(157, 178, 221);
+  border-color: #00B4FF;
 }
 
 .char-counter {
@@ -1609,7 +1673,7 @@ button:disabled {
 
 .feedback-email:focus {
   outline: none;
-  border-color: rgb(157, 178, 221);
+  border-color: #00B4FF;
 }
 
 /* Submit Button */
@@ -1618,23 +1682,31 @@ button:disabled {
   padding: 12px 20px;
   font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 24px;
-  background-color: #000000;  /* Inactive: black background */
-  color: #FFFFFF;  /* Always white text */
-  border: 2px solid rgb(157, 178, 221);  /* Inactive: light purple-blue border */
-  border-radius: 8px;  /* Small rounded corners */
+  background-color: #000000;
+  color: #FFFFFF;
+  border: 2px solid #00B4FF;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 0 6px rgba(0, 180, 255, 0.25);
 }
 
 .btn-primary:hover {
-  background-color: rgb(157, 178, 221);  /* Active: light purple-blue background */
-  border-color: rgb(157, 178, 221);  /* Keep same border color */
-  color: #FFFFFF;  /* Always white text */
+  background-color: #00B4FF;
+  border-color: #00B4FF;
+  color: #FFFFFF;
   transform: scale(1.05);
+  box-shadow:
+    0 0 12px rgba(0, 180, 255, 0.9),
+    0 0 24px rgba(0, 180, 255, 0.5),
+    0 0 40px rgba(0, 180, 255, 0.2);
 }
 
 .btn-primary:active {
-  transform: scale(0.98);  /* Scale down when clicked */
+  transform: scale(0.98);
+  box-shadow:
+    0 0 8px rgba(0, 180, 255, 0.8),
+    0 0 16px rgba(0, 180, 255, 0.4);
 }
 
 /* Note: .blurred styles moved to line ~433 to avoid duplication */
@@ -1655,7 +1727,7 @@ button:disabled {
   font-size: 13px;
   background-color: rgba(26, 26, 26, 0.9);
   color: #fff;
-  border: 2px solid rgb(157, 178, 221);
+  border: 2px solid #00B4FF;
   border-radius: 6px;
   padding: 9px 13px;
   cursor: pointer;
@@ -1671,11 +1743,14 @@ button:disabled {
 }
 
 .feedback-button:hover {
-  background-color: rgb(157, 178, 221);
+  background-color: #00B4FF;
   color: #fff;
-  border-color: rgb(157, 178, 221);  /* Keep same border color */
+  border-color: #00B4FF;
   transform: translateY(-2px);
-  box-shadow: 0 0 0 6px rgb(26, 26, 46), 0 4px 8px rgba(157, 178, 221, 0.3);
+  box-shadow:
+    0 0 0 6px rgb(26, 26, 46),
+    0 0 12px rgba(0, 180, 255, 0.9),
+    0 0 24px rgba(0, 180, 255, 0.5);
 }
 
 .feedback-button:active {
@@ -2342,7 +2417,13 @@ button:disabled {
    Design system: Purple theme, Jersey20 font, retro pixel aesthetic
    ======================================== */
 
-/* Skill Map Screen Base */
+/* ========================================================
+   SKILL MAP DASHBOARD V2
+   Stories 16.1–16.8, 17.5, 18.4
+   Redesigned 2026-02-18: Neural Arcade aesthetic
+   ======================================================== */
+
+/* --- SCREEN BASE --- */
 #skill-map-screen {
   position: fixed;
   top: 0;
@@ -2350,207 +2431,273 @@ button:disabled {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.9);
-  z-index: 350;  /* Between phone (400) and tooltips (300) */
+  z-index: 350;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 1;
-  transition: opacity 300ms ease-in-out;  /* Story 16.6: Smooth fade-out */
+  transition: opacity 300ms ease-in-out;
 }
 
-/* Hidden state - instant hide to prevent flash of empty content */
 #skill-map-screen.hidden {
   display: none;
 }
 
-/* Disable screen fade if user prefers reduced motion */
 @media (prefers-reduced-motion: reduce) {
   #skill-map-screen {
     transition: none;
   }
 }
 
-/* Skill Map Container */
+/* --- CONTAINER (Electric Blue #00B4FF — cognitive/neural, distinct from phone gold + combo magenta) --- */
 .skill-map-container {
-  max-width: 600px;
+  max-width: 560px;
   width: 90%;
-  padding: 40px;
-  border: 8px solid rgb(157, 178, 221);  /* Purple theme */
-  box-shadow: 0 0 0 8px #1A1A2E;  /* Dark border layer */
+  max-height: 95vh;
+  overflow-y: auto;
+  padding: 28px 32px 24px;
+  border: 8px solid #00B4FF;
+  box-shadow:
+    0 0 0 1px #00B4FF,
+    0 0 20px rgba(0, 180, 255, 0.55),
+    0 0 40px rgba(0, 180, 255, 0.28),
+    0 0 70px rgba(0, 180, 255, 0.12);
   border-radius: 12px;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.92);
+  box-sizing: border-box;
 }
 
-/* Skill Map Title */
-.skill-map-title {
-  font-family: 'Jersey20', sans-serif;
-  font-size: 28px;
-  color: #FFFFFF;
+/* --- TITLE BLOCK (two-line treatment matching game-over "YOUR SCORE") --- */
+.skill-map-title-block {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 22px;
 }
 
-/* Action buttons container */
-.skill-map-actions {
+.skill-map-label {
+  display: block;
+  font-family: 'Jersey20', sans-serif;
+  font-size: 11px;
+  color: #888888;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.skill-map-title {
+  display: block;
+  font-family: 'Jersey20', sans-serif;
+  font-size: 32px;
+  color: #FFFFFF;
+  text-shadow:
+    0 0 20px rgba(255, 255, 255, 0.9),
+    0 0 40px rgba(255, 255, 255, 0.4),
+    2px 2px 4px rgba(0, 0, 0, 1);
+  margin: 0 0 18px 0;
+}
+
+/* --- DOMAIN COLOR SYSTEM (CSS custom properties per row) --- */
+.domain-decision    { --domain-color: #00FFFF; --domain-glow: rgba(0, 255, 255, 0.35); }
+.domain-spatial     { --domain-color: #CC44FF; --domain-glow: rgba(204, 68, 255, 0.35); }
+.domain-flexibility { --domain-color: #FF8C00; --domain-glow: rgba(255, 140, 0, 0.35); }
+.domain-attention   { --domain-color: #FF4444; --domain-glow: rgba(255, 68, 68, 0.35); }
+.domain-impulse     { --domain-color: #00FF88; --domain-glow: rgba(0, 255, 136, 0.35); }
+.domain-memory      { --domain-color: #FFD700; --domain-glow: rgba(255, 215, 0, 0.35); }
+
+/* --- BARS CONTAINER — shrink-wrap + center the group of rows --- */
+#skill-map-bars-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 15px;
-  margin-top: 30px;
+  align-items: flex-start;  /* rows left-align TO EACH OTHER (consistent) */
+  width: fit-content;       /* shrink to content width */
+  margin: 0 auto;           /* center the whole group */
+  margin-bottom: 4px;
 }
 
-/* ========================================
-   Skill Map Block Bars - Story 16.2
-   Pixel block visualization for 6 cognitive domains
-   ======================================== */
-
-/* Block bar row container */
+/* --- BLOCK BAR ROWS --- */
 .block-bar-row {
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
-  gap: 12px;
+  margin-bottom: 10px;
+  gap: 10px;
 }
 
-/* Domain label (left side) */
+/* Left indicator slot: fixed 20px — holds ★ or ↑ */
+.indicator-slot {
+  width: 20px;
+  min-width: 20px;
+  text-align: center;
+  font-size: 16px;
+  font-family: 'Jersey20', sans-serif;
+  line-height: 1;
+}
+
+.indicator-slot.has-star {
+  color: #00B4FF;
+  text-shadow: 0 0 8px #00B4FF, 0 0 16px rgba(0, 180, 255, 0.5);
+}
+
+.indicator-slot.has-growth {
+  color: #00FF88;
+  text-shadow: 0 0 8px #00FF88, 0 0 16px rgba(0, 255, 136, 0.5);
+}
+
+/* Domain label — fixed width so ALL rows are identical width (enables centering) */
 .domain-label {
   font-family: 'Jersey20', sans-serif;
-  font-size: 14px;
-  color: #FFFFFF;
-  min-width: 120px;
+  font-size: 15px;
+  color: #CCCCCC;
+  width: 130px;
+  min-width: 130px;
+  flex-shrink: 0;
   text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-/* Blocks container (5 blocks) */
+/* Blocks container */
 .blocks-container {
   display: flex;
-  gap: 2px;
+  gap: 3px;
 }
 
-/* Block base styles (16x16px squares) */
+/* Block base (20×20px — NO border, NO box-sizing override.
+   All 3 states are identical 20×20px — border handled via inset box-shadow only.) */
 .block {
-  width: 16px;
-  height: 16px;
-  border-radius: 0;  /* Perfect squares, no rounded corners */
+  width: 20px;
+  height: 20px;
+  border-radius: 0;
+  flex-shrink: 0;
 }
 
-/* Filled block (purple theme) */
+/* Filled block — domain color with neon glow */
 .block.filled {
-  background-color: rgb(157, 178, 221);  /* Purple theme */
-  border: none;
+  background-color: var(--domain-color, #00B4FF);
+  box-shadow:
+    0 0 4px var(--domain-color, #00B4FF),
+    0 0 8px var(--domain-glow, rgba(0, 180, 255, 0.35));
 }
 
-/* Empty block (dark grey with subtle border) */
+/* Empty block — inset box-shadow mimics a border with ZERO box-model impact */
 .block.empty {
-  background-color: #3A3A3A;  /* Dark grey */
-  border: 1px solid #555555;  /* Subtle border */
+  background-color: #111111;
+  box-shadow: inset 0 0 0 1px #2a2a2a;
 }
 
-/* Partial block (0.1 precision with horizontal fill) */
+/* Partial block — same inset frame, clipped fill inside */
 .block.partial {
-  background-color: #3A3A3A;  /* Dark grey background */
-  border: 1px solid #555555;  /* Subtle border */
+  background-color: #111111;
+  box-shadow: inset 0 0 0 1px #2a2a2a;
   position: relative;
-  overflow: hidden;  /* Clip the fill to block boundaries */
+  overflow: hidden;
 }
 
-/* Inner fill for partial blocks (horizontal progress bar) */
+/* Partial fill — domain color, no shadow (clipped by overflow:hidden anyway) */
 .block-fill {
   position: absolute;
   top: 0;
   left: 0;
   height: 100%;
-  background-color: rgb(157, 178, 221);  /* Purple theme - matches filled blocks */
-  transition: width 300ms ease-out;  /* Smooth animation when score updates */
+  background-color: var(--domain-color, #00B4FF);
 }
 
-/* Rating text (right side, "3.7/5" format with decimal) */
-.rating-text {
+/* Rating number — domain color, prominent */
+.rating-number {
   font-family: 'Jersey20', sans-serif;
-  font-size: 12px;
-  color: #B0B0B0;  /* Light grey */
-  margin-left: 8px;
-  min-width: 38px;  /* Wider to fit "3.7/5" with decimal */
+  font-size: 18px;
+  color: var(--domain-color, #CCCCCC);
+  min-width: 28px;
+  text-align: right;
 }
 
-/* Calibration placeholder message */
+/* Rating suffix "/5" — muted */
+.rating-suffix {
+  font-family: 'Jersey20', sans-serif;
+  font-size: 13px;
+  color: #3a3a3a;
+}
+
+/* Right-side improved arrow indicator (▲) only */
+.indicators {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: 4px;
+  min-width: 16px;
+}
+
+.indicator {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.indicator.improved-arrow {
+  color: #00FF88;
+  text-shadow: 0 0 6px rgba(0, 255, 136, 0.6);
+}
+
+/* Calibration placeholder */
 .calibration-message {
   font-family: 'Jersey20', sans-serif;
   font-size: 16px;
   color: #B0B0B0;
   text-align: center;
-  margin-top: 30px;
+  margin-top: 20px;
   line-height: 1.6;
 }
 
-/* Mobile responsive (optional for this story, formalized in 16.8) */
+/* Mobile responsive — blocks */
 @media (max-width: 768px) {
   .block-bar-row {
-    gap: 8px;
+    gap: 7px;
   }
 
   .domain-label {
+    width: 90px;
     min-width: 90px;
     font-size: 12px;
   }
 
   .block {
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
+  }
+
+  .rating-number {
+    font-size: 15px;
+    min-width: 24px;
   }
 }
 
 /* ========================================
-   Skill Map Indicators - Story 16.3
-   Visual indicators for strongest/growth/improved domains
+   Callout Cards - V2: Neon borders per card type
    ======================================== */
 
-/* Indicators container (right of rating text) */
-.indicators {
-  display: inline-flex;
-  gap: 6px;
-  margin-left: 8px;
-}
-
-/* Base indicator styles */
-.indicator {
-  font-size: 14px;
-  font-weight: bold;
-}
-
-/* Star indicator (strongest domain) */
-.indicator.star {
-  color: #FFC107;  /* Gold */
-}
-
-/* Growth arrow indicator (lowest domain) */
-.indicator.growth-arrow {
-  color: #81C784;  /* Light green */
-}
-
-/* Improved arrow indicator (domain improved >=1 block) */
-.indicator.improved-arrow {
-  color: #81C784;  /* Green */
-}
-
-/* ========================================
-   Callout Cards - Story 16.3
-   Top Skill and Level Up cards below block bars
-   ======================================== */
-
-/* Callouts container */
 #skill-map-callouts {
-  margin-top: 30px;
-  margin-bottom: 20px;
+  margin-top: 20px;
+  margin-bottom: 16px;
 }
 
-/* Callout card base styles */
+/* Callout card base */
 .callout-card {
-  background: rgba(26, 26, 46, 0.6);
-  border: 2px solid rgb(157, 178, 221);
+  background: rgba(13, 13, 13, 0.8);
   border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 12px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+
+/* Top Skill card — electric blue border */
+.callout-card.top-skill {
+  border: 2px solid #00B4FF;
+  box-shadow:
+    0 0 8px rgba(0, 180, 255, 0.3),
+    0 0 16px rgba(0, 180, 255, 0.12);
+}
+
+/* Level Up card — green border */
+.callout-card.level-up {
+  border: 2px solid #00FF88;
+  box-shadow:
+    0 0 8px rgba(0, 255, 136, 0.25),
+    0 0 16px rgba(0, 255, 136, 0.1);
 }
 
 /* Callout header (icon + title) */
@@ -2558,310 +2705,255 @@ button:disabled {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
-/* Callout icon */
+/* Callout icon base */
 .callout-icon {
   font-size: 18px;
   font-weight: bold;
+  line-height: 1;
 }
 
-/* Star icon (Top Skill card) */
+/* Star icon — electric blue neon */
 .callout-icon.star {
-  color: #FFC107;
+  color: #00B4FF;
+  text-shadow: 0 0 8px #00B4FF, 0 0 16px rgba(0, 180, 255, 0.5);
 }
 
-/* Growth icon (Level Up card) */
+/* Growth icon — green neon */
 .callout-icon.growth {
-  color: #81C784;
+  color: #00FF88;
+  text-shadow: 0 0 8px #00FF88, 0 0 16px rgba(0, 255, 136, 0.5);
 }
 
-/* Callout title */
+/* Callout title — matches card border color */
+.callout-card.top-skill .callout-title {
+  color: #00B4FF;
+}
+
+.callout-card.level-up .callout-title {
+  color: #00FF88;
+}
+
 .callout-title {
   font-family: 'Jersey20', sans-serif;
   font-size: 16px;
   font-weight: bold;
-  color: #FFFFFF;
 }
 
-/* Callout quote (domain-specific one-liner) */
+/* Callout quote — higher contrast than before */
 .callout-quote {
   font-family: 'Jersey20', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-style: italic;
-  color: #B0B0B0;
-  padding-left: 26px;  /* Indent quote */
+  color: #CCCCCC;
+  padding-left: 26px;
   line-height: 1.4;
 }
 
 /* ========================================
-   Session & Streak Stats - Story 16.4
-   Display session count and current streak below callouts
+   Session Stats — Stat Chip design
    ======================================== */
 
-/* Session stats container */
 .session-stats-row {
   display: flex;
   justify-content: center;
-  gap: 40px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+  margin-bottom: 16px;
 }
 
-/* Session count and streak base styles */
-.session-count,
-.streak-count {
+/* Stat chip base */
+.stat-chip {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 5px 14px;
   font-family: 'Jersey20', sans-serif;
-  font-size: 14px;
-  color: #B0B0B0;  /* Light grey */
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
-/* Streak styling (bold) */
-.streak-count {
-  font-weight: bold;
+/* Sessions chip — white glow */
+.stat-chip.sessions {
+  color: #FFFFFF;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
 }
 
-/* Milestone styling (7-day, 14-day, 30-day, 60-day) */
-.streak-count.milestone {
-  color: #FFD700;  /* Gold */
+/* Streak chip — fire orange */
+.stat-chip.streak {
+  color: #FF8C00;
+  text-shadow: 0 0 6px rgba(255, 140, 0, 0.6);
+}
+
+/* Streak milestone — gold upgrade */
+.stat-chip.streak.milestone {
+  color: #FFD700;
+  border-color: rgba(255, 215, 0, 0.4);
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
   animation: pulse-milestone 2s ease-in-out infinite;
 }
 
-/* Milestone pulsing animation */
+/* Best streak chip — gold */
+.stat-chip.best {
+  color: #FFD700;
+  text-shadow: 0 0 6px rgba(255, 215, 0, 0.5);
+}
+
 @keyframes pulse-milestone {
-  0%, 100% {
-    transform: scale(1.0);
-  }
-  50% {
-    transform: scale(1.05);
-  }
+  0%, 100% { transform: scale(1.0); }
+  50%       { transform: scale(1.04); }
 }
 
-/* Streak broken state (gentle tone, no guilt) */
-.streak-count.streak-broken {
-  color: #B0B0B0;  /* Same light grey, no red */
-  font-style: italic;
-}
-
-/* Disable milestone animation if user prefers reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .streak-count.milestone {
+  .stat-chip.streak.milestone {
     animation: none;
   }
 }
 
-/* Mobile responsive */
 @media (max-width: 768px) {
   .session-stats-row {
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
+    gap: 8px;
   }
 
-  .session-count,
-  .streak-count {
-    font-size: 12px;
+  .stat-chip {
+    font-size: 11px;
+    padding: 4px 10px;
   }
 }
 
 /* ========================================
-   Dashboard Quote - Story 16.5
-   Rotating caller quotes below session stats
+   Dashboard Quote — V2: Card with left accent + larger portrait
    ======================================== */
 
-/* Quote container */
 #skill-map-quote {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 16px;
+  margin-bottom: 16px;
 }
 
-/* Quote card container */
 .quote-card {
-  background: rgba(26, 26, 46, 0.4);
-  border: 1px solid rgba(157, 178, 221, 0.3);
-  border-radius: 8px;
-  padding: 16px;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-/* Quote text styling */
-.quote-text {
-  font-family: 'Jersey20', sans-serif;
-  font-size: 14px;
-  font-style: italic;
-  color: #B0B0B0;  /* Light grey */
-  line-height: 1.4;
-  margin: 0 0 12px 0;
-}
-
-/* Caller attribution container (portrait + name) */
-.caller-attribution {
+  background: rgba(255, 255, 255, 0.04);
+  border-left: 3px solid rgba(0, 180, 255, 0.5);
+  border-right: none;
+  border-top: none;
+  border-bottom: none;
+  border-radius: 0 4px 4px 0;
+  padding: 12px 14px;
   display: flex;
+  flex-direction: row;
+  gap: 16px;
   align-items: center;
-  justify-content: flex-end;
+}
+
+/* Portrait column — fixed width, no shrink */
+.quote-portrait-col {
+  flex-shrink: 0;
+}
+
+/* 100px portrait — bigger ring, electric blue neon glow */
+.caller-portrait-small {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px solid #00B4FF;
+  box-shadow:
+    0 0 8px rgba(0, 180, 255, 0.6),
+    0 0 16px rgba(0, 180, 255, 0.25);
+  object-fit: cover;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  display: block;
+}
+
+/* Text column — flex: 1 so it fills remaining space, narrower column = natural 2-3 line wrap */
+.quote-text-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
-/* Caller portrait thumbnail */
-.caller-portrait-small {
-  width: 32px;
-  height: 32px;
-  border-radius: 4px;
-  border: 1px solid rgba(157, 178, 221, 0.5);
-  object-fit: cover;
-  image-rendering: pixelated;  /* Story 18.7: Retro pixel-art style */
-  image-rendering: -moz-crisp-edges;
-  image-rendering: crisp-edges;
-}
-
-/* Caller name styling */
-.caller-name {
+.quote-card .quote-text {
   font-family: 'Jersey20', sans-serif;
-  font-size: 12px;
-  color: #B0B0B0;  /* Light grey */
+  font-size: 15px;
+  font-style: italic;
+  color: #C8C8C8;
+  line-height: 1.4;
+  margin: 0;
 }
 
-/* Mobile responsive */
+/* Attribution name — right-aligned in text column */
+.quote-text-col .caller-name {
+  font-family: 'Jersey20', sans-serif;
+  font-size: 13px;
+  color: #00B4FF;
+  text-align: right;
+}
+
 @media (max-width: 768px) {
   .quote-card {
-    padding: 12px;
+    padding: 10px 10px;
+    gap: 12px;
   }
 
-  .quote-text {
-    font-size: 12px;
-  }
-
-  .caller-name {
-    font-size: 10px;
+  .quote-card .quote-text {
+    font-size: 13px;
   }
 
   .caller-portrait-small {
-    width: 28px;
-    height: 28px;
+    width: 72px;
+    height: 72px;
+  }
+
+  .quote-text-col .caller-name {
+    font-size: 11px;
   }
 }
 
 /* ========================================
-   Play Now Button - Story 16.6
-   Primary CTA on Skill Map dashboard
+   Action Buttons — V2: game-over-btn system
    ======================================== */
 
-/* Play Now button base styles */
-#play-now-btn {
-  display: block;
-  margin: 20px auto;
-  padding: 12px 40px;
-  font-family: 'Jersey20', sans-serif;
-  font-size: 20px;
-  font-weight: bold;
-  color: #FFFFFF;
-  background: transparent;
-  border: 3px solid rgb(157, 178, 221);  /* Purple theme */
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 200ms ease-in-out;
+.skill-map-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 12px;
+  margin-top: 24px;
 }
 
-/* Hover state - solid purple fill with glow */
-#play-now-btn:hover {
-  background: rgb(157, 178, 221);  /* Solid purple fill */
-  color: #1A1A2E;  /* Dark text on purple background */
-  transform: scale(1.05);
-  box-shadow: 0 0 12px rgba(157, 178, 221, 0.6);  /* Glow effect */
+/* Skill-map buttons side by side — flex: 1 so they share space equally */
+.skill-map-actions .game-over-btn {
+  flex: 1;
+  max-width: none;
+  transform: none;  /* override scale(1.05) from .selected in this context */
 }
 
-/* Active state - press down effect */
-#play-now-btn:active {
-  transform: scale(0.98);  /* Press down effect */
-  box-shadow: 0 0 8px rgba(157, 178, 221, 0.8);
+/* Keep hover/active scale only — not the persistent selected scale */
+.skill-map-actions .game-over-btn.selected {
+  transform: none;
 }
 
-/* Focus state - accessibility outline */
-#play-now-btn:focus {
-  outline: 2px solid rgb(157, 178, 221);
-  outline-offset: 4px;
+.skill-map-actions .game-over-btn.selected:hover {
+  transform: scale(1.03);
 }
 
-/* Mobile responsive - full-width, larger touch target */
-@media (max-width: 768px) {
-  #play-now-btn {
+@media (max-width: 767px) {
+  .skill-map-actions {
+    flex-direction: column;
+  }
+
+  .skill-map-actions .game-over-btn {
+    flex: none;
     width: 100%;
-    max-width: 300px;
-    min-height: 44px;  /* WCAG touch target minimum */
-    font-size: 18px;
-    padding: 14px 20px;
-  }
-}
-
-/* Disable animations if user prefers reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  #play-now-btn {
-    transition: none;
-  }
-
-  #play-now-btn:hover {
-    transform: none;
-  }
-
-  #play-now-btn:active {
-    transform: none;
+    min-height: 44px;
   }
 }
 
 /* ========================================
-   Back to Menu Link - Story 16.7
-   Secondary navigation from Skill Map to menu
-   ======================================== */
-
-/* Back to Menu link base styles */
-#back-to-menu-link {
-  display: block;
-  text-align: center;
-  margin-top: 16px;
-  font-family: 'Jersey20', sans-serif;
-  font-size: 14px;
-  color: #B0B0B0;  /* Light grey — secondary action */
-  text-decoration: none;
-  cursor: pointer;
-  transition: color 150ms ease-in-out;
-}
-
-/* Hover state - purple theme with underline */
-#back-to-menu-link:hover {
-  color: rgb(157, 178, 221);  /* Purple theme */
-  text-decoration: underline;
-}
-
-/* Active state - brighten on click */
-#back-to-menu-link:active {
-  color: #FFFFFF;  /* White for click feedback */
-}
-
-/* Focus state - accessibility outline */
-#back-to-menu-link:focus {
-  outline: 2px solid rgb(157, 178, 221);
-  outline-offset: 4px;
-  border-radius: 4px;
-}
-
-/* Mobile responsive */
-@media (max-width: 768px) {
-  #back-to-menu-link {
-    font-size: 12px;
-    margin-top: 12px;
-  }
-}
-
-/* Disable transitions if user prefers reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  #back-to-menu-link {
-    transition: none;
-  }
-}
-
-/* ========================================
-   END SKILL MAP DASHBOARD
-   Story 16.8: Dashboard styling complete
+   END SKILL MAP DASHBOARD V2
    ======================================== */

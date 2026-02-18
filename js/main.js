@@ -41,7 +41,7 @@ const skillMapBtn = document.getElementById('skill-map-btn');
 const skillMapScreen = document.getElementById('skill-map-screen');
 const skillMapMenuBtn = document.getElementById('skill-map-menu-btn');
 const playNowBtn = document.getElementById('play-now-btn');
-const backToMenuLink = document.getElementById('back-to-menu-link');
+const backToMenuBtn = document.getElementById('back-to-menu-btn');
 
 // Story 16.9: Initialize dashboard DOM cache for performance
 dashboard.initDashboard();
@@ -376,6 +376,11 @@ function handleUIUpdate(state) {
       gameoverScreen.classList.add('hidden');
       skillMapScreen.classList.add('hidden');  // Hide Skill Map when returning to menu
       scoreDisplay.classList.add('hidden');  // Fix: Hide score on menu
+      // Reset menu button selection to NEW GAME whenever menu appears
+      const newGameBtn = document.getElementById('new-game-btn');
+      const skillMapMenuBtn = document.getElementById('skill-map-menu-btn');
+      if (newGameBtn) newGameBtn.classList.add('selected');
+      if (skillMapMenuBtn) skillMapMenuBtn.classList.remove('selected');
       updateHighScoreDisplay(state.highScore);
       // Story 22.1: Set background glow to white on menu
       setGlowToWhite();
@@ -620,9 +625,8 @@ if (playNowBtn) {
   console.error('[Main] Play Now button not found in DOM');
 }
 
-// Story 16.1: Back to Menu link (Skill Map → Menu)
-backToMenuLink.addEventListener('click', (e) => {
-  e.preventDefault();
+// Story 16.1: Back to Menu button (Skill Map → Menu)
+backToMenuBtn.addEventListener('click', () => {
   console.log('[Story 16.1] Back to Menu clicked');
   // Hide Skill Map screen IMMEDIATELY to prevent flash of empty screen during cleanup
   skillMapScreen.classList.add('hidden');

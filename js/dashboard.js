@@ -61,12 +61,16 @@ function renderCalibrationPlaceholder(profile) {
   barsContainer.innerHTML = '';
 
   const domains = [
-    'Decision', 'Spatial', 'Flexibility',
-    'Attention', 'Impulse', 'Memory'
+    { key: 'decisionSpeed', label: 'Decision' },
+    { key: 'spatialAwareness', label: 'Spatial' },
+    { key: 'cognitiveFlexibility', label: 'Flexibility' },
+    { key: 'dividedAttention', label: 'Attention' },
+    { key: 'impulseControl', label: 'Impulse' },
+    { key: 'workingMemory', label: 'Memory' }
   ];
 
-  domains.forEach(label => {
-    const row = createBlockBarRow(label, 0);  // 0 = all blocks empty
+  domains.forEach(domain => {
+    const row = createBlockBarRow(domain.label, 0, {}, domain.key);  // 0 = all blocks empty
     barsContainer.appendChild(row);
   });
 
@@ -134,7 +138,7 @@ function renderFullSkillMap(profile) {
       growthArrow: domain.key === growthArea,
       improvedArrow: improvedDomains.has(domain.key)
     };
-    const row = createBlockBarRow(domain.label, blockScore, indicators);
+    const row = createBlockBarRow(domain.label, blockScore, indicators, domain.key);
     barFragment.appendChild(row);
   });
 
@@ -158,15 +162,40 @@ function renderFullSkillMap(profile) {
  * Create a single block bar row with optional indicators
  * Story 16.2: Core visualization component
  * Story 16.3: Added indicators support (★, ↑, ▲)
- * Enhanced: 0.1 precision with 10-segment horizontal fills
+ * V2 Redesign 2026-02-18: Domain color system, left indicator slot, split rating
  * @param {string} label - Domain name (abbreviated)
  * @param {number} blockScore - Rating on 0-5 scale with 0.1 precision
  * @param {Object} indicators - { star: bool, growthArrow: bool, improvedArrow: bool }
+ * @param {string} domainKey - e.g. 'decisionSpeed' — used to apply domain CSS color class
  * @returns {HTMLElement} - The row DOM element
  */
-function createBlockBarRow(label, blockScore, indicators = {}) {
+function createBlockBarRow(label, blockScore, indicators = {}, domainKey = '') {
   const row = document.createElement('div');
   row.className = 'block-bar-row';
+
+  // Apply domain color CSS class
+  const cssKeyMap = {
+    decisionSpeed: 'decision',
+    spatialAwareness: 'spatial',
+    cognitiveFlexibility: 'flexibility',
+    dividedAttention: 'attention',
+    impulseControl: 'impulse',
+    workingMemory: 'memory'
+  };
+  const cssKey = cssKeyMap[domainKey];
+  if (cssKey) row.classList.add(`domain-${cssKey}`);
+
+  // LEFT: Indicator slot (★ or ↑) — fixed width, anchors left column
+  const indicatorSlot = document.createElement('span');
+  indicatorSlot.className = 'indicator-slot';
+  if (indicators.star) {
+    indicatorSlot.textContent = '★';
+    indicatorSlot.classList.add('has-star');
+  } else if (indicators.growthArrow) {
+    indicatorSlot.textContent = '↑';
+    indicatorSlot.classList.add('has-growth');
+  }
+  row.appendChild(indicatorSlot);
 
   // Domain label
   const labelEl = document.createElement('span');
@@ -179,25 +208,19 @@ function createBlockBarRow(label, blockScore, indicators = {}) {
   blocksContainer.className = 'blocks-container';
 
   for (let i = 0; i < 5; i++) {
-    const blockValue = i + 1; // Block represents values 1.0, 2.0, 3.0, 4.0, 5.0
+    const blockValue = i + 1;
     const block = document.createElement('div');
 
-    // Determine fill state
     if (blockScore >= blockValue) {
-      // Fully filled
       block.className = 'block filled';
     } else if (blockScore > i && blockScore < blockValue) {
-      // Partially filled
-      const fillPercentage = (blockScore - i) * 100; // Convert 0.0-1.0 to 0-100%
+      const fillPercentage = (blockScore - i) * 100;
       block.className = 'block partial';
-
-      // Create inner fill element
       const fill = document.createElement('div');
       fill.className = 'block-fill';
       fill.style.width = `${fillPercentage}%`;
       block.appendChild(fill);
     } else {
-      // Empty
       block.className = 'block empty';
     }
 
@@ -206,29 +229,20 @@ function createBlockBarRow(label, blockScore, indicators = {}) {
 
   row.appendChild(blocksContainer);
 
-  // Rating text with 1 decimal place (e.g., "3.7/5")
-  const ratingText = document.createElement('span');
-  ratingText.className = 'rating-text';
-  ratingText.textContent = `${blockScore.toFixed(1)}/5`;
-  row.appendChild(ratingText);
+  // Rating number (domain color) + suffix "/5" (muted) — split for separate styling
+  const ratingNumber = document.createElement('span');
+  ratingNumber.className = 'rating-number';
+  ratingNumber.textContent = blockScore.toFixed(1);
+  row.appendChild(ratingNumber);
 
-  // Indicators (Story 16.3)
+  const ratingSuffix = document.createElement('span');
+  ratingSuffix.className = 'rating-suffix';
+  ratingSuffix.textContent = '/5';
+  row.appendChild(ratingSuffix);
+
+  // RIGHT: Improved arrow (▲) only — ★ and ↑ moved to left slot
   const indicatorsContainer = document.createElement('span');
   indicatorsContainer.className = 'indicators';
-
-  if (indicators.star) {
-    const star = document.createElement('span');
-    star.className = 'indicator star';
-    star.textContent = '★';
-    indicatorsContainer.appendChild(star);
-  }
-
-  if (indicators.growthArrow) {
-    const arrow = document.createElement('span');
-    arrow.className = 'indicator growth-arrow';
-    arrow.textContent = '↑';
-    indicatorsContainer.appendChild(arrow);
-  }
 
   if (indicators.improvedArrow) {
     const arrow = document.createElement('span');
@@ -243,8 +257,9 @@ function createBlockBarRow(label, blockScore, indicators = {}) {
 }
 
 /**
- * Render session count and streak below callouts
+ * Render session count and streak as stat chips
  * Story 16.4: Session stats with milestone detection
+ * V2 Redesign 2026-02-18: Pill chip design replacing plain text row
  * @param {number} totalSessions - Total games played (includes calibration)
  * @param {number} currentStreak - Current streak in days
  */
@@ -255,55 +270,34 @@ function renderSessionStats(totalSessions, currentStreak) {
   const statsContainer = document.getElementById('skill-map-stats');
   statsContainer.innerHTML = '';
 
-  const statsRow = document.createElement('div');
-  statsRow.className = 'session-stats-row';
+  const chipsRow = document.createElement('div');
+  chipsRow.className = 'session-stats-row';
 
-  // Session count
-  const sessionsEl = document.createElement('span');
-  sessionsEl.className = 'session-count';
-  sessionsEl.textContent = `Sessions: ${totalSessions}`;
-  sessionsEl.style.color = '#AAAAAA';
-  sessionsEl.style.fontSize = '12px';
-  sessionsEl.style.fontFamily = 'Jersey20';
-  statsRow.appendChild(sessionsEl);
+  // Sessions chip
+  const sessionsChip = document.createElement('div');
+  sessionsChip.className = 'stat-chip sessions';
+  sessionsChip.textContent = `${totalSessions} SESSIONS`;
+  chipsRow.appendChild(sessionsChip);
 
-  // Spacing (5 spaces)
-  const spacer = document.createElement('span');
-  spacer.textContent = '     ';
-  statsRow.appendChild(spacer);
-
-  // Streak
-  const streakEl = document.createElement('span');
-  streakEl.className = 'streak-count';
-
-  // Story 17.5: Use CONFIG.DASHBOARD.STREAK_MILESTONES
+  // Streak chip
   const isMilestone = CONFIG.DASHBOARD.STREAK_MILESTONES.includes(currentStreak);
+  const streakChip = document.createElement('div');
+  streakChip.className = 'stat-chip streak';
+  const dayLabel = currentStreak === 1 ? 'DAY' : 'DAYS';
+  streakChip.textContent = `STREAK: ${currentStreak} ${dayLabel} 🔥`;
+  if (isMilestone) streakChip.classList.add('milestone');
+  chipsRow.appendChild(streakChip);
 
-  const dayLabel = currentStreak === 1 ? 'day' : 'days';
-  streakEl.textContent = `Streak: ${currentStreak} ${dayLabel} 🔥`;
-  streakEl.style.color = '#AAAAAA';
-  streakEl.style.fontSize = '12px';
-  streakEl.style.fontFamily = 'Jersey20';
-
-  if (isMilestone) {
-    streakEl.classList.add('milestone');
-  }
-
-  statsRow.appendChild(streakEl);
-
-  // Story 17.5: Longest streak (if different from current and > 0)
+  // Best streak chip (only if different from current and > 0)
   if (streak.longestStreak > currentStreak && streak.longestStreak > 0) {
-    const longestEl = document.createElement('span');
-    longestEl.className = 'longest-streak';
-    longestEl.textContent = ` / Longest: ${streak.longestStreak} ${streak.longestStreak === 1 ? 'day' : 'days'}`;
-    longestEl.style.color = '#FFD700'; // Gold (celebrate peak)
-    longestEl.style.fontSize = '10px';
-    longestEl.style.fontFamily = 'Jersey20';
-    longestEl.style.marginLeft = '8px';
-    statsRow.appendChild(longestEl);
+    const bestChip = document.createElement('div');
+    bestChip.className = 'stat-chip best';
+    const bestLabel = streak.longestStreak === 1 ? 'DAY' : 'DAYS';
+    bestChip.textContent = `BEST: ${streak.longestStreak} ${bestLabel}`;
+    chipsRow.appendChild(bestChip);
   }
 
-  statsContainer.appendChild(statsRow);
+  statsContainer.appendChild(chipsRow);
 
   console.log('[Story 16.4/17.5] Session stats rendered:', { totalSessions, currentStreak, longestStreak: streak.longestStreak, isMilestone });
 }
@@ -362,31 +356,34 @@ function renderQuote(quote) {
   const quoteCard = document.createElement('div');
   quoteCard.className = 'quote-card';
 
-  // Quote text
-  const quoteText = document.createElement('p');
-  quoteText.className = 'quote-text';
-  quoteText.textContent = `"${quote.text}"`;
-  quoteCard.appendChild(quoteText);
-
-  // Caller attribution (portrait + name)
-  const callerAttribution = document.createElement('div');
-  callerAttribution.className = 'caller-attribution';
+  // Portrait column (left) — bigger portrait, narrower text col forces 2-3 line wrap
+  const portraitCol = document.createElement('div');
+  portraitCol.className = 'quote-portrait-col';
 
   const callerPortrait = document.createElement('img');
   callerPortrait.className = 'caller-portrait-small';
   callerPortrait.src = quote.portrait;
   callerPortrait.alt = quote.caller;
-  callerPortrait.width = 32;
-  callerPortrait.height = 32;
-  callerAttribution.appendChild(callerPortrait);
+  callerPortrait.width = 100;
+  callerPortrait.height = 100;
+  portraitCol.appendChild(callerPortrait);
+  quoteCard.appendChild(portraitCol);
+
+  // Text column (right) — quote + attribution stacked
+  const textCol = document.createElement('div');
+  textCol.className = 'quote-text-col';
+
+  const quoteText = document.createElement('p');
+  quoteText.className = 'quote-text';
+  quoteText.textContent = `"${quote.text}"`;
+  textCol.appendChild(quoteText);
 
   const callerName = document.createElement('span');
   callerName.className = 'caller-name';
   callerName.textContent = `— ${quote.caller}`;
-  callerAttribution.appendChild(callerName);
+  textCol.appendChild(callerName);
 
-  quoteCard.appendChild(callerAttribution);
-
+  quoteCard.appendChild(textCol);
   quoteContainer.appendChild(quoteCard);
 
   console.log('[Story 16.5] Quote rendered');
