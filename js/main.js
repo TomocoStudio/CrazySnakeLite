@@ -407,10 +407,6 @@ function handleUIUpdate(state) {
       // Story 22.1: Set background glow to white on game over
       setGlowToWhite();
 
-      // Story 11.4: Hide Play Again button initially (shown after stats complete)
-      playAgainBtn.classList.add('hidden');
-      skillMapBtn.classList.add('hidden');
-
       // Story 4.2/4.3: Save high score if new record and show indicator
       console.log('[Game] Game Over - Score:', state.score, 'High Score:', state.highScore);
       // Validate scores are valid numbers before comparison
@@ -535,29 +531,22 @@ function handleUIUpdate(state) {
           console.warn('[Epic 14] Session metrics not available yet - skipping highlight selection');
         }
 
+        // Story 14.7: Set Skill Map button state based on calibration (immediately, no delay)
+        if (sessionContext && sessionContext.calibrationState === 'in_progress') {
+          skillMapBtn.disabled = true;
+          console.log('[Story 14.7] Skill Map button disabled - calibration in progress');
+        } else {
+          skillMapBtn.disabled = false;
+          console.log('[Story 14.7] Skill Map button enabled - calibration complete');
+        }
+
         // Story 14.2: Show highlights with staggered animation
         // Story 14.5: sessionContext includes calibration state for footer rendering
         await showHighlights(highlights, callerQuote, sessionContext);
 
-        // Story 14.7: Show buttons after highlight animation completes (t=3.3s)
-        console.log('[Main] Highlights animation complete - showing Play Again and Skill Map buttons');
-        playAgainBtn.classList.remove('hidden');
-        skillMapBtn.classList.remove('hidden');
-
         // Story 17.5: Render streak counter below buttons
         renderStreakCounter(streakResult);
         console.log('[Story 17.5] Post-game streak counter rendered');
-
-        // Story 14.7: Set Skill Map button state based on calibration
-        if (sessionContext && sessionContext.calibrationState === 'in_progress') {
-          // Calibration period (sessions 1-4): Grey out Skill Map button
-          skillMapBtn.disabled = true;
-          console.log('[Story 14.7] Skill Map button disabled - calibration in progress');
-        } else {
-          // Calibration complete (session 5+): Enable Skill Map button
-          skillMapBtn.disabled = false;
-          console.log('[Story 14.7] Skill Map button enabled - calibration complete');
-        }
       }, CONFIG.COGNITIVE_STATS_DISPLAY.initialDelay);
     }
   } else if (state.phase === 'skillmap') {

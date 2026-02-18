@@ -18,8 +18,8 @@
 
 **Given** the snake dies
 **When** the game over screen appears
-**Then** "GAME OVER" title text is displayed prominently
-**And** "Your score: XX" shows the final snake length
+**Then** "YOUR SCORE" label + hero score number (64px) displayed at top — no GAME OVER title
+**And** the score number is the dominant visual element (hero treatment)
 **And** "Play Again" button is visible
 **And** "Menu" button is visible
 
@@ -102,13 +102,20 @@ Enhance **Game Over Screen** with clear options and high score saving.
 
 ```html
 <div id="gameover-screen" class="hidden">
-  <h2>GAME OVER</h2>
-  <p class="final-score">Your score: <span id="score-value">0</span></p>
-  <p id="new-high-score-indicator" class="new-high-score hidden">*** NEW HIGH SCORE! ***</p>
-  <button id="play-again-btn" class="selected">Play Again</button>
-  <button id="menu-btn">Menu</button>
+  <div class="score-hero">
+    <span class="score-label">YOUR SCORE</span>
+    <span id="score-value">0</span>
+  </div>
+  <p id="new-high-score-indicator" class="new-high-score hidden">★ NEW HIGH SCORE ★</p>
+  <!-- RECAP, caller quote, buttons follow (Epic 14) -->
 </div>
 ```
+**V5 redesign notes (2026-02-18):**
+- `h2` "GAME OVER" title removed — score is the hero
+- `.final-score` `<p>` replaced with `.score-hero` div: `YOUR SCORE` label (11px) + `#score-value` (64px neon white)
+- `*** NEW HIGH SCORE! ***` → `★ NEW HIGH SCORE ★` (cleaner, same gold pulse)
+- Overlay now `width: calc(100% - 20px)` — fills canvas (was auto/narrow)
+- Buttons appear immediately on screen show (no t=3.3s delay — see Epic 14)
 
 **js/game.js - Save High Score:**
 

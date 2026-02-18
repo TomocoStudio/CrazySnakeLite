@@ -43,15 +43,17 @@
 
     <!-- Game Over Screen -->
     <div id="gameover-screen" class="hidden">
-      <h2>GAME OVER</h2>
-      <p class="final-score">Your score: <span id="score-value">0</span></p>
-      <p id="new-high-score-indicator" class="new-high-score hidden">*** NEW HIGH SCORE! ***</p>
+      <div class="score-hero">
+        <span class="score-label">YOUR SCORE</span>
+        <span id="score-value">0</span>
+      </div>
+      <p id="new-high-score-indicator" class="new-high-score hidden">★ NEW HIGH SCORE ★</p>
 
       <!-- Cognitive Stats Container - Story 11.3 -->
       <!-- Story 14.2: Post-Game Highlights (RECAP) -->
       <div class="cognitive-stats hidden" role="region" aria-live="polite" aria-label="Game summary">
         <!-- RECAP header -->
-        <div class="cognitive-stats-header">─── RECAP ───</div>
+        <div class="cognitive-stats-header">RECAP</div>
 
         <!-- Highlights container (2-3 lines) -->
         <div class="cognitive-stats-lines">
@@ -77,8 +79,6 @@
         <button id="skill-map-btn" class="game-over-btn">Skill Map</button>
       </div>
 
-      <!-- Story 17.5: Streak Counter (below buttons) -->
-      <div id="post-game-streak"></div>
     </div>
 
     <!-- Phone Call Overlay - Story 3.1, Story 9.1: Two-button layout, Story 9.3: Countdown bar -->

@@ -246,26 +246,8 @@ function renderFooter(context, container) {
     }, 2000); // Set flag after celebration animation completes
 
   } else if (context.calibrationState === 'unlocked') {
-    // Story 14.6: Session 6+ - Show streak counter
-    if (context.streakText) {
-      container.textContent = context.streakText;
-      container.className = 'post-game-footer streak-counter';
-
-      // Add milestone styling for 7-day or 30-day streaks
-      if (context.streakMilestone) {
-        container.classList.add('streak-milestone');
-      }
-
-      // Add broken styling if streak was just broken
-      if (context.streakBroken) {
-        container.classList.add('broken');
-      }
-
-      container.classList.remove('hidden');
-    } else {
-      // No streak data: hide footer
-      container.classList.add('hidden');
-    }
+    // Streak display removed from game-over screen
+    container.classList.add('hidden');
   } else {
     // Default: hide footer
     container.classList.add('hidden');

@@ -301,47 +301,61 @@ body.no-scanlines::after {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(0, 0, 0, 0.9);
-  border: 8px solid rgb(157, 178, 221);  /* Light purple-blue frame */
-  border-radius: 12px;  /* Small rounded corners */
-  box-shadow: 0 0 0 8px #1A1A2E;  /* Double-border pattern */
-  padding: 30px;
+  width: calc(100% - 20px);
+  box-sizing: border-box;
+  max-height: 95vh;
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.92);
+  border: 8px solid rgb(157, 178, 221);
+  border-radius: 12px;
+  box-shadow: 0 0 0 8px #1A1A2E;
+  padding: 20px 20px 16px;
   text-align: center;
   font-family: 'Jersey20', 'Courier New', monospace;
   color: #E8E8E8;
-  z-index: 150;  /* Between score (100) and menu (200) */
+  z-index: 150;
 }
 
 #gameover-screen.hidden {
   display: none;
 }
 
-#gameover-screen h2 {
-  font-size: 36px;  /* Story 21.2: Increased from 32px for more impact */
-  margin: 0 0 20px 0;
-  color: rgb(157, 178, 221);
+/* Score hero — the number is king */
+.score-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 8px;
+}
+
+.score-label {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #777777;
+  text-transform: uppercase;
+}
+
+#score-value {
+  font-size: 64px;
+  line-height: 1;
+  color: #FFFFFF;
   text-shadow:
-    0 0 8px rgba(157, 178, 221, 0.6),   /* Soft glow */
-    0 2px 0 rgba(0, 0, 0, 0.8),         /* Hard bottom shadow (depth) */
-    0 4px 8px rgba(0, 0, 0, 0.4);       /* Soft depth shadow (3D) */
-  letter-spacing: 4px;  /* Story 21.2: Increased from 2px for drama */
+    0 0 20px rgba(255, 255, 255, 0.9),
+    0 0 40px rgba(255, 255, 255, 0.4),
+    2px 2px 4px rgba(0, 0, 0, 1);
 }
 
-#gameover-screen .final-score {
-  font-size: 18px;
-  margin: 0 0 15px 0;
-  color: #E8E8E8;
-}
-
+/* ★ NEW HIGH SCORE ★ — gold badge */
 #gameover-screen .new-high-score {
-  font-size: 20px;
-  font-weight: bold;
-  margin: 0 0 20px 0;
-  color: #FFD700;  /* Gold */
+  font-size: 17px;
+  margin: 0 0 6px 0;
+  color: #FFD700;
+  letter-spacing: 2px;
   text-shadow:
     0 0 10px rgba(255, 215, 0, 0.8),
     0 0 20px rgba(255, 215, 0, 0.4);
-  animation: highScorePulse 1.5s ease-in-out infinite;  /* Story 21.2: Pulsing gold glow */
+  animation: highScorePulse 1.5s ease-in-out infinite;
 }
 
 #gameover-screen .new-high-score.hidden {
@@ -368,10 +382,10 @@ body.no-scanlines::after {
 .game-over-buttons {
   display: flex;
   justify-content: center;
-  gap: 16px;
-  margin: 20px auto;
-  max-width: 450px;
-  flex-wrap: wrap;  /* Allow wrapping on very small screens */
+  gap: 12px;
+  margin: 16px auto 0;
+  width: 100%;
+  flex-wrap: wrap;
 }
 
 /* Story 14.7: Individual Button Styling */
@@ -444,8 +458,8 @@ body.no-scanlines::after {
    ======================================== */
 
 .cognitive-stats {
-  margin: 20px auto;
-  text-align: center;
+  margin: 12px auto 0;
+  text-align: left;
   max-width: 400px;
 }
 
@@ -453,32 +467,37 @@ body.no-scanlines::after {
   display: none;
 }
 
+/* RECAP divider — thin top rule, small spaced label */
 .cognitive-stats-header {
   font-family: 'Jersey20', sans-serif;
-  font-size: 20px;
-  color: rgb(157, 178, 221); /* Story 14.2: Purple theme per FR165 */
+  font-size: 12px;
+  color: rgb(157, 178, 221);
   text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 16px;
+  letter-spacing: 5px;
+  margin-bottom: 10px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(157, 178, 221, 0.3);
+  text-align: center;
   opacity: 0;
   animation: fadeInStats 300ms ease-out forwards;
-  /* Fade-in at t=0.3s */
 }
 
 .cognitive-stats-lines {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 2px;
 }
 
+/* Highlight lines — left-aligned, scannable */
 .cognitive-stat-line {
   font-family: 'Jersey20', sans-serif;
-  font-size: 18px; /* Story 14.2: 18-20px per FR165 */
-  color: white;
+  font-size: 19px;
+  color: #E8E8E8;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  margin: 8px 0;
+  margin: 0;
+  padding: 5px 0;
+  text-align: left;
   opacity: 0;
-  /* Stagger animation: 300ms delay between lines */
   animation: fadeInStats 400ms ease-out forwards;
 }
 
@@ -509,13 +528,16 @@ body.no-scanlines::after {
   }
 }
 
-/* Story 14.2: Caller Quote Section (Story 14.3 implementation) */
+/* Story 14.2: Caller Quote — card treatment */
 .caller-quote {
-  margin-top: 20px;
-  padding: 16px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 3px solid rgba(157, 178, 221, 0.5);
+  border-radius: 0 4px 4px 0;
   opacity: 0;
   animation: fadeInStats 400ms ease-out forwards;
-  /* Fade-in at t=1.5s */
+  text-align: left;
 }
 
 .caller-quote.hidden {
@@ -524,28 +546,29 @@ body.no-scanlines::after {
 
 .quote-text {
   font-family: 'Jersey20', sans-serif;
-  font-size: 16px;
-  color: rgb(200, 200, 200);
+  font-size: 15px;
+  color: #C8C8C8;
   font-style: italic;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   line-height: 1.4;
 }
 
 .quote-attribution {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
   gap: 8px;
   font-family: 'Jersey20', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   color: rgb(157, 178, 221);
 }
 
 .caller-portrait {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  image-rendering: pixelated; /* Retro pixel-art style */
+  image-rendering: pixelated;
+  flex-shrink: 0;
 }
 
 .caller-name {
@@ -554,16 +577,16 @@ body.no-scanlines::after {
 
 /* Story 14.2: Post-Game Footer (Stories 14.5, 14.6) */
 .post-game-footer {
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   font-family: 'Jersey20', sans-serif;
   font-size: 14px;
-  color: rgb(200, 200, 200);
+  color: #C8C8C8;
   opacity: 0;
   animation: fadeInStats 400ms ease-out forwards;
   text-align: center;
-  position: relative; /* For confetti particles */
+  position: relative;
 }
 
 .post-game-footer.hidden {
@@ -802,20 +825,20 @@ button:disabled {
 /* Story 17.5: Post-Game Streak Counter (below buttons) */
 #post-game-streak {
   text-align: center;
-  margin-top: 16px;
+  margin-top: 12px;
   font-family: 'Jersey20', monospace;
-  min-height: 20px; /* Prevent layout shift */
+  min-height: 20px;
 }
 
 #post-game-streak .streak-counter {
-  font-size: 12px;
-  color: #AAAAAA; /* Light grey */
+  font-size: 14px;
+  color: #CCCCCC;
   font-family: 'Jersey20', monospace;
 }
 
 #post-game-streak .streak-counter.fresh-start {
-  color: #AAAAAA;
-  font-size: 12px;
+  color: #CCCCCC;
+  font-size: 14px;
 }
 
 #post-game-streak .streak-counter.milestone {

@@ -87,28 +87,26 @@ Alex just died at score 67 during Reverse Controls. Heart rate elevated. The gam
 
 ```
 ┌─────────────────────────────────────────────┐
-│              GAME OVER                       │
-│            Score: 67                         │
-│         High Score: 78                       │
-│                                              │
-│  ─── RECAP ───                           │
-│                                              │
-│  [icon] Reverse Controls survived: 3         │
-│  [icon] Phone calls managed: 6               │
-│  [icon] Best combo: x24                      │
-│                                              │
-│  "Your prefrontal cortex just filed a pull   │
-│   request. Merged without conflicts."        │
-│                      — Kernel Sanders        │
-│                                              │
+│              YOUR SCORE                      │
+│                  67                          │  ← 64px hero, neon white
+│          ★ NEW HIGH SCORE ★                 │  ← gold, conditional
+│ ──────────────── RECAP ─────────────────── │  ← 12px label, border-top
+│ [icon] Reverse Controls survived: 3          │  ← left-aligned
+│ [icon] Phone calls managed: 6                │  ← left-aligned
+│ [icon] Best combo: x24                       │  ← left-aligned
+│ ┌────────────────────────────────────────┐  │
+│ │ "Your prefrontal cortex just filed a   │  │  ← quote card (border-left)
+│ │  pull request. Merged without          │  │
+│ │  conflicts."                           │  │
+│ │ [portrait] — Kernel Sanders            │  │  ← 32px portrait, left-aligned
+│ └────────────────────────────────────────┘  │
+│  Session 4/5 — Warming up...                 │  ← calibration only (no streak)
 │  ┌──────────────┐  ┌──────────────┐         │
-│  │  PLAY AGAIN  │  │  SKILL MAP   │         │
+│  │  PLAY AGAIN  │  │  SKILL MAP   │         │  ← appear immediately (no delay)
 │  └──────────────┘  └──────────────┘         │
-│                                              │
-│  Session 4/5 — Warming up...                 │
-│  🔥 12-day streak                            │
 └─────────────────────────────────────────────┘
 ```
+_V5 redesign (2026-02-18): GAME OVER title removed, score is hero, streak removed from game-over, buttons appear immediately._
 
 ### Design Specifications
 
@@ -142,21 +140,21 @@ The algorithm selects 2-3 highlights from a priority queue. This is a *narrative
 **Timing (FR168-169):**
 
 ```
-t=0.0s    Game over screen appears (score, high score)
+t=0.0s    Score hero + buttons appear immediately
 t=0.3s    "RECAP" header fades in
 t=0.6s    Highlight 1 fades in (300ms stagger)
 t=0.9s    Highlight 2 fades in
 t=1.2s    Highlight 3 fades in (if 3 highlights)
 t=1.5s    Caller quote fades in
-t=3.3s    All highlights fully visible, hold
-t=3.3s    "Play Again" and "Skill Map" buttons fade in simultaneously
+t=1.8s    Calibration footer fades in (if applicable)
 ```
+_V5 (2026-02-18): Buttons appear at t=0.0s (was t=3.3s). Streak counter removed from game-over screen._
 
-Play Again is always the default-selected button (FR105). Skill Map button only appears after calibration completes (otherwise shows calibration counter).
+Play Again is always the default-selected button (FR105). Skill Map disabled during calibration (sessions 1-4), enabled after.
 
 **Streak Counter:**
-- Bottom of post-game screen
-- Small, persistent, not competing for attention
+- ~~Bottom of post-game screen~~ — **REMOVED from game-over (2026-02-18)**
+- Streak data still tracked; visible in Skill Map dashboard only
 - Format: flame icon + "12-day streak" in 12px Jersey20
 - On streak break: "Rest day logged. Ready for another round?" (FR195)
 - No red coloring, no warning visuals, no guilt (ethical guardrails per Celia)
@@ -494,22 +492,22 @@ The game currently operates with three phases (`menu`, `playing`, `gameover`) ma
 ```
 Single button. Top Score is a static display, not interactive.
 
-**Current Game Over** (`#gameover-screen`):
+**Current Game Over** (`#gameover-screen`) — V5 (2026-02-18):
 ```
 ┌─────────────────────────────────┐
-│          GAME OVER              │
-│       Your score: 67            │
-│    *** NEW HIGH SCORE! ***      │
-│                                 │
-│       RECAP                 │
-│  Reverse Controls survived: 4   │
-│  Combo multipliers earned: 2    │
-│  Phone calls managed: 6         │
-│                                 │
-│   [Play Again]    [Menu]        │
+│          YOUR SCORE             │
+│              67                 │  ← 64px hero, neon white glow
+│       ★ NEW HIGH SCORE ★       │  ← gold pulse, conditional
+│ ───────── RECAP ─────────────  │  ← 12px, border-top rule
+│  Reverse Controls survived: 4   │  ← left-aligned
+│  Combo multipliers earned: 2    │  ← left-aligned
+│  ┌─────────────────────────┐   │
+│  │ "quote..." [portrait]   │   │  ← card treatment
+│  └─────────────────────────┘   │
+│   [Play Again]  [Skill Map]     │  ← visible immediately
 └─────────────────────────────────┘
 ```
-Two buttons. Cognitive stats (`cognitive-feedback.js`) already display top 3 stats with 300ms stagger animation. Buttons appear after stats animation completes.
+Two buttons visible immediately (no animation delay). Buttons were previously hidden until t=3.3s — removed per UX redesign.
 
 ### Phase System Extension
 
@@ -554,25 +552,23 @@ Inserted between `#new-game-btn` and `#high-score-display`. Styled with the exis
 
 ```
 ┌─────────────────────────────────┐
-│          GAME OVER              │
-│       Your score: 67            │
-│                                 │
-│       RECAP                 │
-│  ★ RC survived: 3 — NEW BEST!  │  ← Enhanced highlights (Layer 1)
-│  ↑ Phone calls managed: 6      │
-│  ✦ Best combo: x24             │
-│                                 │
-│  "Your prefrontal cortex just   │  ← Caller comedy quote (NEW)
-│   filed a pull request.         │
-│   Merged without conflicts."    │
-│                — Kernel Sanders │
-│                                 │
-│   [Play Again]  [Skill Map]     │  ← Skill Map replaces Menu button
-│                                 │
-│  Session 4/5 — Warming up...    │  ← Calibration counter (NEW)
-│  🔥 12-day streak               │  ← Streak counter (NEW)
+│          YOUR SCORE             │  ← V5: no GAME OVER title
+│              67                 │  ← 64px hero number
+│       ★ NEW HIGH SCORE ★       │  ← conditional gold pulse
+│ ────────── RECAP ────────────── │  ← border-top rule, 12px
+│  ★ RC survived: 3 — NEW BEST!  │  ← left-aligned
+│  ↑ Phone calls managed: 6      │  ← left-aligned
+│  ✦ Best combo: x24             │  ← left-aligned
+│  ┌──────────────────────────┐  │
+│  │ "Your prefrontal cortex  │  │  ← quote card (border-left)
+│  │  just filed a pull req." │  │
+│  │ [portrait] — K. Sanders  │  │  ← 32px portrait, left-aligned
+│  └──────────────────────────┘  │
+│  Session 4/5 — Warming up...    │  ← calibration footer only
+│   [Play Again]  [Skill Map]     │  ← immediate, no delay
 └─────────────────────────────────┘
 ```
+_Streak removed from game-over (2026-02-18). Streak visible in Skill Map only._
 
 **Key changes to game over screen:**
 

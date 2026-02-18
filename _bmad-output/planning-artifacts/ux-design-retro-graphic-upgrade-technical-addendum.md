@@ -628,26 +628,34 @@ function onFoodEaten(gameState) {
     0 3px 0 #3A4A6A;
 }
 
-/* Game Over treatment */
-#gameover-screen h2 {
-  font-size: 36px;
-  color: rgb(157, 178, 221);
-  letter-spacing: 4px;
+/* Game Over treatment — V5 (2026-02-18) */
+/* #gameover-screen h2 REMOVED — "GAME OVER" title no longer shown */
+
+/* Score hero — number is the dominant element */
+#score-value {
+  font-size: 64px;
+  line-height: 1;
+  color: #FFFFFF;
   text-shadow:
-    0 0 8px rgba(157, 178, 221, 0.6),
-    0 2px 0 rgba(0, 0, 0, 0.8),
-    0 4px 8px rgba(0, 0, 0, 0.4);
+    0 0 20px rgba(255, 255, 255, 0.9),
+    0 0 40px rgba(255, 255, 255, 0.4),
+    2px 2px 4px rgba(0, 0, 0, 1);
 }
 
-/* New High Score treatment */
+.score-label {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #777777;
+}
+
+/* New High Score treatment — ★ NEW HIGH SCORE ★ */
 #gameover-screen .new-high-score {
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 17px;
   color: #FFD700;
+  letter-spacing: 2px;
   text-shadow:
     0 0 10px rgba(255, 215, 0, 0.8),
-    0 0 20px rgba(255, 215, 0, 0.4),
-    0 0 30px rgba(255, 165, 0, 0.2);
+    0 0 20px rgba(255, 215, 0, 0.4);
   animation: highScorePulse 1.5s ease-in-out infinite;
 }
 

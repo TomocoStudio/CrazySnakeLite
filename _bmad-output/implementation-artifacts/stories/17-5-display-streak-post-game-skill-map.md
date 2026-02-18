@@ -12,17 +12,15 @@
 
 **Given** player completes a game with active streak
 **When** post-game summary displays
-**Then** show streak counter at bottom:
-```
-🔥 12-day streak
-```
-**And** positioned below "Play Again" / "Skill Map" buttons (per Epic 14 Story 14.6)
-**And** flame emoji + text in 12px Jersey20, light grey
+**Then** ~~show streak counter at bottom~~ — **REMOVED (2026-02-18 UX redesign)**
+- Streak display on game-over screen removed for visual clarity
+- `#post-game-streak` DOM element removed from `index.html`
+- `renderFooter()` unlocked state in `cognitive-feedback.js` now hides footer instead of showing streak
+- Streak data still tracked and available in Skill Map dashboard
 
 **Given** player achieves 7-day or 30-day milestone
 **When** post-game streak counter displays
-**Then** use gold color #FFD700 instead of light grey
-**And** subtle pulsing animation (scale 1.0 → 1.05 → 1.0, 2s cycle)
+**Then** ~~use gold color #FFD700~~ — **streak not shown on game-over (see above)**
 
 **Given** Skill Map displays
 **When** session metadata renders

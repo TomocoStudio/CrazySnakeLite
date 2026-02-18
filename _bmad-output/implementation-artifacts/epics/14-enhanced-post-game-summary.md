@@ -109,40 +109,38 @@ if (sessionEngagedWithLowestMetric) {  // Player encountered that challenge
 **Then** display structure:
 ```
 ┌─────────────────────────────────────┐
-│        GAME OVER                    │
-│        Score: 67                    │
-│     High Score: 78                  │
-│                                     │
-│  ─── RECAP ───                      │
-│                                     │
-│  🎯 Reaction Time: NEW PERSONAL BEST!│
-│  ⬆ Spatial Awareness up 15%        │
-│  🔥 Survived 3 Reverse Controls      │
-│                                     │
-│  "Your prefrontal cortex just       │
-│   bench-pressed a truck."           │
-│                   — Kernel Sanders  │
-│                                     │
+│          YOUR SCORE                 │
+│              67                     │  ← 64px hero number, neon white
+│       ★ NEW HIGH SCORE ★           │  ← gold, conditional
+│ ─────────── RECAP ─────────────── │  ← 12px label, top border rule
+│ 🎯 Reaction Time: NEW PERSONAL BEST!│  ← left-aligned
+│ ⬆ Spatial Awareness up 15%         │  ← left-aligned
+│ 🔥 Survived 3 Reverse Controls      │  ← left-aligned
+│ ┌──────────────────────────────┐   │
+│ │ "Your prefrontal cortex just │   │  ← quote card (border-left)
+│ │  bench-pressed a truck."     │   │
+│ │ [portrait] — Kernel Sanders  │   │  ← 32px portrait, left-aligned
+│ └──────────────────────────────┘   │
+│  Session 4/5 — Warming up...        │  ← calibration footer (when active)
 │  ┌────────────┐  ┌────────────┐    │
-│  │ PLAY AGAIN │  │ SKILL MAP  │    │
+│  │ PLAY AGAIN │  │ SKILL MAP  │    │  ← appear immediately (no delay)
 │  └────────────┘  └────────────┘    │
-│                                     │
-│  Session 4/5 — Warming up...        │
-│  🔥 12-day streak                   │
 └─────────────────────────────────────┘
 ```
 
-**And** "RECAP" header uses rgb(157, 178, 221) purple theme (per FR165)
-**And** highlights use Jersey20 font, 18-20px, white text
-**And** icons use pixel-art style (16x16px)
-**And** timing per FR168:
-- t=0.0s: Game over + score appear
+**And** "RECAP" header uses 12px letter-spaced label with CSS border-top rule (rgb(157, 178, 221))
+**And** highlights use Jersey20 font, 19px, left-aligned white text
+**And** caller quote uses card treatment: `rgba` fill + border-left accent, 32px portrait, left-aligned attribution
+**And** timing per FR168 (V5 — buttons no longer delayed):
+- t=0.0s: Score hero + buttons appear immediately
 - t=0.3s: "RECAP" header fades in
 - t=0.6s: Highlight 1 fades in (300ms stagger)
 - t=0.9s: Highlight 2 fades in
 - t=1.2s: Highlight 3 fades in (if 3 highlights)
 - t=1.5s: Caller quote fades in
-- t=3.3s: "Play Again" and "Skill Map" buttons appear
+- t=1.8s: Footer (calibration) fades in if applicable
+- ~~t=3.3s: Buttons appear~~ — **REMOVED: buttons visible from t=0.0s**
+- **Streak counter removed from game-over screen**
 
 **And** no clinical metrics or numbers except achievements (per FR165 - simple language only)
 
@@ -306,8 +304,8 @@ Rest day logged. Ready for another round?
 
 **Acceptance Criteria:**
 
-**Given** post-game highlights have displayed
-**When** buttons appear (t=3.3s per FR169)
+**Given** game over screen shows
+**When** screen renders (V5: immediately, no delay)
 **Then** show two buttons side by side:
 ```
 ┌────────────┐  ┌────────────┐
