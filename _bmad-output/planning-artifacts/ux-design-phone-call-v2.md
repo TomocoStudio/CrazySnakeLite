@@ -1,7 +1,8 @@
 # UX Design: Phone Call Screen V2
 **Author:** Sally (UX Designer)
 **Date:** 2026-02-18
-**Status:** ✅ Approved for implementation
+**Last updated:** 2026-02-18 (post-implementation tuning)
+**Status:** ✅ Implemented & validated
 
 ---
 
@@ -37,7 +38,7 @@ The phone call interrupt screen is the game's highest-stakes UI moment. Players 
 
 - **Axiom 3 (Comedy is a system):** The caller's name IS the comedy. Pat Ch-Notes, Floppy Phil, Syd Ram. At 32px with glow they land. At 12px muted grey they don't.
 - **Axiom 4 (Two-choice maximum):** End | Pick Up. No ambiguity.
-- **Axiom 5 (Teach by encounter):** Remove the keyboard instruction text. After 2 games, players know Space = End, Enter = Pick Up. Showing it wastes attention budget.
+- **Axiom 5 (Teach by encounter):** The full keyboard instruction paragraph is hidden. Instead, always-visible `[Space]` / `[Enter]` badge pills sit inside each button — present on every exposure without dominating visual hierarchy. Teaches association through repetition, not upfront instruction.
 - **Axiom 7 (Emotional peaks are the product):** The phone call is designed to be stressful and funny. The visual design must honour that intention.
 
 ---
@@ -51,15 +52,18 @@ All colors reference the existing game palette — no new colors introduced.
 | Element | V1 Color | V2 Color | Rationale |
 |---|---|---|---|
 | Card border | `rgb(157,178,221)` lavender | `#FFD700` gold + 3-layer neon glow | Matches `border-phone-ring` state already on the canvas border |
-| Card background | `rgba(0,0,0,0.6)` | `#0d0d0d` solid | Darker for better portrait contrast |
+| Overlay backdrop | `rgba(0,0,0,0.8)` opaque | `rgba(0,0,0,0.45)` semi-transparent | Blurred snake bleeds through — cognitive pressure maintained |
+| Card background | `rgba(0,0,0,0.6)` | `rgba(13,13,13,0.72)` semi-transparent | Card readable, underlying game visible |
 | Portrait ring | None (no border) | `3px solid #FFD700` + gold glow blur 12 | Echo of card border — visual unity |
 | Portrait ring on Pick Up | n/a | `3px solid #28a745` + green glow | Matches `border-phone-pickup` on canvas — committed state |
 | Caller name | `#FFFFFF` 24px (overridden to 12px by cascade bug) | `#FFFFFF` 32px, white neon glow | Fixed + promoted to hero |
 | "INCOMING CALL" label | `#E8E8E8` 14px | `#666666` 11px, letter-spacing 3px | Demoted to secondary — status is obvious from context |
 | One-liner text (post-Pick Up) | `#E8E8E8` 14px italic | `#FFD700` 18px italic, gold glow | Comedy reward deserves gold treatment |
-| Keyboard hint text | `#E8E8E8` 12px | `display: none` | Teaches by encounter, frees attention budget |
+| Keyboard hint text | `#E8E8E8` 12px paragraph | Hidden (`display:none`) + replaced by inline badge | Paragraph removed; badge teaches by repetition, not instruction |
 | End button | `#888` grey | `#1a1a1a` bg, `#AAAAAA` text, `#444` border | Intentionally subdued — safe/quiet choice |
+| End keyboard badge | None | `[SPACE]` pill — `#AAAAAA` text, `rgba(255,255,255,0.20)` bg | Always visible; hidden on touch devices |
 | Pick Up button | `#28a745` green | `#FFD700` bg, `#000` text, gold glow | Gold = reward signal. Matches ringing border state. |
+| Pick Up keyboard badge | None | `[ENTER]` pill — `rgba(0,0,0,0.75)` text, `rgba(0,0,0,0.28)` bg | Dark-on-gold context; hidden on touch devices |
 | Countdown bar fill | `linear-gradient(#28a745, #FFD700)` green→yellow | `#FFD700` solid gold + glow blur 8 | Coherent with phone gold system |
 | Countdown bar track | `rgba(0,0,0,0.3)` | `#1a1a1a` + 1px `#333` border | Matches game background |
 
@@ -87,9 +91,11 @@ All colors reference the existing game palette — no new colors introduced.
 ║  ┌─────────────┐  ┌───────────────────┐  ║
 ║  │  END  +1    │  │  PICK UP  +5  ✦  │  ║
 ║  │ (dark/muted)│  │  (GOLD NEON)      │  ║
+║  │  [ SPACE ]  │  │  [ ENTER ]        │  ║
 ║  └─────────────┘  └───────────────────┘  ║
 ║                                          ║
 ╚══════════════════════════════════════════╝
+     ↑ blurred snake visible through transparent overlay
 ```
 
 **Picked Up state (after pressing Pick Up):**
@@ -149,11 +155,11 @@ All colors reference the existing game palette — no new colors introduced.
 ## Implementation Notes
 
 **Files affected:**
-- `css/style.css` — phone overlay section only (lines ~998–1185)
+- `css/style.css` — phone overlay section (lines ~998–1230)
+- `index.html` — added `.btn-key` badge spans inside End and Pick Up buttons
 
 **Files NOT changed:**
 - `js/phone.js` — logic unchanged, visual only
-- `index.html` — no DOM changes; CSS flex `order` property handles visual reordering
 - `js/config.js` — no changes
 - Any other JS module — untouched
 
@@ -171,15 +177,38 @@ All colors reference the existing game palette — no new colors introduced.
 
 | Question | V2 Answer |
 |---|---|
-| Working Memory cost? | ✅ 3 elements to parse: face, name, two buttons. All readable in <300ms. |
+| Working Memory cost? | ✅ 3 elements to parse: face, name, two buttons. Keyboard badges subordinate — never compete for attention. All readable in <300ms. |
 | Competence feedback? | ✅ Gold Pick Up = reward signal. Dark End = safe/quiet. Visual weight matches stake. |
-| Clarity for first-time players? | ✅ Large portrait + name = immediate social context. Two buttons = binary choice. No explanation needed. |
-| Flow preservation? | ✅ Gold card matches the gold reactive border — one coherent visual language. |
-| Emotional impact? | ✅ Electric. The portrait is a character. The gold is urgent. The wiggle demands attention. |
+| Clarity for first-time players? | ✅ Large portrait + name = immediate social context. Two buttons = binary choice. `[SPACE]`/`[ENTER]` badges teach keyboard shortcuts on every exposure without instruction. |
+| Flow preservation? | ✅ Gold card matches the gold reactive border. Semi-transparent overlay keeps the blurred snake visible — player feels the danger of their situation through the phone screen. |
+| Emotional impact? | ✅ Electric. The portrait is a character. The gold is urgent. The blurred game behind the overlay adds stakes — your snake is still moving. |
 
 **All 5: PASS.**
 
 ---
 
-*This document is the implementation contract for the Phone Call V2 visual redesign.*
-*Dev agent should implement CSS changes from this spec exactly.*
+---
+
+## Post-Implementation Additions (2026-02-18)
+
+### Keyboard Shortcut Badges
+After hiding the instruction paragraph (Axiom 5), the question arose: how do players discover keyboard shortcuts during the split-second interrupt? Answer: always-visible badge pills inside each button.
+
+- `.btn-key` span added to End (`[SPACE]`) and Pick Up (`[ENTER]`) in `index.html`
+- 10px uppercase pill, subordinate styling — never competes with button label
+- End badge: `#AAAAAA` text on `rgba(255,255,255,0.20)` dark background
+- Pick Up badge: `rgba(0,0,0,0.75)` text on `rgba(0,0,0,0.28)` — dark-on-gold
+- Hidden on touch devices via `@media (hover: none)` — no keyboard, no badge
+- **Design rationale:** Hover tooltips rejected — the phone call window is too short (~500ms) and tooltips require deliberate interaction. Always-visible badge teaches through repeated exposure without consuming attention budget.
+
+### Semi-Transparent Overlay
+The overlay backdrop and card background were made semi-transparent so the blurred snake is faintly visible through the phone screen. This was a deliberate UX decision, not just aesthetics.
+
+- Overlay backdrop: `rgba(0,0,0,0.85)` → `rgba(0,0,0,0.45)`
+- Card background: `#0d0d0d` solid → `rgba(13,13,13,0.72)`
+- **Design rationale:** The player's snake is still moving during the phone call. Making it *faintly visible* through the overlay preserves the cognitive pressure — you can sense your snake is in danger but cannot fully react. This heightens the End vs Pick Up stakes and makes the decision feel urgent rather than detached. It transforms the overlay from "pause menu" to "distraction."
+
+---
+
+*This document is the complete implementation record for the Phone Call V2 visual redesign.*
+*All changes are CSS/HTML only — no game logic was modified.*

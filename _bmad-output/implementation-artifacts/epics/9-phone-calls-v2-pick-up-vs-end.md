@@ -467,19 +467,26 @@ Transform phone interruptions from reflex-only dismissals into strategic micro-d
 
 ## Post-Completion: V5 Visual Redesign (2026-02-18)
 
-**CSS-only visual overhaul.** No logic, no JS, no HTML changes. All acceptance criteria from Stories 9.1–9.7 remain valid.
+**CSS + HTML visual overhaul.** No JS logic changes. All acceptance criteria from Stories 9.1–9.7 remain valid.
 
-**Changes made to `css/style.css`:**
+**Changes to `css/style.css`:**
 - Portrait: 80px → **160px**, circular with gold ring + neon glow
 - Card border: lavender → **gold `#FFD700`** with 3-layer neon glow (matches `border-phone-ring` system)
-- Caller name: fixed CSS cascade bug (`.caller-name` at line 2653 was overriding phone screen at 12px grey) → scoped to `.phone-screen .caller-name`, now **32px white with neon glow**
+- Overlay backdrop: `rgba(0,0,0,0.85)` → **`rgba(0,0,0,0.45)`** — blurred snake visible through overlay (cognitive pressure)
+- Card background: solid `#0d0d0d` → **`rgba(13,13,13,0.72)`** — semi-transparent, game bleeds through
+- Caller name: fixed CSS cascade bug → scoped to `.phone-screen .caller-name`, now **32px white with neon glow**
 - "INCOMING CALL" label: demoted to 11px `#666` secondary text
 - End button: grey → **dark `#1a1a1a`** with muted border (safe/quiet)
-- Pick Up button: green → **neon gold `#FFD700`** (matches ringing border state — coherent reward signal)
+- Pick Up button: green → **neon gold `#FFD700`** (matches ringing border state)
 - Countdown bar: `green→yellow gradient` → **solid gold `#FFD700`** with glow
-- Keyboard hint: hidden — teach by encounter (Axiom 5)
+- Keyboard hint paragraph: hidden (replaced by inline badges)
 - One-liner reveal: upgraded to 18px gold italic with glow
 - Portrait on Pick Up: gains green ring + glow matching `border-phone-pickup` state
 - Visual order: CSS `flex order` moves "INCOMING CALL" to top, portrait is hero element
+- Keyboard badges: `.btn-key` 10px pill — `[SPACE]`/`[ENTER]`, hidden on touch devices
+
+**Changes to `index.html`:**
+- Added `<span class="btn-key">Space</span>` inside End button
+- Added `<span class="btn-key">Enter</span>` inside Pick Up button
 
 **Full spec:** `_bmad-output/planning-artifacts/ux-design-phone-call-v2.md`
