@@ -2,9 +2,9 @@
 
 **Epic:** 22 - V5 Immersive Atmospheric Enhancement
 **Story ID:** 22.1
-**Status:** 🔴 READY FOR DEV
+**Status:** 🟢 COMPLETED
 **Created:** 2026-02-18
-**Completed:** —
+**Completed:** 2026-02-18
 
 ---
 
@@ -390,7 +390,25 @@ None - implementation was straightforward following the UX specification documen
 
 **Implementation Summary:**
 
-All acceptance criteria and tasks completed successfully. Implementation follows the exact specifications from Sally's UX design document (`ux-design-dynamic-background-glow.md` v1.1).
+All acceptance criteria and tasks completed successfully. Implementation follows Sally's UX design document (`ux-design-dynamic-background-glow.md` v1.1) with user-requested refinements applied post-implementation.
+
+**Post-Implementation Refinements:**
+
+1. **Critical UX Fix - Glow Synchronization** (Commit: 8439b56)
+   - **Issue:** Glow was updating when food spawned (showing opportunity color, not player state)
+   - **Fix:** Moved glow update from `food.js` to `game.js` food consumption handler
+   - **Impact:** Glow now reflects snake's current power-up state (what player HAS), not food on field
+   - **Files:** js/game.js (added glow updates after eating food), js/food.js (removed glow update from spawn)
+
+2. **Breathing Pulse Speed Adjustment** (Commit: 1c9ed25)
+   - **Issue:** 2s breathing cycle felt too fast and distracting
+   - **Fix:** Changed animation duration from 2s → 4s for more relaxed, ambient rhythm
+   - **Impact:** Slower pulse feels more meditative and less attention-grabbing
+
+3. **Vignette Lightening** (Commit: df09d4a)
+   - **Issue:** Vignette darkness was too strong and oppressive
+   - **Fix:** Reduced opacity at all gradient stops (0.3→0.15, 0.6→0.35, 0.85→0.55)
+   - **Impact:** Subtle edge framing without overwhelming visual space or reducing perceived brightness
 
 **Key Implementation Details:**
 
@@ -459,9 +477,19 @@ Game running on localhost:8000 for visual testing.
 ### File List
 
 **Created:**
-- `js/background-glow.js` (NEW) - 105 lines
+- `js/background-glow.js` (NEW) - 105 lines (glow orchestration module)
+- `glow-test.html` (NEW) - 427 lines (prototype test page with 7 variations)
+- `_bmad-output/planning-artifacts/ux-design-dynamic-background-glow.md` (NEW) - UX specification v1.1
+- `_bmad-output/implementation-artifacts/stories/22-1-dynamic-background-glow.md` (NEW) - This story file
 
 **Modified:**
-- `js/food.js` - Added import + 1 function call (lines 4, 50)
-- `js/main.js` - Added imports + 5 function calls (lines 19, 256, 121, 381, 408, 572)
-- `css/style.css` - Added 74 lines of CSS (lines 2030-2103)
+- `js/game.js` - Added glow sync on food consumption (import + 2 function calls after eating food)
+- `js/main.js` - Added glow initialization + state management (imports + 5 function calls)
+- `css/style.css` - Added 74 lines of CSS (glow, vignette, pulse animation, reduced motion support)
+- `_bmad-output/implementation-artifacts/sprint-status.yaml` - Added Epic 22 + Story 22.1
+
+**Final Implementation Values:**
+- Breathing pulse: 4s cycle (changed from initial 2s)
+- Vignette opacity: 0.15/0.35/0.55 (lightened from 0.3/0.6/0.85)
+- Glow sync: On food consumption (fixed from food spawn)
+- Color transition: 800ms ease-in-out (unchanged)

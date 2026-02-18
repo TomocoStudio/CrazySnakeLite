@@ -276,6 +276,6 @@ development_status:
   epic-21-retrospective: optional
 
   # Epic 22: V5 Immersive Atmospheric Enhancement
-  epic-22: in-progress
-  22-1-dynamic-background-glow: review
+  epic-22: done
+  22-1-dynamic-background-glow: done
   epic-22-retrospective: optional
