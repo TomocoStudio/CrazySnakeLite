@@ -722,15 +722,19 @@ CSS pseudo-element with a repeating gradient is composited by the GPU. Zero CPU 
 
 The arcade cabinet bezel wasn't just a frame — it was a design canvas. Different games had different bezel artwork, different colored overlays, different edge treatments. The border said "this is Pac-Man's world" or "this is Space Invaders' world" before a single pixel was drawn.
 
-### Current State
+### Current State (V4.3 — 2026-02-18)
 
-- Canvas border: 8px solid `#000000` (black)
-- Outer shadow: `0 0 0 8px #1A1A2E` (dark navy)
+- **Background:** pure `#000000` (tiled image removed)
+- **Canvas border:** 8px solid `#FFFFFF` (white wall)
+- **Outer ring:** `0 0 0 8px #000000` (pure black, down from `#1A1A2E` 8px)
+- **Default glow:** none
+- **Reverse controls:** no border change (white wall stays neutral — orange was removed)
+- **Invincibility blink:** yellow ↔ white (was yellow ↔ black)
 - Border radius: 10px
-- Static — never changes during gameplay
-- 500ms transition on background-color for combo mode
 
 ### Design Specification
+
+**🔄 V4.3 UPDATE (2026-02-18):** White wall, pure black outer ring, black background. See table below.
 
 **🔄 V4.2 UPDATE (2026-02-17):** Border system simplified to universal semantic states.
 
@@ -744,56 +748,44 @@ The arcade cabinet bezel wasn't just a frame — it was a design canvas. Differe
 
 | Game State | Border Color | Transition | Rationale |
 |---|---|---|---|
-| **Default (no effects)** | `#000000` (black) | — | Walls dangerous. Black = danger = death. Clear semantic baseline. Applies to ALL game modes (normal, combo, phone calls). |
-| **Wall-phase effect active** | `#800080` (purple) | 300ms | Walls safe to cross! Purple matches wall-phase food color. Semantic consistency. Player can phase through walls without dying. |
-| **Invincibility effect active** | `#FFFF00` (yellow) | 400ms blink (yellow ↔ black) | Protected from all danger. Blinking yellow = maximum attention, matches invincibility food. Animation reinforces temporary power state. |
+| **Default (no effects)** | `#FFFFFF` (white) + `0 0 0 8px #000000` outer ring | — | White wall = clean arena boundary. Black outer ring separates canvas from page. |
+| **Death flash** | `#FF0000` (red) | 100ms snap | Visceral death signal. |
+| **Phone ringing** | `#FFD700` (gold) | 300ms | Reward opportunity — matches phone UI gold. |
+| **Phone picked up** | `#28a745` (green) | 300ms | Committed state — call in progress. |
+| **Combo mode** | `#FF00FF` (magenta) pulse | 1500ms cycle | Energy/danger — matches combo system magenta. |
+| **Reverse controls** | `#FFFFFF` (white) — **no change** | — | Reverse is a control mechanic, not a danger state. Border stays neutral. |
+| **Wall-phase effect** | `#800080` (purple) | 300ms | Walls safe to cross. Purple matches wall-phase food. |
+| **Invincibility effect** | `#FFFF00` (yellow) | 400ms blink (yellow ↔ **white**) | Maximum power. Blinks back to white wall (not black). |
 
-**Removed (V4.2):** Phone borders (gold/green), combo borders (dynamic colors), death flash (red), reverse controls (orange)
+**V4.2 note:** Phone/combo/death/reverse borders were temporarily removed in V4.2 for simplification. Restored in V4.3 with the full 7-state system.
 
 **Why removed:** These communicated game events or modes, not danger level. Created visual confusion (e.g., "Is purple border combo mode or wall-phase?"). Simplified to 3 universal states improves cognitive clarity.
 
 #### Implementation
 
 ```css
-/* CSS transition for smooth border color changes */
+/* V4.3: White wall + pure black outer ring */
 #game-canvas {
-  border: 8px solid #000000;  /* Default black border (wall = death) */
-  box-shadow:
-    0 0 0 8px #1A1A2E,  /* Outer border */
-    0 0 20px rgba(0, 0, 0, 0.3);  /* Subtle default glow */
-  transition:
-    background-color 2000ms ease-in-out,
-    border-color 300ms ease-in-out,
-    box-shadow 300ms ease-in-out;  /* Glow transitions with border */
+  border: 8px solid #FFFFFF;  /* White wall */
+  box-shadow: 0 0 0 8px #000000;  /* Black outer ring */
 }
 
-/* V4.2: State classes with multi-layered neon glow (SIMPLIFIED) */
+/* Reverse: no change — white wall stays neutral */
+#game-canvas.border-reverse { border-color: #FFFFFF; box-shadow: 0 0 0 8px #000000; }
 
-/* Wall-phase: Purple (walls safe) */
+/* All active states prepend the 8px black outer ring */
 #game-canvas.border-wallPhase {
-  border-color: #800080;  /* Purple - wall phase active (safe to cross) */
-  box-shadow:
-    0 0 0 8px #1A1A2E,
-    0 0 20px 4px rgba(128, 0, 128, 1),     /* Inner intense purple glow */
-    0 0 40px 8px rgba(128, 0, 128, 0.9),   /* Middle purple glow */
-    0 0 60px 12px rgba(128, 0, 128, 0.7);  /* Outer purple glow */
+  border-color: #800080;
+  box-shadow: 0 0 0 8px #000000, 0 0 20px 4px rgba(128,0,128,1), 0 0 40px 8px rgba(128,0,128,0.9), 0 0 60px 12px rgba(128,0,128,0.7);
 }
-
 #game-canvas.border-invincibility {
-  border-color: #FFFF00;  /* Yellow - invincibility active */
+  border-color: #FFFF00;
   animation: borderBlink 400ms steps(2, jump-none) infinite;
-  box-shadow:
-    0 0 0 8px #1A1A2E,
-    0 0 20px 4px rgba(255, 255, 0, 1),     /* Inner intense yellow glow */
-    0 0 40px 8px rgba(255, 255, 0, 1),     /* Middle yellow glow - full intensity */
-    0 0 60px 12px rgba(255, 255, 0, 0.9),  /* Outer yellow glow */
-    0 0 80px 16px rgba(255, 255, 0, 0.7);  /* Extra wide glow - maximum power */
+  box-shadow: 0 0 0 8px #000000, 0 0 20px 4px rgba(255,255,0,1), 0 0 40px 8px rgba(255,255,0,1), 0 0 60px 12px rgba(255,255,0,0.9), 0 0 80px 16px rgba(255,255,0,0.7);
 }
-
-/* Blinking animation for invincibility border */
 @keyframes borderBlink {
-  0%, 49% { border-color: #FFFF00; }  /* Yellow */
-  50%, 100% { border-color: #000000; }  /* Black */
+  0%, 49%  { border-color: #FFFF00; }  /* Yellow */
+  50%, 100% { border-color: #FFFFFF; }  /* White — matches default wall */
 }
 ```
 

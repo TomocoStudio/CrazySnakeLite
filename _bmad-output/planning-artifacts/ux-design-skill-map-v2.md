@@ -560,3 +560,22 @@ Three fixes to fully align the Feedback modal with the design system:
 - Affects: "SUBMIT FEEDBACK" button + "BACK TO GAME" pause menu button
 
 **Files changed:** `css/style.css`
+
+#### Round 11 — Canvas Border & Background Final Treatment (2026-02-18)
+Tomoco: *"Option E — white wall, remove background image, 8px black outer ring"*
+
+After a multi-option preview session (A–E tested in `test/canvas-border-preview.html`), final decisions:
+
+**Background**
+- Removed tiled `Background08_02_256x256.png` → `background-color: #000000` pure black
+
+**Canvas border (Option E + refinements)**
+- Default: `border: 8px solid #FFFFFF` (white wall) + `box-shadow: 0 0 0 8px #000000` (pure black outer ring, 8px)
+- Old dark outer ring `#1A1A2E` replaced with `#000000` across all 7 states
+- **Reverse controls:** border stays white / no change — orange was a game event, not a danger signal
+- **Invincibility blink:** alternates yellow ↔ white (was yellow ↔ black)
+- All other reactive states preserved with updated outer ring
+
+Full spec: `ux-design-retro-graphic-upgrade.md` V4.3 section.
+
+**Files changed:** `css/style.css`
