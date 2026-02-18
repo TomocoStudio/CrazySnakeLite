@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Snake Background Test</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0d0d0d; overflow: hidden; width: 100vw; height: 100vh; }
+    canvas { position: fixed; top: 0; left: 0; }
+  </style>
+</head>
+<body>
+  <canvas id="bg"></canvas>
+  <script>
+    const UNIT = 20;   // px per grid cell (matches game)
+    const PAD  = 1;    // inner padding per segment — creates 2px dark gap between snakes
+
+    const PALETTE = [
+      '#00FF00',  // food: growing (green)
+      '#FFFF00',  // food: invincibility (yellow)
+      '#800080',  // food: wall phase (purple)
+      '#FF0000',  // food: speed boost (red)
+      '#00CED1',  // food: speed decrease (teal)
+      '#FFA500',  // food: reverse controls (orange)
+    ];
+
+    const DIR_VECTORS = [
+      { dx: 1,  dy: 0,  name: 'right' },
+      { dx: -1, dy: 0,  name: 'left'  },
+      { dx: 0,  dy: 1,  name: 'down'  },
+      { dx: 0,  dy: -1, name: 'up'    },
+    ];
+
+    const canvas = document.getElementById('bg');
+    const ctx    = canvas.getContext('2d');
+
+    const VW = window.innerWidth;
+    const VH = window.innerHeight;
+    canvas.width  = VW;
+    canvas.height = VH;
+
+    const COLS = Math.ceil(VW / UNIT);
+    const ROWS = Math.ceil(VH / UNIT);
+
+    // grid[row][col] = snake id (0 = empty)
+    const grid = Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
+
+    // snakes[id] = { color, headCol, headRow, dir: 'right'|'left'|'up'|'down' }
+    const snakes = {};
+
+    function inBounds(x, y) { return x >= 0 && x < COLS && y >= 0 && y < ROWS; }
+    function empty(x, y)    { return inBounds(x, y) && grid[y][x] === 0; }
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // Shuffled start positions — ensures full coverage
+    const positions = [];
+    for (let y = 0; y < ROWS; y++)
+      for (let x = 0; x < COLS; x++)
+        positions.push([x, y]);
+    shuffle(positions);
+
+    let nextId = 1;
+
+    for (const [sx, sy] of positions) {
+      if (!empty(sx, sy)) continue;
+
+      const id     = nextId++;
+      const color  = PALETTE[Math.floor(Math.random() * PALETTE.length)];
+      const maxLen = 3 + Math.floor(Math.random() * 14);  // 3–16 segments
+
+      // Pick initial direction, store it as the head's facing direction
+      let dir = DIR_VECTORS[Math.floor(Math.random() * 4)];
+
+      snakes[id] = { color, headCol: sx, headRow: sy, dir: dir.name };
+      grid[sy][sx] = id;
+
+      let x = sx, y = sy;
+
+      for (let step = 1; step < maxLen; step++) {
+        // 75% keep direction, 25% try a turn
+        const pool = Math.random() < 0.75
+          ? [dir, ...shuffle([...DIR_VECTORS])]
+          : shuffle([...DIR_VECTORS]);
+
+        let moved = false;
+        for (const d of pool) {
+          const nx = x + d.dx;
+          const ny = y + d.dy;
+          if (empty(nx, ny)) {
+            dir = d; x = nx; y = ny;
+            grid[y][x] = id;
+            moved = true;
+            break;
+          }
+        }
+        if (!moved) break;
+      }
+    }
+
+    // ── Render ────────────────────────────────────────────────────────────────
+
+    // Dark background (shows through the 2px gaps between segments)
+    ctx.fillStyle = '#0d0d0d';
+    ctx.fillRect(0, 0, VW, VH);
+
+    // Pass 1: draw all segments
+    for (let row = 0; row < ROWS; row++) {
+      for (let col = 0; col < COLS; col++) {
+        const id = grid[row][col];
+        if (!id) continue;
+
+        const { color } = snakes[id];
+        const px   = col * UNIT + PAD;
+        const py   = row * UNIT + PAD;
+        const size = UNIT - PAD * 2;
+
+        ctx.fillStyle = color;
+        ctx.fillRect(px, py, size, size);
+
+        // Subtle 1px dark inner border (game-accurate pixel art look)
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.45)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(px + 0.5, py + 0.5, size - 1, size - 1);
+      }
+    }
+
+    // Pass 2: draw heads on top (eyes + direction highlight)
+    for (const [id, snake] of Object.entries(snakes)) {
+      const headX = snake.headCol * UNIT;
+      const headY = snake.headRow * UNIT;
+      renderSnakeHead(ctx, headX, headY, snake.dir);
+    }
+
+    // ── Head rendering — ported exactly from render.js ────────────────────────
+
+    function renderSnakeHead(ctx, headX, headY, direction) {
+      const eyeRadius   = 2.5;
+      const eyeSpacing  = 8;
+      const pupilRadius = 1.5;
+      const pupilOffset = 1.5;
+
+      const centerX = headX + UNIT / 2;
+      const centerY = headY + UNIT / 2;
+
+      let eye1X, eye1Y, eye2X, eye2Y;
+      let pupilDx = 0, pupilDy = 0;
+
+      switch (direction) {
+        case 'right':
+          eye1X = centerX - eyeSpacing / 2;
+          eye2X = centerX + eyeSpacing / 2;
+          eye1Y = eye2Y = headY + UNIT / 3;
+          pupilDx = pupilOffset;
+          break;
+        case 'left':
+          eye1X = centerX - eyeSpacing / 2;
+          eye2X = centerX + eyeSpacing / 2;
+          eye1Y = eye2Y = headY + UNIT / 3;
+          pupilDx = -pupilOffset;
+          break;
+        case 'up':
+          eye1Y = centerY - eyeSpacing / 2;
+          eye2Y = centerY + eyeSpacing / 2;
+          eye1X = eye2X = headX + UNIT / 3;
+          pupilDy = -pupilOffset;
+          break;
+        case 'down':
+          eye1Y = centerY - eyeSpacing / 2;
+          eye2Y = centerY + eyeSpacing / 2;
+          eye1X = eye2X = headX + UNIT / 3;
+          pupilDy = pupilOffset;
+          break;
+        default:
+          eye1X = centerX - eyeSpacing / 2;
+          eye2X = centerX + eyeSpacing / 2;
+          eye1Y = eye2Y = headY + UNIT / 3;
+          pupilDx = pupilOffset;
+      }
+
+      // White eyes
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath(); ctx.arc(eye1X, eye1Y, eyeRadius, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(eye2X, eye2Y, eyeRadius, 0, Math.PI * 2); ctx.fill();
+
+      // Black pupils offset toward movement direction
+      ctx.fillStyle = '#000000';
+      ctx.beginPath(); ctx.arc(eye1X + pupilDx, eye1Y + pupilDy, pupilRadius, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(eye2X + pupilDx, eye2Y + pupilDy, pupilRadius, 0, Math.PI * 2); ctx.fill();
+
+      // Leading-edge highlight (Mega Man technique)
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      switch (direction) {
+        case 'right': ctx.moveTo(headX + UNIT - 0.5, headY + 2); ctx.lineTo(headX + UNIT - 0.5, headY + UNIT - 2); break;
+        case 'left':  ctx.moveTo(headX + 0.5,        headY + 2); ctx.lineTo(headX + 0.5,        headY + UNIT - 2); break;
+        case 'up':    ctx.moveTo(headX + 2, headY + 0.5);        ctx.lineTo(headX + UNIT - 2, headY + 0.5);        break;
+        case 'down':  ctx.moveTo(headX + 2, headY + UNIT - 0.5); ctx.lineTo(headX + UNIT - 2, headY + UNIT - 0.5); break;
+      }
+      ctx.stroke();
+      ctx.strokeStyle = 'transparent';
+    }
+  </script>
+</body>
+</html>

@@ -16,6 +16,9 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <!-- Snake background — packed mosaic behind the game -->
+  <canvas id="snake-bg"></canvas>
+
   <div id="game-container">
     <canvas id="game-canvas"></canvas>
 
@@ -221,5 +224,9 @@
   </div>
 
   <script type="module" src="js/main.js"></script>
+  <script type="module">
+    import { initSnakeBackground } from './js/snake-background.js';
+    initSnakeBackground();
+  </script>
 </body>
 </html>

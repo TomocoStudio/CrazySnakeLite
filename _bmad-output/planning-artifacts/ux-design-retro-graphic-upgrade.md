@@ -1146,3 +1146,47 @@ Changing the default to Electric Blue would pollute this semantic system — pla
 **Design rationale:** Grid lines are a spatial scaffold only — they should recede behind game elements (snake, food, effects), not compete with the white border frame. At `0.3` they are clearly visible for spatial orientation without creating visual noise. The progressive opacity system (`gridOpacity` from `getProgressionState`) further multiplies this value as score increases (effective opacity: ~0.27 at score 0, ~0.09 at score 100+).
 
 **Note on Electric Blue grid:** Also tested `rgba(0,180,255,0.3)` — rejected. Too much blue coloring inside the canvas creates noise when combined with the snake's reactive halo and other neon elements.
+
+---
+
+## Post-Implementation Record — Snake Mosaic Page Background (2026-02-18)
+
+### Concept
+
+The entire page background (outside and behind the game canvas) is filled with a static packed mosaic of pixel-art snakes — the same visual language as the game itself. Every snake has the proper head (directional white eyes, black pupils, leading-edge highlight ported exactly from `render.js`). Snakes are 3–16 segments long, mostly straight with occasional bends.
+
+### Final Design Decisions
+
+| Property | Value | Rationale |
+|---|---|---|
+| Snake color | `#000000` black | Creates pure silhouette texture — lets the food-color halo bleed through dramatically |
+| Segment border | `rgba(255,255,255,0.8)` white | Crisp grid separation, readable pixel art without color noise |
+| Canvas opacity | `0.5` (CSS) | Half-visible — textural depth without competing with the game |
+| Z-index | `-3` | Behind food halo (`-2`) and vignette (`-1`) so both effects layer correctly on top |
+| Generation | Static, random per load | Zero runtime performance cost; fresh layout every session |
+
+### Layer Stack (bottom → top)
+
+```
+z-index: -3  #snake-bg canvas        — black snake mosaic (base texture)
+z-index: -2  .background-glow        — food-color radial halo pulses OVER snakes
+z-index: -1  .background-vignette    — edge darkening focuses attention to center
+z-index:  1  #game-container         — game canvas + all UI
+z-index: 9999 body::after            — CRT scanline overlay (topmost)
+```
+
+### Key Design Insight
+
+Black snakes at 0.5 opacity let the food-color halo (`background-glow`) colorize the entire background dynamically — the mosaic texture shifts color with every food spawn. The vignette then darkens the edges, pulling focus inward to the game canvas. Three layers working as one coherent system.
+
+### Files
+
+- `js/snake-background.js` — standalone module, called once on load (`initSnakeBackground()`)
+- `index.html` — `<canvas id="snake-bg">` inserted before `#game-container`; module imported as separate `<script type="module">`
+- `css/style.css` — `#snake-bg` rule + `z-index: 1` added to `#game-container`
+
+### Tested Alternatives (Rejected)
+
+- **Colored snakes (food palette)** — too noisy, competed with the game's own food colors and the halo effect
+- **Full opacity (1.0)** — too loud, dominated the page
+- **Electric Blue grid** — too much single-color saturation in background context

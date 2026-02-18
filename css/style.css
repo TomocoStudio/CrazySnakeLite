@@ -46,12 +46,24 @@ body::after {
   z-index: 9999;         /* Above everything for full CRT effect */
 }
 
+/* Snake background — full viewport mosaic behind everything */
+#snake-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -3;  /* Behind glow (-2) and vignette (-1) */
+  opacity: 0.5;
+}
+
 /* Game container - centers the canvas */
 #game-container {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1;
 }
 
 /* Story 21.3: CRT Scanline Overlay - Now applied to full page via body::after (see line ~31) */
