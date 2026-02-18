@@ -2074,7 +2074,7 @@ button:disabled {
   }
 }
 
-/* Vignette overlay (darkens edges, focuses attention on game area) */
+/* Vignette overlay (subtly darkens edges, focuses attention on game area) */
 .background-vignette {
   position: fixed;
   top: 50%;
@@ -2086,9 +2086,9 @@ button:disabled {
     ellipse at center,
     transparent 0%,
     transparent 30%,
-    rgba(0, 0, 0, 0.3) 50%,
-    rgba(0, 0, 0, 0.6) 70%,
-    rgba(0, 0, 0, 0.85) 100%
+    rgba(0, 0, 0, 0.15) 50%,
+    rgba(0, 0, 0, 0.35) 70%,
+    rgba(0, 0, 0, 0.55) 100%
   );
   pointer-events: none;
   z-index: -1;  /* Above glow, below all game elements */
