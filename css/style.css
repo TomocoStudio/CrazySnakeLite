@@ -1657,6 +1657,8 @@ button:disabled {
   padding: 12px 20px;
   font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 24px;
+  font-weight: bold;
+  text-transform: uppercase;
   background-color: #000000;
   color: #FFFFFF;
   border: 2px solid #00B4FF;
