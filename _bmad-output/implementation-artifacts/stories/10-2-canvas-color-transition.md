@@ -36,24 +36,25 @@
 
 **Given** combo mode activates
 **When** the trigger occurs
-**Then** the canvas background color switches from normal (#E6E6E6) to combo mode (#505050) via grid inversion
-**And** the grid line color inverts from dark (#505050) to light (#E6E6E6)
-**And** the color change is instant (per-frame canvas fill, not CSS transition)
+**Then** the canvas background stays `#1a1a1a` (unchanged — no background shift)
+**And** the grid line color switches to magenta `#FF00FF` (instant, per-frame via `render.js renderGrid()`)
+**And** the border transitions to magenta with breathing glow (`border-combo` CSS class, `comboGlowPulse` 1.5s animation)
+**And** `COMBO MODE!` flash appears canvas-centered (72px Jersey20, magenta, 2s float-up)
 
 **Given** combo mode exits (third food eaten)
 **When** the exit triggers
-**Then** the canvas background returns to normal (#E6E6E6) via grid inversion
-**And** the grid lines return to normal (#505050)
+**Then** the grid lines return to the normal progression color
+**And** the `border-combo` CSS class is removed (border returns to default black)
 
 **Given** a phone call arrives during active combo
 **When** the phone overlay shows
-**Then** the dark combo canvas color remains visible underneath the blur
-**And** the canvas uses both: combo color + 4px blur
+**Then** the magenta grid and border remain visible underneath the blur
+**And** the canvas uses both: combo visuals + 4px blur
 
-**Given** the canvas is dark during combo
+**Given** the canvas is in combo mode
 **When** rendering the snake and food
-**Then** the light colors remain clearly visible against the dark background
-**And** contrast is sufficient for gameplay
+**Then** game objects remain clearly visible against the dark `#1a1a1a` background
+**And** the magenta grid provides spatial context without obscuring food or snake
 
 ## Tasks / Subtasks
 
@@ -455,6 +456,13 @@ No debug issues encountered during implementation.
 - Actual implementation: fixed grid inversion (#E6E6E6 ↔ #505050) + instant per-frame fill
 - COMBO_CANVAS_COLORS in config.js and combo.canvasColor in state remain as stored-but-unused data
 - render.js clearCanvas() and renderGrid() use CONFIG.COLORS.comboBackground/comboGridLine (not random selection)
+
+**2026-02-18** - V5 Combo Visual Overhaul (UX upgrade — Sally/Tomoco)
+- Background: `comboBackground` changed to `#1a1a1a` (matches normal dark — no background shift on combo)
+- Grid lines: `comboGridLine` changed from `#E6E6E6` to `#FF00FF` (magenta neon — pops against dark background)
+- Border: `updateBorderState()` now adds `border-combo` CSS class during combo (magenta `#FF00FF` + `comboGlowPulse` 1.5s breathing animation)
+- Activation flash: `spawnCenterComboFlash('COMBO MODE!')` fires on combo activation (72px Jersey20, canvas-centered, 2s float-up from center)
+- Priority cascade: combo added as priority 3 in `updateBorderState()` (below invincibility, above default)
 - Implementation change was made in commit f83d8b9 (grid inversion approach)
 
 **2026-02-14** - Code Review Complete & Issues Resolved

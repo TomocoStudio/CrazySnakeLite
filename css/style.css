@@ -106,8 +106,30 @@ body.no-scanlines::after {
 }
 
 #game-canvas.border-combo {
-  /* border-color set dynamically via JS from gameState.combo.canvasColor */
-  /* Glow will be set dynamically via JS as well */
+  border-color: #FF00FF;  /* Magenta - combo mode energy */
+  box-shadow:
+    0 0 0 8px #1A1A2E,
+    0 0 20px 4px rgba(255, 0, 255, 1),
+    0 0 40px 8px rgba(255, 0, 255, 0.8),
+    0 0 60px 12px rgba(255, 0, 255, 0.6);
+  animation: comboGlowPulse 1500ms ease-in-out infinite;
+}
+
+@keyframes comboGlowPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 8px #1A1A2E,
+      0 0 20px 4px rgba(255, 0, 255, 1),
+      0 0 40px 8px rgba(255, 0, 255, 0.8),
+      0 0 60px 12px rgba(255, 0, 255, 0.6);
+  }
+  50% {
+    box-shadow:
+      0 0 0 8px #1A1A2E,
+      0 0 30px 6px rgba(255, 0, 255, 1),
+      0 0 60px 12px rgba(255, 0, 255, 0.9),
+      0 0 80px 16px rgba(255, 0, 255, 0.7);
+  }
 }
 
 #game-canvas.border-reverse {
@@ -2024,6 +2046,50 @@ button:disabled {
   100% {
     opacity: 0;
     transform: translateY(-15px);
+  }
+}
+
+/* ========================================
+   Combo Mode Center Flash
+   Activation announcement centered on canvas
+   ======================================== */
+
+.combo-center-flash {
+  position: fixed;
+  font-family: 'Jersey20', sans-serif;
+  font-size: 72px;
+  color: #FF00FF;  /* Magenta - combo mode */
+  font-weight: 900;
+  text-shadow: 0 0 20px rgba(255, 0, 255, 1),
+               0 0 40px rgba(255, 0, 255, 0.8),
+               2px 2px 4px rgba(0, 0, 0, 1);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  pointer-events: none;
+  z-index: 1000;
+  white-space: nowrap;
+  animation: comboFlashEnter 2000ms ease-out forwards;
+}
+
+@keyframes comboFlashEnter {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+  35% {
+    transform: translate(-50%, -50%) scale(1.0);
+  }
+  65% {
+    opacity: 1;
+    transform: translate(-50%, -60%);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -75%);
   }
 }
 

@@ -388,7 +388,7 @@ None - straightforward implementation, no debugging required.
 - Created event-driven background update function
 - Tracks `lastBackground` to avoid redundant CSS updates
 - Handles both normal progression AND combo mode backgrounds
-- Combo mode: Uses CONFIG.COLORS.comboBackground (#505050)
+- Combo mode: Uses CONFIG.COLORS.comboBackground (#1a1a1a — same as normal; visual distinction is via magenta grid lines + border glow, not background)
 - Normal mode: Uses progression.getState(score).background
 - Called from 7 score/state change locations:
   1. Food eaten (line ~130)

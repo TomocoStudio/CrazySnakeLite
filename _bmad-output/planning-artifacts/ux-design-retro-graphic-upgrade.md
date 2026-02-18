@@ -880,7 +880,7 @@ The 80s tilemap grid was the foundational visual structure of every game. It was
 // render.js — new function, called after renderGrid()
 function renderGridDots(ctx, gameState) {
   const dotColor = isComboActive(gameState)
-    ? CONFIG.COLORS.comboGridLine
+    ? CONFIG.COLORS.comboGridLine  // #FF00FF magenta neon during combo (V5 upgrade)
     : getCurrentGridDotColor(gameState.score);  // progression-aware
 
   ctx.fillStyle = dotColor;

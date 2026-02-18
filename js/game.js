@@ -10,7 +10,7 @@ import { checkPhoneCallTiming, dismissPhoneCall, scheduleNextCall, hidePhoneOver
 import { trackPhoneCall, trackFoodEaten, trackPhoneCallEvent, trackGameOver } from './analytics.js';
 import { playMoveSound, playDeathSound, playJackpot, playLegendary, playComboExit } from './audio.js';
 import { getFoodScore } from './scoring.js';
-import { spawnPopup, spawnPhoneBonusPopup, spawnComboPopup, spawnParticles, triggerScreenShake, gridToPixel, spawnFlash, spawnVictoryFlash, spawnSpeedFlash, spawnInvincibilityFlash } from './score-popup.js';
+import { spawnPopup, spawnPhoneBonusPopup, spawnComboPopup, spawnParticles, triggerScreenShake, gridToPixel, spawnFlash, spawnVictoryFlash, spawnSpeedFlash, spawnInvincibilityFlash, spawnCenterComboFlash } from './score-popup.js';
 import { getComboProbability, getState as getProgressionState } from './progression.js';
 import { activateCombo, isComboActive, exitCombo } from './combo.js';
 import {
@@ -161,7 +161,15 @@ export function updateBorderState(gameState) {
     return;
   }
 
-  // 3. Default (black) - clear inline style, let CSS default take over
+  // 3. Combo (magenta breathing glow)
+  if (gameState.combo.active) {
+    canvas.classList.add('border-combo');
+    canvas.style.borderColor = '';  // Let CSS class control the color
+    console.log('[V4.2] Border → combo (magenta pulse)');
+    return;
+  }
+
+  // 4. Default (black) - clear inline style, let CSS default take over
   canvas.style.borderColor = '';
   console.log('[V4.2] Border → default (black)');
 }
@@ -267,6 +275,9 @@ function update(gameState) {
 
         // Story 20.5: Update border to combo color
         updateBorderState(gameState);
+
+        // Combo activation announcement: centered canvas flash
+        spawnCenterComboFlash('COMBO MODE!');
 
         // Story 10.7: Track combo activation (Review fix: moved from combo.js to game.js for proper module boundaries)
         gameState.analyticsState.totalCombosTriggered += 1;

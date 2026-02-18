@@ -48,8 +48,8 @@ export const CONFIG = {
   COLORS: {
     background: '#E6E6E6',          // RGB(230, 230, 230) - normal mode
     gridLine: '#505050',            // RGB(80, 80, 80) - normal mode (inverted in combo)
-    comboBackground: '#505050',     // RGB(80, 80, 80) - combo mode
-    comboGridLine: '#E6E6E6',       // RGB(230, 230, 230) - combo mode
+    comboBackground: '#1a1a1a',     // Same as normal dark background — grid stays black during combo
+    comboGridLine: '#FF00FF',       // Magenta neon - combo mode (pops against dark #1a1a1a background)
     border: '#800080',  // Story 5-8: Match wall phase food color for UX association
     snakeDefault: '#000000',
     snakeGrowing: '#00FF00',

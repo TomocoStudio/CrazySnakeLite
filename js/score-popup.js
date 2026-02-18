@@ -212,6 +212,29 @@ export function spawnFlash(text, x, y) {
 }
 
 /**
+ * Spawn a "COMBO MODE!" flash centered on the game canvas
+ * @param {string} text - Flash text (e.g., 'COMBO MODE!')
+ */
+export function spawnCenterComboFlash(text) {
+  const canvas = document.getElementById('game-canvas');
+  const rect = canvas.getBoundingClientRect();
+
+  const flash = document.createElement('div');
+  flash.className = 'combo-center-flash';
+  flash.textContent = text;
+
+  // Position at canvas center — CSS transform handles the -50%/-50% offset
+  flash.style.left = `${rect.left + rect.width / 2}px`;
+  flash.style.top = `${rect.top + rect.height / 2}px`;
+
+  document.body.appendChild(flash);
+
+  flash.addEventListener('animationend', () => {
+    flash.remove();
+  });
+}
+
+/**
  * Spawn a phone bonus popup (Story 9.6)
  * Convenience wrapper for phone call bonuses with gold styling
  * @param {number} value - Bonus points awarded

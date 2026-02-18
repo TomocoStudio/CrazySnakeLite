@@ -166,10 +166,12 @@ setTimeout(() => el.remove(), 800);                     // WRONG
 overlay.classList.add('picked-up');                      // CORRECT
 endBtn.style.display = 'none';                          // WRONG
 
-// Canvas combo state: grid inversion via render.js clearCanvas()
-// render.js checks isComboActive() and uses CONFIG.COLORS.comboBackground
-ctx.fillStyle = isComboActive(gameState) ? CONFIG.COLORS.comboBackground : CONFIG.COLORS.background; // CORRECT
-canvas.style.backgroundColor = '#4A148C';               // WRONG — use canvas fillRect in render.js
+// Canvas combo state (V5): background stays #1a1a1a (unchanged); neon grid lines via render.js renderGrid()
+// render.js checks isComboActive() and uses CONFIG.COLORS.comboGridLine (#FF00FF magenta)
+// Border breathing glow: game.js updateBorderState() adds CSS class 'border-combo' (comboGlowPulse animation)
+// Activation announcement: spawnCenterComboFlash('COMBO MODE!') — canvas-centered, 72px Jersey20, 2s
+ctx.strokeStyle = isComboActive(gameState) ? CONFIG.COLORS.comboGridLine : CONFIG.COLORS.gridLine; // CORRECT
+canvas.style.backgroundColor = '#4A148C';               // WRONG — background stays #1a1a1a during combo
 
 // Reduced motion: read CONFIG flag (detected once in main.js)
 if (CONFIG.REDUCED_MOTION) { /* ... */ }                // CORRECT
@@ -513,7 +515,7 @@ All paths relative to project root. All filenames kebab-case.
 | Manipulate DOM in game logic | Keep DOM access in designated modules |
 | `{ type: 'speedBoost' }` crossing modules without scoreValue | `{ type: 'speedBoost', scoreValue: 5 }` |
 | `setTimeout(() => popup.remove(), 800)` | `popup.addEventListener('animationend', () => popup.remove())` |
-| `canvas.style.backgroundColor = color` for combo | Grid inversion via `ctx.fillRect` in `render.js clearCanvas()` using `CONFIG.COLORS.comboBackground` |
+| `canvas.style.backgroundColor = color` for combo | V5: background stays `#1a1a1a` (unchanged); combo uses neon grid lines (`CONFIG.COLORS.comboGridLine` = `#FF00FF`) + CSS `border-combo` breathing glow |
 | `endBtn.style.display = 'none'` for phone states | `overlay.classList.add('picked-up')` with CSS rules |
 | `progression.getState(score)` called multiple times in one function | Call once, destructure: `const { a, b } = getState(score)` |
 | `window.matchMedia(...)` in individual modules | Read `CONFIG.REDUCED_MOTION` (detected once in main.js) |
@@ -670,7 +672,7 @@ foodCount: 0 (inactive) → 1 (activated/effectA) → 2 (effectB/striped) → 3 
 ```
 
 - Probability-based activation (10% at score 30, up to 40% at score 120+)
-- Canvas uses grid inversion: background #E6E6E6→#505050, gridLine #505050→#E6E6E6 (instant, per-frame)
+- V5 Combo Visual: background stays `#1a1a1a` (unchanged); grid lines → magenta `#FF00FF` (instant, per-frame via `render.js renderGrid()`); border → magenta breathing glow CSS class `border-combo` (`comboGlowPulse` 1.5s animation in `game.js updateBorderState()`); activation → `spawnCenterComboFlash('COMBO MODE!')` (72px Jersey20, canvas-centered, 2s float-up)
 - Snake renders with alternating stripe pattern (Effect A / Effect B colors) when foodCount=2
 - 3-food lifecycle: activate → eat food B (stripe + multiply) → eat food C (exit)
 - Pauses when phone overlay active (guard clause in game.js checks `phoneCall.active`), resumes when dismissed
