@@ -447,6 +447,15 @@ body.no-scanlines::after {
     0 0 40px rgba(0, 180, 255, 0.2);
 }
 
+/* Suppress hover highlight on unselected buttons when keyboard nav is active */
+body.using-keyboard .game-over-btn:not(.selected):hover:not(:disabled) {
+  background-color: #000000;
+  border-color: #00B4FF;
+  color: #FFFFFF;
+  transform: none;
+  box-shadow: 0 0 6px rgba(0, 180, 255, 0.25);
+}
+
 .game-over-btn:active:not(:disabled) {
   background-color: #00B4FF;
   border-color: #00B4FF;

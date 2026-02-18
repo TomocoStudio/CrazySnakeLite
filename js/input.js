@@ -66,6 +66,11 @@ export function initInput(gameState, onPlayAgain, onPause, onResume, menuActions
     handleKeyboardInput(e, gameState);
   });
 
+  // Suppress hover styles when keyboard navigation is active; restore on mouse move
+  document.addEventListener('mousemove', () => {
+    document.body.classList.remove('using-keyboard');
+  }, { passive: true });
+
   // Touch input (mobile)
   document.addEventListener('touchstart', handleTouchStart, { passive: true });
   document.addEventListener('touchend', (e) => {
@@ -281,6 +286,9 @@ function invertDirection(direction) {
  * Story 4.4: Implement arrow key navigation
  */
 function navigateMenuOptions(key, phase) {
+  // Mark keyboard navigation active — suppresses CSS :hover on non-selected buttons
+  document.body.classList.add('using-keyboard');
+
   let buttons = [];
 
   if (phase === 'menu') {
