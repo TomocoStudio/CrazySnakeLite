@@ -92,7 +92,7 @@ These 6 colors are visually distinct, span the warm/cool spectrum, and all exist
 ║  [GOLD BORDER — 8px #FFD700 + 3-layer neon glow]         ║
 ║                                                           ║
 ║              YOUR                                         ║
-║          SKILL MAP          (Jersey20, 32px, white glow)  ║
+║          SKILL MAP          (Jersey20, 36px, electric blue neon + 3D bevel — matches CRAZY SNAKE title)  ║
 ║                                                           ║
 ║  ── COGNITIVE PROFILE ──  (12px, #666, letter-spaced)     ║
 ║                                                           ║
@@ -165,7 +165,7 @@ box-shadow:
 | Element | Spec |
 |---|---|
 | "YOUR" label | 11px, `#888888`, `letter-spacing: 3px`, uppercase, text-align center |
-| "SKILL MAP" | 32px Jersey20, `#FFFFFF`, text-shadow: `0 0 20px rgba(255,255,255,0.9), 0 0 40px rgba(255,255,255,0.4)` |
+| "SKILL MAP" | 36px Jersey20, `#FFFFFF`, `letter-spacing: 3px`, text-shadow: `0 0 10px rgba(0,180,255,0.8), 0 0 20px rgba(0,180,255,0.4), 0 2px 0 #5A6A8A, 0 3px 0 #3A4A6A` (matches `.game-title`) |
 | Section divider | 12px, `#555555`, `letter-spacing: 4px`, `── COGNITIVE PROFILE ──`, margin-top: 12px |
 
 Remove the 🎯 emoji — it doesn't belong in the retro pixel system.
@@ -423,7 +423,7 @@ document.getElementById('back-to-menu-btn').addEventListener('click', ...)
 - [x] Pre-attentive attributes used (color differentiates domains before reading)
 - [x] Gestalt: proximity (chips grouped), similarity (same-style cards), enclosure (card borders group content)
 - [x] Color meaningful not decorative (domain colors map to cognitive traits)
-- [x] Typography hierarchy clear (32px title → 16px labels → 13px chips → 14px quotes)
+- [x] Typography hierarchy clear (36px title → 16px labels → 13px chips → 14px quotes)
 - [x] Narrative arc (title → profile → top skill → growth → history → quote → action)
 - [x] Accessibility: contrast ratios maintained, reduced motion supported
 - [x] Color independence: ★ and ↑ indicators provide non-color hierarchy backup
@@ -527,5 +527,17 @@ Round 4 listed `.feedback-button` in the global neon system scope but the implem
 - **Default** `box-shadow` → `0 0 6px rgba(0, 180, 255, 0.25)` ambient halo (was solid dark ring)
 - **Hover** → `scale(1.05)` + 3-layer neon burst (was `translateY(-2px)` + ring + glow)
 - **Active** → `scale(0.98)` + neon glow (was bare `transform: none`)
+
+**Files changed:** `css/style.css`
+
+#### Round 9 — Unified Screen Title Style (2026-02-18)
+Tomoco: *"apply the CRAZY SNAKE look to SKILL MAP, GAME OVER, and Share Your Feedback titles"*
+
+All screen headers now share the exact `.game-title` treatment:
+- **`font-size`**: 32px → **36px**
+- **`letter-spacing`**: added `3px`
+- **`text-shadow`**: white glow → electric blue neon + 3D bevel: `0 0 10px rgba(0,180,255,0.8), 0 0 20px rgba(0,180,255,0.4), 0 2px 0 #5A6A8A, 0 3px 0 #3A4A6A`
+- `.score-label` (Game Over "YOUR SCORE"): 11px grey → 36px white + blue neon (full title treatment)
+- `.feedback-header h2` (Feedback "SHARE YOUR FEEDBACK"): white glow → blue neon + 3D bevel
 
 **Files changed:** `css/style.css`
