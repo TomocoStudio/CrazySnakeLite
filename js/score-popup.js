@@ -410,14 +410,14 @@ export function triggerScreenShake() {
     return; // No shake for accessibility
   }
 
-  const canvas = document.getElementById('game-canvas');
-  if (!canvas) return;
+  const container = document.getElementById('game-container');
+  if (!container) return;
 
-  // Add shake class
-  canvas.classList.add('shake');
+  // Add shake class to container (not canvas — canvas has conflicting border animations)
+  container.classList.add('shake');
 
   // Remove after animation completes (200ms)
   setTimeout(() => {
-    canvas.classList.remove('shake');
+    container.classList.remove('shake');
   }, 200);
 }
