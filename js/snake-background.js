@@ -84,7 +84,7 @@ function renderSnakeHead(ctx, headX, headY, direction) {
   ctx.strokeStyle = 'transparent';
 }
 
-export function initSnakeBackground() {
+function generateBackground() {
   const canvas = document.getElementById('snake-bg');
   if (!canvas) return;
 
@@ -174,4 +174,14 @@ export function initSnakeBackground() {
   for (const snake of Object.values(snakes)) {
     renderSnakeHead(ctx, snake.headCol * UNIT, snake.headRow * UNIT, snake.dir);
   }
+}
+
+export function initSnakeBackground() {
+  generateBackground();
+
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(generateBackground, 150);
+  });
 }
