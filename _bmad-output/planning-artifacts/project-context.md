@@ -690,6 +690,7 @@ foodCount: 0 (inactive) → 1 (activated/effectA) → 2 (effectB/striped) → 3 
 - V2: Score-based call frequency (5 tiers from relaxed to relentless, starting at score 3)
 - V2: Grace period — no calls until score >= 3 (brain gym: short comfort zone)
 - V2: 21 callers with tech pun names, 64x64 pixel portraits, funny one-liners
+- **V5 Visual Redesign (2026-02-18):** See `ux-design-phone-call-v2.md` for full spec. CSS-only change, no logic changes. Key changes: portrait 80→160px circular with gold ring glow, gold card border matching reactive border system, caller name 32px with neon white glow, End button dark/muted, Pick Up button neon gold, countdown bar solid gold, instruction text hidden (teach by encounter). CSS selector fix: `.phone-screen .caller-name` scoped to prevent cascade override from dashboard.
 
 ### V2 Cross-System Orchestration
 

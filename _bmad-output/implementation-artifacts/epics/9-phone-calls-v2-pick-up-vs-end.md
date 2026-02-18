@@ -462,3 +462,24 @@ Transform phone interruptions from reflex-only dismissals into strategic micro-d
 **Estimated Effort:** 2.5 weeks
 **Priority:** HIGH — Major gameplay transformation
 **Dependencies:** Existing phone.js, Epic 7 (score popup system)
+
+---
+
+## Post-Completion: V5 Visual Redesign (2026-02-18)
+
+**CSS-only visual overhaul.** No logic, no JS, no HTML changes. All acceptance criteria from Stories 9.1–9.7 remain valid.
+
+**Changes made to `css/style.css`:**
+- Portrait: 80px → **160px**, circular with gold ring + neon glow
+- Card border: lavender → **gold `#FFD700`** with 3-layer neon glow (matches `border-phone-ring` system)
+- Caller name: fixed CSS cascade bug (`.caller-name` at line 2653 was overriding phone screen at 12px grey) → scoped to `.phone-screen .caller-name`, now **32px white with neon glow**
+- "INCOMING CALL" label: demoted to 11px `#666` secondary text
+- End button: grey → **dark `#1a1a1a`** with muted border (safe/quiet)
+- Pick Up button: green → **neon gold `#FFD700`** (matches ringing border state — coherent reward signal)
+- Countdown bar: `green→yellow gradient` → **solid gold `#FFD700`** with glow
+- Keyboard hint: hidden — teach by encounter (Axiom 5)
+- One-liner reveal: upgraded to 18px gold italic with glow
+- Portrait on Pick Up: gains green ring + glow matching `border-phone-pickup` state
+- Visual order: CSS `flex order` moves "INCOMING CALL" to top, portrait is hero element
+
+**Full spec:** `_bmad-output/planning-artifacts/ux-design-phone-call-v2.md`
