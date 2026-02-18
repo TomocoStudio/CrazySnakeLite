@@ -1002,7 +1002,7 @@ button:disabled {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.60);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1014,7 +1014,7 @@ button:disabled {
 }
 
 .phone-screen {
-  background: #0d0d0d;
+  background: rgba(13, 13, 13, 0.82);
   border: 4px solid #FFD700;  /* Gold — matches border-phone-ring state */
   border-radius: 12px;
   padding: 28px 28px 20px;
