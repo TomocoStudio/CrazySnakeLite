@@ -194,7 +194,7 @@ export function showHighlights(highlights = [], callerQuote = null, sessionConte
 function renderCallerQuote(quote, container) {
   const textEl = container.querySelector('.quote-text');
   const nameEl = container.querySelector('.caller-name');
-  const portraitEl = container.querySelector('.caller-portrait');
+  const portraitEl = container.querySelector('.caller-portrait-small');
 
   if (textEl) textEl.textContent = `"${quote.text}"`;
   if (nameEl) nameEl.textContent = `— ${quote.caller}`;

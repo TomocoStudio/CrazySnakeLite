@@ -580,47 +580,15 @@ body.using-keyboard .game-over-btn:not(.selected):hover:not(:disabled) {
   }
 }
 
-/* Story 14.2: Caller Quote — card treatment */
+/* Story 14.2: Caller Quote — uses .quote-card two-column layout (shared with Skill Map) */
 .caller-quote {
   margin-top: 12px;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border-left: 3px solid rgba(0, 180, 255, 0.5);
-  border-radius: 0 4px 4px 0;
   opacity: 0;
   animation: fadeInStats 400ms ease-out forwards;
-  text-align: left;
 }
 
 .caller-quote.hidden {
   display: none;
-}
-
-.quote-text {
-  font-family: 'Jersey20', sans-serif;
-  font-size: 15px;
-  color: #C8C8C8;
-  font-style: italic;
-  margin-bottom: 8px;
-  line-height: 1.4;
-}
-
-.quote-attribution {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px;
-  font-family: 'Jersey20', sans-serif;
-  font-size: 13px;
-  color: #00B4FF;
-}
-
-.caller-portrait {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  image-rendering: pixelated;
-  flex-shrink: 0;
 }
 
 .caller-name {
