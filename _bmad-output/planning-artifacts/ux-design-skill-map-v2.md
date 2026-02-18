@@ -541,3 +541,22 @@ All screen headers now share the exact `.game-title` treatment:
 - `.feedback-header h2` (Feedback "SHARE YOUR FEEDBACK"): white glow → blue neon + 3D bevel
 
 **Files changed:** `css/style.css`
+
+#### Round 10 — Feedback Modal Full Design System Alignment (2026-02-18)
+Tomoco: *"remove the extra border and make the electric blue border glow / match the Skill Map border / Submit Feedback not uppercase"*
+
+Three fixes to fully align the Feedback modal with the design system:
+
+**1. Border & glow fix** (`b4dca27`)
+- Root cause: two `box-shadow` declarations on `.feedback-container` — second one (`0 0 0 8px #1A1A2E` dark ring) silently overrode the neon glow above it
+- Removed the overriding declaration; `border: 8px → 2px`; restored 3-layer neon glow
+
+**2. Border size matched to Skill Map** (`9dc453e`)
+- `border: 2px → 8px solid #00B4FF` + 4-layer box-shadow identical to `.skill-map-container`:
+  `0 0 0 1px #00B4FF, 0 0 20px rgba(0,180,255,0.55), 0 0 40px rgba(0,180,255,0.28), 0 0 70px rgba(0,180,255,0.12)`
+
+**3. `.btn-primary` uppercase** (`b6739be`)
+- Added `font-weight: bold` + `text-transform: uppercase` to `.btn-primary`
+- Affects: "SUBMIT FEEDBACK" button + "BACK TO GAME" pause menu button
+
+**Files changed:** `css/style.css`
