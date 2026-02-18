@@ -1149,6 +1149,37 @@ Changing the default to Electric Blue would pollute this semantic system — pla
 
 ---
 
+## Post-Implementation Record — Score Display Glow & Milestone Blink (2026-02-18)
+
+### Score Display Electric Blue Glow (Enhanced)
+
+The score display `#score-display` border glow was increased from 2 layers to 3, with higher opacity and wider spread — making it visibly "neon" rather than just outlined.
+
+```css
+box-shadow:
+  0 0 0 1px #00B4FF,
+  0 0 14px 4px rgba(0, 180, 255, 0.8),    /* Inner intense glow */
+  0 0 30px 8px rgba(0, 180, 255, 0.5),    /* Mid glow */
+  0 0 55px 12px rgba(0, 180, 255, 0.25);  /* Outer diffuse glow */
+```
+
+### Score Milestone Blink — Every 50 Points
+
+**Concept:** When the player crosses a 50-point milestone (50, 100, 150...), the score display border flashes white 6 times over 1 second, then returns cleanly to Electric Blue. A visceral "achievement acknowledged" moment without interrupting gameplay.
+
+**Why white flash:** White is the highest-contrast burst against the dark UI — it reads instantly as "something happened." Returning to Electric Blue confirms the system state is normal. The flash is score-display-only (not the canvas border) so it doesn't interfere with the reactive border semantic system.
+
+**Implementation:**
+- CSS: `@keyframes scoreMilestoneBlink` — alternates Electric Blue ↔ White, 6 cycles over 1000ms
+- JS: `handleUIUpdate()` in `main.js` detects `Math.floor(score/50) > Math.floor(previousScore/50)`, adds `.milestone-blink` class, auto-removes on `animationend`
+- Force-reflow (`void el.offsetWidth`) ensures animation restarts cleanly if two milestones hit in quick succession
+
+**Files:** `css/style.css` (animation + class), `js/main.js` (detection logic)
+
+**Test page:** `milestone-blink-test.html` — click button or press Spacebar to trigger instantly
+
+---
+
 ## Post-Implementation Record — Snake Mosaic Page Background (2026-02-18)
 
 ### Concept

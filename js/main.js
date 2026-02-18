@@ -399,6 +399,19 @@ function handleUIUpdate(state) {
     }
     // Fix: Only update score when it changes (not every frame)
     if (scoreChanged) {
+      // Milestone blink: every 50 points
+      if (previousScore !== null && state.score > 0) {
+        const prevMilestone = Math.floor(previousScore / 50);
+        const newMilestone  = Math.floor(state.score / 50);
+        if (newMilestone > prevMilestone) {
+          scoreDisplay.classList.remove('milestone-blink');
+          void scoreDisplay.offsetWidth;  // Force reflow to restart animation
+          scoreDisplay.classList.add('milestone-blink');
+          scoreDisplay.addEventListener('animationend', () => {
+            scoreDisplay.classList.remove('milestone-blink');
+          }, { once: true });
+        }
+      }
       updateScoreDisplay(state.score, state.highScore);
       previousScore = state.score;
     }

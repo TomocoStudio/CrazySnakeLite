@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Milestone Blink Test</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      gap: 40px;
+      background: #0d0d0d;
+    }
+
+    .controls {
+      display: flex;
+      gap: 16px;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .trigger-btn {
+      font-family: 'Jersey20', 'Courier New', monospace;
+      font-size: 18px;
+      background: #111;
+      color: #00B4FF;
+      border: 2px solid #00B4FF;
+      padding: 12px 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      letter-spacing: 1px;
+    }
+
+    .trigger-btn:hover {
+      background: rgba(0, 180, 255, 0.1);
+    }
+
+    .hint {
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Score display — same markup as game -->
+  <div id="score-display" style="position: relative; top: auto; left: auto; transform: none;">
+    <span id="current-score">Score: 50</span>
+    <span id="top-score" style="color: #00B4FF;">Top Score: 213</span>
+  </div>
+
+  <div class="controls">
+    <button class="trigger-btn" onclick="triggerBlink()">⚡ TRIGGER MILESTONE BLINK</button>
+    <span class="hint">Simulates hitting score 50 / 100 / 150 / ...</span>
+  </div>
+
+  <script>
+    const scoreDisplay = document.getElementById('score-display');
+
+    function triggerBlink() {
+      scoreDisplay.classList.remove('milestone-blink');
+      void scoreDisplay.offsetWidth;  // Force reflow to restart animation
+      scoreDisplay.classList.add('milestone-blink');
+      scoreDisplay.addEventListener('animationend', () => {
+        scoreDisplay.classList.remove('milestone-blink');
+      }, { once: true });
+    }
+
+    // Also trigger on spacebar for quick repeated testing
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') { e.preventDefault(); triggerBlink(); }
+    });
+  </script>
+
+</body>
+</html>
