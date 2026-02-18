@@ -8,6 +8,46 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changes - 2026-02-18
+
+#### Fixed - Snake Background Distorts on Window Resize
+
+**Issue:** After resizing the browser window, snake mosaic background segments shrank and lost their square proportions. A page refresh restored correct rendering.
+
+**Root Cause:** `initSnakeBackground()` sized the canvas once at load time (`window.innerWidth/Height`). Browser CSS then stretched the element to fit the new viewport while the internal pixel buffer stayed at the original resolution, distorting all segments.
+
+**Solution:** Extracted rendering into `generateBackground()`. Added a `resize` event listener with 150ms debounce that re-invokes `generateBackground()`, resetting the canvas pixel buffer and re-drawing a fresh mosaic at correct dimensions.
+
+**Files Modified:** `js/snake-background.js`
+
+---
+
+#### Fixed - Score Popup Numbers Had White Outline
+
+**Issue:** All score popup numbers rendered with a faint white border around the text, reducing color saturation and visual crispness.
+
+**Root Cause:** Base `.score-popup` CSS rule included `-webkit-text-stroke: 1px rgba(255, 255, 255, 0.4)` and `text-stroke: 1px rgba(255, 255, 255, 0.4)`, painting a white outline on every popup.
+
+**Solution:** Removed both text-stroke declarations. Numbers now render in full color with no border bleed.
+
+**Files Modified:** `css/style.css`
+
+---
+
+#### Changed - Screen Shake Moved from RC Food to Wall Crossing
+
+**Issue:** Screen shake fired when eating Reverse Controls food — contextually wrong. Wall crossing (wallPhase and invincibility) had no shake despite being the moment that deserves visceral feedback.
+
+**Solution:**
+- Removed `triggerScreenShake()` from the reverseControls food handler in `game.js`
+- Added shake to `snake.js` wall-crossing block — fires on any actual wall crossing (`wrapPosition` returns true), regardless of which effect (wallPhase or invincibility) enabled it
+- **Root cause of invincibility not shaking:** `#game-canvas.border-invincibility` CSS rule sets `animation: borderBlink` with ID+class specificity (1,1,0), overriding `.shake`'s class-only specificity (0,1,0). Shake animation was silently suppressed.
+- **Fix:** Moved shake target from `#game-canvas` to `#game-container`, which has no conflicting animations.
+
+**Files Modified:** `js/game.js`, `js/snake.js`, `js/score-popup.js`
+
+---
+
 ### Bug Fixes - 2026-02-03
 
 #### Fixed - Feedback Email Missing Stars and Comments

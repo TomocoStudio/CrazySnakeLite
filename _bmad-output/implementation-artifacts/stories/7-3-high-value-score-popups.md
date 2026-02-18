@@ -33,19 +33,12 @@
 - Dual glow (gold inner, red outer)
 - 1600ms duration
 **And** 5-7 star particles explode from the collision point
-**And** the canvas container shakes horizontally (3px, 200ms)
 
 **Given** particles spawn
 **When** they animate
 **Then** each particle travels outward in a random direction
 **And** particles fade out and shrink over 600ms
 **And** particles auto-remove after animation
-
-**Given** screen shake triggers
-**When** the canvas shakes
-**Then** the shake is subtle (3px horizontal displacement)
-**And** the shake completes in 200ms
-**And** the canvas returns to normal position
 
 ## Tasks / Subtasks
 
@@ -69,7 +62,8 @@
   - [x] Remove .shake class after 200ms
 - [x] Integrate into game.js
   - [x] Call spawnPopup(5, x, y) for Speed Boost
-  - [x] Call spawnPopup(8, x, y) + spawnParticles() + triggerScreenShake() for Reverse Controls
+  - [x] Call spawnPopup(8, x, y) + spawnParticles() for Reverse Controls
+  - [x] triggerScreenShake() moved to snake.js: fires on wall crossing for wallPhase AND invincibility
 - [x] Test all effects work together
 - [x] Verify 60 FPS maintained during +8 celebration
 

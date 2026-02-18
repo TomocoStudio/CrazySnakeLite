@@ -107,7 +107,6 @@ Transform flat scoring into a Fibonacci-based reward system with proportional vi
 - Dual glow (gold inner, red outer)
 - 1000ms duration
 **And** 5-7 star particles explode from the collision point
-**And** the canvas container shakes horizontally (3px, 200ms)
 
 **Given** particles spawn
 **When** they animate
@@ -115,16 +114,10 @@ Transform flat scoring into a Fibonacci-based reward system with proportional vi
 **And** particles fade out and shrink over 600ms
 **And** particles auto-remove after animation
 
-**Given** screen shake triggers
-**When** the canvas shakes
-**Then** the shake is subtle (3px horizontal displacement)
-**And** the shake completes in 200ms
-**And** the canvas returns to normal position
-
 **Technical Notes:**
 - Extend score-popup.js with particle system
 - Add spawnParticles(count, x, y) function
-- Implement triggerScreenShake() function
+- Implement triggerScreenShake() function targeting #game-container
 - CSS @keyframes for particle-explode and screen-shake
 - Use CSS custom properties (--particle-x, --particle-y) for random vectors
 
@@ -278,9 +271,10 @@ Transform flat scoring into a Fibonacci-based reward system with proportional vi
 
 **Acceptance Criteria:**
 
-**Given** I have Wall Phase effect active
+**Given** I have Wall Phase or Invincibility effect active
 **When** I cross through a wall boundary
-**Then** a random wall-crossing victory message flash appears:
+**Then** the game container shakes horizontally (3px, 200ms) — applies to both Wall Phase and Invincibility wall crossings
+**And** a random wall-crossing victory message flash appears (Wall Phase only):
 - Content: Randomly selected from pool: "PHASED!", "WALL CROSSED!", "NO LIMITS!", "PHASE MASTER!", "WALL BREAKER!", "GHOSTED IT!", "BOUNDARY BROKEN!"
 - Font: Jersey20, 48px, extra bold (900 weight)
 - Color: Purple (#800080) - matches Wall Phase food color

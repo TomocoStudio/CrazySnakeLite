@@ -635,7 +635,6 @@ Five distinct popup types corresponding to Fibonacci food values. Each popup has
 - **Rotation wiggle:** +/-5 degrees during bounce
 - **Dual glow:** Gold inner + red outer
 - **Particles:** 5-7 star particles spawn at collision point
-- **Screen shake:** 3px horizontal shake on canvas container, 200ms
 
 **Particle Specifications:**
 ```css
@@ -653,7 +652,7 @@ Five distinct popup types corresponding to Fibonacci food values. Each popup has
 }
 ```
 
-**Screen Shake:**
+**Screen Shake** — triggered on wall crossing (wallPhase + invincibility), NOT on food consumption:
 ```css
 @keyframes screen-shake {
   0%, 100% { transform: translateX(0); }
@@ -661,6 +660,7 @@ Five distinct popup types corresponding to Fibonacci food values. Each popup has
   75%      { transform: translateX(3px); }
 }
 ```
+Applied to `#game-container` (not `#game-canvas` — avoids CSS animation specificity conflict with `border-invincibility` blink).
 
 ---
 
