@@ -2,7 +2,7 @@
 import { CONFIG } from './config.js';
 import { isEffectActive, clearEffect } from './effects.js';
 import { getWallPhaseBonus } from './scoring.js';
-import { spawnPopup, spawnPhaseFlash, gridToPixel } from './score-popup.js';
+import { spawnPopup, spawnPhaseFlash, gridToPixel, triggerScreenShake } from './score-popup.js';
 import { updateBorderState, updateCanvasBackground } from './game.js';
 
 /**
@@ -34,6 +34,7 @@ export function moveSnake(gameState) {
 
       // Story 7.8: Spawn random phase message flash (20px below +2 popup, 200ms stagger)
       const { x: pixelX, y: pixelY } = gridToPixel(newHead.x, newHead.y);
+      triggerScreenShake();
       setTimeout(() => {
         spawnPhaseFlash(pixelX, pixelY + 20);
       }, 200);

@@ -10,7 +10,7 @@ import { checkPhoneCallTiming, dismissPhoneCall, scheduleNextCall, hidePhoneOver
 import { trackPhoneCall, trackFoodEaten, trackPhoneCallEvent, trackGameOver } from './analytics.js';
 import { playMoveSound, playDeathSound, playJackpot, playLegendary, playComboExit } from './audio.js';
 import { getFoodScore } from './scoring.js';
-import { spawnPopup, spawnPhoneBonusPopup, spawnComboPopup, spawnParticles, triggerScreenShake, gridToPixel, spawnFlash, spawnVictoryFlash, spawnSpeedFlash, spawnInvincibilityFlash, spawnCenterComboFlash } from './score-popup.js';
+import { spawnPopup, spawnPhoneBonusPopup, spawnComboPopup, spawnParticles, gridToPixel, spawnFlash, spawnVictoryFlash, spawnSpeedFlash, spawnInvincibilityFlash, spawnCenterComboFlash } from './score-popup.js';
 import { getComboProbability, getState as getProgressionState } from './progression.js';
 import { activateCombo, isComboActive, exitCombo } from './combo.js';
 import {
@@ -368,7 +368,6 @@ function update(gameState) {
     if (effectType === 'reverseControls') {
       const { x: pixelX, y: pixelY } = gridToPixel(foodPosition.x, foodPosition.y);
       spawnParticles(6, pixelX, pixelY);  // 6 particles
-      triggerScreenShake();
     }
 
     // Story 7.7: Speed Boost flash
