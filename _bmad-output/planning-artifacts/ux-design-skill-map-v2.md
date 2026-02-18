@@ -467,7 +467,7 @@ Tomoco: *"I want to see Crazy Game full neons."*
 - **Neon glow on all buttons** (hover + selected + active states):
   - Default: `box-shadow: 0 0 6px rgba(0, 180, 255, 0.25)` — always-on ambient halo
   - Hover/Selected: 3-layer burst `0 0 12px 0.9, 0 0 24px 0.5, 0 0 40px 0.2`
-  - Applies to: `.menu-button`, `.game-over-btn`, `.btn-primary`, `#back-to-game-btn`, `.gate-close-btn`, `.feedback-button`
+  - Applies to: `.menu-button`, `.game-over-btn`, `.btn-primary`, `#back-to-game-btn`, `.gate-close-btn`, `.feedback-button` *(`.feedback-button` fully aligned in Round 8)*
 - **Score display:** Upgraded to 3-layer neon glow matching screen frames
 - **Zero legacy lavender** remaining in live source (docs/specs retain historical values)
 
@@ -517,3 +517,15 @@ The `.quote-card` two-column system (portrait LEFT 100px, text RIGHT) is now sha
 - Net: −30 lines (CSS cleanup from removing dead `.quote-attribution` / `.caller-portrait` / layout rules)
 
 **Files changed:** `index.html`, `js/cognitive-feedback.js`, `css/style.css`
+
+#### Round 8 — Feedback Button Fully Aligned to Design System (2026-02-18)
+Tomoco: *"Feedback button is not following our new design — uppercase, electric blue glow, extra border not needed"*
+
+Round 4 listed `.feedback-button` in the global neon system scope but the implementation was incomplete. Fixed:
+- **Removed** `box-shadow: 0 0 0 6px rgb(26, 26, 46)` — fake outer ring acting as a double-border
+- **Added** `text-transform: uppercase` + `font-weight: bold` — matches all other buttons
+- **Default** `box-shadow` → `0 0 6px rgba(0, 180, 255, 0.25)` ambient halo (was solid dark ring)
+- **Hover** → `scale(1.05)` + 3-layer neon burst (was `translateY(-2px)` + ring + glow)
+- **Active** → `scale(0.98)` + neon glow (was bare `transform: none`)
+
+**Files changed:** `css/style.css`
