@@ -28,7 +28,7 @@ export const CALLER_QUOTES = [
       { id: 'al-gorithm-high-score-1', text: 'Your sorting algorithm is on point. High score achieved!', context: ['high_score', 'personal_best'] },
       { id: 'al-gorithm-general-1', text: 'Have you tried sorting your priorities? Just checking.', context: ['general', 'encouragement'] },
       { id: 'al-gorithm-rc-1', text: 'Reverse Controls survived? Your algorithms adapt well.', context: ['rc_survived'] },
-      { id: 'al-gorithm-calibration-1', text: 'Five sessions sorted. Your brain map just compiled!', context: ['calibration_complete', 'celebration'] }
+      { id: 'al-gorithm-calibration-1', text: 'Five sessions sorted. Skill Map compiled — O(1) achievement unlocked!', context: ['calibration_complete', 'celebration'] }
     ]
   },
   {
@@ -38,7 +38,7 @@ export const CALLER_QUOTES = [
     quotes: [
       { id: 'meg-a-byte-calibration-1', text: 'Five sessions in and your neurons are filing pull requests!', context: ['calibration_complete', 'celebration'] },
       { id: 'meg-a-byte-general-1', text: "I'm running out of space for compliments. You're crushing it!", context: ['general', 'encouragement'] },
-      { id: 'meg-a-byte-combo-1', text: 'Combo mode? You just multiplied your brainpower.', context: ['combo_master', 'celebration'] }
+      { id: 'meg-a-byte-combo-1', text: 'Combo mode? You just multiplied your byte rate. Byte-sized genius!', context: ['combo_master', 'celebration'] }
     ]
   },
   {
@@ -47,7 +47,7 @@ export const CALLER_QUOTES = [
     portrait: 'assets/pictures/03_AliSing.png',
     quotes: [
       { id: 'ali-sing-streak-1', text: 'Seven days straight? Stop giving me mixed signals!', context: ['streak_milestone_7'] },
-      { id: 'ali-sing-general-1', text: "I'm picking up on your brain waves. Looking strong!", context: ['general'] },
+      { id: 'ali-sing-general-1', text: "I'm picking up great signals from you. Loud and clear, no static!", context: ['general'] },
       { id: 'ali-sing-phone-1', text: 'You handled those calls like a pro. No dropped signals!', context: ['phone_ace'] }
     ]
   },
@@ -57,7 +57,7 @@ export const CALLER_QUOTES = [
     portrait: 'assets/pictures/04_AnnaLog.png',
     quotes: [
       { id: 'anna-log-low-score-1', text: 'Back in my day, we all started somewhere. Keep going!', context: ['low_score', 'encouragement'] },
-      { id: 'anna-log-general-1', text: 'Everything used to be simpler, but your brain is adapting!', context: ['general'] },
+      { id: 'anna-log-general-1', text: 'Everything used to be simpler, but look at you adapting like a champ!', context: ['general'] },
       { id: 'anna-log-improvement-1', text: "You're improving faster than I converted to digital!", context: ['improvement', 'celebration'] }
     ]
   },
@@ -78,7 +78,7 @@ export const CALLER_QUOTES = [
     portrait: 'assets/pictures/06_PatCh-Notes.png',
     quotes: [
       { id: 'pat-ch-notes-improvement-1', text: 'We fixed a few bugs in your gameplay. Looking sharp!', context: ['improvement'] },
-      { id: 'pat-ch-notes-general-1', text: 'Your brain just got a performance patch. Nice!', context: ['general', 'encouragement'] },
+      { id: 'pat-ch-notes-general-1', text: 'Your gameplay just got a performance patch. Zero known bugs!', context: ['general', 'encouragement'] },
       { id: 'pat-ch-notes-session-50-1', text: 'Fifty sessions? Time for a major version update!', context: ['session_50', 'celebration'] }
     ]
   },
@@ -88,7 +88,7 @@ export const CALLER_QUOTES = [
     portrait: 'assets/pictures/07_MacAddress.png',
     quotes: [
       { id: 'mac-address-streak-1', text: "I'm calling from a very specific location: the streak zone!", context: ['streak_milestone_7', 'streak_milestone_30'] },
-      { id: 'mac-address-general-1', text: 'Your brain has a unique address. And it works!', context: ['general'] },
+      { id: 'mac-address-general-1', text: 'You have a unique MAC address. Packets delivered, zero dropped!', context: ['general'] },
       { id: 'mac-address-high-score-1', text: 'High score from your specific neural location. Tracked!', context: ['high_score'] }
     ]
   },
@@ -108,7 +108,7 @@ export const CALLER_QUOTES = [
     portrait: 'assets/pictures/09_FloppyPhil.png',
     quotes: [
       { id: 'floppy-phil-calibration-1', text: 'Only 1.44 MB to say: five sessions complete! Legendary!', context: ['calibration_complete', 'celebration'] },
-      { id: 'floppy-phil-general-1', text: 'Quick update: your brain storage is looking good!', context: ['general'] },
+      { id: 'floppy-phil-general-1', text: 'Quick update: your game data is solid. No disk errors detected!', context: ['general'] },
       { id: 'floppy-phil-low-score-1', text: "I've crashed too. We all start somewhere. You got this!", context: ['low_score', 'encouragement'] }
     ]
   },
@@ -120,7 +120,7 @@ export const CALLER_QUOTES = [
       { id: 'dot-matrix-personal-best-1', text: 'New record! Pixel by pixel, you built greatness.', context: ['personal_best', 'celebration'] },
       { id: 'dot-matrix-general-1', text: "You're looking crisp today. Resolution: excellent!", context: ['general'] },
       { id: 'dot-matrix-streak-1', text: 'Thirty days? Your consistency is printer-perfect!', context: ['streak_milestone_30', 'celebration'] },
-      { id: 'dot-matrix-calibration-1', text: 'Printing complete! Your brain map is ready. Check it out!', context: ['calibration_complete', 'celebration'] }
+      { id: 'dot-matrix-calibration-1', text: 'Printing complete! Your Skill Map is ready. Dot by dot, pixel perfect!', context: ['calibration_complete', 'celebration'] }
     ]
   },
   {
@@ -129,9 +129,9 @@ export const CALLER_QUOTES = [
     portrait: 'assets/pictures/11_GiaHertz.png',
     quotes: [
       { id: 'gia-hertz-high-score-1', text: "I'm vibrating with excitement! High score achieved!", context: ['high_score', 'celebration'] },
-      { id: 'gia-hertz-general-1', text: 'Your brain frequency is dialed in today. Keep it up!', context: ['general', 'encouragement'] },
+      { id: 'gia-hertz-general-1', text: 'Your frequency is dialed in today. Oscillating at peak performance!', context: ['general', 'encouragement'] },
       { id: 'gia-hertz-rc-1', text: 'Reverse Controls survived? Your neural oscillations are strong!', context: ['rc_survived'] },
-      { id: 'gia-hertz-calibration-1', text: 'Five sessions tuned! Your brain map frequency is locked in!', context: ['calibration_complete', 'celebration'] }
+      { id: 'gia-hertz-calibration-1', text: 'Five sessions tuned! Your Skill Map frequency is locked and loaded!', context: ['calibration_complete', 'celebration'] }
     ]
   },
   {
@@ -150,7 +150,7 @@ export const CALLER_QUOTES = [
     portrait: 'assets/pictures/13_TerryByte.png',
     quotes: [
       { id: 'terry-byte-session-100-1', text: "I've got a LOT of data: 100 sessions! You're a legend!", context: ['session_100', 'celebration'] },
-      { id: 'terry-byte-general-1', text: 'Your brain data is looking massive. Impressive!', context: ['general', 'encouragement'] },
+      { id: 'terry-byte-general-1', text: 'Your play data is looking massive. Terabyte-tier performance!', context: ['general', 'encouragement'] },
       { id: 'terry-byte-high-score-1', text: 'High score logged. Your data set is growing strong!', context: ['high_score'] }
     ]
   },
@@ -181,7 +181,7 @@ export const CALLER_QUOTES = [
     portrait: 'assets/pictures/16_SydRam.png',
     quotes: [
       { id: 'syd-ram-calibration-1', text: 'I forgot... wait, no! Five sessions complete! Memory loaded!', context: ['calibration_complete', 'celebration'] },
-      { id: 'syd-ram-general-1', text: 'Hold on... yep, your brain is working great!', context: ['general'] },
+      { id: 'syd-ram-general-1', text: 'Hold on... yep, still loaded in RAM. No crashes detected!', context: ['general'] },
       { id: 'syd-ram-rc-death-1', text: 'Orange food scrambled your memory? Happens to me daily!', context: ['death_during_rc', 'encouragement'] }
     ]
   },
@@ -212,7 +212,7 @@ export const CALLER_QUOTES = [
     portrait: 'assets/pictures/19_BuffyRing.png',
     quotes: [
       { id: 'buffy-ring-streak-1', text: "Hold on, I'm buffering... thirty days?! Legend!", context: ['streak_milestone_30', 'celebration'] },
-      { id: 'buffy-ring-general-1', text: 'No buffering needed. Your brain is streaming perfectly!', context: ['general', 'encouragement'] },
+      { id: 'buffy-ring-general-1', text: "No buffering needed. You're streaming perfectly — zero lag, full HD!", context: ['general', 'encouragement'] },
       { id: 'buffy-ring-low-score-1', text: "I'm buffering too. We all need a moment. Keep going!", context: ['low_score', 'encouragement'] }
     ]
   },
@@ -224,7 +224,7 @@ export const CALLER_QUOTES = [
       { id: 'dj-snake-combo-1', text: 'Ssssomeone requested a combo remix. You delivered!', context: ['combo_master', 'celebration'] },
       { id: 'dj-snake-general-1', text: 'Your gameplay is dropping beats. Neural bass: strong!', context: ['general'] },
       { id: 'dj-snake-rc-1', text: 'Orange food survived? That remix was fire!', context: ['rc_survived'] },
-      { id: 'dj-snake-calibration-1', text: 'Five sessions? Your brain map just dropped. Check it out!', context: ['calibration_complete', 'celebration'] }
+      { id: 'dj-snake-calibration-1', text: 'Five sessions? Your Skill Map just dropped. That track is a banger!', context: ['calibration_complete', 'celebration'] }
     ]
   },
   {

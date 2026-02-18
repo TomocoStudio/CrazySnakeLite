@@ -212,7 +212,7 @@ function showCalibrationGateModal(sessionsCompleted) {
     modal.className = 'calibration-gate-modal';
     modal.innerHTML = `
       <div class="calibration-gate-content">
-        <h2>Your brain map is building...</h2>
+        <h2>Your Skill Map is building...</h2>
         <p>Complete 5 sessions to see your cognitive profile.</p>
         <p class="progress-text">Progress: Session ${sessionsCompleted}/5 — Warming up...</p>
         <button class="gate-close-btn">Back to Menu</button>

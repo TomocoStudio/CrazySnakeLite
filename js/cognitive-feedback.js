@@ -579,7 +579,7 @@ export function selectHighlights(sessionMetrics, rollingAverages, allTimeHighs, 
       type: 'notable',
       subtype: 'rc_survived',
       value: cognitiveStats.rcSurvived,
-      text: `Survived ${cognitiveStats.rcSurvived} Reverse Controls — brain on fire`,
+      text: `Survived ${cognitiveStats.rcSurvived} Reverse Controls — reflex override successful`,
       icon: '🔥',
       priority: 3
     });
@@ -668,8 +668,8 @@ export function selectHighlights(sessionMetrics, rollingAverages, allTimeHighs, 
     const score = cognitiveStats.score || 0;
     selectedHighlights = [{
       type: 'encouragement',
-      text: `Score achieved: ${score} — Every session trains your brain`,
-      icon: '🧠',
+      text: `Score achieved: ${score} — Every run levels up your game`,
+      icon: '🎮',
       priority: 5
     }];
   }

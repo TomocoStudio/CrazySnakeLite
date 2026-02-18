@@ -2,7 +2,7 @@
 
 **Snake just got complicated.**
 
-Six food types. Phone calls from tech-pun legends like *Al Gorithm* and *Floppy Phil*. Mystery foods that hide what they do. Your controls suddenly reverse. Two effects stacking for combo chaos. Oh, and your brain gets stronger while you laugh.
+Six food types. Phone calls from tech-pun legends like *Al Gorithm* and *Floppy Phil*. Mystery foods that hide what they do. Your controls suddenly reverse. Two effects stacking for combo chaos. Oh, and you get sharper while you laugh.
 
 Welcome to the cognitive workout hiding inside an arcade fever dream.
 
@@ -18,7 +18,7 @@ Not just "eat and grow." Every food does something different:
 | **Speed Decrease** | Cyan | Slow down (breathing room) | Strategic safety |
 | **Wall Phase** | Purple | Pass through walls | Spatial chaos |
 | **Speed Boost** | Red | FAST mode | Pure reflexes |
-| **Reverse Controls** | Orange | Up is down, left is right | Brain override |
+| **Reverse Controls** | Orange | Up is down, left is right | Control override |
 | **Invincibility** | Yellow | Temporary safety (but zero points) | Safety vs. score |
 
 ### Phone Calls from the Best (Worst?) Callers
@@ -45,11 +45,11 @@ Two effects at once. Multiplicative scoring. Striped snake. Transitioning canvas
 
 ### The Crown Jewel: Reverse Controls
 
-Orange food flips your brain. Up becomes down. Left becomes right. Worth the most points because it's the hardest thing your executive function can do.
+Orange food flips your controls. Up becomes down. Left becomes right. Worth the most points because it's the hardest thing your reflexes can do.
 
 ---
 
-## The Secret Sauce (It's Actually a Brain Gym)
+## The Secret Sauce (More Than Just a Snake Game)
 
 Here's the part we didn't mention up front: **every mechanic targets a different cognitive faculty.**
 
@@ -59,11 +59,11 @@ Here's the part we didn't mention up front: **every mechanic targets a different
 - **Combo mode** trains working memory and strategic thinking
 - **Reverse controls** trains executive function override (the neurological equivalent of a heavy deadlift)
 
-After you die, **"Your Brain Today"** shows what your brain just accomplished. Not "you failed," but "look what you just did."
+After you die, **"RECAP"** shows what you just pulled off. Not "you failed," but "look what you just did."
 
 **Score gates unlock complexity as you prove mastery.** No timers. No grinding. Just achievement-based progression.
 
-AI handles more of our thinking every day. CrazySnakeLite makes your brain work hard — and makes it fun.
+AI handles more of our thinking every day. CrazySnakeLite pushes back — and makes it fun.
 
 ## Getting Started
 
@@ -150,7 +150,7 @@ CrazySnakeLite/
 
 ## Design Philosophy
 
-**Fun first. Brain gains second.**
+**Fun first. Skill gains second.**
 
 Comedy is a system (21 tech-pun callers), not a garnish. Difficulty unlocks through achievement, never timers. Every mechanic teaches itself through play. The cognitive challenge is what makes it replayable — but the laughs are what bring you back tomorrow.
 
@@ -158,7 +158,7 @@ Comedy is a system (21 tech-pun callers), not a garnish. Difficulty unlocks thro
 
 **Targeted challenge over raw chaos.** A gym rotates muscle groups. CrazySnakeLite rotates cognitive demands.
 
-**Comedy makes the workout stick.** Retro portraits, pun names, one-liners — you're training your brain, but you're having too much fun to notice.
+**Comedy makes the workout stick.** Retro portraits, pun names, one-liners — you're leveling up, but you're having too much fun to notice.
 
 ## Cognitive Science Foundation
 
@@ -192,4 +192,4 @@ TBD
 
 ---
 
-*"Train your brain. Laugh while you do it. Come back tomorrow."*
+*"Level up your game. Laugh while you do it. Come back tomorrow."*

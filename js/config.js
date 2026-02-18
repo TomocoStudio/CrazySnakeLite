@@ -210,10 +210,10 @@ export const CONFIG = {
     // Domain-specific comedy quotes for callout cards
     DOMAIN_QUOTES: {
       topSkill: {
-        decisionSpeed: "Your decisions arrive before your brain finishes thinking. That's talent.",
+        decisionSpeed: "Your decisions arrive before the snake does. That's raw talent.",
         spatialAwareness: "Your snake navigates like it has GPS. No, wait — better than GPS.",
-        cognitiveFlexibility: "Reverse Controls? Please. Your brain treats that like a warm-up.",
-        dividedAttention: "Phone calls during gameplay? You multitask like you've got two brains.",
+        cognitiveFlexibility: "Reverse Controls? Please. You treat that like a warm-up stretch.",
+        dividedAttention: "Phone calls during gameplay? You multitask like you've got two joysticks.",
         impulseControl: "You weigh risk like a Wall Street quant with nothing to lose.",
         workingMemory: "Combo mode? Your working memory eats those for breakfast."
       },
@@ -238,7 +238,7 @@ export const CONFIG = {
           portrait: "assets/callers/dj-algorithm.png"
         },
         {
-          text: "This brain gym has better attendance than most actual gyms.",
+          text: "This snake gym has better attendance than most actual gyms.",
           caller: "Cache Money",
           portrait: "assets/callers/cache-money.png"
         },
@@ -258,7 +258,7 @@ export const CONFIG = {
           portrait: "assets/callers/kernel-sanders.png"
         },
         {
-          text: "Your brain is leveling up faster than my download speeds.",
+          text: "You're leveling up faster than my download speeds.",
           caller: "Floppy Phil",
           portrait: "assets/callers/floppy-phil.png"
         },
@@ -277,7 +277,7 @@ export const CONFIG = {
       // Milestone-specific quotes (7-day, 30-day streaks; 50, 100 sessions)
       milestone: [
         {
-          text: "7-day streak! Your brain has better habits than most people.",
+          text: "7-day streak! Your snake has better habits than most people.",
           caller: "Cache Money",
           portrait: "assets/callers/cache-money.png"
         },
@@ -292,7 +292,7 @@ export const CONFIG = {
           portrait: "assets/callers/ray-tracer.png"
         },
         {
-          text: "100 sessions! You've unlocked: Permanent Brain Gains.",
+          text: "100 sessions! You've unlocked: Permanent Game Gains.",
           caller: "Ada Loopback",
           portrait: "assets/callers/ada-loopback.png"
         },
@@ -312,7 +312,7 @@ export const CONFIG = {
       domainSpecific: {
         decisionSpeed: [
           {
-            text: "Decision speed off the charts. Your brain skips 'thinking' and goes straight to 'doing'.",
+            text: "Decision speed off the charts. You skip 'thinking' and go straight to 'doing'.",
             caller: "Kernel Sanders",
             portrait: "assets/callers/kernel-sanders.png"
           }
@@ -326,7 +326,7 @@ export const CONFIG = {
         ],
         cognitiveFlexibility: [
           {
-            text: "Reverse Controls is your warm-up. Your brain flips like a pancake.",
+            text: "Reverse Controls is your warm-up. You flip the script like a pro.",
             caller: "Floppy Phil",
             portrait: "assets/callers/floppy-phil.png"
           }
