@@ -1543,7 +1543,12 @@ button:disabled {
 .feedback-header h2 {
   font-family: 'Jersey20', 'Courier New', monospace;
   font-size: 32px;
-  color: #FFD700;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  text-shadow:
+    0 0 20px rgba(255, 255, 255, 0.9),
+    0 0 40px rgba(255, 255, 255, 0.4),
+    2px 2px 4px rgba(0, 0, 0, 1);
   margin: 0;
 }
 
