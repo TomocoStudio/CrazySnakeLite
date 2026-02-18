@@ -22,33 +22,38 @@ export function moveSnake(gameState) {
   const newHead = getNewHeadPosition(head, snake.direction);
 
   // WALL WRAPPING for wall-phase and invincibility
-  if (isEffectActive(gameState, 'wallPhase')) {
+  const wallPhaseActive = isEffectActive(gameState, 'wallPhase');
+  const invincibilityActive = isEffectActive(gameState, 'invincibility');
+
+  if (wallPhaseActive || invincibilityActive) {
     const wrapped = wrapPosition(newHead);
+
     if (wrapped) {
-      // Award Wall Phase bonus immediately when wall is crossed (Story 7.1)
-      const bonus = getWallPhaseBonus();
-      gameState.score += bonus;
-
-      // Story 7.2: Spawn popup for Wall Phase bonus (+2)
-      spawnPopup(bonus, newHead.x, newHead.y);
-
-      // Story 7.8: Spawn random phase message flash (20px below +2 popup, 200ms stagger)
-      const { x: pixelX, y: pixelY } = gridToPixel(newHead.x, newHead.y);
+      // Screen shake on any wall crossing, regardless of which effect enabled it
       triggerScreenShake();
-      setTimeout(() => {
-        spawnPhaseFlash(pixelX, pixelY + 20);
-      }, 200);
 
-      // Wall-phase was consumed (single-use)
-      clearEffect(gameState);
+      if (wallPhaseActive) {
+        // Award Wall Phase bonus immediately when wall is crossed (Story 7.1)
+        const bonus = getWallPhaseBonus();
+        gameState.score += bonus;
 
-      // Update border and background to reflect effect cleared (walls return to default)
-      updateBorderState(gameState);
-      updateCanvasBackground(gameState);
+        // Story 7.2: Spawn popup for Wall Phase bonus (+2)
+        spawnPopup(bonus, newHead.x, newHead.y);
+
+        // Story 7.8: Spawn random phase message flash (20px below +2 popup, 200ms stagger)
+        const { x: pixelX, y: pixelY } = gridToPixel(newHead.x, newHead.y);
+        setTimeout(() => {
+          spawnPhaseFlash(pixelX, pixelY + 20);
+        }, 200);
+
+        // Wall-phase was consumed (single-use)
+        clearEffect(gameState);
+
+        // Update border and background to reflect effect cleared (walls return to default)
+        updateBorderState(gameState);
+        updateCanvasBackground(gameState);
+      }
     }
-  } else if (isEffectActive(gameState, 'invincibility')) {
-    // Invincibility also wraps (but doesn't consume the effect)
-    wrapPosition(newHead);
   }
 
   // Add new head at the beginning
