@@ -506,3 +506,14 @@ Also: `NEW GAME` button carries `selected` class by default in HTML. `main.js` `
 - `js/main.js` — menu selection reset on phase transition
 - `index.html` — `new-game-btn` default `selected` class
 *All changes are visual only (CSS + minimal HTML/JS class updates).*
+
+#### Round 7 — Quote Card Extended to Game Over Screen (2026-02-18)
+Tomoco: *"apply the same graphic design as in the SKILL MAP for the caller messages — bigger caller images"*
+
+The `.quote-card` two-column system (portrait LEFT 100px, text RIGHT) is now shared across both screens:
+- **Game Over** `.caller-quote` element: added `quote-card` class + inner structure updated to match (`quote-portrait-col` + `caller-portrait-small` + `quote-text-col`)
+- **`cognitive-feedback.js`** `renderCallerQuote()`: portrait selector updated from `.caller-portrait` (32px) to `.caller-portrait-small` (100px)
+- **`css/style.css`**: old `.caller-quote` layout rules removed (handled by `.quote-card`); fade-in animation + `.hidden` state preserved
+- Net: −30 lines (CSS cleanup from removing dead `.quote-attribution` / `.caller-portrait` / layout rules)
+
+**Files changed:** `index.html`, `js/cognitive-feedback.js`, `css/style.css`

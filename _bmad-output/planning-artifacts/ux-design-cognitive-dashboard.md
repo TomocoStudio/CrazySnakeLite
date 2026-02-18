@@ -95,10 +95,10 @@ Alex just died at score 67 during Reverse Controls. Heart rate elevated. The gam
 │ [icon] Phone calls managed: 6                │  ← left-aligned
 │ [icon] Best combo: x24                       │  ← left-aligned
 │ ┌────────────────────────────────────────┐  │
-│ │ "Your prefrontal cortex just filed a   │  │  ← quote card (border-left)
-│ │  pull request. Merged without          │  │
-│ │  conflicts."                           │  │
-│ │ [portrait] — Kernel Sanders            │  │  ← 32px portrait, left-aligned
+│ │ [100px ]  "Your prefrontal cortex just │  │  ← quote card (border-left, two-column)
+│ │ portrait   filed a PR. Merged without  │  │  ← LEFT: 100px portrait w/ blue ring
+│ │  [ring ]   conflicts."                 │  │  ← RIGHT: quote text wraps 2-3 lines
+│ │            — Kernel Sanders            │  │  ← attribution right-aligned
 │ └────────────────────────────────────────┘  │
 │  Session 4/5 — Warming up...                 │  ← calibration only (no streak)
 │  ┌──────────────┐  ┌──────────────┐         │
@@ -337,7 +337,7 @@ Below the block bars, two callout cards provide the narrative layer (Knaflic's S
 
 - Rotating caller quote at the bottom, refreshes on each dashboard visit (FR200)
 - Different quote pool than post-game highlights — dashboard quotes are reflective/motivational, not reactive
-- Caller portrait (32x32px) + name + quote in italics
+- Two-column layout: 100px circular portrait LEFT (electric blue neon ring) + quote text + attribution RIGHT — same `.quote-card` system as Skill Map
 - Quote selection context-aware:
   - High overall profile → celebratory
   - Recent improvement → encouraging
@@ -560,9 +560,10 @@ Inserted between `#new-game-btn` and `#high-score-display`. Styled with the exis
 │  ↑ Phone calls managed: 6      │  ← left-aligned
 │  ✦ Best combo: x24             │  ← left-aligned
 │  ┌──────────────────────────┐  │
-│  │ "Your prefrontal cortex  │  │  ← quote card (border-left)
-│  │  just filed a pull req." │  │
-│  │ [portrait] — K. Sanders  │  │  ← 32px portrait, left-aligned
+│  │ [100px]  "Your prefrontal │  │  ← quote card (border-left, two-column)
+│  │ portrait  cortex just    │  │  ← LEFT: 100px portrait w/ blue ring
+│  │  [ring ]  filed a PR."   │  │  ← RIGHT: quote text + attribution
+│  │           — K. Sanders   │  │
 │  └──────────────────────────┘  │
 │  Session 4/5 — Warming up...    │  ← calibration footer only
 │   [Play Again]  [Skill Map]     │  ← immediate, no delay
