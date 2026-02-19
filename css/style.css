@@ -2979,3 +2979,181 @@ button:disabled {
 /* ========================================
    END SKILL MAP DASHBOARD V2
    ======================================== */
+
+/* ========================================
+   EPIC 23: RUN SUMMARY BAR
+   Stories 23.2 + 23.3
+   ======================================== */
+
+/* Container — flex-wrap creates two-row layout for 5–7 badges */
+#run-summary-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin: 16px 0;
+}
+
+#run-summary-bar.hidden {
+  display: none;
+}
+
+/* Each badge: glyph + count, vertically centered */
+.run-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  opacity: 0; /* Starts hidden — animation reveals it */
+}
+
+/* Base glyph container (14×14px for CSS shape types) */
+.run-badge__glyph {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  position: relative;
+  vertical-align: middle;
+}
+
+/* Count number */
+.run-badge__count {
+  font-family: 'Jersey20', 'Courier New', monospace;
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* ── Glyph shapes per food type ─────────────────────────────── */
+
+/* Growing: filled green square */
+.run-badge--growing .run-badge__glyph {
+  background-color: #00FF00;
+  box-shadow: 0 0 8px rgba(0, 255, 0, 0.8);
+}
+.run-badge--growing .run-badge__count {
+  color: #00FF00;
+  text-shadow: 0 0 8px rgba(0, 255, 0, 0.8);
+}
+
+/* Speed Decrease: hollow cyan square */
+.run-badge--speedDecrease .run-badge__glyph {
+  border: 2px solid #00CED1;
+  box-sizing: border-box;
+  box-shadow: 0 0 8px rgba(0, 206, 209, 0.8);
+}
+.run-badge--speedDecrease .run-badge__count {
+  color: #00CED1;
+  text-shadow: 0 0 8px rgba(0, 206, 209, 0.8);
+}
+
+/* Wall Phase: hollow purple circle / ring */
+.run-badge--wallPhase .run-badge__glyph {
+  border: 2px solid #800080;
+  border-radius: 50%;
+  box-sizing: border-box;
+  box-shadow: 0 0 8px rgba(128, 0, 128, 0.8);
+}
+.run-badge--wallPhase .run-badge__count {
+  color: #800080;
+  text-shadow: 0 0 8px rgba(128, 0, 128, 0.8);
+}
+
+/* Speed Boost: red plus / cross (two overlapping rects via pseudo-elements) */
+.run-badge--speedBoost .run-badge__glyph::before,
+.run-badge--speedBoost .run-badge__glyph::after {
+  content: '';
+  position: absolute;
+  background-color: #FF0000;
+  box-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+}
+/* Horizontal bar */
+.run-badge--speedBoost .run-badge__glyph::before {
+  width: 14px;
+  height: 4px;
+  top: 5px;
+  left: 0;
+}
+/* Vertical bar */
+.run-badge--speedBoost .run-badge__glyph::after {
+  width: 4px;
+  height: 14px;
+  top: 0;
+  left: 5px;
+}
+.run-badge--speedBoost .run-badge__count {
+  color: #FF0000;
+  text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+}
+
+/* Reverse Controls: orange X (two rotated rects via pseudo-elements) */
+.run-badge--reverseControls .run-badge__glyph::before,
+.run-badge--reverseControls .run-badge__glyph::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 3px;
+  background-color: #FFA500;
+  box-shadow: 0 0 8px rgba(255, 165, 0, 0.8);
+  top: 50%;
+  left: 50%;
+}
+.run-badge--reverseControls .run-badge__glyph::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.run-badge--reverseControls .run-badge__glyph::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+.run-badge--reverseControls .run-badge__count {
+  color: #FFA500;
+  text-shadow: 0 0 8px rgba(255, 165, 0, 0.8);
+}
+
+/* Invincibility: yellow 4-point star (clip-path polygon) */
+.run-badge--invincibility .run-badge__glyph {
+  background-color: #FFFF00;
+  clip-path: polygon(50% 0%, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0% 50%, 40% 40%);
+  box-shadow: 0 0 8px rgba(255, 255, 0, 0.8);
+}
+.run-badge--invincibility .run-badge__count {
+  color: #FFFF00;
+  text-shadow: 0 0 8px rgba(255, 255, 0, 0.8);
+}
+
+/* Phone: gold unicode ☎ character */
+.run-badge--phone .run-badge__glyph {
+  width: auto;
+  height: auto;
+  font-size: 14px;
+  line-height: 1;
+  color: #FFD700;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+}
+.run-badge--phone .run-badge__count {
+  color: #FFD700;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+}
+
+/* ── Story 23.3: Animations ─────────────────────────────────── */
+
+@keyframes runBadgeEnter {
+  from { opacity: 0; transform: scale(0.7); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes runBadgeFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes runCountFlash {
+  0%   { color: #ffffff; text-shadow: 0 0 12px #ffffff; }
+  100% { color: inherit; text-shadow: inherit; }
+}
+
+.run-count-flash {
+  animation: runCountFlash 200ms ease-out forwards;
+}
+
+/* ========================================
+   END EPIC 23: RUN SUMMARY BAR
+   ======================================== */

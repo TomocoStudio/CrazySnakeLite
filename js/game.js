@@ -241,6 +241,9 @@ function update(gameState) {
     // Story 12.2: Track food type distribution
     gameState.analyticsState.foodTypesEaten[effectType] += 1;
 
+    // Story 23.1: Track per-food-type eat count for Run Summary Bar
+    gameState.cognitiveStats.foodsEaten[effectType]++;
+
     // Story 12.2: Track Reverse Controls specifically
     if (effectType === 'reverseControls') {
       gameState.analyticsState.totalRCFoodsEaten += 1;

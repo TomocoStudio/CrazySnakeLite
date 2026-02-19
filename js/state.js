@@ -120,7 +120,16 @@ export function createInitialState() {
       phoneCallsManaged: 0,          // Story 9.7: Total calls dismissed (End + Pick Up)
       pickUpStreak: 0,               // Story 9.7: Consecutive Pick Ups (reset on End)
       comboMultipliers: 0,           // Story 10.4: Total combo multipliers triggered
-      peakComboScore: 0              // Story 10.4: Highest single combo score this game
+      peakComboScore: 0,             // Story 10.4: Highest single combo score this game
+      // Story 23.1: Per-food-type eat count for Run Summary Bar
+      foodsEaten: {
+        growing: 0,
+        speedDecrease: 0,
+        wallPhase: 0,
+        speedBoost: 0,
+        reverseControls: 0,
+        invincibility: 0
+      }
     },
 
     // Metrics Tracking (Story 13.1+ - Cognitive Dashboard)

@@ -17,6 +17,7 @@ import { getStreakData, formatStreakCounter, isStreakMilestone } from './streaks
 import { checkAndUpdateStreak } from './streak.js';
 import * as dashboard from './dashboard.js';
 import { initBackgroundGlow, setGlowToWhite } from './background-glow.js';  // Story 22.1: Dynamic background glow
+import { renderRunSummaryBar } from './run-summary.js';  // Story 23.2: Run Summary Bar
 
 // Initialize canvas and context
 const canvas = document.getElementById('game-canvas');
@@ -449,6 +450,9 @@ function handleUIUpdate(state) {
           newHighScoreIndicator.classList.add('hidden');
         }
       }
+
+      // Story 23.2: Render Run Summary Bar (food type counts for this run)
+      renderRunSummaryBar(state.cognitiveStats);
 
       // Story 14.2: Show highlights with staggered animation
       setTimeout(async () => {

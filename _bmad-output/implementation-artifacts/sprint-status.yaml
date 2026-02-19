@@ -279,3 +279,11 @@ development_status:
   epic-22: done
   22-1-dynamic-background-glow: done
   epic-22-retrospective: optional
+
+  # Epic 23: Run Summary Bar (Post-Game Food Counter)
+  epic-23: done
+  23-1-add-per-food-type-tracking-to-game-state: review
+  23-2-render-run-summary-bar-on-game-over-screen: review
+  23-3-implement-count-up-animation: review
+  23-4-test-run-summary-bar: review
+  epic-23-retrospective: optional
