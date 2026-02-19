@@ -2514,7 +2514,16 @@ button:disabled {
     0 0 20px rgba(0, 180, 255, 0.4),
     0 2px 0 #5A6A8A,
     0 3px 0 #3A4A6A;
-  margin: 0 0 18px 0;
+  margin: 0 0 4px 0;
+}
+
+.skill-map-divider {
+  font-family: 'Jersey20', sans-serif;
+  font-size: 12px;
+  color: #888888;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 6px;
 }
 
 /* --- DOMAIN COLOR SYSTEM (CSS custom properties per row) --- */
@@ -2772,79 +2781,6 @@ button:disabled {
   color: #CCCCCC;
   padding-left: 26px;
   line-height: 1.4;
-}
-
-/* ========================================
-   Session Stats — Stat Chip design
-   ======================================== */
-
-.session-stats-row {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 16px;
-  margin-bottom: 16px;
-}
-
-/* Stat chip base */
-.stat-chip {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 20px;
-  padding: 5px 14px;
-  font-family: 'Jersey20', sans-serif;
-  font-size: 13px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-/* Sessions chip — white glow */
-.stat-chip.sessions {
-  color: #FFFFFF;
-  text-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
-}
-
-/* Streak chip — fire orange */
-.stat-chip.streak {
-  color: #FF8C00;
-  text-shadow: 0 0 6px rgba(255, 140, 0, 0.6);
-}
-
-/* Streak milestone — gold upgrade */
-.stat-chip.streak.milestone {
-  color: #FFD700;
-  border-color: rgba(255, 215, 0, 0.4);
-  text-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
-  animation: pulse-milestone 2s ease-in-out infinite;
-}
-
-/* Best streak chip — gold */
-.stat-chip.best {
-  color: #FFD700;
-  text-shadow: 0 0 6px rgba(255, 215, 0, 0.5);
-}
-
-@keyframes pulse-milestone {
-  0%, 100% { transform: scale(1.0); }
-  50%       { transform: scale(1.04); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .stat-chip.streak.milestone {
-    animation: none;
-  }
-}
-
-@media (max-width: 768px) {
-  .session-stats-row {
-    gap: 8px;
-  }
-
-  .stat-chip {
-    font-size: 11px;
-    padding: 4px 10px;
-  }
 }
 
 /* ========================================

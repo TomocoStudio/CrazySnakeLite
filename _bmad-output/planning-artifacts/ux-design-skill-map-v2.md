@@ -579,3 +579,36 @@ After a multi-option preview session (A–E tested in `test/canvas-border-previe
 Full spec: `ux-design-retro-graphic-upgrade.md` V4.3 section.
 
 **Files changed:** `css/style.css`
+
+#### Round 12 — Sessions Promoted to Title Block; Streak & Best Removed (2026-02-19)
+Tomoco: *"Streak and Best info are not necessary, value is low. Keep sessions count."*
+
+**Design rationale:** STREAK and BEST were time-based habit mechanics — philosophically misaligned with the core "score-based, never time-based" principle. Removing them is a values correction. Sessions count is retained and *promoted* — moved from a low-contrast chip in a three-chip row to a headline position inside the title block, where it reads as a commitment number before the player even looks at the bars.
+
+**Visual change:** Title block now reads:
+```
+       YOUR
+   SKILL MAP
+── 373 SESSIONS ──
+```
+
+**Spec updates:**
+
+Section 5 (Session Stats) — **fully replaced.** The three-chip row (`SESSIONS`, `STREAK`, `BEST`) is removed entirely. Session count is now rendered as a `.skill-map-divider` element inside `.skill-map-title-block`, below the `<h2>`. The `#skill-map-stats` container remains in the DOM but is always empty.
+
+`.skill-map-divider` CSS spec:
+- Font: 12px Jersey20, `letter-spacing: 2px`, `text-transform: uppercase`
+- Color: `#888888` (readable on black, subordinate to the title)
+- Margin-top: `6px` (tight below title)
+- `.skill-map-title` bottom margin reduced: `18px → 4px` (divider sits immediately below)
+
+**Calibration path:** During sessions 1–5, divider shows `── N SESSIONS ──` (same element, same position).
+
+**Files changed:** `index.html`, `css/style.css`, `js/dashboard.js`
+
+**`js/dashboard.js` changes:**
+- Removed `getStreak` import (no longer needed)
+- Removed `currentStreak` from `renderFullSkillMap()` destructure
+- Deleted `renderSessionStats()` function entirely
+- Both render paths (`renderFullSkillMap` + `renderCalibrationPlaceholder`) now write session count directly to `#skill-map-session-count` element
+- All `.stat-chip` CSS removed: `.session-stats-row`, `.stat-chip` (all variants), `@keyframes pulse-milestone`, related media queries

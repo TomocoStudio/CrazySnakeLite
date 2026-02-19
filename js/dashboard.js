@@ -3,7 +3,7 @@
 // Story 16.9: Performance optimizations (DOM caching, batching, cleanup)
 // Story 17.5: Streak display integration
 // Story 18.4: Comedy.js integration for rotating quotes
-import { getProfile, getStreak } from './storage.js';
+import { getProfile } from './storage.js';
 import { CONFIG } from './config.js';
 import { selectQuote } from './comedy.js';
 
@@ -83,12 +83,11 @@ function renderCalibrationPlaceholder(profile) {
     </p>
   `;
 
-  // Story 16.4: Show session count during calibration (no streak until unlocked)
-  statsContainer.innerHTML = `
-    <div class="session-stats-row">
-      <span class="session-count">Sessions: ${sessionCount}</span>
-    </div>
-  `;
+  // Show session count in title divider
+  const sessionCountEl = document.getElementById('skill-map-session-count');
+  if (sessionCountEl) sessionCountEl.textContent = `── ${sessionCount} SESSIONS ──`;
+
+  statsContainer.innerHTML = '';
 
   console.log('[Story 16.4] Calibration placeholder rendered - empty bars + session count:', sessionCount);
 }
@@ -105,7 +104,7 @@ function renderCalibrationPlaceholder(profile) {
  * @param {Object} profile - User profile data
  */
 function renderFullSkillMap(profile) {
-  const { domainScores, previousDomainScores, sessionsCompleted, currentStreak } = profile;
+  const { domainScores, previousDomainScores, sessionsCompleted } = profile;
   const totalSessions = sessionsCompleted || 0;  // Use sessionsCompleted as totalSessions
 
   // Story 16.9: Clear all containers (use cached references)
@@ -147,9 +146,12 @@ function renderFullSkillMap(profile) {
   console.log('[Story 16.3] Full Skill Map rendered with block bars and indicators');
   console.log('[Story 16.3] Strongest:', strongestDomain, '| Growth:', growthArea, '| Improved:', Array.from(improvedDomains));
 
+  // Update session count in title divider
+  const sessionCountEl = document.getElementById('skill-map-session-count');
+  if (sessionCountEl) sessionCountEl.textContent = `── ${totalSessions} SESSIONS ──`;
+
   // Render other sections
   renderCalloutCards(strongestDomain, growthArea);
-  renderSessionStats(totalSessions, currentStreak);
   renderQuote(quote);
 
   // Store quote text in profile for next-visit variety enforcement
@@ -254,52 +256,6 @@ function createBlockBarRow(label, blockScore, indicators = {}, domainKey = '') {
   row.appendChild(indicatorsContainer);
 
   return row;
-}
-
-/**
- * Render session count and streak as stat chips
- * Story 16.4: Session stats with milestone detection
- * V2 Redesign 2026-02-18: Pill chip design replacing plain text row
- * @param {number} totalSessions - Total games played (includes calibration)
- * @param {number} currentStreak - Current streak in days
- */
-function renderSessionStats(totalSessions, currentStreak) {
-  // Story 17.5: Get full streak data including longestStreak
-  const streak = getStreak();
-
-  const statsContainer = document.getElementById('skill-map-stats');
-  statsContainer.innerHTML = '';
-
-  const chipsRow = document.createElement('div');
-  chipsRow.className = 'session-stats-row';
-
-  // Sessions chip
-  const sessionsChip = document.createElement('div');
-  sessionsChip.className = 'stat-chip sessions';
-  sessionsChip.textContent = `${totalSessions} SESSIONS`;
-  chipsRow.appendChild(sessionsChip);
-
-  // Streak chip
-  const isMilestone = CONFIG.DASHBOARD.STREAK_MILESTONES.includes(currentStreak);
-  const streakChip = document.createElement('div');
-  streakChip.className = 'stat-chip streak';
-  const dayLabel = currentStreak === 1 ? 'DAY' : 'DAYS';
-  streakChip.textContent = `STREAK: ${currentStreak} ${dayLabel} 🔥`;
-  if (isMilestone) streakChip.classList.add('milestone');
-  chipsRow.appendChild(streakChip);
-
-  // Best streak chip (only if different from current and > 0)
-  if (streak.longestStreak > currentStreak && streak.longestStreak > 0) {
-    const bestChip = document.createElement('div');
-    bestChip.className = 'stat-chip best';
-    const bestLabel = streak.longestStreak === 1 ? 'DAY' : 'DAYS';
-    bestChip.textContent = `BEST: ${streak.longestStreak} ${bestLabel}`;
-    chipsRow.appendChild(bestChip);
-  }
-
-  statsContainer.appendChild(chipsRow);
-
-  console.log('[Story 16.4/17.5] Session stats rendered:', { totalSessions, currentStreak, longestStreak: streak.longestStreak, isMilestone });
 }
 
 /**
