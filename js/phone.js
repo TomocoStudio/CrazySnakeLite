@@ -122,15 +122,26 @@ export function showPhoneCall(callerName = 'Unknown Caller', gameState = null) {
   }
 
   // Update End bonus display based on current active effect (Story 9.2 redesigned bugfix)
+  // Hide badge entirely when bonus is 0 (avoids demoralising "+0" signal, consistent with invincibility food popup removal)
   if (endBonusSpan && gameState) {
     const endBonus = getEndBonus(gameState);
-    endBonusSpan.textContent = `+${endBonus}`;
+    if (endBonus > 0) {
+      endBonusSpan.textContent = `+${endBonus}`;
+      endBonusSpan.classList.remove('hidden');
+    } else {
+      endBonusSpan.classList.add('hidden');
+    }
   }
 
   // Update Pick Up bonus display based on current active effect (Story 9.2 redesigned)
   if (pickupBonusSpan && gameState) {
     const pickupBonus = getPickUpBonus(gameState);
-    pickupBonusSpan.textContent = `+${pickupBonus}`;
+    if (pickupBonus > 0) {
+      pickupBonusSpan.textContent = `+${pickupBonus}`;
+      pickupBonusSpan.classList.remove('hidden');
+    } else {
+      pickupBonusSpan.classList.add('hidden');
+    }
   }
 
   // Show overlay

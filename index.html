@@ -28,12 +28,6 @@
       <span id="top-score">Top Score: 0</span>
     </div>
 
-    <!-- Feedback Button - Story 6.2: Always Visible -->
-    <button id="feedback-button" class="feedback-button" aria-label="Give Feedback">
-      <span class="feedback-button-text">Feedback</span>
-      <span class="feedback-button-icon">💬</span>
-    </button>
-
     <!-- Main Menu Screen - Story 4.2 -->
     <div id="menu-screen">
       <h1 class="game-title">Crazy Snake</h1>
@@ -86,141 +80,154 @@
 
     </div>
 
-    <!-- Phone Call Overlay - Story 3.1, Story 9.1: Two-button layout, Story 9.3: Countdown bar -->
-    <div id="phone-overlay" class="hidden">
-      <div class="phone-screen">
-        <img src="assets/PhoneIcone01_256px.png" alt="Phone ringing" class="phone-icon">
-        <p class="call-status">Incoming call...</p>
-        <p class="caller-name">Mom</p>
-        <p class="call-instructions">(Press Space to End or Enter to Pick Up)</p>
+  </div>
 
-        <!-- Two-button layout - Story 9.1 -->
-        <div id="phone-buttons">
-          <button id="phone-btn-end" class="phone-btn">
-            <span class="btn-label">End</span>
-            <span class="btn-points">+1</span>
-            <span class="btn-key">Space</span>
-          </button>
+  <!-- ============================================================
+       Fixed-position overlays — ALL outside #game-container.
+       CSS transform on #game-container (screen shake) breaks
+       position:fixed on any descendant; keeping these at body
+       level ensures they always anchor to the viewport.
+       ============================================================ -->
 
-          <button id="phone-btn-pickup" class="phone-btn phone-btn-pickup">
-            <span class="btn-label">Pick Up</span>
-            <span class="btn-bonus">+2</span>
-            <span class="btn-key">Enter</span>
-          </button>
-        </div>
+  <!-- Feedback Button - Story 6.2: Always Visible -->
+  <button id="feedback-button" class="feedback-button" aria-label="Give Feedback">
+    <span class="feedback-button-text">Feedback</span>
+    <span class="feedback-button-icon">💬</span>
+  </button>
 
-        <!-- Countdown bar - Story 9.3: Pick Up timer -->
-        <div id="phone-countdown-bar" class="hidden">
-          <div id="countdown-bar-fill"></div>
-        </div>
+  <!-- Thank You Screen - Story 6.4 -->
+  <div id="thank-you-screen" class="thank-you-screen hidden">
+    <div class="thank-you-container">
+      <div class="thank-you-content">
+        <div class="thank-you-icon">🎉</div>
+        <h2>Thanks!</h2>
+        <p>Your feedback helps make Crazy Snake even better!</p>
+        <button id="back-to-game-btn" class="btn btn-primary">Back to Game</button>
       </div>
     </div>
+  </div>
 
-    <!-- Thank You Screen - Story 6.4 -->
-    <div id="thank-you-screen" class="thank-you-screen hidden">
-      <div class="thank-you-container">
-        <div class="thank-you-content">
-          <div class="thank-you-icon">🎉</div>
-          <h2>Thanks!</h2>
-          <p>Your feedback helps make Crazy Snake even better!</p>
-          <button id="back-to-game-btn" class="btn btn-primary">Back to Game</button>
+  <!-- Feedback Modal - Story 6.1 -->
+  <div id="feedback-modal" class="feedback-modal hidden">
+    <div class="feedback-container">
+      <div class="feedback-header">
+        <h2>Share Your Feedback</h2>
+        <button id="close-feedback-btn" class="close-btn" aria-label="Close feedback">✕</button>
+      </div>
+
+      <form id="feedback-form" class="feedback-form">
+        <!-- Fun Rating -->
+        <div class="rating-group">
+          <label for="fun-rating">How fun is Crazy Snake?</label>
+          <div id="fun-rating" class="star-rating" data-rating="0">
+            <span class="star" data-value="1">☆</span>
+            <span class="star" data-value="2">☆</span>
+            <span class="star" data-value="3">☆</span>
+            <span class="star" data-value="4">☆</span>
+            <span class="star" data-value="5">☆</span>
+          </div>
         </div>
+
+        <!-- Difficulty Rating -->
+        <div class="rating-group">
+          <label for="difficulty-rating">How's the difficulty?</label>
+          <div id="difficulty-rating" class="star-rating" data-rating="0">
+            <span class="star" data-value="1">☆</span>
+            <span class="star" data-value="2">☆</span>
+            <span class="star" data-value="3">☆</span>
+            <span class="star" data-value="4">☆</span>
+            <span class="star" data-value="5">☆</span>
+          </div>
+        </div>
+
+        <!-- Comments (optional) -->
+        <div class="form-group">
+          <label for="feedback-comments">Anything else to share? (optional)</label>
+          <textarea
+            id="feedback-comments"
+            class="feedback-textarea"
+            maxlength="500"
+            placeholder="Your thoughts help make Crazy Snake better..."
+            rows="4"
+          ></textarea>
+          <div class="char-counter">
+            <span id="char-count">0</span>/500
+          </div>
+        </div>
+
+        <!-- Email (optional) -->
+        <div class="form-group">
+          <label for="feedback-email">Want beta updates? (optional email)</label>
+          <input
+            type="email"
+            id="feedback-email"
+            class="feedback-email"
+            placeholder="your@email.com"
+          />
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="submit-feedback-btn" class="btn btn-primary">
+          Submit Feedback
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Skill Map Dashboard (V3) - Story 16.1 / V2 Redesign 2026-02-18 -->
+  <div id="skill-map-screen" class="screen hidden">
+    <div class="skill-map-container">
+      <div class="skill-map-title-block">
+        <span class="skill-map-label">YOUR</span>
+        <h2 class="skill-map-title">SKILL MAP</h2>
+      </div>
+      <div id="skill-map-bars-container">
+        <!-- Rendered by dashboard.js -->
+      </div>
+      <div id="skill-map-callouts">
+        <!-- Rendered by dashboard.js -->
+      </div>
+      <div id="skill-map-stats">
+        <!-- Sessions + Streak — rendered by dashboard.js -->
+      </div>
+      <div id="skill-map-quote">
+        <!-- Caller quote — rendered by dashboard.js -->
+      </div>
+      <div class="skill-map-actions">
+        <button id="play-now-btn" class="game-over-btn selected">PLAY NOW</button>
+        <button id="back-to-menu-btn" class="game-over-btn">BACK TO MENU</button>
       </div>
     </div>
+  </div>
 
-    <!-- Feedback Modal - Story 6.1 -->
-    <div id="feedback-modal" class="feedback-modal hidden">
-      <div class="feedback-container">
-        <div class="feedback-header">
-          <h2>Share Your Feedback</h2>
-          <button id="close-feedback-btn" class="close-btn" aria-label="Close feedback">✕</button>
-        </div>
+  <!-- Phone Call Overlay — Story 3.1, 9.1, 9.3 -->
+  <div id="phone-overlay" class="hidden">
+    <div class="phone-screen">
+      <img src="assets/PhoneIcone01_256px.png" alt="Phone ringing" class="phone-icon">
+      <p class="call-status">Incoming call...</p>
+      <p class="caller-name">Mom</p>
+      <p class="call-instructions">(Press Space to End or Enter to Pick Up)</p>
 
-        <form id="feedback-form" class="feedback-form">
-          <!-- Fun Rating -->
-          <div class="rating-group">
-            <label for="fun-rating">How fun is Crazy Snake?</label>
-            <div id="fun-rating" class="star-rating" data-rating="0">
-              <span class="star" data-value="1">☆</span>
-              <span class="star" data-value="2">☆</span>
-              <span class="star" data-value="3">☆</span>
-              <span class="star" data-value="4">☆</span>
-              <span class="star" data-value="5">☆</span>
-            </div>
-          </div>
+      <!-- Two-button layout - Story 9.1 -->
+      <div id="phone-buttons">
+        <button id="phone-btn-end" class="phone-btn">
+          <span class="btn-label">End</span>
+          <span class="btn-points">+1</span>
+          <span class="btn-key">Space</span>
+        </button>
 
-          <!-- Difficulty Rating -->
-          <div class="rating-group">
-            <label for="difficulty-rating">How's the difficulty?</label>
-            <div id="difficulty-rating" class="star-rating" data-rating="0">
-              <span class="star" data-value="1">☆</span>
-              <span class="star" data-value="2">☆</span>
-              <span class="star" data-value="3">☆</span>
-              <span class="star" data-value="4">☆</span>
-              <span class="star" data-value="5">☆</span>
-            </div>
-          </div>
+        <button id="phone-btn-pickup" class="phone-btn phone-btn-pickup">
+          <span class="btn-label">Pick Up</span>
+          <span class="btn-bonus">+2</span>
+          <span class="btn-key">Enter</span>
+        </button>
+      </div>
 
-          <!-- Comments (optional) -->
-          <div class="form-group">
-            <label for="feedback-comments">Anything else to share? (optional)</label>
-            <textarea
-              id="feedback-comments"
-              class="feedback-textarea"
-              maxlength="500"
-              placeholder="Your thoughts help make Crazy Snake better..."
-              rows="4"
-            ></textarea>
-            <div class="char-counter">
-              <span id="char-count">0</span>/500
-            </div>
-          </div>
-
-          <!-- Email (optional) -->
-          <div class="form-group">
-            <label for="feedback-email">Want beta updates? (optional email)</label>
-            <input
-              type="email"
-              id="feedback-email"
-              class="feedback-email"
-              placeholder="your@email.com"
-            />
-          </div>
-
-          <!-- Submit Button -->
-          <button type="submit" id="submit-feedback-btn" class="btn btn-primary">
-            Submit Feedback
-          </button>
-        </form>
+      <!-- Countdown bar - Story 9.3: Pick Up timer -->
+      <div id="phone-countdown-bar" class="hidden">
+        <div id="countdown-bar-fill"></div>
       </div>
     </div>
-
-    <!-- Skill Map Dashboard (V3) - Story 16.1 / V2 Redesign 2026-02-18 -->
-    <div id="skill-map-screen" class="screen hidden">
-      <div class="skill-map-container">
-        <div class="skill-map-title-block">
-          <span class="skill-map-label">YOUR</span>
-          <h2 class="skill-map-title">SKILL MAP</h2>
-        </div>
-        <div id="skill-map-bars-container">
-          <!-- Rendered by dashboard.js -->
-        </div>
-        <div id="skill-map-callouts">
-          <!-- Rendered by dashboard.js -->
-        </div>
-        <div id="skill-map-stats">
-          <!-- Sessions + Streak — rendered by dashboard.js -->
-        </div>
-        <div id="skill-map-quote">
-          <!-- Caller quote — rendered by dashboard.js -->
-        </div>
-        <div class="skill-map-actions">
-          <button id="play-now-btn" class="game-over-btn selected">PLAY NOW</button>
-          <button id="back-to-menu-btn" class="game-over-btn">BACK TO MENU</button>
-        </div>
-      </div>
-    </div>
-
   </div>
 
   <script type="module" src="js/main.js"></script>

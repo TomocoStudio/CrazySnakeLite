@@ -1,7 +1,7 @@
 # UX Design: Phone Call Screen V2
 **Author:** Sally (UX Designer)
 **Date:** 2026-02-18
-**Last updated:** 2026-02-18 (post-implementation tuning)
+**Last updated:** 2026-02-19 (zero-bonus badge suppression)
 **Status:** ✅ Implemented & validated
 
 ---
@@ -210,5 +210,30 @@ The overlay backdrop and card background were made semi-transparent so the blurr
 
 ---
 
+---
+
+## Post-Implementation Additions (2026-02-19)
+
+### Zero-Bonus Badge Suppression
+
+**Problem:** When invincibility is the active effect, `CONFIG.PHONE_BONUSES.invincibility = { end: 0, pickup: 0 }`. Both button badges displayed "+0", signalling to the player that their End vs Pick Up decision carries no value — a demotivating micro-friction identical to the +0 score popup that was already removed for invincibility food (Story 7.9).
+
+**Design decision:** Hide the score badge entirely when it would show "+0". Same principle as the food popup removal: don't lie about a reward, but don't rub the player's nose in a zero either.
+
+- `.btn-points.hidden` / `.btn-bonus.hidden` → `display: none` (CSS)
+- `showPhoneCall()` in `phone.js` — badge shown + `.hidden` removed when bonus > 0; `.hidden` added when bonus = 0
+- The End and Pick Up buttons remain fully functional. The choice retains strategic meaning (committing to blur during invincibility vs. ending safely). Only the score dimension is absent — and absent cleanly.
+
+**Five-Question Filter check:**
+- Working Memory: ✅ One less element to process when badge absent
+- Competence feedback: ✅ Absence of badge is honest (no score reward here); no false signal
+- Clarity: ✅ Buttons still clearly labeled End / Pick Up; function obvious
+- Flow: ✅ No disruption — badge absence reads as "this call has no score stakes right now"
+- Emotional impact: ✅ Removes negative signal without replacing it with noise
+
+**Files modified:** `js/phone.js`, `css/style.css`
+
+---
+
 *This document is the complete implementation record for the Phone Call V2 visual redesign.*
-*All changes are CSS/HTML only — no game logic was modified.*
+*CSS/HTML changes documented above. Logic change (2026-02-19) limited to badge visibility in `phone.js`.*

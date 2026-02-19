@@ -533,6 +533,7 @@ All paths relative to project root. All filenames kebab-case.
 | V4: `updateBorderState(gameState)` in game loop | Event-driven only: call in `onPhoneShow()`, `onDeath()`, etc. |
 | V4: Canvas `fillRect()` for background color | CSS `canvas.style.backgroundColor` with transition |
 | V4: 525 grid dots rendered every frame without cache | Offscreen canvas: render once to cache, `drawImage()` per frame |
+| Place `position:fixed` overlays inside `#game-container` | Move them to direct children of `<body>` — CSS `transform` on any ancestor breaks `position:fixed`, causing overlays to anchor to the transformed element instead of the viewport |
 
 ---
 

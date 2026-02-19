@@ -8,6 +8,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed - 2026-02-19
+
+#### Fixed - Fixed-Position Overlays Displaced by Screen Shake
+
+**Issue:** During screen shake (wall crossing with wallPhase or invincibility active), `position: fixed` elements shifted to the bottom-right corner of the game canvas instead of staying anchored to the viewport. Affected: `#phone-overlay`, `#feedback-button`, `#thank-you-screen`, `#feedback-modal`, `#skill-map-screen`.
+
+**Root Cause:** CSS spec: `position: fixed` anchors to the viewport *unless* an ancestor has a `transform`, `filter`, or `perspective` applied — in which case the fixed element positions relative to that ancestor instead. The screen shake animation applies `transform: translate()` to `#game-container`. All five affected elements were children of `#game-container`, so their fixed positioning broke on every shake frame.
+
+**Solution:** Moved all five `position: fixed` elements outside `#game-container` to be direct children of `<body>`. `#game-container` now contains only: `#game-canvas`, `#score-display`, `#menu-screen`, `#gameover-screen`. All overlay elements (phone, feedback button, feedback modal, thank-you screen, skill map) live at body level and are immune to any transform on `#game-container`.
+
+**Files Modified:** `index.html`
+
+---
+
+#### Fixed - Phone Buttons Showed "+0" During Invincibility
+
+**Issue:** When the invincibility effect was active and a phone call rang, both the End and Pick Up buttons displayed "+0" — communicating a meaningless choice and creating a demoralising signal identical to the one that previously caused the invincibility food score popup to be removed.
+
+**Design Rationale:** `CONFIG.PHONE_BONUSES.invincibility = { end: 0, pickup: 0 }` correctly prevents score exploitation during safe periods. But showing "+0" signals "your decision has no value," which contradicts the game's core principle that every interaction should feel intentional. The same logic already applied to food score popups (invincibility +0 popup was replaced with a power flash in Story 7.9).
+
+**Solution:** Badge spans (`.btn-points`, `.btn-bonus`) are now hidden via `.hidden` class when the bonus value is 0. When bonus > 0, the span is shown with its value and `.hidden` is removed. No false reward is communicated; the choice remains (End vs Pick Up has strategic implications independent of score); the demoralising signal is gone.
+
+**Files Modified:** `js/phone.js`, `css/style.css`
+
+---
+
 ### Changes - 2026-02-18
 
 #### Fixed - Snake Background Distorts on Window Resize
