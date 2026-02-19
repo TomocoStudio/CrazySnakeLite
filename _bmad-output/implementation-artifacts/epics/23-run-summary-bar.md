@@ -137,7 +137,7 @@ cognitiveStats: {
 **Given** counters begin counting
 **When** animating each badge count
 **Then** all visible counters start from 0 at the same `startTime` timestamp
-**And** animation duration per badge: `Math.max(finalValue * 80, 400)` ms, capped at 1200ms
+**And** animation duration per badge: `Math.max(finalValue * 120, 600)` ms, capped at 2000ms
 **And** animation is driven by `requestAnimationFrame` — not `setInterval` or `setTimeout`
 
 **Given** a badge has `finalValue === 1`

@@ -146,9 +146,9 @@ t = 0ms       Badges appear (staggered left-to-right, 80ms offset each)
 t = 300ms     All visible counters begin counting simultaneously
               Count from 0 → final value
 
-t = 300ms     Duration: max(count × 80ms, 400ms), capped at 1200ms
+t = 300ms     Duration: max(count × 120ms, 600ms), capped at 2000ms
   to          Easing: ease-out (fast start, decelerates into final number)
-  ~1500ms
+  ~2300ms
 
 t = landing   On reaching final number: brief brightness flash
               Same treatment as `.milestone-blink` — 1 white flash, 200ms

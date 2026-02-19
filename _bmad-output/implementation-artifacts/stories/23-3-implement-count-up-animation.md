@@ -21,7 +21,7 @@
 **Then** all visible counters start from 0 at the same `startTime` timestamp
 **And** each counter increments toward its `finalValue` using ease-out easing
 **And** easing formula: `currentDisplay = Math.round(easeOut(elapsed / duration) * finalValue)`
-**And** animation duration per badge: `Math.max(finalValue * 80, 400)` ms, capped at 1200ms
+**And** animation duration per badge: `Math.max(finalValue * 120, 600)` ms, capped at 2000ms
 **And** animation is driven by `requestAnimationFrame` — not `setInterval` or `setTimeout`
 
 **Given** a badge has `finalValue === 1`
@@ -88,7 +88,7 @@ function animateRunSummaryBar(badges) {
         return;
       }
 
-      const duration = Math.min(Math.max(badge.finalValue * 80, 400), 1200);
+      const duration = Math.min(Math.max(badge.finalValue * 120, 600), 2000);
 
       function tick(now) {
         const elapsed = now - startTime;
@@ -184,7 +184,7 @@ animateRunSummaryBar(animatableBadges);
 - `animateRunSummaryBar(badges)`: staggered entry at 80ms offset → all counters fire simultaneously after entry completes → `requestAnimationFrame` tick loop (no setInterval)
 - `finalValue === 1`: no count-up, shows `1` immediately + flash
 - `REDUCED_MOTION` path: fade-in only, no scale, no count-up, no flash (reads `CONFIG.REDUCED_MOTION`)
-- Duration: `Math.min(Math.max(finalValue * 80, 400), 1200)` — floor 400ms, cap 1200ms
+- Duration: `Math.min(Math.max(finalValue * 120, 600), 2000)` — floor 600ms, cap 2000ms
 - CSS added: `@keyframes runBadgeEnter`, `@keyframes runBadgeFadeIn`, `@keyframes runCountFlash`, `.run-count-flash`
 
 ---

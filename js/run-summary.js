@@ -53,7 +53,7 @@ function animateRunSummaryBar(badges) {
         return;
       }
 
-      const duration = Math.min(Math.max(badge.finalValue * 80, 400), 1200);
+      const duration = Math.min(Math.max(badge.finalValue * 120, 600), 2000);
 
       function tick(now) {
         const elapsed = now - startTime;
