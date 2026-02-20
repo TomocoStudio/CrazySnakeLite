@@ -188,7 +188,12 @@ For agent details, see `/_bmad/` directory.
 
 ## License
 
-TBD
+This project uses a dual license:
+
+- **Code** (JS, HTML, CSS) — [GNU General Public License v3.0](LICENSE)
+- **Creative assets** (portraits, caller content, audio, one-liners) — [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+See [LICENSE](LICENSE) for full details.
 
 ---
 
